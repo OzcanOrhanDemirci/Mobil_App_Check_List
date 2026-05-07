@@ -1712,14 +1712,36 @@
     .progress-label .lbl-extra { display: none; }
     .bar { height: 5px; }
 
-    /* === Hero legend: dar mobil ekranda pill'ler tek sütun === */
+    /* === Hero legend: dar mobil ekranda pill'ler tek sutun === */
     .legend {
       flex-direction: column;
       gap: 8px;
     }
     .legend .pill {
       width: 100%;
-      justify-content: flex-start;
+      align-items: flex-start;
+      line-height: 1.45;
+      padding: 9px 14px;
+    }
+    .legend .pill .dot {
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .legend .pill .pill-text {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */
+    footer .foot-title::before,
+    footer .foot-title::after {
+      display: none;
+    }
+    footer .foot-title {
+      font-size: 15px;
+      text-wrap: balance;
+      padding: 0 12px;
+      line-height: 1.35;
     }
 
     /* === Diğer mobil ayarlar (önceki davranışla aynı) === */
@@ -2040,8 +2062,8 @@
       İşaretlemen tarayıcına otomatik kaydedilir.
     </p>
     <div class="legend">
-      <span class="pill"><span class="dot mvp"></span> <strong>MVP</strong>: Olmazsa olmaz, temel</span>
-      <span class="pill"><span class="dot release"></span> <strong>Release</strong>: Yayınlanabilir profesyonel kalite</span>
+      <span class="pill"><span class="dot mvp"></span><span class="pill-text"><strong>MVP</strong>: Olmazsa olmaz, temel</span></span>
+      <span class="pill"><span class="dot release"></span><span class="pill-text"><strong>Release</strong>: Yayınlanabilir profesyonel kalite</span></span>
     </div>
   </header>
 
