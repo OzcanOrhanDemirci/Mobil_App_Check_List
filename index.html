@@ -1,0 +1,3705 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi</title>
+<meta name="theme-color" content="#0b0f17" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AGM Kontrol" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
+<script>(function(){try{var t=localStorage.getItem("agm_theme_v1")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<style>
+  :root,
+  [data-theme="dark"] {
+    --bg: #0b0f17;
+    --surface: #11161f;
+    --surface-2: #161c27;
+    --surface-3: #1c2331;
+    --border: #232b3a;
+    --text: #e7ecf3;
+    --text-dim: #94a3b8;
+    --text-mute: #64748b;
+    --accent: #f97316;
+    --accent-2: #fb923c;
+
+    --mvp: #22c55e;
+    --mvp-bg: rgba(34, 197, 94, 0.08);
+    --mvp-border: rgba(34, 197, 94, 0.35);
+    --mvp-strong: rgba(34, 197, 94, 0.16);
+
+    --release: #3b82f6;
+    --release-bg: rgba(59, 130, 246, 0.08);
+    --release-border: rgba(59, 130, 246, 0.35);
+    --release-strong: rgba(59, 130, 246, 0.16);
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --radius: 14px;
+    --radius-sm: 8px;
+
+    --bg-grad-1: rgba(249, 115, 22, 0.12);
+    --bg-grad-2: rgba(59, 130, 246, 0.10);
+    --hero-grad: rgba(249, 115, 22, 0.08);
+    --toolbar-bg: rgba(11, 15, 23, 0.85);
+  }
+
+  [data-theme="light"] {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface-2: #f1f3f8;
+    --surface-3: #e6eaf2;
+    --border: #d8dde7;
+    --text: #0f172a;
+    --text-dim: #475569;
+    --text-mute: #64748b;
+    --accent: #ea580c;
+    --accent-2: #f97316;
+
+    --mvp: #15803d;
+    --mvp-bg: rgba(34, 197, 94, 0.10);
+    --mvp-border: rgba(22, 163, 74, 0.40);
+    --mvp-strong: rgba(34, 197, 94, 0.20);
+
+    --release: #1d4ed8;
+    --release-bg: rgba(59, 130, 246, 0.10);
+    --release-border: rgba(37, 99, 235, 0.40);
+    --release-strong: rgba(59, 130, 246, 0.20);
+
+    --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+    --bg-grad-1: rgba(249, 115, 22, 0.08);
+    --bg-grad-2: rgba(59, 130, 246, 0.06);
+    --hero-grad: rgba(249, 115, 22, 0.05);
+    --toolbar-bg: rgba(246, 247, 251, 0.85);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: radial-gradient(1200px 600px at 80% -10%, var(--bg-grad-1), transparent 60%),
+                radial-gradient(900px 500px at -10% 20%, var(--bg-grad-2), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.2s ease;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 96px;
+  }
+
+  /* Header */
+  header.hero {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    background:
+      linear-gradient(180deg, var(--hero-grad) 0%, transparent 100%),
+      linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(600px 200px at 90% 0%, rgba(59, 130, 246, 0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h1 em {
+    font-style: italic;
+    background: linear-gradient(120deg, #fb923c, #f97316 60%, #22c55e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lede {
+    color: var(--text-dim);
+    max-width: 760px;
+    margin: 0 0 22px;
+    font-size: 15px;
+  }
+
+  /* Eğitmen rozeti (hero içinde h1 altı) */
+  .instructor {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+    padding: 6px 12px 6px 6px;
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px solid rgba(249, 115, 22, 0.22);
+    border-radius: 999px;
+  }
+  .instructor-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #0b0f17;
+    background: var(--accent-2);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .instructor-name {
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .legend .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.mvp { background: var(--mvp); box-shadow: 0 0 0 4px var(--mvp-strong); }
+  .dot.release { background: var(--release); box-shadow: 0 0 0 4px var(--release-strong); }
+  .legend strong { color: var(--text); font-weight: 600; }
+
+  /* Toolbar */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 18px 0 24px;
+    padding: 12px;
+    background: var(--toolbar-bg);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 14px;
+  }
+  .search input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    font-size: 14px;
+    padding: 4px 0;
+  }
+  .search svg { color: var(--text-mute); flex-shrink: 0; }
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    row-gap: 8px;
+  }
+  .action-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    position: relative;
+  }
+  .action-group:first-child { padding-left: 0; }
+  .action-group:last-child { padding-right: 0; }
+  .action-group + .action-group::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 22px;
+    background: var(--border);
+    opacity: 0.7;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface-3); border-color: #2c3445; }
+  .btn.primary {
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #0b0f17;
+    border-color: transparent;
+    font-weight: 600;
+  }
+  .btn.primary:hover { filter: brightness(1.05); }
+  .btn.ghost { background: transparent; }
+  .btn.danger { color: #fca5a5; }
+  .btn.danger:hover { color: #fff; background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.35); }
+
+  /* Sabitlenmiş üst alan: toolbar + progress card birlikte sticky */
+  .sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 18px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sticky-bar > .toolbar {
+    position: static;
+    margin: 0;
+  }
+  .sticky-bar > .progress-card {
+    margin: 0;
+  }
+
+  /* Progress */
+  .progress-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 22px;
+    background: var(--toolbar-bg);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    margin-bottom: 24px;
+  }
+  .progress-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px 22px;
+    align-items: center;
+  }
+  .progress-block { }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .progress-label .num { color: var(--text); font-weight: 600; font-size: 13px; letter-spacing: 0; }
+  .bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+  .bar > span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    border-radius: 999px;
+  }
+  .bar.total > span { background: linear-gradient(90deg, var(--mvp), var(--release)); }
+  .bar.mvp-bar > span { background: var(--mvp); }
+  .bar.release-bar > span { background: var(--release); }
+
+  /* Categories */
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .cat-nav a {
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    transition: all 0.15s;
+  }
+  .cat-nav a:hover { color: var(--text); background: var(--surface-3); }
+
+  section.category {
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 26px;
+    background: linear-gradient(180deg, var(--surface-2), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-header .num {
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    color: var(--accent-2);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    width: 48px;
+    flex-shrink: 0;
+  }
+  .cat-header .title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .cat-header .title p {
+    margin: 4px 0 0;
+    color: var(--text-dim);
+    font-size: 13.5px;
+  }
+  .cat-progress {
+    margin-left: auto;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .cat-progress .pct {
+    display: block;
+    font-size: 18px;
+    color: var(--text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .feature-list { padding: 6px 0; }
+  .feature {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 26px;
+  }
+  .feature:last-child { border-bottom: 0; }
+  .feature-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .feature-head .id {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .feature-head h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.005em;
+    flex: 1 1 auto;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .feature-desc {
+    margin: 0 0 14px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  .levels {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .level {
+    display: grid;
+    grid-template-columns: 28px auto 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .level:hover { background: var(--surface-3); }
+  .level.mvp { border-left: 3px solid var(--mvp); }
+  .level.release { border-left: 3px solid var(--release); }
+  .level.checked.mvp { background: var(--mvp-bg); border-color: var(--mvp-border); }
+  .level.checked.release { background: var(--release-bg); border-color: var(--release-border); }
+
+  .check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .level.mvp .check { border-color: var(--mvp-border); }
+  .level.release .check { border-color: var(--release-border); }
+  .level.checked .check::after {
+    content: "";
+    width: 12px;
+    height: 6px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+  .level.checked.mvp .check { background: var(--mvp); border-color: var(--mvp); }
+  .level.checked.release .check { background: var(--release); border-color: var(--release); }
+
+  .level-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    align-self: center;
+    text-align: center;
+    min-width: 84px;
+  }
+  .level.mvp .level-tag { background: var(--mvp-bg); color: var(--mvp); border: 1px solid var(--mvp-border); }
+  .level.release .level-tag { background: var(--release-bg); color: var(--release); border: 1px solid var(--release-border); }
+
+  .level-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .level-text strong { font-weight: 600; }
+  .level-text .hint {
+    display: block;
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* footer */
+  footer {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  footer .foot-line {
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+  footer .foot-org {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    font-weight: 500;
+  }
+  footer .foot-title {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin: 8px 0 12px;
+  }
+  footer .foot-title::before,
+  footer .foot-title::after {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--border);
+    vertical-align: middle;
+    margin: 0 14px;
+  }
+  footer .foot-instructor {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  footer .foot-label {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-2);
+    margin-right: 6px;
+  }
+
+  .feature.hidden { display: none; }
+  .category.hidden { display: none; }
+
+  /* Aktif (toggle) buton stili */
+  .btn.active {
+    background: var(--surface-3);
+    color: var(--accent-2);
+    border-color: var(--accent-2);
+  }
+  #filterMvpIncomplete.active {
+    background: var(--mvp-bg);
+    color: var(--mvp);
+    border-color: var(--mvp-border);
+  }
+  #filterReleaseIncomplete.active {
+    background: var(--release-bg);
+    color: var(--release);
+    border-color: var(--release-border);
+  }
+
+  /* Kategori collapse / expand */
+  .cat-header {
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .cat-header:hover {
+    background: linear-gradient(180deg, var(--surface-3), transparent);
+  }
+  .cat-header .chevron {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--text-mute);
+    transition: transform 0.2s ease;
+    margin-left: 6px;
+  }
+  .category.collapsed .cat-header .chevron {
+    transform: rotate(-90deg);
+  }
+  .category.collapsed .feature-list {
+    display: none;
+  }
+  /* Filtre/arama aktifken collapse override edilir */
+  body.filtering .category.collapsed .feature-list,
+  body.filtering .category.collapsed .cat-header .chevron {
+    display: block;
+    transform: none;
+  }
+  body.filtering .category.collapsed .feature-list {
+    display: block !important;
+  }
+
+  /* Madde notu */
+  .feature-note-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-mute);
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .feature-note-toggle:hover {
+    color: var(--accent-2);
+    border-color: var(--accent-2);
+    border-style: solid;
+  }
+  .feature.has-note .feature-note-toggle {
+    color: var(--accent-2);
+    border-color: var(--accent-2);
+    border-style: solid;
+    background: rgba(249, 115, 22, 0.06);
+  }
+  .feature-note {
+    display: none;
+    margin-top: 10px;
+  }
+  .feature.note-open .feature-note {
+    display: block;
+  }
+  .feature-note textarea {
+    width: 100%;
+    min-height: 64px;
+    resize: vertical;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.55;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .feature-note textarea:focus {
+    border-color: var(--accent);
+  }
+  .feature-note .note-meta {
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .feature-note .note-clear {
+    background: none;
+    border: 0;
+    color: var(--text-mute);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .feature-note .note-clear:hover {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  /* Sunum modu */
+  body.presentation-mode {
+    overflow-x: hidden;
+  }
+  body.presentation-mode .toolbar,
+  body.presentation-mode .cat-nav,
+  body.presentation-mode .progress-card,
+  body.presentation-mode header.hero,
+  body.presentation-mode footer {
+    display: none !important;
+  }
+  body.presentation-mode .wrap {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  body.presentation-mode section.category {
+    display: none;
+    padding: 60px clamp(20px, 5vw, 80px);
+    min-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    box-sizing: border-box;
+  }
+  body.presentation-mode section.category.presenting {
+    display: block;
+    animation: fadeSlide 0.3s ease;
+  }
+  body.presentation-mode .cat-header {
+    cursor: default;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  body.presentation-mode .cat-header .chevron {
+    display: none;
+  }
+  body.presentation-mode .cat-header .num {
+    font-size: 13px;
+  }
+  body.presentation-mode .cat-header .title h2 {
+    font-size: 26px;
+  }
+  body.presentation-mode .cat-header .title p {
+    font-size: 15px;
+  }
+  body.presentation-mode .feature-head h3 {
+    font-size: 19px;
+  }
+  body.presentation-mode .feature-desc {
+    font-size: 15px;
+  }
+  body.presentation-mode .level-text {
+    font-size: 15px;
+  }
+  body.presentation-mode .feature-note-toggle,
+  body.presentation-mode .feature-note {
+    display: none !important;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .presentation-controls {
+    display: none;
+  }
+  body.presentation-mode .presentation-controls {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 8px;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+  }
+  .presentation-controls button {
+    background: transparent;
+    border: 0;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .presentation-controls button:hover {
+    background: var(--surface-3);
+  }
+  .presentation-controls .pres-index {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 0 12px;
+    font-variant-numeric: tabular-nums;
+    min-width: 56px;
+    text-align: center;
+  }
+  .presentation-controls .pres-exit {
+    color: var(--accent-2);
+  }
+
+  /* AI prompt kopyala — wrapper, ana buton, format seçenekleri */
+  .feature-ai-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    margin-left: 8px;
+    flex-wrap: wrap;
+  }
+  .feature-ai-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px dashed var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  [data-theme="light"] .feature-ai-copy {
+    background: rgba(234, 88, 12, 0.06);
+  }
+  .feature-ai-copy:hover {
+    background: var(--accent);
+    color: #fff;
+    border-style: solid;
+  }
+  .feature-ai-wrap.ai-open .feature-ai-copy {
+    background: var(--accent);
+    color: #fff;
+    border-style: solid;
+  }
+  .feature-ai-wrap.ai-open .feature-ai-copy .ai-icon::before {
+    content: "▾ ";
+    margin-right: 2px;
+    opacity: 0.7;
+  }
+
+  .feature-ai-options {
+    display: none;
+    gap: 6px;
+    align-items: center;
+  }
+  .feature-ai-wrap.ai-open .feature-ai-options {
+    display: inline-flex;
+    animation: aiOptIn 0.2s ease;
+  }
+  @keyframes aiOptIn {
+    from { transform: translateX(-6px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .feature-ai-option {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid;
+    background: transparent;
+  }
+  .feature-ai-option.ai-tr {
+    color: var(--mvp);
+    border-color: var(--mvp-border);
+    background: var(--mvp-bg);
+  }
+  .feature-ai-option.ai-tr:hover {
+    background: var(--mvp);
+    color: #fff;
+  }
+  .feature-ai-option.ai-json {
+    color: var(--release);
+    border-color: var(--release-border);
+    background: var(--release-bg);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+  }
+  .feature-ai-option.ai-json:hover {
+    background: var(--release);
+    color: #fff;
+  }
+  .feature-ai-option.copied {
+    background: var(--mvp);
+    color: #fff;
+    border-color: var(--mvp);
+  }
+
+  /* Modal sistemi */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: modalFade 0.2s ease;
+  }
+  .modal[hidden] { display: none; }
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  [data-theme="light"] .modal-backdrop {
+    background: rgba(15, 23, 42, 0.45);
+  }
+  .modal-content {
+    position: relative;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    animation: modalSlide 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes modalFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes modalSlide {
+    from { transform: translateY(20px) scale(0.96); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    position: sticky;
+    top: 0;
+    border-radius: 14px 14px 0 0;
+  }
+  .modal-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .modal-close {
+    background: none;
+    border: 0;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .modal-close:hover {
+    color: var(--text);
+    background: var(--surface-3);
+  }
+  .modal-body {
+    padding: 22px 24px;
+  }
+  .modal-body section {
+    margin-bottom: 22px;
+  }
+  .modal-body section:last-child { margin-bottom: 0; }
+  .modal-body h3 {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-2);
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+  .modal-body p, .modal-body ul {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+  .modal-body ul {
+    list-style: none;
+    padding: 0;
+  }
+  .modal-body li {
+    padding: 5px 0;
+    position: relative;
+    padding-left: 16px;
+  }
+  .modal-body li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--accent-2);
+  }
+  .modal-body ul.kbd-list li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-left: 0;
+  }
+  .modal-body ul.kbd-list li::before {
+    display: none;
+  }
+  .modal-body ul.kbd-list li > span {
+    color: var(--text-dim);
+    font-size: 13.5px;
+  }
+  .modal-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    min-width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Confirm modalı */
+  .modal-content.modal-confirm {
+    max-width: 420px;
+    padding: 28px 24px 22px;
+    text-align: center;
+  }
+  .modal-confirm-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+  .modal-confirm h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: var(--text);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .modal-confirm p {
+    color: var(--text-dim);
+    margin: 0 0 22px;
+    font-size: 14px;
+  }
+  .modal-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn.danger-solid {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
+    font-weight: 600;
+  }
+  .btn.danger-solid:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    filter: none;
+  }
+
+  /* Toast bildirimleri */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10001;
+    pointer-events: none;
+    max-width: 360px;
+  }
+  .toast {
+    background: var(--surface-2);
+    color: var(--text);
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: auto;
+  }
+  .toast .toast-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .toast.success .toast-icon { background: var(--mvp); }
+  .toast.info .toast-icon { background: var(--release); }
+  .toast.warn .toast-icon { background: var(--accent); }
+  @keyframes toastIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .toast.fade-out {
+    animation: toastOut 0.25s ease forwards;
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateY(-6px); }
+  }
+
+  /* Tema butonu */
+  #themeToggle .theme-icon {
+    margin-right: 4px;
+    font-size: 13px;
+  }
+
+  /* Tamamlama kutlama modalı */
+  .modal-content.modal-celebration {
+    max-width: 460px;
+    padding: 36px 28px 28px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    border: 2px solid var(--accent);
+    overflow: visible;
+  }
+  .celebration-emoji {
+    font-size: 64px;
+    margin-bottom: 14px;
+    animation: celebrate 0.65s cubic-bezier(0.25, 1.5, 0.5, 1);
+    display: inline-block;
+  }
+  @keyframes celebrate {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .modal-celebration h3 {
+    font-size: 24px !important;
+    margin: 0 0 12px !important;
+    background: linear-gradient(120deg, var(--accent-2), var(--accent), var(--mvp));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent !important;
+    letter-spacing: -0.01em !important;
+    font-weight: 700;
+  }
+  .modal-celebration p {
+    margin: 0 0 22px !important;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .modal-celebration .btn.primary {
+    min-width: 140px;
+  }
+
+  /* Karşılama (welcome) modalı */
+  .modal-content.modal-welcome {
+    max-width: 540px;
+    padding: 32px 30px 28px;
+    text-align: center;
+  }
+  .welcome-icon-wrap {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+  }
+  .modal-welcome h2 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(120deg, var(--accent-2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -0.01em;
+  }
+  .welcome-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 11px;
+    color: var(--text-mute);
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.55;
+  }
+  .welcome-lead {
+    font-size: 15px !important;
+    color: var(--text) !important;
+    margin: 0 0 18px !important;
+    line-height: 1.55 !important;
+    font-weight: 500;
+  }
+  .modal-welcome p {
+    text-align: left;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .welcome-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+  }
+  .welcome-features li {
+    padding: 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .welcome-features li::before { display: none; }
+  .welcome-features strong {
+    color: var(--text);
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .welcome-tip {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px !important;
+    margin: 0 0 20px !important;
+    color: var(--text-dim) !important;
+    text-align: left;
+  }
+  .welcome-tip kbd {
+    margin: 0 2px;
+  }
+  #welcomeStart {
+    min-width: 200px;
+    padding: 11px 18px;
+    font-size: 14px;
+  }
+  @media (max-width: 540px) {
+    .welcome-features {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Promote banner — sayfa başında özel "Yükle" davet alanı */
+  .install-banner[hidden] {
+    display: none !important;
+  }
+  .install-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 56px 16px 20px;
+    margin: 0 0 22px;
+    border-radius: var(--radius);
+    background: linear-gradient(120deg, rgba(249, 115, 22, 0.14) 0%, rgba(251, 146, 60, 0.06) 50%, rgba(34, 197, 94, 0.04) 100%);
+    border: 1px solid var(--accent);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.12);
+    overflow: hidden;
+    animation: bannerIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  [data-theme="light"] .install-banner {
+    background: linear-gradient(120deg, rgba(249, 115, 22, 0.10) 0%, rgba(251, 146, 60, 0.05) 50%, rgba(34, 197, 94, 0.04) 100%);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.08);
+  }
+  .install-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.10), transparent 60%);
+    pointer-events: none;
+  }
+  @keyframes bannerIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .install-banner-icon {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.30);
+  }
+  .install-banner-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .install-banner-text strong {
+    font-size: 14.5px;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .install-banner-text span {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .btn.btn-install-cta {
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #0b0f17;
+    border: 0;
+    font-weight: 700;
+    padding: 11px 18px;
+    font-size: 13.5px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter 0.15s, transform 0.1s;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+    font-family: inherit;
+  }
+  .btn.btn-install-cta:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+  .btn.btn-install-cta:active {
+    transform: translateY(0);
+  }
+  .install-banner-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: 0;
+    color: var(--text-mute);
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s;
+  }
+  .install-banner-close:hover {
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.18);
+  }
+  [data-theme="light"] .install-banner-close:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  @media (max-width: 600px) {
+    .install-banner {
+      flex-wrap: wrap;
+      padding: 14px 44px 14px 16px;
+      gap: 12px;
+    }
+    .install-banner-icon {
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+    }
+    .install-banner-text {
+      flex: 1 1 calc(100% - 60px);
+    }
+    .btn.btn-install-cta {
+      width: 100%;
+      padding: 10px 16px;
+    }
+  }
+
+  /* Yükleme talimatı modalı */
+  .modal-content.modal-install {
+    max-width: 540px;
+  }
+  .install-intro {
+    font-size: 14px !important;
+    margin: 0 0 18px !important;
+    color: var(--text-dim) !important;
+    line-height: 1.6 !important;
+  }
+  .install-platform-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .install-platform-title {
+    font-size: 14px !important;
+    margin: 0 0 12px !important;
+    color: var(--text) !important;
+    text-transform: none !important;
+    letter-spacing: -0.005em !important;
+    font-weight: 600 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .install-platform-title .platform-emoji {
+    font-size: 18px;
+  }
+  .install-steps {
+    list-style: decimal;
+    padding-left: 22px !important;
+    margin: 0 0 12px !important;
+    counter-reset: step;
+  }
+  .install-steps li {
+    padding: 5px 0 !important;
+    padding-left: 4px !important;
+    font-size: 13.5px !important;
+    color: var(--text-dim) !important;
+    line-height: 1.55 !important;
+    position: static !important;
+  }
+  .install-steps li::before {
+    display: none !important;
+  }
+  .install-steps li::marker {
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+  .install-steps strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .install-note {
+    background: rgba(249, 115, 22, 0.08) !important;
+    border-left: 3px solid var(--accent) !important;
+    padding: 10px 14px !important;
+    border-radius: 0 8px 8px 0 !important;
+    font-size: 13px !important;
+    color: var(--text-dim) !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+  [data-theme="light"] .install-note {
+    background: rgba(234, 88, 12, 0.06) !important;
+  }
+  .install-secondary {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px !important;
+    color: var(--text-mute) !important;
+  }
+
+  /* Versiyon damgası */
+  footer .foot-version {
+    font-size: 10.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin: 18px 0 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    opacity: 0.7;
+  }
+  footer .foot-version .version-dot {
+    color: var(--accent-2);
+    margin: 0 6px;
+  }
+
+  @media (max-width: 700px) {
+    .wrap { padding: 16px; }
+    header.hero { padding: 24px 18px; }
+    .toolbar { grid-template-columns: 1fr; }
+    .actions {
+      justify-content: flex-start;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+    .action-group {
+      flex-wrap: wrap;
+      padding: 4px 0;
+      width: 100%;
+    }
+    .action-group + .action-group::before {
+      display: none;
+    }
+    .action-group + .action-group {
+      border-top: 1px solid var(--border);
+    }
+    .action-group .btn { flex: 1; min-width: 0; }
+    .cat-header { padding: 18px; flex-wrap: wrap; }
+    .cat-header .num { width: 100%; }
+    .cat-progress { margin-left: 0; text-align: left; }
+    .feature { padding: 16px 18px; }
+    .level { grid-template-columns: 24px auto 1fr; padding: 12px; gap: 8px; }
+    .level-tag { min-width: 72px; font-size: 9.5px; padding: 2px 7px; }
+  }
+
+  /* Yazdırma sayfası boyutu ve marjları */
+  @page {
+    margin: 1.6cm 1.4cm;
+  }
+
+  /* Print-only alt bilgi (sadece yazdırmada görünür) */
+  .print-footer {
+    display: none;
+  }
+
+  @media print {
+    /* Renklerin yazdırmada korunmasını zorla */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* Body'yi tablo gibi yap; print-footer her sayfada altta tekrarlansın */
+    html, body {
+      background: white !important;
+      color: #000 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body {
+      display: table !important;
+      width: 100% !important;
+    }
+    .wrap {
+      display: table-row-group !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* Alt bilgi: her sayfada altta tekrarlanır */
+    .print-footer {
+      display: table-footer-group !important;
+      text-align: center;
+      font-size: 9pt;
+      font-style: italic;
+      color: #374151 !important;
+      padding: 10px 12px 4px;
+      border-top: 1px solid #d1d5db;
+    }
+
+    /* Etkileşimli alanları gizle */
+    .sticky-bar,
+    .toolbar, .cat-nav, .actions, .progress-card,
+    .install-banner,
+    .feature-note-toggle, .feature-note,
+    .feature-ai-copy, .feature-ai-wrap,
+    .presentation-controls,
+    .modal, .toast-container,
+    .cat-header .chevron {
+      display: none !important;
+    }
+
+    /* Yazdırmada sunum modu da olsa normal layout uygula */
+    body.presentation-mode {
+      overflow: visible !important;
+    }
+    body.presentation-mode section.category {
+      display: block !important;
+      padding: 0 !important;
+      min-height: auto !important;
+      animation: none !important;
+    }
+    body.presentation-mode .feature-head h3,
+    body.presentation-mode .feature-desc,
+    body.presentation-mode .level-text,
+    body.presentation-mode .cat-header .title h2,
+    body.presentation-mode .cat-header .title p {
+      font-size: revert !important;
+    }
+    body.presentation-mode header.hero,
+    body.presentation-mode .progress-card {
+      display: block !important;
+    }
+    /* Collapse durumunu yazdırmada açık göster */
+    .category.collapsed .feature-list {
+      display: block !important;
+    }
+    .cat-header {
+      cursor: default !important;
+    }
+
+    /* Tüm metinleri siyaha çevir */
+    h1, h2, h3, h4, p, span, strong, li, td, th,
+    .lede, .feature-desc, .feature-head h3,
+    .legend strong, .legend .pill,
+    .progress-label, .progress-label .num,
+    .cat-header .title h2, .cat-header .title p,
+    .cat-progress, .cat-progress .pct,
+    .level-text, footer, footer strong {
+      color: #000 !important;
+    }
+
+    /* Vurgu renkleri korunsun (turuncu) */
+    .eyebrow,
+    .cat-header .num {
+      color: #ea580c !important;
+    }
+
+    /* H1 içindeki gradient'i düz turuncuya çevir */
+    h1 em {
+      background: none !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      -webkit-text-fill-color: #ea580c !important;
+      color: #ea580c !important;
+    }
+
+    /* ID ve hint biraz koyu gri (siyah olmasa da okunaklı) */
+    .feature-head .id {
+      color: #4b5563 !important;
+    }
+    .level-text .hint {
+      color: #374151 !important;
+    }
+
+    /* Code etiketi okunaklı */
+    code {
+      color: #000 !important;
+      background: #f3f4f6 !important;
+      border: 1px solid #e5e7eb !important;
+    }
+
+    /* MVP rozeti yeşil */
+    .level.mvp .level-tag {
+      color: #15803d !important;
+      background: #ecfdf5 !important;
+      border-color: #86efac !important;
+    }
+    .level.mvp {
+      border-left: 3px solid #16a34a !important;
+    }
+
+    /* Release rozeti mavi */
+    .level.release .level-tag {
+      color: #1d4ed8 !important;
+      background: #eff6ff !important;
+      border-color: #93c5fd !important;
+    }
+    .level.release {
+      border-left: 3px solid #2563eb !important;
+    }
+
+    /* İşaretli kutular (renkleri korunsun) */
+    .check {
+      background: white !important;
+      border-color: #9ca3af !important;
+    }
+    .level.checked.mvp .check {
+      background: #16a34a !important;
+      border-color: #16a34a !important;
+    }
+    .level.checked.release .check {
+      background: #2563eb !important;
+      border-color: #2563eb !important;
+    }
+    .level.checked .check::after {
+      border-color: #fff !important;
+    }
+
+    /* İşaretli satırların hafif tonlu arka planı */
+    .level.checked.mvp {
+      background: #ecfdf5 !important;
+    }
+    .level.checked.release {
+      background: #eff6ff !important;
+    }
+
+    /* Konteyner stilleri */
+    header.hero {
+      background: white !important;
+      border: 1px solid #d1d5db !important;
+    }
+    header.hero::before {
+      display: none !important;
+    }
+
+    /* Sayfa bölünmesi kuralları (içerik mantıklı yerden bölünsün) */
+    section.category {
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+      border: 1px solid #d1d5db !important;
+      background: white !important;
+    }
+
+    /* Madde (feature) tek parça kalsın, ortadan bölünmesin */
+    .feature {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    /* Kategori başlığı sayfanın altına yalnız kalmasın */
+    .cat-header {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      background: #f9fafb !important;
+      border-bottom: 1px solid #d1d5db !important;
+    }
+
+    /* Feature başlık ve açıklaması seviye listesinden kopmasın */
+    .feature-head,
+    .feature-desc,
+    h2, h3 {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Tek bir seviye satırı (rozet) bölünmesin */
+    .level {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      background: white !important;
+      border: 1px solid #e5e7eb !important;
+    }
+
+    /* Hero (kapak) tek sayfada kalsın */
+    header.hero {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Hero üstündeki MVP / Release rozetleri (siyah arka planda yeşil/mavi yazı) */
+    .legend .pill {
+      color: #e5e7eb !important;
+    }
+    .legend .pill .dot.mvp ~ strong,
+    .legend .pill .dot.mvp + strong {
+      color: #4ade80 !important;
+    }
+    .legend .pill .dot.release ~ strong,
+    .legend .pill .dot.release + strong {
+      color: #60a5fa !important;
+    }
+
+    /* Madde başlığı ve ID düzeni — yazdırmada kesilmeyi önler */
+    article.feature .feature-head {
+      display: block !important;
+      margin-bottom: 8px !important;
+      flex-wrap: wrap !important;
+    }
+    article.feature .feature-head .id {
+      display: inline !important;
+      margin-right: 6px !important;
+      color: #4b5563 !important;
+    }
+    article.feature .feature-head h3 {
+      display: inline !important;
+      flex: none !important;
+      width: auto !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      font-size: 13pt !important;
+      line-height: 1.4 !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      word-break: normal !important;
+      white-space: normal !important;
+      color: #000 !important;
+    }
+
+    /* Kategori başlığı da kesilmeye karşı korumalı */
+    .cat-header {
+      flex-wrap: wrap !important;
+    }
+    .cat-header .title {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+    }
+    .cat-header .title h2 {
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      min-width: 0 !important;
+    }
+
+    /* Feature padding'i biraz azaltarak kenar boşluğunu artır */
+    .feature {
+      padding: 14px 16px !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Alsancak Gençlik Merkezi · Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</div>
+    <h1>Mobil Uygulamanın <em>Kalite Kontrol Listesi</em></h1>
+    <div class="instructor">
+      <span class="instructor-label">Hazırlayan</span>
+      <span class="instructor-name">Özcan Orhan Demirci</span>
+    </div>
+    <p class="lede">
+      Uygulamanın hangi seviyede olduğunu kendin değerlendirmen için hazırlanmış pratik bir kontrol listesi.
+      Her özellik iki seviyede sıralanmış: önce uygulamanın çalışmasını sağlayan <strong>temel özellikler (MVP)</strong>,
+      sonra mağazaya yüklenebilecek <strong>profesyonel kalite (Release)</strong> için olması gerekenler.
+      İşaretlemen tarayıcına otomatik kaydedilir.
+    </p>
+    <div class="legend">
+      <span class="pill"><span class="dot mvp"></span> <strong>MVP</strong>: Olmazsa olmaz, temel</span>
+      <span class="pill"><span class="dot release"></span> <strong>Release</strong>: Yayınlanabilir profesyonel kalite</span>
+    </div>
+  </header>
+
+  <div class="install-banner" id="installBanner" hidden>
+    <div class="install-banner-icon">📲</div>
+    <div class="install-banner-text">
+      <strong>Bu uygulamayı tek tıkla cihazına yükle</strong>
+      <span>Mobilde ana ekrana, masaüstünde başlat menüsüne kısayol olarak eklenir. İnternet olmadan da kullanabilirsin.</span>
+    </div>
+    <button class="btn btn-install-cta" id="installBannerBtn" type="button">📲 Yükle</button>
+    <button class="install-banner-close" id="installBannerClose" type="button" aria-label="Bu bildirimi kapat" title="Kapat">×</button>
+  </div>
+
+  <div class="sticky-bar">
+
+  <div class="toolbar">
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="searchInput" placeholder="Özellik ara, örn: 'API', 'dark mode', 'Firebase'…" />
+    </label>
+    <div class="actions">
+      <div class="action-group" role="group" aria-label="Filtre">
+        <button class="btn ghost" id="filterMvpIncomplete" title="MVP seviyesinde tamamlanmamış maddeleri göster">MVP Eksik</button>
+        <button class="btn ghost" id="filterReleaseIncomplete" title="Release seviyesinde tamamlanmamış maddeleri göster">Release Eksik</button>
+      </div>
+      <div class="action-group" role="group" aria-label="Kategori kontrolü">
+        <button class="btn ghost" id="expandAllBtn" title="Tüm kategorileri aç">Tümünü Aç</button>
+        <button class="btn ghost" id="collapseAllBtn" title="Tüm kategorileri kapat">Tümünü Kapat</button>
+      </div>
+      <div class="action-group" role="group" aria-label="Görünüm">
+        <button class="btn ghost" id="presentBtn" title="Sunum modu (P / Esc)">Sunum</button>
+        <button class="btn ghost btn-icon-text" id="themeToggle" title="Açık / Koyu tema"><span class="theme-icon">🌙</span><span class="theme-label">Koyu</span></button>
+      </div>
+      <div class="action-group" role="group" aria-label="Veri">
+        <button class="btn ghost" id="exportBtn" title="İşaretlemeleri ve notları JSON olarak kaydet">Dışa Aktar</button>
+        <button class="btn ghost" id="importBtn" title="Daha önce kaydettiğin JSON dosyasını yükle">İçe Aktar</button>
+        <button class="btn danger" id="resetBtn" title="Tüm işaretleri temizle (notlar korunur)">Sıfırla</button>
+      </div>
+      <div class="action-group" role="group" aria-label="Yardım ve yazdır">
+        <button class="btn ghost" id="helpBtn" title="Nasıl kullanılır? (?)">? Yardım</button>
+        <button class="btn primary" id="printBtn" title="Yazdır / PDF">Yazdır</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-row">
+      <div class="progress-block">
+        <div class="progress-label"><span>Toplam İlerleme</span><span class="num" id="total-num">0 / 0</span></div>
+        <div class="bar total"><span id="total-bar"></span></div>
+      </div>
+      <div class="progress-block">
+        <div class="progress-label"><span style="color: var(--mvp);">MVP</span><span class="num" id="mvp-num">0 / 0</span></div>
+        <div class="bar mvp-bar"><span id="mvp-bar"></span></div>
+      </div>
+      <div class="progress-block">
+        <div class="progress-label"><span style="color: var(--release);">Release</span><span class="num" id="release-num">0 / 0</span></div>
+        <div class="bar release-bar"><span id="release-bar"></span></div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /.sticky-bar -->
+
+  <nav class="cat-nav" id="catNav"></nav>
+
+  <main id="content"></main>
+
+  <footer>
+    <p class="foot-line foot-org">Alsancak Gençlik Merkezi · Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</p>
+    <p class="foot-line foot-title">Mobil Uygulamanın Kalite Kontrol Listesi</p>
+    <p class="foot-line foot-instructor"><span class="foot-label">Hazırlayan</span> Özcan Orhan Demirci</p>
+    <p class="foot-version">v1.0<span class="version-dot">·</span>Mayıs 2026</p>
+  </footer>
+</div>
+
+<div class="print-footer">Hazırlayan: Özcan Orhan Demirci</div>
+
+<div class="presentation-controls" aria-hidden="true">
+  <button id="presPrev" title="Önceki kategori (←)">‹</button>
+  <span class="pres-index" id="presIndex">0 / 0</span>
+  <button id="presNext" title="Sonraki kategori (→)">›</button>
+  <button id="presExit" class="pres-exit" title="Sunumdan çık (Esc)">Kapat</button>
+</div>
+
+<!-- Yardım modalı -->
+<div class="modal" id="helpModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <header class="modal-head">
+      <h2 id="helpTitle">Nasıl Kullanılır?</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat">×</button>
+    </header>
+    <div class="modal-body">
+      <section>
+        <h3>Genel Bakış</h3>
+        <p>Bu kontrol listesi, mobil uygulamanın hangi seviyede olduğunu kendin değerlendirmen için hazırlanmıştır. <strong>13 kategoride 46 özellik</strong>, her özelliğin altında <strong>MVP (yeşil — olmazsa olmaz)</strong> ve <strong>Release (mavi — yayınlanabilir kalite)</strong> seviyeleri vardır.</p>
+      </section>
+
+      <section>
+        <h3>İşaretleme ve İlerleme</h3>
+        <p>Bir maddeyi tamamladığında ilgili <strong>MVP</strong> veya <strong>Release</strong> kutusuna tıkla. Üstteki <strong>ilerleme barları</strong> tüm liste, MVP ve Release için ayrı ayrı yüzdeyi gösterir. Her kategorinin başlığında da kendi yüzdesi vardır.</p>
+        <p>İşaretlemen <strong>tarayıcıya otomatik kaydedilir</strong>. Tarayıcı temizlenmediği sürece korunur.</p>
+      </section>
+
+      <section>
+        <h3>Filtreleme</h3>
+        <ul>
+          <li><strong>MVP Eksik</strong> — sadece MVP seviyesi tamamlanmamış maddeleri gösterir</li>
+          <li><strong>Release Eksik</strong> — sadece Release seviyesi tamamlanmamış maddeleri gösterir</li>
+          <li><strong>Arama kutusu</strong> — başlık, açıklama veya içerik içinde anahtar kelime arar</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Kategoriler</h3>
+        <ul>
+          <li><strong>Kategori başlığına tıkla</strong> — o kategoriyi açıp kapatır</li>
+          <li><strong>Tümünü Aç</strong> — bütün kategorileri açar</li>
+          <li><strong>Tümünü Kapat</strong> — bütün kategorileri kapatır</li>
+        </ul>
+        <p>Sayfa ilk açıldığında bütün kategoriler kapalıdır. İhtiyacın olana tıklayarak açabilirsin.</p>
+      </section>
+
+      <section>
+        <h3>Madde Notları ve AI Yardımı</h3>
+        <p>Her maddenin altında iki buton vardır:</p>
+        <ul>
+          <li><strong>+ Not ekle</strong> — kendi açıklamanı veya hatırlatmanı yazabilirsin. Yazdığın anlık kaydedilir, notu olan maddeler turuncu işaretle gösterilir.</li>
+          <li><strong>🤖 AI'a sor</strong> — tıklayınca yanında iki seçenek açılır:
+            <ul>
+              <li><strong>📝 Türkçe</strong> — Markdown formatında, başlangıç dostu, detaylı bir Türkçe prompt panoya kopyalar. Net adımlar, kod örneği, sık hatalar ve doğrulama testleri ister.</li>
+              <li><strong>{ } EN JSON</strong> — Yapılandırılmış İngilizce JSON formatında prompt kopyalar. AI'nın daha tutarlı çıktı vermesini sağlar; cevap yine Türkçedir. Daha gelişmiş kullanıcılar için.</li>
+            </ul>
+          </li>
+        </ul>
+        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude veya Gemini</strong>'ye yapıştırarak adım adım yardım alabilirsin.</p>
+      </section>
+
+      <section>
+        <h3>Sunum Modu</h3>
+        <p><strong>Sunum</strong> butonuna basınca tek kategori tam ekran gösterilir. Sınıfta projeksiyona vurmak veya odaklanmış çalışmak için idealdir.</p>
+        <ul>
+          <li><strong>← / →</strong> — kategoriler arasında gezinme</li>
+          <li><strong>Boşluk</strong> — sonraki kategori</li>
+          <li><strong>Esc</strong> — sunumdan çık</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Veri Yönetimi</h3>
+        <ul>
+          <li><strong>Dışa Aktar</strong> — işaretlemelerin ve notların JSON dosyası olarak indirilir (yedek)</li>
+          <li><strong>İçe Aktar</strong> — daha önce dışa aktardığın dosyayı yükler</li>
+          <li><strong>Sıfırla</strong> — tüm işaretleri temizler (notlar korunur)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Yazdırma ve PDF</h3>
+        <p><strong>Yazdır</strong> butonu veya <kbd>Ctrl+P</kbd> ile listeyi PDF olarak kaydedebilirsin. Yazdırma sırasında üstte kurs adı, altta hazırlayan bilgisi her sayfada otomatik görünür. Notlar yazdırma çıktısında gösterilmez.</p>
+      </section>
+
+      <section>
+        <h3>Tema</h3>
+        <p><strong>Koyu / Açık</strong> tema arasında geçiş yapabilirsin. Tercihin kaydedilir, bir sonraki açılışta hatırlanır.</p>
+      </section>
+
+      <section>
+        <h3>Klavye Kısayolları</h3>
+        <ul class="kbd-list">
+          <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
+          <li><kbd>/</kbd><span>Arama kutusuna odaklan</span></li>
+          <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
+          <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda kategoriler arası gezinme</span></li>
+          <li><kbd>Esc</kbd><span>Modalı veya sunumu kapat</span></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- Karşılama modalı (ilk açılışta) -->
+<div class="modal" id="welcomeModal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-content modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="welcome-icon-wrap">📱</div>
+    <div class="welcome-eyebrow">Alsancak Gençlik Merkezi<br>Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</div>
+    <h2 id="welcomeTitle">Hoş Geldin!</h2>
+    <p class="welcome-lead">Bu web uygulaması, eğitim sürecinde geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
+    <p>13 kategoride 46 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
+    <ul class="welcome-features">
+      <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
+      <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
+      <li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li>
+      <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
+      <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li>
+      <li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>
+    </ul>
+    <p class="welcome-tip">İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.</p>
+    <button class="btn primary" id="welcomeStart">Tamam, Başlayalım</button>
+  </div>
+</div>
+
+<!-- Yükleme talimatı modalı -->
+<div class="modal" id="installModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-install" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+    <header class="modal-head">
+      <h2 id="installTitle">📲 Uygulama Olarak Yükle</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="install-intro">Bu kontrol listesini cihazına bir uygulama gibi yükleyebilirsin. Mobilde ana ekrana eklenir, masaüstünde başlat menüsüne / dock'a kısayol olarak gelir. Tek tıkla açılır, internet olmadan da çalışır.</p>
+      <div id="installInstructions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tamamlama kutlama modalı -->
+<div class="modal" id="celebrationModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-celebration" role="dialog" aria-modal="true" aria-labelledby="celebrationTitle">
+    <div class="celebration-emoji" id="celebrationEmoji">🎉</div>
+    <h3 id="celebrationTitle">Tebrikler!</h3>
+    <p id="celebrationMessage">Bu seviyeyi tamamladın.</p>
+    <button class="btn primary" data-modal-close>Devam Et</button>
+  </div>
+</div>
+
+<!-- Onay modalı -->
+<div class="modal" id="confirmModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-confirm-icon">!</div>
+    <h3 id="confirmTitle">Emin misin?</h3>
+    <p id="confirmMessage">Bu işlem geri alınamaz.</p>
+    <div class="modal-confirm-actions">
+      <button class="btn ghost" data-modal-close>İptal</button>
+      <button class="btn danger-solid" id="confirmYes">Evet, devam et</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast bildirimleri -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<input type="file" id="importFile" accept="application/json" style="display:none" />
+
+<script>
+/* ==================== VERİ ==================== */
+const DATA = [
+  {
+    id: "01", title: "Proje Fikri ve Planlama",
+    sub: "Uygulamanın ne olduğunu netleştirmek ve yola çıkmadan önce planlama yapmak.",
+    features: [
+      {
+        id: "1.1", title: "Uygulama Vizyonu ve Hedef Kitle",
+        desc: "Uygulamanın ne işe yaradığı, kime hitap ettiği ve hangi problemi çözdüğü net bir şekilde yazılı olmalı.",
+        mvp: "Uygulamanın <strong>adı, ne işe yaradığı, kim için yapıldığı</strong> ve <strong>çözdüğü problem</strong> kısa bir metinde yazılı. <span class='hint'>Bir Word/Google Docs dosyası yeterli. Yapay zekâ ile bu dokümanı 10 dakikada hazırlayabilirsin.</span>",
+        release: "Bu doküman <strong>Master Doküman</strong> olarak güncel tutuluyor. Yapay zekâ ile yeni bir görüşmeye başlarken bu dokümanın tamamını ilk mesaja yapıştırabiliyor olmalısın. <span class='hint'>Böylece AI projeyi hatırlamak zorunda kalmadan tutarlı önerilerde bulunur.</span>"
+      },
+      {
+        id: "1.2", title: "SWOT Analizi ve Rakip İnceleme",
+        desc: "Fikrinin pazarda yeri olup olmadığını, güçlü/zayıf yönlerini görmek için kısa bir analiz.",
+        mvp: "<strong>SWOT analizi</strong> yapılmış: Güçlü yönler, zayıf yönler, fırsatlar ve tehditler her birine 2-3 madde yazılı. <span class='hint'>4 kutudan oluşan basit bir tablo yeterli, AI ile 10 dakikada hazırlanır.</span>",
+        release: "En az <strong>3 rakip uygulama</strong> Sensor Tower veya store araması ile bulunmuş, telefona indirilip aktif olarak kullanılmış. Beğenilen ve eksik bulunan özellikler not edilmiş, projene ilham olarak yansıtılmış."
+      },
+      {
+        id: "1.3", title: "MVP Kapsamı (En Temel Sürüm)",
+        desc: "İlk yayınlanacak sürümde olması GEREKEN ve OLMAYACAK özellikler net olmalı.",
+        mvp: "MVP'ye girecek <strong>3-5 çekirdek özellik</strong> ve <strong>ASLA ilk sürümde olmayacak özellikler</strong> ayrı listeler halinde yazılı. <span class='hint'>\"Kaykay → Araba\" mantığı: ilk sürüm kaykay olmalı, parçalı bir araba değil. Her aşamada çalışan bir ürün olmalı.</span>",
+        release: "Her özelliğin <strong>net kabul kriteri</strong> yazılı (örn. \"kullanıcı 3 not oluşturup okuyabilmeli\"). MVP başarılı olursa hangi özelliklerin ekleneceği önceliklendirilmiş bir listede tutuluyor."
+      },
+      {
+        id: "1.4", title: "Backlog ve Akış Diyagramı",
+        desc: "Yapılacak işlerin listesi ve kullanıcının uygulama içindeki yolculuğunun haritası.",
+        mvp: "<strong>Yapılacaklar listesi (Backlog)</strong> var ve önceliklendirilmiş, en üstte en değerli iş. Ana <strong>kullanıcı akışı</strong> (giriş → ana sayfa → temel eylem) bir kâğıda veya dijital araca çizilmiş. <span class='hint'>Notion, Trello, Excel veya basit bir liste yeterli.</span>",
+        release: "Tüm akışlar Figma/Miro/draw.io gibi bir araçta dijital çizilmiş. <strong>Karar noktaları</strong> ve uç durumlar (\"Sepet boşken ödemeye basarsa?\", \"İnternet yokken?\") önceden işaretlenmiş. Backlog dinamik olarak güncelleniyor; yeni fikirler ekleniyor, gereksizler çıkarılıyor."
+      },
+      {
+        id: "1.5", title: "Sprint Sistemi ve Takım Rolleri",
+        desc: "İşin kısa döngülere bölünmesi ve takım içinde rollerin dağıtılması.",
+        mvp: "Takım içinde <strong>Takım Kaptanı (Product Owner)</strong>, <strong>Süreç Yöneticisi (Scrum Master)</strong> ve <strong>Geliştiriciler</strong> belli. Sprint süresi (1-2 hafta) belirlenmiş ve bu sprint'in hedefi yazılı.",
+        release: "Düzenli olarak <strong>kısa toplantılar</strong> yapılıyor (\"Dün ne yaptım, bugün ne yapacağım, engelim var mı?\"). Sprint başladıktan sonra hedefler değişmiyor. Her sprint sonunda çalışan bir parça çıkıyor. <span class='hint'>WhatsApp grubu üzerinden anketler ile buluşma günleri ayarlanabilir.</span>"
+      }
+    ]
+  },
+
+  {
+    id: "02", title: "Tasarım (UI/UX)",
+    sub: "Uygulamanın görsel kimliği, tutarlılığı ve kullanıcı deneyimi.",
+    features: [
+      {
+        id: "2.1", title: "Wireframe ve Tıklanabilir Prototip",
+        desc: "Renklere boğulmadan önce uygulamanın yapısını planlamak ve kullanıcı akışını test etmek.",
+        mvp: "Tüm ana ekranlar için <strong>Low-Fidelity wireframe</strong> (siyah-beyaz, X işaretli kutular) çizilmiş. <span class='hint'>Önce iskelet, sonra cilt. Kod yazmaya başlamadan önce ekranların yerleşim planı kafanda net olmalı.</span>",
+        release: "Stitch veya Figma'da ekranlar birbirine bağlanmış, <strong>tıklanabilir prototip</strong> oluşturulmuş. En az 3-5 kişiye (arkadaş, sınıf) test ettirildi ve geri bildirim alındı. Bu sayede \"anasayfaya dönüş yolu yokmuş\" gibi UX hataları kod yazılmadan fark edildi."
+      },
+      {
+        id: "2.2", title: "Renk Paleti ve 60-30-10 Kuralı",
+        desc: "Profesyonel görsel denge için renk dağılımı.",
+        mvp: "Uygulamada en fazla <strong>3 ana renk</strong> kullanılıyor: bir Ana renk (~%60), bir İkincil renk (~%30) ve bir Vurgu rengi (~%10). <strong>CTA butonları</strong> (Giriş Yap, Satın Al gibi önemli aksiyonlar) Vurgu renginde. <span class='hint'>Rastgele renk seçimi yerine matematik bir denge. Mac Louis (@ItsMacLouis) X hesabı ilham olabilir.</span>",
+        release: "<strong>Karanlık ve Açık tema</strong> (dark/light mode) tasarlandı; cihazın sistem tercihine otomatik uyuyor. Her renk için tonlar (açıktan koyuya) tanımlı. Beyaz üstüne açık gri yazı gibi okunamayan kombinasyon yok."
+      },
+      {
+        id: "2.3", title: "Tipografi (Yazı Tipi Hiyerarşisi)",
+        desc: "Okunabilir ve tutarlı yazı sistemi.",
+        mvp: "Uygulamada <strong>en fazla 2 farklı yazı tipi</strong> var. Başlıklar <strong>kalın (Bold)</strong>, gövde metni Regular/Light. Tüm metinler okunabilir boyutta (en az 14-16px). <span class='hint'>Kullanıcı uygulamayı okumaz, tarar. Hiyerarşi olmadan kullanıcının gözü ne önemli anlamaz.</span>",
+        release: "Yazı boyutları belirli bir ölçek üzerinden tutarlı (örn. 12-14-16-20-24-32). H1, H2, gövde metni ve dipnot için ayrı stiller tanımlı. Sistem büyük yazı seçtiğinde uygulama içeriği bozulmuyor."
+      },
+      {
+        id: "2.4", title: "Grid ve Boşluklar (Spacing)",
+        desc: "Hizalama ve nefes alan tasarım için tutarlı boşluk sistemi.",
+        mvp: "Ekran kenarlarında en az <strong>16px veya 24px sabit padding</strong> var. İçerikler ekranın kenarına yapışmıyor, butonlar ve resimler aynı çizgide hizalı. <span class='hint'>Profesyonel görünmenin sırrı, görünmez bir milimetrik defter.</span>",
+        release: "Tüm boşluklar <strong>8px veya 4px'in katları</strong> (8, 16, 24, 32...). Ekranlar arası ve element arası boşluklar tutarlı. Tasarımda \"nefes alan\" hissiyatı var, sıkışık değil."
+      },
+      {
+        id: "2.5", title: "Splash Screen ve Uygulama İkonu",
+        desc: "Markanın ilk izlenimi: açılış ekranı ve uygulama ikonu.",
+        mvp: "Uygulama açılırken <strong>default Flutter/iOS/Android beyaz ekranı yerine kendi splash ekranı</strong> görünüyor. Uygulama ikonu özel tasarlanmış. Default Flutter logosu KULLANILMIYOR.",
+        release: "İkon <strong>tüm gerekli boyutlarda</strong> sağlandı (Android için adaptive icon, iOS için tüm @2x/@3x). Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+      },
+      {
+        id: "2.6", title: "Tüm Ekran Durumları (Loading / Empty / Error)",
+        desc: "Veri çekilirken, hiç veri yokken ve hata olduğunda ekranın nasıl göründüğü.",
+        mvp: "Veri çekilirken <strong>yükleniyor göstergesi</strong> (spinner veya dönen çember) var. Boş ekranda \"Henüz hiç notun yok\" gibi <strong>açıklayıcı mesaj</strong> görünüyor. Hata olduğunda <strong>\"Bir şeyler ters gitti\"</strong> türü gösterge gösteriliyor.",
+        release: "Boş ekran kullanıcıyı <strong>aksiyona yönlendiriyor</strong> (\"İlk notunu eklemek için + butonuna bas\"). Hata mesajı <strong>empatik</strong> (\"İnternet bağlantın kopmuş gibi görünüyor\") ve <strong>\"Tekrar Dene\" butonu</strong> içeriyor. Skeleton loader (içerik şekli) kullanılıyor."
+      },
+      {
+        id: "2.7", title: "Tutarlı Komponentler ve Dokunma Alanları",
+        desc: "Aynı işi yapan butonlar her yerde aynı görünmeli ve parmakla rahat tıklanabilmeli.",
+        mvp: "Aynı işi yapan butonlar <strong>tüm ekranlarda aynı görünüyor</strong>. Butonlar parmakla rahat tıklanabilecek büyüklükte (en az 44x44 piksel). iPhone'un üst çentiğinin altına yazı gizlenmiyor, alt navigation home çubuğunun üstünde.",
+        release: "Yeniden kullanılabilir <strong>komponent kütüphanesi</strong> oluşturulmuş; primary, secondary, ghost gibi buton varyantları belli. Buton basınca görsel/dokunsal feedback (renk değişimi, ripple, küçük titreşim) var. Sayfa geçişleri yumuşak."
+      }
+    ]
+  },
+
+  {
+    id: "03", title: "Geliştirme ve Kod Düzeni",
+    sub: "Çalışan ortam, doğru klasör yapısı ve cihazda test.",
+    features: [
+      {
+        id: "3.1", title: "Geliştirme Ortamı Kurulumu",
+        desc: "Bilgisayarda her şey hazır olmalı: SDK, IDE, emülatör, AI eklentileri.",
+        mvp: "<code>flutter doctor</code> (veya muadili) komutu çalışıyor ve büyük çoğunluğu ✓ işaretli. Bir <strong>IDE</strong> (Antigravity, Cursor, Android Studio) seçilmiş ve yapay zekâ asistanı aktif. <strong>Emülatör</strong> kurulmuş ve uygulama burada açılıyor.",
+        release: "Uygulama en az bir <strong>gerçek Android cihazda</strong> ve mümkünse bir iOS cihazda test edilmiş. Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+      },
+      {
+        id: "3.2", title: "Modüler Klasör Yapısı",
+        desc: "Tüm kodun tek bir dosyada değil, mantıklı klasörlere ayrılması.",
+        mvp: "Her şey <code>main.dart</code> içinde DEĞİL. <strong>Ekranlar, widget'lar, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first yapıyla yaz\" demen yeterli.</span>",
+        release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/home/</code>). API çağrıları widget içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (Provider, Riverpod, Bloc vb.) tutarlı kullanılıyor."
+      },
+      {
+        id: "3.3", title: "APK / IPA Çıktısı Alma",
+        desc: "Uygulamayı paylaşılabilir/yüklenebilir bir paket olarak üretmek.",
+        mvp: "<code>flutter build apk</code> komutu ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. Arkadaşlarına test için APK gönderebiliyorsun.",
+        release: "Release modunda (debug değil) APK/AAB ve IPA üretildi. Kod <strong>obfuscated</strong> (tersine mühendisliğe karşı korunmuş). APK boyutu makul (50 MB altı tercih edilir). <strong>Kod imzalama</strong> (Android keystore, iOS certificate) tamamlandı."
+      }
+    ]
+  },
+
+  {
+    id: "04", title: "Git ve GitHub",
+    sub: "Sürüm kontrolü, takım çalışması ve hassas bilgilerin korunması.",
+    features: [
+      {
+        id: "4.1", title: "Repo, Commit ve Push",
+        desc: "Projenin Git ile takip edilmesi ve GitHub'a yedeklenmesi.",
+        mvp: "Proje GitHub'da bir repo'da. <code>git init</code>, <code>git add</code>, <code>git commit</code> ve <code>git push</code> akışı çalışıyor. Tüm takım üyeleri Settings → Collaborators ile davet edildi ve push yapabiliyor.",
+        release: "<strong>Anlamlı commit mesajları</strong> yazılıyor. \"asdf\", \"test\", \"fix\" gibi anlamsız mesajlar yok. Mesajlar ne yapıldığını söylüyor (örn. \"Karanlık mod butonu eklendi\"). Düzenli aralıklarla push yapılıyor, herkes son sürümle çalışıyor."
+      },
+      {
+        id: "4.2", title: "Branch ve Pull Request",
+        desc: "Riskli değişiklikleri ana koddan ayrı yapmak ve birleştirmeden önce gözden geçirmek.",
+        mvp: "Yeni özellik için <strong>kendi feature branch'inde</strong> çalışılıyor (<code>git checkout -b feature/karanlik-mod</code>). Direkt main branch'te kod YAZILMIYOR. Çakışma (merge conflict) çıkarsa panik yapılmıyor; işaretler manuel temizlenip commit ediliyor.",
+        release: "Branch'ler <strong>Pull Request ile</strong> main'e birleştiriliyor. PR açılınca takımdan en az bir kişi gözden geçiriyor. Birleşmiş, işi biten boş branch'ler siliniyor (<code>git branch -d</code>). <strong>main branch protected</strong>, direkt push yasak."
+      },
+      {
+        id: "4.3", title: ".gitignore ve API Anahtarı Güvenliği",
+        desc: "Hassas dosyaların ve şifrelerin GitHub'a sızmaması.",
+        mvp: "<code>.gitignore</code> dosyası mevcut. <strong>API anahtarları kodda hardcoded DEĞİL</strong>; bir <code>.env</code> dosyasında ve <code>.env</code> .gitignore'da. <span class='hint'>Bu en kritik güvenlik kuralı. Açıkta kalan API anahtarı saniyeler içinde botlar tarafından çalınır ve kotanı bitirir.</span>",
+        release: "<code>.env.example</code> şablonu repoda (gerçek değerler olmadan). Build, IDE, OS dosyaları (<code>build/</code>, <code>.vscode/</code>, <code>.DS_Store</code>) ignore edilmiş. Github'a yanlışlıkla anahtar pushlandıysa: anahtar derhal iptal edilip yenisi üretildi."
+      },
+      {
+        id: "4.4", title: "README ve Proje Dokümantasyonu",
+        desc: "Repo'ya gelen birinin projeyi anlamasını ve çalıştırabilmesini sağlamak.",
+        mvp: "<strong>README.md</strong> dosyası var. Projenin <strong>ne olduğu</strong> ve <strong>nasıl çalıştırılacağı</strong> yazıyor.",
+        release: "README'de <strong>kurulum adımları</strong>, çevre değişkenleri (.env.example referansı), çalıştırma komutları, ekran görüntüleri/GIF, ekip üyeleri ve lisans bilgisi var. Proje açıklaması, etiketler (topics) ve preview görseli ayarlandı."
+      }
+    ]
+  },
+
+  {
+    id: "05", title: "API ve Yapay Zekâ Entegrasyonu",
+    sub: "Veri çekme, hata yönetimi, güvenlik ve dirençli mimari.",
+    features: [
+      {
+        id: "5.1", title: "API Çağrısı ve Veri Gösterimi",
+        desc: "Uygulamanın bir API'ye istek atıp veri çekmesi ve ekrana yansıtması.",
+        mvp: "En az bir endpoint'e istek atılıyor, gelen JSON parse edilip <strong>ekranda görüntüleniyor</strong>. İstek atılırken uygulama donmuyor; bir <strong>yükleniyor göstergesi</strong> dönüyor (asenkron çalışıyor).",
+        release: "Tüm API çağrıları <strong>tek bir servis sınıfından</strong> geçiyor (widget içinde scattered değil). Yanıtlar tipli model sınıflarına (User, Product gibi) dönüştürülüyor."
+      },
+      {
+        id: "5.2", title: "API Anahtarı Güvenliği (.env)",
+        desc: "API anahtarlarının kodda görünür olmaması ve uygulamadan tersine mühendislikle çalınamaması.",
+        mvp: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. <code>flutter_dotenv</code> veya muadili paket ile okunuyor. <code>.env</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı öğrenci projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+        release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar mobil uygulamada hiç yok, Google'ın sunucularında saklanıyor. <strong>Cloud Console</strong>'dan anahtara IP/Bundle ID kısıtlaması ve günlük kota tanımlandı."
+      },
+      {
+        id: "5.3", title: "Hata Yönetimi ve Empatik UX",
+        desc: "API başarısız olduğunda uygulamanın çökmemesi ve kullanıcıya saygılı hata mesajları.",
+        mvp: "API çağrıları <strong>try/catch içinde</strong>, uygulama çökmüyor. Hata olduğunda kullanıcıya <strong>\"Tekrar Dene\" butonu</strong> sunulan bir mesaj gösteriliyor. <strong>Timeout süresi</strong> var (10-15 saniye); sonsuza kadar yükleniyor göstergesi dönmüyor.",
+        release: "Hata mesajları <strong>empatik</strong> ve çözüme yönlendiriyor (\"Sunucularda yoğunluk var, birkaç dakika sonra tekrar dene\" gibi). Ham hata kodu (\"Error 500\") kullanıcıya GÖSTERİLMİYOR. İstek atılmadan önce <strong>internet bağlantısı kontrol</strong> ediliyor."
+      },
+      {
+        id: "5.4", title: "API Entegrasyonu (AI Chatbot Opsiyonel)",
+        desc: "Uygulamanın bir dış servise bağlanması. AI Chatbot önerilir ama veri API'leri de kabul.",
+        mvp: "Uygulama bir dış API'ye başarıyla bağlanıyor ve dönen veri kullanıcının ekranında doğru şekilde gösteriliyor. Bu bir <strong>AI Chatbot</strong> (Gemini, OpenAI, Claude vb.) olabilir; ya da <strong>hava durumu, döviz kuru, harita, haber gibi bir veri API'si</strong> olabilir. <span class='hint'>AI Chatbot önerilir ama zorunlu değil. Uygulamanın anlamlı bir API entegrasyonu olması yeterli.</span>",
+        release: "AI Chatbot kullanıyorsan: <strong>Sohbet geçmişi tutuluyor</strong> ve her istekte modele tekrar gönderiliyor; böylece AI bir önceki mesajları hatırlıyor. Mesajlar kullanıcı/model olarak işaretlenmiş, ekran otomatik aşağı kayıyor. Veri API'si kullanıyorsan: API yanıtları kullanıcıya anlamlı şekilde işlenip sunuluyor, gereksiz tekrar çağrılar yapılmıyor. <span class='hint'>AI sunucularının hafızası yoktur, geçmişi her seferinde sen yollaman gerekir.</span>"
+      },
+      {
+        id: "5.5", title: "Yedek API / Fallback Sistemi",
+        desc: "Asıl AI modeli veya servisi çöktüğünde uygulamanın çalışmaya devam etmesi.",
+        mvp: "—",
+        release: "Asıl model çöktüğünde (örn. 500 hatası) uygulama ÇÖKMÜYOR. <strong>En az bir yedek modele otomatik geçiş</strong> yapılıyor (örn. ana modelden daha küçük veya daha ucuz bir modele). Kullanıcı sadece animasyon görüyor, krizin farkına varmıyor. <span class='hint'>İdeal: 5 basamaklı merdiven. Ana model → tekrar dene → küçük model → en küçük model → farklı şirketin yedek API'si.</span>"
+      }
+    ]
+  },
+
+  {
+    id: "06", title: "Backend ve Firebase",
+    sub: "Kullanıcı yönetimi, veritabanı ve güvenlik kuralları.",
+    features: [
+      {
+        id: "6.1", title: "Firebase Projesi ve Authentication",
+        desc: "Firebase'in uygulamaya bağlanması ve kullanıcıların kayıt olup giriş yapabilmesi.",
+        mvp: "Firebase Console'da proje açıldı, uygulamaya bağlandı. <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+        release: "<strong>Google Sign-In + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. iOS yayını için <strong>Apple Sign-In</strong> de eklenmiş."
+      },
+      {
+        id: "6.2", title: "Firestore (Bulut Veritabanı)",
+        desc: "Kullanıcı verilerinin Firebase'in NoSQL veritabanında saklanması.",
+        mvp: "En az bir collection altında <strong>doküman oluşturma, okuma, güncelleme ve silme</strong> (CRUD) çalışıyor. Veri kullanıcının cihazı kapatılsa bile kayıtlı kalıyor.",
+        release: "Veriler <strong>gerçek zamanlı</strong> dinleniyor (snapshots); bir kullanıcı veri eklediğinde diğerinin ekranı otomatik güncelleniyor. <strong>Offline destek</strong> aktif; internet yokken de uygulama veriyi gösteriyor, geri geldiğinde otomatik senkronize oluyor."
+      },
+      {
+        id: "6.3", title: "Security Rules (Veritabanı Güvenlik Kuralları)",
+        desc: "Veritabanına kimin ne yapabileceğinin kuralları. KRİTİK güvenlik adımı.",
+        mvp: "Default <strong>open rule (allow read, write: if true) DEĞİL</strong>. En azından <code>request.auth != null</code> kontrolü var; sadece giriş yapmış kullanıcılar veri görebiliyor. <span class='hint'>Bu kural yoksa veritabanın herkese açık demektir.</span>",
+        release: "Her collection için <strong>kullanıcı bazlı kurallar</strong> tanımlı (\"Sadece kendi kayıtlarını okuyabilir/yazabilir\"). Bir kullanıcı başka birinin verisini okuyamıyor. Validation kuralları (alan tipleri, uzunluk) eklenmiş."
+      },
+      {
+        id: "6.4", title: "Firebase Storage ve Bildirimler (FCM)",
+        desc: "Resim/dosya yükleme ve push bildirim altyapısı.",
+        mvp: "—",
+        release: "<strong>Firebase Storage</strong> ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre. Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor."
+      },
+      {
+        id: "6.5", title: "App Check (Sahte İstek Engelleme)",
+        desc: "İsteğin gerçekten senin uygulamandan geldiğinden emin olma.",
+        mvp: "—",
+        release: "<strong>Firebase App Check</strong> aktif. Play Integrity (Android) ve App Attest (iOS) ile uygulamanın gerçekliği doğrulanıyor. Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+      }
+    ]
+  },
+
+  {
+    id: "07", title: "Yerel Kayıt, Bildirim ve Offline",
+    sub: "Cihazda saklanan veri, hatırlatmalar ve internet yokken çalışma.",
+    features: [
+      {
+        id: "7.1", title: "Cihaza Kayıt (Tercih ve Veri Saklama)",
+        desc: "Kullanıcı tercihlerinin ve verilerin cihazda saklanması.",
+        mvp: "<strong>Shared Preferences</strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+        release: "Daha kompleks veriler için <strong>Hive, sqflite veya benzeri yerel veritabanı</strong> kullanılıyor. Hassas veriler (token, şifre) <strong>secure storage</strong>'da (Keychain/Keystore) tutuluyor, düz metin DEĞİL."
+      },
+      {
+        id: "7.2", title: "Offline Kullanım ve Cache",
+        desc: "İnternet olmadığında uygulamanın kullanılabilir kalması.",
+        mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+        release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor. Resimler için <code>cached_network_image</code> kullanılıyor."
+      },
+      {
+        id: "7.3", title: "Bildirimler (Yerel ve Push)",
+        desc: "Kullanıcıyı zamanında uyaran hatırlatma ve push bildirimleri.",
+        mvp: "—",
+        release: "Bildirim izni anlamlı bir noktada (uygulamanın değer önerisinden sonra) isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (\"yarın 9'da hatırlatma\") veya <strong>FCM push bildirimleri</strong> çalışıyor. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (deep-link)."
+      }
+    ]
+  },
+
+  {
+    id: "08", title: "Test, Performans ve Kararlılık",
+    sub: "Hataları yakalamak, akıcılığı korumak, çökmeleri izlemek.",
+    features: [
+      {
+        id: "8.1", title: "Manuel Test ve Edge Case Senaryoları",
+        desc: "Köşedeki durumların elle test edilmesi.",
+        mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+        release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı cihaz tipinde</strong> (küçük ekran + büyük ekran) test edildi. En az 3-5 dış kullanıcıyla beta test yapıldı."
+      },
+      {
+        id: "8.2", title: "Performans ve Akıcılık",
+        desc: "Uygulamanın takılmadan çalışması, 60 fps'in korunması.",
+        mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+        release: "Resimler <strong>lazy loaded</strong> ve doğru boyutta optimize edilmiş. <strong>Gereksiz rebuild</strong> yok (DevTools ile kontrol edildi). Memory leak yok; uzun kullanımda uygulama yavaşlamıyor. APK boyutu makul tutulmuş."
+      },
+      {
+        id: "8.3", title: "Crashlytics ve Çökme Takibi",
+        desc: "Kullanıcılarda oluşan çökmelerin senin haberin olmadan kaydedilmesi.",
+        mvp: "—",
+        release: "<strong>Firebase Crashlytics</strong> entegre. Release sürümünde de çalışıyor. Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Uygulamada non-fatal hatalar (yakalanmış ama anormal) da loglanıyor."
+      }
+    ]
+  },
+
+  {
+    id: "09", title: "Güvenlik ve Gizlilik",
+    sub: "Kullanıcı verisinin korunması ve yasal uyum.",
+    features: [
+      {
+        id: "9.1", title: "HTTPS ve İzinler",
+        desc: "Tüm trafiğin şifreli olması ve sadece gerekli izinlerin istenmesi.",
+        mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. Manifest/Info.plist içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
+        release: "Her izin için <strong>açıklama metni (purpose string)</strong> yazılı ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor; yani özellik kullanıldığında, açılışta değil."
+      },
+      {
+        id: "9.2", title: "Privacy Policy ve KVKK Uyumu",
+        desc: "Yasal uyum: gizlilik politikası ve kullanıcı haklarına saygı.",
+        mvp: "—",
+        release: "<strong>Privacy Policy ve Terms of Service</strong> yazılı, hem store sayfasında hem uygulamada link var. Hassas alanlar (e-posta, isim) gereksiz yere analytics'e GÖNDERİLMİYOR. Bildirim ve veri toplama izinleri için <strong>açık rıza</strong> alınıyor."
+      }
+    ]
+  },
+
+  {
+    id: "10", title: "Erişilebilirlik ve Yerelleştirme",
+    sub: "Herkes için uygulama: görme engelliler, farklı diller.",
+    features: [
+      {
+        id: "10.1", title: "Renk Kontrastı ve Okunabilirlik",
+        desc: "Tüm yazıların okunabilir olması, renk seçimlerinin gözü yormaması.",
+        mvp: "Beyaz üstüne açık gri yazı yok. Tüm metinler <strong>arka plandan net ayırt ediliyor</strong>. Önemli bilgi sadece renge bağlı değil (örn. hata sadece kırmızı yazıyla değil, ünlem işaretiyle de gösteriliyor).",
+        release: "Yazı-arka plan kontrast oranı en az <strong>4.5:1 (WCAG AA standardı)</strong>. <strong>Screen reader</strong> (TalkBack/VoiceOver) için tüm icon button'larda anlamlı label var. Renk körü kullanıcılar düşünülmüş."
+      },
+      {
+        id: "10.2", title: "Çoklu Dil (Lokalizasyon)",
+        desc: "Uygulamanın birden fazla dilde sunulması.",
+        mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde dağılmış değil, bir yerden yönetiliyor.",
+        release: "<code>flutter_localizations</code> + ARB dosyaları (veya muadili) ile <strong>en az 2 dil</strong> destekleniyor. Kullanıcı uygulama içinden dil değiştirebiliyor veya cihazın diline otomatik uyum sağlıyor."
+      }
+    ]
+  },
+
+  {
+    id: "11", title: "Yayın ve Mağaza Hazırlığı",
+    sub: "App Store / Play Store'a yüklenebilir hale gelmek.",
+    features: [
+      {
+        id: "11.1", title: "Uygulama İsmi, Paket Adı ve İmzalama",
+        desc: "Uygulamanın kimliği ve resmi yayın paketi.",
+        mvp: "Default \"Flutter Demo\" yerine <strong>kendi uygulama ismi</strong> var. Paket adı (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz. Uygulama ikonu özel tasarlanmış.",
+        release: "Android için <strong>keystore</strong> oluşturuldu ve güvenli yedekte (kaybedilirse Play Store'a yeni sürüm yüklenemez). iOS için <strong>certificate ve provisioning profile</strong> hazır. Release modunda imzalı build çıkıyor."
+      },
+      {
+        id: "11.2", title: "Mağaza Metadatası ve Ekran Görüntüleri",
+        desc: "Store sayfasında görünen başlık, açıklama, görseller.",
+        mvp: "—",
+        release: "<strong>Başlık (max 30 karakter)</strong>, kısa ve uzun açıklamalar yazılı. Anahtar kelimeler (iOS keywords) dolu. <strong>En az 5 ekran görüntüsü</strong> doğru çözünürlükte (iPhone 6.7\" + Android Phone). Ekran görüntülerinde başlık metinleri ve markalı tasarım var."
+      },
+      {
+        id: "11.3", title: "Beta Testing ve Yayın",
+        desc: "Yayın öncesi sınırlı kullanıcıyla test ve sonrasında store'a yükleme.",
+        mvp: "—",
+        release: "<strong>TestFlight (iOS)</strong> ve <strong>Play Console internal/closed track</strong> ile en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. Play Console ve Apple Developer hesapları açık. İçerik derecelendirmesi ve gizlilik beyanı tamamlandı."
+      }
+    ]
+  },
+
+  {
+    id: "12", title: "Monetizasyon (Para Kazanma)",
+    sub: "Uygulamadan gelir elde etme. Opsiyonel.",
+    features: [
+      {
+        id: "12.1", title: "Uygulama İçi Satın Alma (IAP) ve Abonelik",
+        desc: "Premium özellikler veya aylık/yıllık abonelik altyapısı.",
+        mvp: "—",
+        release: "Tek seferlik ürünler veya abonelikler tanımlı. <strong>Restore Purchases</strong> butonu çalışıyor (kullanıcı cihaz değiştirdiğinde aboneliğini geri alabiliyor). Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. <span class='hint'>Apple/Google %15-30 komisyon alır, fiyatlandırırken hesaba kat.</span>"
+      },
+      {
+        id: "12.2", title: "Reklam Entegrasyonu",
+        desc: "Ücretsiz uygulamalarda gelir için reklam (opsiyonel).",
+        mvp: "—",
+        release: "AdMob veya benzeri ile banner/interstitial/rewarded reklamlar entegre. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; her sayfa geçişinde değil, anlamlı yerlerde gösteriliyor. Reklamsız <strong>premium tier</strong> sunuluyor."
+      }
+    ]
+  },
+
+  {
+    id: "13", title: "Analitik ve Kullanıcı Davranışı",
+    sub: "Kullanıcının uygulamada ne yaptığını anlama.",
+    features: [
+      {
+        id: "13.1", title: "Firebase Analytics ve Özel Olaylar",
+        desc: "Kullanıcının uygulamayı nasıl kullandığını ölçme.",
+        mvp: "—",
+        release: "<strong>Firebase Analytics</strong> entegre. Otomatik olaylar (first_open, screen_view, session_start) toplanıyor; konsoldan hangi ülkeden kaç kullanıcı, hangi ekranlarda ne kadar vakit geçirdiği görünüyor. Uygulamaya özel <strong>5-10 custom event</strong> tanımlı (örn. <code>onboarding_completed</code>, <code>premium_clicked</code>)."
+      },
+      {
+        id: "13.2", title: "Funnel ve Retention Analizi",
+        desc: "Kullanıcının kritik akışlarda nerede düştüğü ve geri dönüp dönmediği.",
+        mvp: "—",
+        release: "<strong>DAU/MAU oranı</strong>, day-1 ve day-7 retention konsoldan izleniyor. <strong>Onboarding funnel'i</strong> tanımlı; kaç kullanıcı kayıt oldu, kaçı ilk eylemi yaptı, kaçı premium oldu. Drop-off noktalarına göre UX iyileştirmesi yapılıyor."
+      }
+    ]
+  }
+];
+
+/* ==================== STATE ==================== */
+const STORAGE_KEY = "agm_mobil_kontrol_v2";
+const NOTES_KEY = "agm_notlar_v1";
+const COLLAPSE_KEY = "agm_collapse_v1";
+
+let state = loadState();
+let notes = loadNotes();
+let collapsedCats = loadCollapsed();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+function loadNotes() {
+  try {
+    const raw = localStorage.getItem(NOTES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+function saveNotes() {
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
+}
+function loadCollapsed() {
+  try {
+    const raw = localStorage.getItem(COLLAPSE_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch { return new Set(); }
+}
+function saveCollapsed() {
+  try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedCats])); } catch {}
+}
+
+/* İlk ziyarette tüm kategoriler varsayılan olarak kapalı */
+function initDefaultCollapsed() {
+  const INIT_FLAG = "agm_collapse_init_v1";
+  if (!localStorage.getItem(INIT_FLAG)) {
+    collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
+    saveCollapsed();
+    try { localStorage.setItem(INIT_FLAG, "1"); } catch {}
+  }
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function stripHtml(str) {
+  return String(str || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+}
+
+/* ==================== TOAST ==================== */
+function showToast(message, type = "success", duration = 1600) {
+  const container = document.getElementById("toastContainer");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  const iconMap = { success: "✓", info: "i", warn: "!" };
+  toast.innerHTML = `<span class="toast-icon">${iconMap[type] || "✓"}</span><span class="toast-msg"></span>`;
+  toast.querySelector(".toast-msg").textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("fade-out");
+    setTimeout(() => toast.remove(), 260);
+  }, duration);
+}
+
+/* ==================== MODAL ==================== */
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.hidden = false;
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.hidden = true;
+}
+function closeAllModals() {
+  document.querySelectorAll(".modal").forEach(m => m.hidden = true);
+}
+
+/* Onay modalı (window.confirm yerine) */
+let confirmCallback = null;
+function customConfirm(message, onConfirm, opts = {}) {
+  document.getElementById("confirmTitle").textContent = opts.title || "Emin misin?";
+  document.getElementById("confirmMessage").textContent = message;
+  const yesBtn = document.getElementById("confirmYes");
+  yesBtn.textContent = opts.yesText || "Evet, devam et";
+  confirmCallback = onConfirm;
+  openModal("confirmModal");
+}
+document.getElementById("confirmYes").addEventListener("click", () => {
+  closeModal("confirmModal");
+  if (typeof confirmCallback === "function") {
+    const cb = confirmCallback;
+    confirmCallback = null;
+    cb();
+  }
+});
+
+/* Modal kapatma (backdrop, X, data-modal-close) */
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-modal-close]")) {
+    const modal = e.target.closest(".modal");
+    if (modal) modal.hidden = true;
+  }
+  /* AI format paneli — dışına tıklanırsa kapat */
+  if (!e.target.closest(".feature-ai-wrap")) {
+    document.querySelectorAll(".feature-ai-wrap.ai-open").forEach(w => w.classList.remove("ai-open"));
+  }
+});
+
+/* ==================== TEMA ==================== */
+const THEME_KEY = "agm_theme_v1";
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const btn = document.getElementById("themeToggle");
+  if (btn) {
+    const icon = btn.querySelector(".theme-icon");
+    const label = btn.querySelector(".theme-label");
+    if (theme === "light") {
+      if (icon) icon.textContent = "☀️";
+      if (label) label.textContent = "Açık";
+    } else {
+      if (icon) icon.textContent = "🌙";
+      if (label) label.textContent = "Koyu";
+    }
+  }
+  try { localStorage.setItem(THEME_KEY, theme); } catch {}
+}
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
+  showToast(next === "light" ? "Açık tema açıldı" : "Koyu tema açıldı", "info", 1200);
+});
+
+/* ==================== AI PROMPT BUILDER'LARI ==================== */
+
+/* Türkçe — Markdown formatında, öğrenci dostu, detaylı rehber ister */
+function buildAIPromptTR(cat, f) {
+  const title = stripHtml(f.title);
+  const desc = stripHtml(f.desc);
+  const catTitle = stripHtml(cat.title);
+  const catSub = stripHtml(cat.sub || "");
+  const mvp = (f.mvp && f.mvp !== "—") ? stripHtml(f.mvp) : null;
+  const release = (f.release && f.release !== "—") ? stripHtml(f.release) : null;
+
+  let p = "";
+  p += `# AGM Mobil Uygulama Kursu — Kalite Kontrol Maddesi Yardımı\n\n`;
+  p += `Merhaba! Alsancak Gençlik Merkezi'nin Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu kapsamında bir mobil uygulama geliştiriyorum. Aşağıdaki kalite kontrol maddesini uygulamamda hayata geçirmek istiyorum. Senden, başlangıç seviyesindeki bir öğrencinin takip edebileceği, **uygulanabilir ve net bir rehber** istiyorum.\n\n`;
+
+  p += `## 📌 Madde Bilgileri\n\n`;
+  p += `- **Kategori:** ${catTitle}${catSub ? ` (${catSub})` : ""}\n`;
+  p += `- **Madde Başlığı:** ${title}\n`;
+  p += `- **Genel Açıklama:** ${desc}\n\n`;
+
+  p += `## 🎯 Hedeflediğim Seviyeler\n\n`;
+  if (mvp) {
+    p += `### 🟢 MVP — Olmazsa Olmaz (İlk Hedefim)\n${mvp}\n\n`;
+  }
+  if (release) {
+    p += `### 🔵 Release — Yayınlanabilir Profesyonel Kalite (İkinci Hedefim)\n${release}\n\n`;
+  }
+
+  p += `## 🛠️ Senden İhtiyacım Olan Cevap\n\n`;
+  p += `Lütfen aşağıdaki başlıkları **bu sırayla** ve **bu yapıda** doldur:\n\n`;
+
+  p += `### 1. Konsept ve Önem\n`;
+  p += `- Bu madde tam olarak ne işe yarıyor, neden önemli?\n`;
+  p += `- Atlanırsa hangi sorunlarla karşılaşırım? Gerçek hayatta hangi senaryoda kritiktir?\n\n`;
+
+  p += `### 2. Adım Adım Uygulama${mvp ? " (MVP Seviyesi)" : ""}\n`;
+  p += `- Her adımı önce tek cümleyle özetle, sonra detayını ver.\n`;
+  p += `- Hangi paket / SDK / servisi kullanacağımı belirt.\n`;
+  p += `- Tam kurulum komutlarını paylaş (örn: \`flutter pub add http\`).\n`;
+  p += `- Hangi dosyaları nerede oluşturacağımı söyle.\n\n`;
+
+  p += `### 3. Çalışan Kod Örneği\n`;
+  p += `- Kopyala-yapıştır olabilecek, gerçekten çalışan kod ver.\n`;
+  p += `- Kod içine **Türkçe yorum satırları** ekle (her önemli satırı açıkla).\n`;
+  p += `- Birden fazla dosya gerekirse her birini ayrı kod bloğu olarak göster ve dosya adını başlığında belirt.\n\n`;
+
+  p += `### 4. Sık Yapılan Hatalar ve Tuzaklar\n`;
+  p += `- Yeni başlayan birinin düşeceği **2-3 tipik hata** veya tuzak.\n`;
+  p += `- Her birinden nasıl kaçınılır, ne yapılırsa olmaz?\n\n`;
+
+  if (mvp && release) {
+    p += `### 5. Release Seviyesine Yükseltme\n`;
+    p += `- MVP'yi bitirdikten sonra Release seviyesine geçmek için **ek olarak** ne yapmalıyım?\n`;
+    p += `- Hangi konfigürasyonlar, güvenlik kontrolleri veya UX iyileştirmeleri eklenmeli?\n\n`;
+  }
+
+  p += `### ${mvp && release ? "6" : "5"}. Doğrulama ve Test\n`;
+  p += `- Bu maddenin başarıyla tamamlandığını nasıl test ederim?\n`;
+  p += `- Hangi senaryoları (örn. "internet yokken", "API key boşken") denemeliyim?\n\n`;
+
+  p += `### ${mvp && release ? "7" : "6"}. Ek Öneriler (Opsiyonel)\n`;
+  p += `- Bu maddeyle bağlantılı diğer önemli kalite kontrolleri.\n`;
+  p += `- İleri okuma kaynakları (resmi dokümantasyon, kaliteli blog yazıları).\n`;
+  p += `- Daha gelişmiş alternatif yaklaşımlar.\n\n`;
+
+  p += `## 📦 Proje Bilgileri\n\n`;
+  p += `- **Framework:** Flutter / Dart (eğer farklı bir framework kullansaydım — React Native, Swift, Kotlin gibi — sana bildirirdim).\n`;
+  p += `- **IDE:** Antigravity (yapay zekâ asistanlı, Cursor benzeri).\n`;
+  p += `- **Hedef Platform:** Android + iOS.\n`;
+  p += `- **Cevap Dili:** **Türkçe**.\n`;
+  p += `- **Format:** Markdown, kod blokları içinde.\n\n`;
+
+  p += `## 🎓 Önemli Notlar\n\n`;
+  p += `- Cevabın **net, sade ve uygulanabilir** olsun. Gereksiz teorik detaya girme.\n`;
+  p += `- Çok fazla teknik jargon kullanma; kullanırsan parantez içinde Türkçesini yaz.\n`;
+  p += `- Adımları sırayla anlat, ben hiç tanımıyormuş gibi davran.\n`;
+  p += `- Eğer bu maddeyi uygulamak için **birden fazla yaklaşım** varsa, en yaygın ve basit olanıyla başla.\n\n`;
+  p += `Hadi başlayalım — bu maddeyi uygulamayı bitirdiğimde işaretleyebileyim!`;
+
+  return p;
+}
+
+/* İngilizce — Yapılandırılmış JSON formatı, AI'ın tutarlı çıktı vermesi için */
+function buildAIPromptJSON(cat, f) {
+  const mvp = (f.mvp && f.mvp !== "—") ? stripHtml(f.mvp) : null;
+  const release = (f.release && f.release !== "—") ? stripHtml(f.release) : null;
+
+  const payload = {
+    role_and_tone: {
+      assistant_role: "Expert mobile app development mentor for a beginner-friendly course",
+      audience: "Student in the AGM AI-Powered Mobile App Development Course (12-week curriculum)",
+      tone: "Practical, beginner-friendly, encouraging, no unnecessary jargon",
+      response_language: "Turkish",
+      response_format: "Markdown with code blocks; Turkish comments inside code"
+    },
+    project_context: {
+      course_name: "AGM AI-Powered Mobile App Development Course",
+      institution: "Alsancak Gençlik Merkezi",
+      framework: "Flutter / Dart",
+      ide: "Antigravity (AI-assisted, similar to Cursor)",
+      target_platforms: ["Android", "iOS"],
+      student_level: "beginner_to_intermediate",
+      backend_options: ["Firebase", "Supabase", "REST APIs"]
+    },
+    quality_checklist_item: {
+      category: stripHtml(cat.title),
+      category_subtitle: stripHtml(cat.sub || ""),
+      title: stripHtml(f.title),
+      description: stripHtml(f.desc),
+      mvp_level: mvp ? {
+        label: "Minimum Viable Product",
+        priority: "must_have",
+        description: "Core requirement — without this the app does not function properly",
+        requirements: mvp
+      } : null,
+      release_level: release ? {
+        label: "Release-quality, professional",
+        priority: "should_have",
+        description: "Required to publish to App Store / Play Store with confidence",
+        requirements: release
+      } : null
+    },
+    expected_response_structure: [
+      {
+        section: "1_concept_and_importance",
+        title_tr: "Konsept ve Önem",
+        instructions: "Explain WHY this item matters, what real-world problems it prevents, and what happens if skipped"
+      },
+      {
+        section: "2_step_by_step_implementation",
+        title_tr: "Adım Adım Uygulama" + (mvp ? " (MVP)" : ""),
+        instructions: "Numbered steps. Each step: one-sentence summary, then details. Include exact package/SDK names and install commands (e.g. `flutter pub add http`). Specify file locations."
+      },
+      {
+        section: "3_working_code_example",
+        title_tr: "Çalışan Kod Örneği",
+        instructions: "Copy-paste-ready code with TURKISH inline comments. If multiple files needed, separate code blocks with file name as header."
+      },
+      {
+        section: "4_common_pitfalls",
+        title_tr: "Sık Yapılan Hatalar",
+        instructions: "List 2-3 typical beginner mistakes and how to avoid each"
+      },
+      (mvp && release) ? {
+        section: "5_upgrade_to_release",
+        title_tr: "Release Seviyesine Yükseltme",
+        instructions: "What additional steps move from MVP to Release: configs, security, UX polish"
+      } : null,
+      {
+        section: (mvp && release) ? "6_verification" : "5_verification",
+        title_tr: "Doğrulama ve Test",
+        instructions: "How to verify the implementation works. Edge case scenarios to test (e.g. offline, missing API key, slow network)"
+      },
+      {
+        section: (mvp && release) ? "7_additional_recommendations" : "6_additional_recommendations",
+        title_tr: "Ek Öneriler",
+        instructions: "Related quality checklist items, official docs, alternative approaches (optional, brief)"
+      }
+    ].filter(Boolean),
+    constraints: [
+      "Respond entirely in Turkish",
+      "Use Markdown headings matching the section titles in Turkish (title_tr)",
+      "Provide working code that the student can copy and run immediately",
+      "Avoid unnecessary jargon; if a technical term must be used, give a brief Turkish explanation in parentheses",
+      "Assume the student is following the AGM course and knows basic Flutter setup but not advanced concepts",
+      "Keep total response focused — quality over length",
+      "Do not output the JSON back; respond as a structured Turkish guide"
+    ],
+    final_instruction: "Now produce the implementation guide following the expected_response_structure exactly. Begin your response in Turkish."
+  };
+
+  return "```json\n" + JSON.stringify(payload, null, 2) + "\n```";
+}
+
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch { return false; }
+}
+
+const content = document.getElementById("content");
+const catNav = document.getElementById("catNav");
+
+function levelLabel(l) {
+  return { mvp: "MVP", release: "Release" }[l];
+}
+
+function renderCategoryNav() {
+  catNav.innerHTML = DATA.map(c =>
+    `<a href="#cat-${c.id}">${c.id}. ${c.title}</a>`
+  ).join("");
+}
+
+function renderContent() {
+  content.innerHTML = DATA.map(cat => {
+    const features = cat.features.map(f => {
+      const levels = ["mvp", "release"].map(L => {
+        const value = f[L];
+        if (!value || value === "—") return "";
+        const key = `${cat.id}.${f.id}.${L}`;
+        const checked = state[key] ? "checked" : "";
+        return `
+          <div class="level ${L} ${checked}" data-key="${key}">
+            <span class="check"></span>
+            <span class="level-tag">${levelLabel(L)}</span>
+            <span class="level-text">${value}</span>
+          </div>`;
+      }).join("");
+
+      const noteId = `${cat.id}.${f.id}`;
+      const noteValue = notes[noteId] || "";
+      const hasNote = noteValue.trim().length > 0;
+
+      return `
+        <article class="feature${hasNote ? " has-note" : ""}" data-search="${(f.title + " " + f.desc + " " + (f.mvp||"") + " " + (f.release||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
+          <div class="feature-head">
+            <span class="id">#${f.id}</span>
+            <h3>${f.title}</h3>
+          </div>
+          <p class="feature-desc">${f.desc}</p>
+          <div class="levels">${levels}</div>
+          <button type="button" class="feature-note-toggle" data-note-toggle="${noteId}">
+            <span class="note-icon">${hasNote ? "📝" : "+"}</span>
+            <span class="note-label">${hasNote ? "Notum" : "Not ekle"}</span>
+          </button>
+          <span class="feature-ai-wrap">
+            <button type="button" class="feature-ai-copy" data-ai-toggle title="AI prompt formatını seç">
+              <span class="ai-icon">🤖</span>
+              <span class="ai-label">AI'a sor</span>
+            </button>
+            <span class="feature-ai-options">
+              <button type="button" class="feature-ai-option ai-tr" data-ai-format="tr" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="Türkçe metin formatında prompt'u panoya kopyala">📝 Türkçe</button>
+              <button type="button" class="feature-ai-option ai-json" data-ai-format="json" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="İngilizce yapılandırılmış JSON formatında prompt'u panoya kopyala">{ } EN JSON</button>
+            </span>
+          </span>
+          <div class="feature-note">
+            <textarea data-note-input="${noteId}" placeholder="Bu madde için kendi notunu yaz...">${escapeHtml(noteValue)}</textarea>
+            <div class="note-meta">
+              <span>Otomatik kaydedilir</span>
+              <button type="button" class="note-clear" data-note-clear="${noteId}">Notu temizle</button>
+            </div>
+          </div>
+        </article>`;
+    }).join("");
+
+    const collapsedClass = collapsedCats.has(`cat-${cat.id}`) ? " collapsed" : "";
+
+    return `
+      <section class="category${collapsedClass}" id="cat-${cat.id}">
+        <header class="cat-header" data-cat-toggle="cat-${cat.id}">
+          <span class="num">${cat.id}</span>
+          <div class="title">
+            <h2>${cat.title}</h2>
+            <p>${cat.sub}</p>
+          </div>
+          <div class="cat-progress">
+            <span class="pct" data-cat-pct="${cat.id}">0%</span>
+            <span data-cat-num="${cat.id}">0 / 0</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </header>
+        <div class="feature-list">${features}</div>
+      </section>`;
+  }).join("");
+}
+
+function attachClickHandlers() {
+  /* Seviye işaretleme */
+  document.querySelectorAll(".level").forEach(el => {
+    el.addEventListener("click", () => {
+      const key = el.dataset.key;
+      if (state[key]) { delete state[key]; el.classList.remove("checked"); }
+      else { state[key] = true; el.classList.add("checked"); }
+      saveState();
+      updateProgress();
+      if (filterMode !== "all") applyFilters();
+    });
+  });
+
+  /* Kategori başlığı tıklayınca collapse / expand */
+  document.querySelectorAll(".cat-header").forEach(h => {
+    h.addEventListener("click", (e) => {
+      const catId = h.dataset.catToggle;
+      if (!catId) return;
+      const cat = document.getElementById(catId);
+      if (!cat) return;
+      const isCollapsed = cat.classList.toggle("collapsed");
+      if (isCollapsed) collapsedCats.add(catId);
+      else collapsedCats.delete(catId);
+      saveCollapsed();
+    });
+  });
+
+  /* Not ekle / aç-kapa */
+  document.querySelectorAll("[data-note-toggle]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const feature = btn.closest(".feature");
+      feature.classList.toggle("note-open");
+      if (feature.classList.contains("note-open")) {
+        const ta = feature.querySelector("textarea");
+        if (ta) setTimeout(() => ta.focus(), 50);
+      }
+    });
+  });
+
+  /* Not içeriği yazıldıkça kaydet (debounced toast) */
+  document.querySelectorAll("[data-note-input]").forEach(ta => {
+    let toastTimer = null;
+    ta.addEventListener("input", () => {
+      const id = ta.dataset.noteInput;
+      const value = ta.value;
+      const feature = ta.closest(".feature");
+      const toggle = feature.querySelector("[data-note-toggle]");
+      if (value.trim()) {
+        notes[id] = value;
+        feature.classList.add("has-note");
+        if (toggle) {
+          toggle.querySelector(".note-icon").textContent = "📝";
+          toggle.querySelector(".note-label").textContent = "Notum";
+        }
+      } else {
+        delete notes[id];
+        feature.classList.remove("has-note");
+        if (toggle) {
+          toggle.querySelector(".note-icon").textContent = "+";
+          toggle.querySelector(".note-label").textContent = "Not ekle";
+        }
+      }
+      saveNotes();
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        showToast(value.trim() ? "Not kaydedildi" : "Not silindi", "success", 1100);
+      }, 700);
+    });
+  });
+
+  /* AI Sor — toggle (format seçim panelini aç / kapat) */
+  document.querySelectorAll("[data-ai-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const wrap = btn.closest(".feature-ai-wrap");
+      const isOpen = wrap.classList.contains("ai-open");
+      // Diğer açık panelleri kapat
+      document.querySelectorAll(".feature-ai-wrap.ai-open").forEach(w => {
+        if (w !== wrap) w.classList.remove("ai-open");
+      });
+      wrap.classList.toggle("ai-open", !isOpen);
+    });
+  });
+
+  /* AI format seçimi — TR Metin veya EN JSON kopyala */
+  document.querySelectorAll("[data-ai-format]").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const format = btn.dataset.aiFormat;
+      const catId = btn.dataset.aiCat;
+      const featId = btn.dataset.aiFeat;
+      const cat = DATA.find(c => c.id === catId);
+      const f = cat ? cat.features.find(x => x.id === featId) : null;
+      if (!cat || !f) return;
+      const prompt = format === "json" ? buildAIPromptJSON(cat, f) : buildAIPromptTR(cat, f);
+      const ok = await copyToClipboard(prompt);
+      const wrap = btn.closest(".feature-ai-wrap");
+      if (ok) {
+        const originalText = btn.textContent;
+        btn.classList.add("copied");
+        btn.textContent = "✓ Kopyalandı";
+        showToast(
+          format === "json"
+            ? "İngilizce JSON prompt panoya kopyalandı. ChatGPT, Claude veya Gemini'ye yapıştır."
+            : "Türkçe metin prompt panoya kopyalandı. ChatGPT, Claude veya Gemini'ye yapıştır.",
+          "success",
+          2400
+        );
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.textContent = originalText;
+          if (wrap) wrap.classList.remove("ai-open");
+        }, 1400);
+      } else {
+        showToast("Kopyalama başarısız oldu.", "warn", 1800);
+      }
+    });
+  });
+
+  /* Notu temizle butonu */
+  document.querySelectorAll("[data-note-clear]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.noteClear;
+      const feature = btn.closest(".feature");
+      const ta = feature.querySelector("textarea");
+      if (ta) {
+        ta.value = "";
+        ta.dispatchEvent(new Event("input"));
+      }
+    });
+  });
+}
+
+
+function countLevels() {
+  let total = 0, totalChecked = 0;
+  let mvp = 0, mvpChecked = 0;
+  let release = 0, releaseChecked = 0;
+  const perCat = {};
+
+  DATA.forEach(cat => {
+    perCat[cat.id] = { total: 0, checked: 0 };
+    cat.features.forEach(f => {
+      ["mvp", "release"].forEach(L => {
+        const v = f[L];
+        if (!v || v === "—") return;
+        total++;
+        perCat[cat.id].total++;
+        const key = `${cat.id}.${f.id}.${L}`;
+        const isChecked = !!state[key];
+        if (isChecked) {
+          totalChecked++;
+          perCat[cat.id].checked++;
+        }
+        if (L === "mvp") { mvp++; if (isChecked) mvpChecked++; }
+        if (L === "release") { release++; if (isChecked) releaseChecked++; }
+      });
+    });
+  });
+
+  return { total, totalChecked, mvp, mvpChecked, release, releaseChecked, perCat };
+}
+
+function updateProgress() {
+  const c = countLevels();
+  const setBar = (id, num, denom) => {
+    const pct = denom === 0 ? 0 : (num / denom * 100);
+    document.getElementById(id).style.width = pct + "%";
+  };
+
+  document.getElementById("total-num").textContent = `${c.totalChecked} / ${c.total}`;
+  document.getElementById("mvp-num").textContent = `${c.mvpChecked} / ${c.mvp}`;
+  document.getElementById("release-num").textContent = `${c.releaseChecked} / ${c.release}`;
+
+  setBar("total-bar", c.totalChecked, c.total);
+  setBar("mvp-bar", c.mvpChecked, c.mvp);
+  setBar("release-bar", c.releaseChecked, c.release);
+
+  Object.entries(c.perCat).forEach(([id, v]) => {
+    const pct = v.total === 0 ? 0 : Math.round(v.checked / v.total * 100);
+    const pctEl = document.querySelector(`[data-cat-pct="${id}"]`);
+    const numEl = document.querySelector(`[data-cat-num="${id}"]`);
+    if (pctEl) pctEl.textContent = pct + "%";
+    if (numEl) numEl.textContent = `${v.checked} / ${v.total}`;
+  });
+
+  checkCelebrations(c);
+}
+
+/* ==================== TAMAMLAMA KUTLAMALARI ==================== */
+const CELEBRATION_KEY = "agm_celebrations_v1";
+let celebrations = (() => {
+  try { return JSON.parse(localStorage.getItem(CELEBRATION_KEY) || "{}"); }
+  catch { return {}; }
+})();
+function saveCelebrations() {
+  try { localStorage.setItem(CELEBRATION_KEY, JSON.stringify(celebrations)); } catch {}
+}
+
+function showCelebration(emoji, title, message) {
+  document.getElementById("celebrationEmoji").textContent = emoji;
+  document.getElementById("celebrationTitle").textContent = title;
+  document.getElementById("celebrationMessage").textContent = message;
+  /* Önceki açık modalı kapat ki üstte gözüksün */
+  document.querySelectorAll(".modal").forEach(m => { if (m.id !== "celebrationModal") m.hidden = true; });
+  openModal("celebrationModal");
+}
+
+function checkCelebrations(c) {
+  const totalDone  = c.total   > 0 && c.totalChecked   === c.total;
+  const mvpDone    = c.mvp     > 0 && c.mvpChecked     === c.mvp;
+  const releaseDone= c.release > 0 && c.releaseChecked === c.release;
+
+  /* En yüksek başarıdan başlayarak kutla — aynı anda çakışırsa sadece en üst seviyeyi göster */
+  if (totalDone && !celebrations.total) {
+    celebrations.total = true;
+    celebrations.mvp = true;
+    celebrations.release = true;
+    saveCelebrations();
+    showCelebration(
+      "🏆",
+      "Tebrikler! Tüm liste tamamlandı.",
+      "Hem MVP hem Release seviyesindeki bütün maddeleri işaretledin. Uygulaman profesyonel kalite standartlarını karşılıyor. Mağazaya gönderebilirsin."
+    );
+  } else if (releaseDone && !celebrations.release) {
+    celebrations.release = true;
+    saveCelebrations();
+    showCelebration(
+      "🚀",
+      "Release seviyesi tamamlandı!",
+      "Yayınlanabilir profesyonel kaliteye ulaştın. Mağaza yüklemeden önce uygulamayı bir kez daha test etmeyi ve ekran görüntülerini hazırlamayı unutma."
+    );
+  } else if (mvpDone && !celebrations.mvp) {
+    celebrations.mvp = true;
+    saveCelebrations();
+    showCelebration(
+      "🎉",
+      "MVP seviyesi tamamlandı!",
+      "Uygulamanın temel iskeleti hazır. Şimdi profesyonel kaliteye yükseltmek için Release seviyesindeki maddelere geç."
+    );
+  }
+
+  /* Eğer kullanıcı işareti geri alırsa bayrağı sıfırla — ileride tekrar tamamladığında kutlama yine gözüksün */
+  if (!totalDone && celebrations.total) { celebrations.total = false; saveCelebrations(); }
+  if (!releaseDone && celebrations.release) { celebrations.release = false; saveCelebrations(); }
+  if (!mvpDone && celebrations.mvp) { celebrations.mvp = false; saveCelebrations(); }
+}
+
+/* Filtreleme: arama + filterMode (all / mvp / release) */
+let filterMode = "all"; // "all" | "mvp" | "release"
+
+function featureHasUnchecked(featureEl, level) {
+  if (level === "all") {
+    const totalLevels = featureEl.querySelectorAll(".level").length;
+    const checkedLevels = featureEl.querySelectorAll(".level.checked").length;
+    return totalLevels > 0 && checkedLevels < totalLevels;
+  }
+  const lvl = featureEl.querySelector(`.level.${level}`);
+  if (!lvl) return false;
+  return !lvl.classList.contains("checked");
+}
+
+function applyFilters() {
+  const input = document.getElementById("searchInput");
+  const q = input.value.trim().toLowerCase();
+  const filtering = q !== "" || filterMode !== "all";
+  document.body.classList.toggle("filtering", filtering);
+
+  document.querySelectorAll(".feature").forEach(f => {
+    const matchesSearch = q === "" || f.dataset.search.includes(q);
+    let matchesLevel = true;
+    if (filterMode === "mvp") matchesLevel = featureHasUnchecked(f, "mvp");
+    else if (filterMode === "release") matchesLevel = featureHasUnchecked(f, "release");
+    f.classList.toggle("hidden", !(matchesSearch && matchesLevel));
+  });
+  document.querySelectorAll(".category").forEach(cat => {
+    const visibleFeatures = cat.querySelectorAll(".feature:not(.hidden)").length;
+    cat.classList.toggle("hidden", visibleFeatures === 0);
+  });
+}
+
+function attachSearch() {
+  const input = document.getElementById("searchInput");
+  input.addEventListener("input", applyFilters);
+}
+
+function setFilterMode(mode) {
+  filterMode = filterMode === mode ? "all" : mode;
+  document.getElementById("filterMvpIncomplete").classList.toggle("active", filterMode === "mvp");
+  document.getElementById("filterReleaseIncomplete").classList.toggle("active", filterMode === "release");
+  applyFilters();
+}
+
+/* MVP Eksik / Release Eksik toggle */
+document.getElementById("filterMvpIncomplete").addEventListener("click", () => setFilterMode("mvp"));
+document.getElementById("filterReleaseIncomplete").addEventListener("click", () => setFilterMode("release"));
+
+/* Tümünü Aç */
+document.getElementById("expandAllBtn").addEventListener("click", () => {
+  document.querySelectorAll(".category").forEach(c => {
+    c.classList.remove("collapsed");
+    collapsedCats.delete(c.id);
+  });
+  saveCollapsed();
+});
+
+/* Tümünü Kapat */
+document.getElementById("collapseAllBtn").addEventListener("click", () => {
+  document.querySelectorAll(".category").forEach(c => {
+    c.classList.add("collapsed");
+    collapsedCats.add(c.id);
+  });
+  saveCollapsed();
+});
+
+/* Reset (custom confirm ile) */
+document.getElementById("resetBtn").addEventListener("click", () => {
+  customConfirm(
+    "Tüm işaretlemeler temizlenecek. Notların ve tema tercihin korunacak.",
+    () => {
+      state = {};
+      saveState();
+      document.querySelectorAll(".level.checked").forEach(el => el.classList.remove("checked"));
+      updateProgress();
+      applyFilters();
+      showToast("Tüm işaretler temizlendi", "info", 1400);
+    },
+    { title: "Tüm işaretleri sıfırla?", yesText: "Evet, sıfırla" }
+  );
+});
+
+/* Yardım butonu */
+document.getElementById("helpBtn").addEventListener("click", () => openModal("helpModal"));
+
+/* Print */
+document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+/* Export: state + notes birlikte */
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const data = JSON.stringify({
+    version: 2,
+    state: state,
+    notes: notes,
+    exportedAt: new Date().toISOString()
+  }, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `agm-mobil-kontrol-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+/* Import: yeni format (state + notes) ve eski format (sadece state) */
+const importFile = document.getElementById("importFile");
+document.getElementById("importBtn").addEventListener("click", () => importFile.click());
+importFile.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (typeof data !== "object" || data === null) throw new Error("Geçersiz format");
+
+      if (data.version && data.state) {
+        state = data.state || {};
+        notes = data.notes || {};
+      } else {
+        state = data;
+      }
+      saveState();
+      saveNotes();
+      renderContent();
+      attachClickHandlers();
+      updateProgress();
+      applyFilters();
+    } catch { alert("Geçersiz dosya."); }
+  };
+  reader.readAsText(file);
+  importFile.value = "";
+});
+
+/* ==================== SUNUM MODU ==================== */
+let presentationIndex = 0;
+
+function enterPresentation() {
+  const cats = document.querySelectorAll(".category");
+  if (cats.length === 0) return;
+  document.body.classList.add("presentation-mode");
+  cats.forEach(c => c.classList.remove("hidden"));
+  presentationIndex = 0;
+  showPresentationCategory(0);
+}
+
+function exitPresentation() {
+  document.body.classList.remove("presentation-mode");
+  document.querySelectorAll(".category.presenting").forEach(c => c.classList.remove("presenting"));
+  applyFilters();
+}
+
+function showPresentationCategory(index) {
+  const cats = document.querySelectorAll(".category");
+  if (cats.length === 0) return;
+  if (index < 0) index = 0;
+  if (index >= cats.length) index = cats.length - 1;
+  presentationIndex = index;
+  cats.forEach((c, i) => {
+    c.classList.toggle("presenting", i === index);
+    if (i === index) c.classList.remove("collapsed");
+  });
+  window.scrollTo(0, 0);
+  document.getElementById("presIndex").textContent = `${index + 1} / ${cats.length}`;
+}
+
+document.getElementById("presentBtn").addEventListener("click", enterPresentation);
+document.getElementById("presExit").addEventListener("click", exitPresentation);
+document.getElementById("presPrev").addEventListener("click", () => showPresentationCategory(presentationIndex - 1));
+document.getElementById("presNext").addEventListener("click", () => showPresentationCategory(presentationIndex + 1));
+
+/* ==================== KLAVYE KISAYOLLARI ==================== */
+document.addEventListener("keydown", (e) => {
+  const inPres = document.body.classList.contains("presentation-mode");
+  const inField = e.target.matches("input, textarea");
+
+  /* Esc her durumda: önce açık modal, sonra açık AI paneli, sonra sunum */
+  if (e.key === "Escape") {
+    const openModalEl = [...document.querySelectorAll(".modal")].find(m => !m.hidden);
+    if (openModalEl) {
+      /* Karşılama modalı Esc ile kapanmaz, kullanıcı bilinçli olarak Tamam'a basmalı */
+      if (openModalEl.id === "welcomeModal") return;
+      e.preventDefault();
+      openModalEl.hidden = true;
+      return;
+    }
+    const openAi = document.querySelector(".feature-ai-wrap.ai-open");
+    if (openAi) {
+      e.preventDefault();
+      openAi.classList.remove("ai-open");
+      return;
+    }
+    if (inPres) { e.preventDefault(); exitPresentation(); return; }
+  }
+
+  if (inPres) {
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+      if (inField) return;
+      e.preventDefault();
+      showPresentationCategory(presentationIndex + 1);
+    } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+      if (inField) return;
+      e.preventDefault();
+      showPresentationCategory(presentationIndex - 1);
+    }
+    return;
+  }
+
+  if (inField) return;
+
+  if (e.key === "?") {
+    e.preventDefault();
+    openModal("helpModal");
+  } else if (e.key === "/") {
+    e.preventDefault();
+    document.getElementById("searchInput").focus();
+  } else if (e.key.toLowerCase() === "p" && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault();
+    enterPresentation();
+  }
+});
+
+/* ==================== PWA MANIFEST (DİNAMİK) ==================== */
+(function setupManifest() {
+  try {
+    const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#0b0f17"/><path d="M52 96 L84 128 L140 64" stroke="#f97316" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    const iconUrl = "data:image/svg+xml," + encodeURIComponent(iconSvg);
+    const manifest = {
+      name: "Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi",
+      short_name: "AGM Kalite Kontrol",
+      description: "Alsancak Gençlik Merkezi'nin Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu kapsamında, geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi.",
+      start_url: ".",
+      scope: ".",
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#0b0f17",
+      theme_color: "#0b0f17",
+      icons: [
+        { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+        { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = url;
+    document.head.appendChild(link);
+  } catch (err) { /* sessizce geç */ }
+})();
+
+/* ==================== SERVICE WORKER (offline destek - GitHub Pages için) ==================== */
+(function setupServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  if (!window.isSecureContext) return; /* file:// veya http için gerek yok */
+  if (location.protocol !== "https:") return;
+  try {
+    const swCode = `
+      const CACHE_NAME = 'agm-mobil-kontrol-v1';
+      self.addEventListener('install', (e) => { self.skipWaiting(); });
+      self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+      self.addEventListener('fetch', (e) => {
+        if (e.request.method !== 'GET') return;
+        const url = new URL(e.request.url);
+        if (url.origin !== self.location.origin) return;
+        e.respondWith(
+          caches.match(e.request).then((cached) => {
+            const networkFetch = fetch(e.request).then((response) => {
+              if (response && response.ok && response.type === 'basic') {
+                const clone = response.clone();
+                caches.open(CACHE_NAME).then((c) => c.put(e.request, clone));
+              }
+              return response;
+            }).catch(() => cached);
+            return cached || networkFetch;
+          })
+        );
+      });
+    `;
+    const swBlob = new Blob([swCode], { type: "application/javascript" });
+    const swUrl = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl, { scope: "./" }).catch(() => {
+      /* Bazı tarayıcılar blob URL ile sw'i reddedebilir; sessizce geç */
+    });
+  } catch { /* sessizce */ }
+})();
+
+/* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
+const WELCOME_KEY = "agm_welcome_v1";
+function showWelcomeIfFirstVisit() {
+  try {
+    if (localStorage.getItem(WELCOME_KEY)) return;
+  } catch { return; }
+  /* Sayfa render olduktan sonra hafif gecikmeyle göster */
+  setTimeout(() => openModal("welcomeModal"), 350);
+}
+document.getElementById("welcomeStart").addEventListener("click", () => {
+  try { localStorage.setItem(WELCOME_KEY, "1"); } catch {}
+  closeModal("welcomeModal");
+});
+
+/* ==================== UYGULAMA YÜKLE (PWA INSTALL) ==================== */
+let deferredInstallPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+  try { localStorage.setItem(INSTALL_DISMISS_KEY, "installed"); } catch {}
+  showToast("Uygulama yüklendi! Ana ekrandan / masaüstünden açabilirsin.", "success", 3200);
+});
+
+const INSTALL_DISMISS_KEY = "agm_install_dismissed_v1";
+
+function showInstallBanner() {
+  /* Daha önce kapatılmışsa veya yüklenmişse gösterme */
+  try {
+    if (localStorage.getItem(INSTALL_DISMISS_KEY)) return;
+  } catch {}
+  const banner = document.getElementById("installBanner");
+  if (banner) banner.hidden = false;
+}
+
+function hideInstallBanner() {
+  const banner = document.getElementById("installBanner");
+  if (banner) banner.hidden = true;
+}
+
+function isStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches
+    || window.matchMedia("(display-mode: minimal-ui)").matches
+    || window.navigator.standalone === true;
+}
+
+function isIOSDevice() {
+  return /iPhone|iPad|iPod/.test(navigator.userAgent);
+}
+
+function detectPlatform() {
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua)) {
+    return /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua) ? "ios-other" : "ios-safari";
+  }
+  if (/Android/.test(ua)) {
+    if (/SamsungBrowser/.test(ua)) return "android-samsung";
+    if (/Firefox\//.test(ua)) return "android-firefox";
+    return "android-chrome";
+  }
+  if (/Edg\//.test(ua)) return "edge";
+  if (/Firefox\//.test(ua)) return "firefox";
+  if (/Chrome\//.test(ua)) return "chrome";
+  if (/Safari\//.test(ua)) return "macos-safari";
+  return "other";
+}
+
+function getInstallSteps(platform) {
+  switch (platform) {
+    case "ios-safari":
+      return {
+        emoji: "🍎",
+        title: "iPhone / iPad · Safari",
+        steps: [
+          "Safari'nin altındaki <strong>Paylaş</strong> butonuna bas (kutudan yukarı çıkan ok ikonu).",
+          "Açılan menüde aşağı kaydırıp <strong>\"Ana Ekrana Ekle\"</strong> seçeneğine bas.",
+          "Sağ üstteki <strong>\"Ekle\"</strong> butonuna bas.",
+        ],
+        note: "Uygulama ana ekranında simge olarak görünecek. Tıkladığında tam ekran açılacak ve adres çubuğu gözükmeyecek.",
+      };
+    case "ios-other":
+      return {
+        emoji: "🍎",
+        title: "iPhone / iPad",
+        steps: [
+          "Bu özelliği kullanmak için sayfayı <strong>Safari</strong>'de açman gerekiyor.",
+          "Mevcut tarayıcının üst köşesindeki menüden sayfayı kopyala, Safari'de aç.",
+          "Safari'de Paylaş butonuna basıp <strong>\"Ana Ekrana Ekle\"</strong> seçeneğini kullan.",
+        ],
+        note: "iOS'ta yalnızca Safari uygulama olarak yükleme işlemini destekliyor.",
+      };
+    case "android-chrome":
+      return {
+        emoji: "🤖",
+        title: "Android · Chrome",
+        steps: [
+          "Tarayıcının sağ üstündeki <strong>üç nokta</strong> menüsüne bas.",
+          "<strong>\"Uygulamayı yükle\"</strong> veya <strong>\"Ana ekrana ekle\"</strong> seçeneğine bas.",
+          "Açılan onay penceresinde <strong>\"Yükle\"</strong> butonuna bas.",
+        ],
+        note: "Yükleme tamamlandıktan sonra ana ekranında uygulama simgesi görünecek.",
+      };
+    case "android-samsung":
+      return {
+        emoji: "🤖",
+        title: "Android · Samsung Internet",
+        steps: [
+          "Tarayıcının altındaki menü butonuna bas.",
+          "<strong>\"Sayfayı ekle\"</strong> veya <strong>\"Ana ekrana ekle\"</strong> seçeneğine bas.",
+          "Onayla.",
+        ],
+        note: null,
+      };
+    case "android-firefox":
+      return {
+        emoji: "🦊",
+        title: "Android · Firefox",
+        steps: [
+          "Tarayıcının sağ alt / üst köşesindeki menü butonuna bas.",
+          "<strong>\"Yükle\"</strong> veya <strong>\"Ana ekrana ekle\"</strong> seçeneğine bas.",
+          "Açılan onay penceresinde <strong>\"Ekle\"</strong>ye bas.",
+        ],
+        note: null,
+      };
+    case "chrome":
+    case "edge":
+      return {
+        emoji: "💻",
+        title: "Bilgisayar · Chrome / Edge",
+        steps: [
+          "Adres çubuğunun sağında <strong>yükle simgesini</strong> ara (genellikle bir monitör veya artı ikonu).",
+          "Tıkla, açılan kutuda <strong>\"Yükle\"</strong> butonuna bas.",
+          "Alternatif: Sağ üstteki üç nokta menüsünden <strong>\"AGM Kontrol Listesi'ni Yükle\"</strong> seçeneği.",
+        ],
+        note: "Uygulama bağımsız bir pencerede açılır. Masaüstünde / başlat menüsünde simge oluşur, oradan tek tıkla başlatabilirsin.",
+      };
+    case "firefox":
+      return {
+        emoji: "🦊",
+        title: "Bilgisayar · Firefox",
+        steps: [
+          "Firefox masaüstü sürümü uygulama yüklemeyi şu an desteklemiyor.",
+          "Yer imlerine ekleyebilirsin: <strong>Ctrl + D</strong> (Windows / Linux) veya <strong>Cmd + D</strong> (Mac).",
+          "Mobilde Chrome veya Safari kullanırsan ana ekrana ekleyebilirsin.",
+        ],
+        note: "Uygulama deneyimi için Chrome veya Edge tavsiye edilir.",
+      };
+    case "macos-safari":
+      return {
+        emoji: "🖥",
+        title: "Mac · Safari",
+        steps: [
+          "Üst menüden <strong>Dosya</strong> menüsüne bas.",
+          "<strong>\"Dock'a Ekle\"</strong> seçeneğine bas.",
+          "Görüntülenen isim ve simgeyi onayla.",
+        ],
+        note: "Uygulama Dock'tan tek tıkla bağımsız bir pencerede açılır.",
+      };
+    default:
+      return {
+        emoji: "🌐",
+        title: "Genel Talimat",
+        steps: [
+          "Tarayıcının menüsünü aç.",
+          "<strong>\"Uygulamayı Yükle\"</strong>, <strong>\"Ana Ekrana Ekle\"</strong> veya <strong>\"Sayfa Kısayolu Oluştur\"</strong> seçeneğini ara.",
+          "Tıkla ve onayla.",
+        ],
+        note: "Tarayıcına bağlı olarak farklı isimler kullanılır. Chrome, Edge ve Safari bu özelliği en iyi destekleyen tarayıcılardır.",
+      };
+  }
+}
+
+function renderInstallInstructions() {
+  const platform = detectPlatform();
+  const data = getInstallSteps(platform);
+  const container = document.getElementById("installInstructions");
+  let html = `
+    <div class="install-platform-card">
+      <h3 class="install-platform-title"><span class="platform-emoji">${data.emoji}</span>${data.title}</h3>
+      <ol class="install-steps">
+        ${data.steps.map(s => `<li>${s}</li>`).join("")}
+      </ol>
+      ${data.note ? `<p class="install-note">${data.note}</p>` : ""}
+    </div>
+    <p class="install-secondary">Yüklemeden sonra uygulama bağımsız bir pencerede açılır, internet olmadan da kullanılabilir, ve işaretlemen / notların aynı şekilde korunur.</p>
+  `;
+  container.innerHTML = html;
+}
+
+/* Banner üzerindeki "Yükle" butonu — tek tıkla install (destekleniyorsa) veya manuel talimat */
+document.getElementById("installBannerBtn").addEventListener("click", async () => {
+  if (deferredInstallPrompt) {
+    try {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      if (choice && choice.outcome === "accepted") {
+        hideInstallBanner();
+        try { localStorage.setItem(INSTALL_DISMISS_KEY, "installed"); } catch {}
+        showToast("Uygulama yükleniyor... Ana ekran / masaüstünde simgesi görünecek.", "success", 2800);
+      } else {
+        showToast("Yükleme iptal edildi. Banner üzerinden tekrar deneyebilirsin.", "info", 1800);
+      }
+    } catch (err) {
+      renderInstallInstructions();
+      openModal("installModal");
+    }
+    return;
+  }
+  /* Native install desteği yoksa (iOS, Firefox, file://, henüz event gelmemiş Chrome vs.)
+     cihaza uygun manuel talimat modalını göster */
+  renderInstallInstructions();
+  openModal("installModal");
+});
+
+/* Banner kapat butonu — bir daha gösterme bayrağı */
+document.getElementById("installBannerClose").addEventListener("click", () => {
+  hideInstallBanner();
+  try { localStorage.setItem(INSTALL_DISMISS_KEY, "dismissed"); } catch {}
+});
+
+/* Init: banner her durumda görünür (kullanıcı kapatmadıysa veya zaten yüklemediyse)
+   - Daha önce × ile kapatılmış → gizli
+   - Daha önce yüklenmiş veya standalone modda → gizli
+   - Diğer tüm durumlar → görünür (tıkladığında ortama göre davranır) */
+(function initInstallBanner() {
+  const banner = document.getElementById("installBanner");
+  if (!banner) return;
+  try {
+    if (localStorage.getItem(INSTALL_DISMISS_KEY)) {
+      banner.hidden = true;
+      return;
+    }
+  } catch {}
+  if (isStandaloneMode()) {
+    banner.hidden = true;
+    return;
+  }
+  banner.hidden = false;
+})();
+
+/* ==================== INIT ==================== */
+applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+initDefaultCollapsed();
+renderCategoryNav();
+renderContent();
+attachClickHandlers();
+attachSearch();
+
+/* İlk açılışta updateProgress kutlama tetiklemesin (zaten c.total === 0 koşulu sağlamasıyla tetiklenmiyor ama yine de güvenli) */
+updateProgress();
+
+showWelcomeIfFirstVisit();
+</script>
+</body>
+</html>
