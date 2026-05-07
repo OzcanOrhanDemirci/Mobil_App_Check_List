@@ -300,6 +300,10 @@
     margin: 0;
   }
 
+  /* Mobil eylem aç/kapa düğmesi — masaüstünde gizli, mobilde görünür */
+  .actions-toggle { display: none; }
+  .actions-toggle .icon-close { display: none; }
+
   /* Progress */
   .progress-card {
     border: 1px solid var(--border);
@@ -1522,25 +1526,126 @@
   @media (max-width: 700px) {
     .wrap { padding: 16px; }
     header.hero { padding: 24px 18px; }
-    .toolbar { grid-template-columns: 1fr; }
+
+    /* === Sabitlenmiş üst alanın kompakt mobil düzeni ===
+       Hedef: yaklaşık 95-105px sabit yükseklik. Eylem butonları ≡ düğmesinin
+       arkasına gizlenir, sadece arama + 3 mini ilerleme barı sabit görünür.
+       Kullanıcı ≡'e basınca tüm aksiyonlar açılır (yine sticky alan içinde). */
+
+    .sticky-bar {
+      margin: 12px 0 14px;
+      gap: 8px;
+    }
+
+    /* Toolbar: arama + ≡ düğmesi tek satırda */
+    .toolbar {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto;
+      gap: 8px;
+      padding: 8px;
+    }
+    .search { padding: 7px 12px; }
+    .search input { font-size: 14px; }
+
+    /* ≡ Eylem aç/kapa düğmesi */
+    .actions-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      flex-shrink: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .actions-toggle:hover { background: var(--surface-3); }
+    .actions-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .toolbar.actions-open .actions-toggle {
+      background: var(--accent);
+      color: #0b0f17;
+      border-color: var(--accent);
+    }
+    .toolbar.actions-open .actions-toggle .icon-menu { display: none; }
+    .toolbar.actions-open .actions-toggle .icon-close { display: inline-block; }
+
+    /* Aksiyon butonları: varsayılan gizli, ≡'e basınca alt satırda akıştır */
     .actions {
-      justify-content: flex-start;
-      flex-direction: column;
+      display: none;
+      grid-column: 1 / -1;
+      flex-direction: row;
+      flex-wrap: wrap;
       align-items: stretch;
       gap: 6px;
-    }
-    .action-group {
-      flex-wrap: wrap;
-      padding: 4px 0;
-      width: 100%;
-    }
-    .action-group + .action-group::before {
-      display: none;
-    }
-    .action-group + .action-group {
+      padding-top: 8px;
+      margin-top: 4px;
       border-top: 1px solid var(--border);
+      animation: actionsSlideIn 0.18s ease;
     }
-    .action-group .btn { flex: 1; min-width: 0; }
+    .toolbar.actions-open .actions { display: flex; }
+
+    @keyframes actionsSlideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .action-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      width: auto;
+      padding: 0;
+      gap: 4px;
+    }
+    .action-group + .action-group::before { display: none; }
+    .action-group + .action-group { border-top: 0; }
+    .action-group .btn {
+      flex: 0 1 auto;
+      min-width: 0;
+      font-size: 12px;
+      padding: 7px 10px;
+    }
+
+    /* === İlerleme kartı: 3 sütunlu kompakt hizalama === */
+    .progress-card {
+      padding: 9px 12px;
+    }
+    .progress-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px 12px;
+      align-items: start;
+    }
+    .progress-block { min-width: 0; }
+    .progress-label {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      margin-bottom: 5px;
+      line-height: 1.15;
+    }
+    .progress-label > span:first-child {
+      font-size: 9.5px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .progress-label .num {
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .progress-label .lbl-extra { display: none; }
+    .bar { height: 5px; }
+
+    /* === Diğer mobil ayarlar (önceki davranışla aynı) === */
     .cat-header { padding: 18px; flex-wrap: wrap; }
     .cat-header .num { width: 100%; }
     .cat-progress { margin-left: 0; text-align: left; }
@@ -1880,7 +1985,11 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       <input type="search" id="searchInput" placeholder="Özellik ara, örn: 'API', 'dark mode', 'Firebase'…" />
     </label>
-    <div class="actions">
+    <button class="actions-toggle" id="actionsToggle" type="button" aria-label="Eylem menüsünü aç/kapat" aria-expanded="false" aria-controls="toolbarActions" title="Eylem menüsü">
+      <svg class="icon-menu" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+      <svg class="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+    <div class="actions" id="toolbarActions">
       <div class="action-group" role="group" aria-label="Filtre">
         <button class="btn ghost" id="filterMvpIncomplete" title="MVP seviyesinde tamamlanmamış maddeleri göster">MVP Eksik</button>
         <button class="btn ghost" id="filterReleaseIncomplete" title="Release seviyesinde tamamlanmamış maddeleri göster">Release Eksik</button>
@@ -1908,7 +2017,7 @@
   <div class="progress-card">
     <div class="progress-row">
       <div class="progress-block">
-        <div class="progress-label"><span>Toplam İlerleme</span><span class="num" id="total-num">0 / 0</span></div>
+        <div class="progress-label"><span>Toplam<span class="lbl-extra"> İlerleme</span></span><span class="num" id="total-num">0 / 0</span></div>
         <div class="bar total"><span id="total-bar"></span></div>
       </div>
       <div class="progress-block">
@@ -3234,6 +3343,58 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     { title: "Tüm işaretleri sıfırla?", yesText: "Evet, sıfırla" }
   );
 });
+
+/* Mobil eylem menüsü aç/kapa
+   Mobil ekranda sticky alan kompakttır: arama + 3 mini ilerleme barı görünür,
+   diğer butonlar ≡ düğmesinin arkasında durur. Burada açma/kapama davranışı,
+   panel dışına tıklama ile kapatma ve eylem sonrası otomatik kapatma var. */
+(function setupMobileActionsToggle() {
+  const toggleBtn = document.getElementById("actionsToggle");
+  const toolbarEl = toggleBtn ? toggleBtn.closest(".toolbar") : null;
+  if (!toggleBtn || !toolbarEl) return;
+
+  const close = () => {
+    toolbarEl.classList.remove("actions-open");
+    toggleBtn.setAttribute("aria-expanded", "false");
+  };
+  const open = () => {
+    toolbarEl.classList.add("actions-open");
+    toggleBtn.setAttribute("aria-expanded", "true");
+  };
+
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (toolbarEl.classList.contains("actions-open")) close(); else open();
+  });
+
+  /* Toolbar dışında bir yere tıklayınca paneli kapat */
+  document.addEventListener("click", (e) => {
+    if (!toolbarEl.classList.contains("actions-open")) return;
+    if (toolbarEl.contains(e.target)) return;
+    close();
+  });
+
+  /* Filtre toggle butonları (MVP/Release Eksik) görsel toggle olduğu için
+     panel açık kalsın. Diğer eylemler genelde modal/işlem açar; tıklayınca
+     mobilde görüş alanını boşaltmak için paneli kapat. */
+  const KEEP_OPEN_IDS = new Set(["filterMvpIncomplete", "filterReleaseIncomplete"]);
+  toolbarEl.querySelectorAll(".actions .btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (KEEP_OPEN_IDS.has(btn.id)) return;
+      close();
+    });
+  });
+
+  /* Esc ile de kapansın (mevcut keydown handler'ı bozmadan ayrı dinleyici) */
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!toolbarEl.classList.contains("actions-open")) return;
+    /* Açık modal varsa onun esc handler'ı önce çalışsın */
+    const openModalEl = [...document.querySelectorAll(".modal")].find(m => !m.hidden);
+    if (openModalEl) return;
+    close();
+  });
+})();
 
 /* Yardım butonu */
 document.getElementById("helpBtn").addEventListener("click", () => openModal("helpModal"));
