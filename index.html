@@ -145,7 +145,10 @@
     font-size: 15px;
   }
 
-  /* Eğitmen rozeti (hero içinde h1 altı) */
+  /* Eğitmen rozeti (hero içinde h1 altı) — gizli linkedin easter egg.
+     Hover ve aktif durumda basılabilir hissi verir; kısa tıklamada
+     hiçbir şey olmaz, ~3 sn basılı tutmak ::after ile dolan progress
+     gradient'i tamamlandığında profili açar. */
   .instructor {
     display: inline-flex;
     align-items: center;
@@ -155,6 +158,53 @@
     background: rgba(249, 115, 22, 0.08);
     border: 1px solid rgba(249, 115, 22, 0.22);
     border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+  .instructor:hover {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.14);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.20);
+  }
+  .instructor:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.18);
+  }
+  .instructor::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.42), rgba(34, 197, 94, 0.36));
+    pointer-events: none;
+    z-index: 0;
+    transition: width 0s linear;
+  }
+  .instructor.pressing::after {
+    width: 100%;
+    transition: width 3s linear;
+  }
+  .instructor > * {
+    position: relative;
+    z-index: 1;
+  }
+  .instructor.triggered {
+    border-color: var(--mvp);
+    background: var(--mvp-bg);
+    animation: instructorPulse 0.7s ease;
+  }
+  @keyframes instructorPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+    100% { box-shadow: 0 0 0 18px rgba(34, 197, 94, 0); }
   }
   .instructor-label {
     text-transform: uppercase;
@@ -1543,6 +1593,17 @@
       gap: 8px;
     }
 
+    /* Mobilde sticky alanı tam opak yap; backdrop-filter blur sayfa
+       içeriğinin sticky alanın altından sızıp başlıkları/etiketleri
+       okunamaz hale getiriyordu. Solid surface-2 hem ayrımı korur
+       hem performansı iyileştirir. */
+    .sticky-bar > .toolbar,
+    .sticky-bar > .progress-card {
+      background: var(--surface-2);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
     /* Toolbar: arama + ≡ düğmesi tek satırda */
     .toolbar {
       grid-template-columns: 1fr auto;
@@ -1650,6 +1711,16 @@
     }
     .progress-label .lbl-extra { display: none; }
     .bar { height: 5px; }
+
+    /* === Hero legend: dar mobil ekranda pill'ler tek sütun === */
+    .legend {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .legend .pill {
+      width: 100%;
+      justify-content: flex-start;
+    }
 
     /* === Diğer mobil ayarlar (önceki davranışla aynı) === */
     .cat-header { padding: 18px; flex-wrap: wrap; }
@@ -3400,6 +3471,68 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     if (openModalEl) return;
     close();
   });
+})();
+
+/* Hero "Hazırlayan" rozeti — gizli LinkedIn easter egg.
+   Kısa tıklama hiçbir şey yapmaz; ~3 sn basılı tutunca LinkedIn
+   profilim yeni sekmede açılır. Mouse ve dokunma için ayrı listener'lar
+   var; touchmove ile parmak çok kayarsa basış iptal olur (kullanıcı
+   sayfayı kaydırmaya çalışıyorsa kazara tetiklenmesin). */
+(function setupInstructorEasterEgg() {
+  const el = document.querySelector(".instructor");
+  if (!el) return;
+  const HOLD_MS = 3000;
+  const MOVE_TOLERANCE = 14;
+  const LINK = "https://www.linkedin.com/in/ozcan-orhan-demirci/";
+  let timer = null;
+  let triggered = false;
+  let startX = 0, startY = 0;
+
+  const start = () => {
+    cancel();
+    triggered = false;
+    el.classList.add("pressing");
+    timer = setTimeout(() => {
+      triggered = true;
+      el.classList.remove("pressing");
+      el.classList.add("triggered");
+      try { showToast("LinkedIn profili açılıyor…", "info", 1600); } catch {}
+      window.open(LINK, "_blank", "noopener,noreferrer");
+      setTimeout(() => el.classList.remove("triggered"), 800);
+      timer = null;
+    }, HOLD_MS);
+  };
+
+  const cancel = () => {
+    if (timer) { clearTimeout(timer); timer = null; }
+    el.classList.remove("pressing");
+  };
+
+  /* Mouse */
+  el.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    start();
+  });
+  el.addEventListener("mouseup", cancel);
+  el.addEventListener("mouseleave", cancel);
+
+  /* Touch */
+  el.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    start();
+  }, { passive: true });
+  el.addEventListener("touchmove", (e) => {
+    if (!timer) return;
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - startX) > MOVE_TOLERANCE
+     || Math.abs(t.clientY - startY) > MOVE_TOLERANCE) cancel();
+  }, { passive: true });
+  el.addEventListener("touchend", cancel);
+  el.addEventListener("touchcancel", cancel);
+
+  /* Mobil long-press menüsünü engelle */
+  el.addEventListener("contextmenu", (e) => e.preventDefault());
 })();
 
 /* Yardım butonu */
