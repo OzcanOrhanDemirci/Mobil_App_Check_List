@@ -1596,20 +1596,20 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* action-group kutusunu mobilde yok say (display: contents); tüm butonlar
+       doğrudan .actions flex container'ına çocuk olur, satıra sığabildikleri
+       kadar yan yana dizilirler. role="group" ve aria-label DOM'da kalır. */
     .action-group {
-      display: inline-flex;
-      flex-wrap: wrap;
-      width: auto;
-      padding: 0;
-      gap: 4px;
+      display: contents;
     }
     .action-group + .action-group::before { display: none; }
     .action-group + .action-group { border-top: 0; }
-    .action-group .btn {
+    .actions > .action-group > .btn {
       flex: 0 1 auto;
       min-width: 0;
-      font-size: 12px;
-      padding: 7px 10px;
+      font-size: 11.5px;
+      padding: 6px 9px;
+      white-space: nowrap;
     }
 
     /* === İlerleme kartı: 3 sütunlu kompakt hizalama === */
