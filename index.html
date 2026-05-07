@@ -11,6 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
+<link rel="manifest" href="manifest.webmanifest" id="manifestLink" />
 <script>(function(){try{var t=localStorage.getItem("agm_theme_v1")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <style>
   :root,
@@ -3756,9 +3757,18 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-/* ==================== PWA MANIFEST (DİNAMİK) ==================== */
+/* ==================== PWA MANIFEST ====================
+   http(s) ortamında <link rel="manifest" href="manifest.webmanifest">
+   statik referansı kullanılır. file:// ile (offline tek-dosya açılış)
+   manifest.webmanifest yüklenemediğinde blob URL'li bir manifest
+   üretip statik linki onunla değiştiririz — böylece offline indirilen
+   tek HTML dosyası da çalışır. */
 (function setupManifest() {
+  if (location.protocol !== "file:") return;
   try {
+    const existing = document.getElementById("manifestLink");
+    if (existing) existing.parentNode.removeChild(existing);
+
     const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#0b0f17"/><path d="M52 96 L84 128 L140 64" stroke="#f97316" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
     const iconUrl = "data:image/svg+xml," + encodeURIComponent(iconSvg);
     const manifest = {
@@ -3772,8 +3782,10 @@ document.addEventListener("keydown", (e) => {
       background_color: "#0b0f17",
       theme_color: "#0b0f17",
       icons: [
-        { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
-        { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+        { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
+        { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any" },
+        { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "maskable" },
+        { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "maskable" }
       ]
     };
     const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
@@ -3785,48 +3797,54 @@ document.addEventListener("keydown", (e) => {
   } catch (err) { /* sessizce geç */ }
 })();
 
-/* ==================== SERVICE WORKER (offline destek - GitHub Pages için) ==================== */
+/* ==================== SERVICE WORKER ====================
+   Gerçek bir sw.js dosyası kayıt için kullanılır — Chrome/Edge gibi
+   Chromium tabanlı tarayıcılarda PWA install prompt için ZORUNLU
+   (blob: URL'li SW kayıtları install kriterlerini geçmiyor).
+   Eğer ./sw.js yüklenemezse (file:// veya 404), blob URL'li bir
+   yedek SW devreye girer; Chromium yine reddederse sessizce geçilir. */
 (function setupServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
-  if (!window.isSecureContext) return; /* file:// veya http için gerek yok */
-  if (location.protocol !== "https:") return;
-  try {
-    const swCode = `
-      const CACHE_NAME = 'agm-mobil-kontrol-v2';
-      self.addEventListener('install', (e) => { self.skipWaiting(); });
-      self.addEventListener('activate', (e) => {
-        e.waitUntil(Promise.all([
-          caches.keys().then((keys) => Promise.all(
-            keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
-          )),
-          self.clients.claim()
-        ]));
-      });
-      self.addEventListener('fetch', (e) => {
-        if (e.request.method !== 'GET') return;
-        const url = new URL(e.request.url);
-        if (url.origin !== self.location.origin) return;
-        /* Network-first: online iken her zaman taze içerik göster, cache'i
-           arkaplanda güncelle. Offline iken cache'e düş. Bu sayede sunucu
-           güncellendiğinde kullanıcı bir sonraki ziyarette eski sürümü
-           görmez. */
-        e.respondWith(
-          fetch(e.request).then((response) => {
-            if (response && response.ok && response.type === 'basic') {
-              const clone = response.clone();
-              caches.open(CACHE_NAME).then((c) => c.put(e.request, clone));
-            }
-            return response;
-          }).catch(() => caches.match(e.request))
-        );
-      });
-    `;
-    const swBlob = new Blob([swCode], { type: "application/javascript" });
-    const swUrl = URL.createObjectURL(swBlob);
-    navigator.serviceWorker.register(swUrl, { scope: "./" }).catch(() => {
-      /* Bazı tarayıcılar blob URL ile sw'i reddedebilir; sessizce geç */
+  if (!window.isSecureContext) return;
+  if (location.protocol !== "https:" && location.protocol !== "http:") return;
+
+  navigator.serviceWorker.register("./sw.js", { scope: "./" })
+    .catch(() => {
+      /* sw.js bulunamadıysa (örn. tek-dosya offline kullanım) blob fallback */
+      try {
+        const swCode = `
+          const CACHE_NAME = 'agm-mobil-kontrol-v3';
+          self.addEventListener('install', (e) => { self.skipWaiting(); });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(Promise.all([
+              caches.keys().then((keys) => Promise.all(
+                keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+              )),
+              self.clients.claim()
+            ]));
+          });
+          self.addEventListener('fetch', (e) => {
+            if (e.request.method !== 'GET') return;
+            const url = new URL(e.request.url);
+            if (url.origin !== self.location.origin) return;
+            e.respondWith(
+              fetch(e.request).then((response) => {
+                if (response && response.ok && response.type === 'basic') {
+                  const clone = response.clone();
+                  caches.open(CACHE_NAME).then((c) => c.put(e.request, clone));
+                }
+                return response;
+              }).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: "application/javascript" });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl, { scope: "./" }).catch(() => {
+          /* Chromium blob URL'li SW'yi reddeder; sessizce geç */
+        });
+      } catch { /* sessizce */ }
     });
-  } catch { /* sessizce */ }
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
