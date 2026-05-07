@@ -943,6 +943,9 @@
     border-radius: 14px;
     box-shadow: var(--shadow);
     animation: modalSlide 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Yeni stacking context: ic z-index'ler buranın icinde calissin,
+       ust modal stacking context'ine kacmasin */
+    isolation: isolate;
   }
   @keyframes modalFade {
     from { opacity: 0; }
@@ -991,6 +994,8 @@
   }
   .modal-body {
     padding: 22px 24px;
+    position: relative;
+    z-index: 1;
   }
   .modal-body section {
     margin-bottom: 22px;
