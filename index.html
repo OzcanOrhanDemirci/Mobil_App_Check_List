@@ -1564,7 +1564,8 @@
     color: var(--text-mute) !important;
   }
 
-  /* Versiyon damgası */
+  /* Versiyon damgası — gizli github easter egg (hazirlayan rozeti
+     ile ayni davranis: 3 sn basili tut -> github.com/OzcanOrhanDemirci) */
   footer .foot-version {
     font-size: 10.5px;
     color: var(--text-mute);
@@ -1573,6 +1574,56 @@
     margin: 18px 0 0;
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     opacity: 0.7;
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  footer .foot-version:hover {
+    opacity: 1;
+    border-color: rgba(249, 115, 22, 0.32);
+    background: rgba(249, 115, 22, 0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.14);
+  }
+  footer .foot-version:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.10);
+  }
+  footer .foot-version::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.42), rgba(34, 197, 94, 0.36));
+    pointer-events: none;
+    z-index: 0;
+    transition: width 0s linear;
+  }
+  footer .foot-version.pressing::after {
+    width: 100%;
+    transition: width 3s linear;
+  }
+  footer .foot-version > * {
+    position: relative;
+    z-index: 1;
+  }
+  footer .foot-version.triggered {
+    opacity: 1;
+    color: var(--mvp);
+    border-color: var(--mvp);
+    background: var(--mvp-bg);
+    animation: instructorPulse 0.7s ease;
   }
   footer .foot-version .version-dot {
     color: var(--accent-2);
@@ -2140,7 +2191,7 @@
     <p class="foot-line foot-org">Alsancak Gençlik Merkezi · Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</p>
     <p class="foot-line foot-title">Mobil Uygulamanın Kalite Kontrol Listesi</p>
     <p class="foot-line foot-instructor"><span class="foot-label">Hazırlayan</span> Özcan Orhan Demirci</p>
-    <p class="foot-version">v1.0<span class="version-dot">·</span>Mayıs 2026</p>
+    <p class="foot-version" id="footVersion"><span>v1.0</span><span class="version-dot">·</span><span>Mayıs 2026</span></p>
   </footer>
 </div>
 
@@ -3495,31 +3546,26 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   });
 })();
 
-/* Hero "Hazırlayan" rozeti — gizli LinkedIn easter egg.
-   Kısa tıklama hiçbir şey yapmaz; ~3 sn basılı tutunca LinkedIn
-   profilim yeni sekmede açılır. Mouse ve dokunma için ayrı listener'lar
-   var; touchmove ile parmak çok kayarsa basış iptal olur (kullanıcı
-   sayfayı kaydırmaya çalışıyorsa kazara tetiklenmesin). */
-(function setupInstructorEasterEgg() {
-  const el = document.querySelector(".instructor");
+/* Long-press easter egg — generic kurulum.
+   Kısa tıklama hiçbir şey yapmaz; ~3 sn basılı tutunca verilen URL
+   yeni sekmede açılır. Mouse + dokunma desteklenir; parmak >14px
+   kayarsa basış iptal olur (kullanıcı sayfayı kaydırmaya çalışırsa
+   kazara tetiklenmesin). Mobilde context menü engellenir. */
+function setupLongPressEasterEgg(el, link, toastMsg) {
   if (!el) return;
   const HOLD_MS = 3000;
   const MOVE_TOLERANCE = 14;
-  const LINK = "https://www.linkedin.com/in/ozcan-orhan-demirci/";
   let timer = null;
-  let triggered = false;
   let startX = 0, startY = 0;
 
   const start = () => {
     cancel();
-    triggered = false;
     el.classList.add("pressing");
     timer = setTimeout(() => {
-      triggered = true;
       el.classList.remove("pressing");
       el.classList.add("triggered");
-      try { showToast("LinkedIn profili açılıyor…", "info", 1600); } catch {}
-      window.open(LINK, "_blank", "noopener,noreferrer");
+      try { showToast(toastMsg, "info", 1600); } catch {}
+      window.open(link, "_blank", "noopener,noreferrer");
       setTimeout(() => el.classList.remove("triggered"), 800);
       timer = null;
     }, HOLD_MS);
@@ -3555,7 +3601,19 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
   /* Mobil long-press menüsünü engelle */
   el.addEventListener("contextmenu", (e) => e.preventDefault());
-})();
+}
+
+/* Hero rozeti -> LinkedIn; footer versiyon damgası -> GitHub */
+setupLongPressEasterEgg(
+  document.querySelector(".instructor"),
+  "https://www.linkedin.com/in/ozcan-orhan-demirci/",
+  "LinkedIn profili açılıyor…"
+);
+setupLongPressEasterEgg(
+  document.getElementById("footVersion"),
+  "https://github.com/OzcanOrhanDemirci",
+  "GitHub profili açılıyor…"
+);
 
 /* Yardım butonu */
 document.getElementById("helpBtn").addEventListener("click", () => openModal("helpModal"));
