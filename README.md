@@ -1,2 +1,3 @@
-# Mobil_App_Check_List
-Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi
+# Mobil Uygulama Kalite Kontrol Listesi
+
+Geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi. Tek HTML dosyası, kurulabilir PWA.

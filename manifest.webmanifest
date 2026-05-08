@@ -1,7 +1,7 @@
 {
-  "name": "Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi",
-  "short_name": "AGM Kalite Kontrol",
-  "description": "Alsancak Gençlik Merkezi'nin Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu kapsamında, geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi.",
+  "name": "Mobil Uygulama Kalite Kontrol Listesi",
+  "short_name": "Kontrol Listesi",
+  "description": "Geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

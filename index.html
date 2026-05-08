@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi</title>
+<title>Mobil Uygulama Kalite Kontrol Listesi</title>
 <meta name="theme-color" content="#0b0f17" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="AGM Kontrol" />
+<meta name="apple-mobile-web-app-title" content="Kontrol Listesi" />
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%230b0f17%22%2F%3E%3Cpath%20d%3D%22M50%2090%20L80%20120%20L130%2060%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%2216%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E" />
 <link rel="manifest" href="manifest.webmanifest" id="manifestLink" />
-<script>(function(){try{var t=localStorage.getItem("agm_theme_v1")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem("mobil_kontrol_theme_v1")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <style>
   :root,
   [data-theme="dark"] {
@@ -139,14 +139,7 @@
     background-clip: text;
     color: transparent;
   }
-  .lede {
-    color: var(--text-dim);
-    max-width: 760px;
-    margin: 0 0 22px;
-    font-size: 15px;
-  }
-
-  /* Eğitmen rozeti (hero içinde h1 altı) — gizli linkedin easter egg.
+  /* Hazırlayan rozeti (hero içinde h1 altı), gizli linkedin easter egg.
      Hover ve aktif durumda basılabilir hissi verir; kısa tıklamada
      hiçbir şey olmaz, ~3 sn basılı tutmak ::after ile dolan progress
      gradient'i tamamlandığında profili açar. */
@@ -224,28 +217,156 @@
     letter-spacing: -0.005em;
   }
 
-  /* Legend */
-  .legend {
+  /* Hero kontrolleri: seviye filtreleri + framework seçici (eski legend yerine).
+     Bu sabit alan; sık değişmeyen UI elemanları toolbar'la karışmasın diye burada. */
+  .hero-controls {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
     margin-top: 20px;
+    flex-wrap: wrap;
   }
-  .legend .pill {
+  .level-filters {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .level-filter-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
-    border-radius: 999px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .level-filter-pill:hover {
+    background: var(--surface-2);
+    border-color: var(--text-mute);
+    color: var(--text);
+  }
+  .level-filter-pill.active.mvp {
+    background: var(--mvp-bg);
+    border-color: var(--mvp-border);
+    color: var(--mvp);
+    box-shadow: 0 0 0 3px var(--mvp-strong);
+  }
+  .level-filter-pill.active.release {
+    background: var(--release-bg);
+    border-color: var(--release-border);
+    color: var(--release);
+    box-shadow: 0 0 0 3px var(--release-strong);
+  }
+  .level-filter-pill.active.both {
+    background: rgba(239, 68, 68, 0.10);
+    border-color: rgba(239, 68, 68, 0.55);
+    color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+    font-weight: 600;
+  }
+  [data-theme="light"] .level-filter-pill.active.both {
+    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(220, 38, 38, 0.55);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
+  }
+
+  /* Hero framework seçici pill */
+  .hero-framework-pill {
+    appearance: none;
     border: 1px solid var(--border);
     background: var(--surface-3);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 999px;
     font-size: 13px;
-    color: var(--text-dim);
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
   }
-  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  .dot.mvp { background: var(--mvp); box-shadow: 0 0 0 4px var(--mvp-strong); }
-  .dot.release { background: var(--release); box-shadow: 0 0 0 4px var(--release-strong); }
-  .legend strong { color: var(--text); font-weight: 600; }
+  .hero-framework-pill:hover { background: var(--surface-2); border-color: var(--accent); }
+  .hero-framework-pill:disabled, .hero-framework-pill[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.6);
+  }
+  .hero-framework-pill .fw-pill-icon { font-size: 15px; line-height: 1; }
+  .hero-framework-pill .fw-pill-chevron {
+    color: var(--text-mute);
+    font-size: 11px;
+    margin-left: 2px;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .dot.mvp { background: var(--mvp); box-shadow: 0 0 0 3px var(--mvp-strong); }
+  .dot.release { background: var(--release); box-shadow: 0 0 0 3px var(--release-strong); }
+
+  /* Kilit butonu: aktif (kilitli) durumda yeşil tonlu, normalde nötr.
+     Sağdaki ikon kilit aç/kapalı durumunu göstermek için JS tarafından güncellenir. */
+  #lockBtn .lock-icon { font-size: 14px; line-height: 1; }
+  #lockBtn.locked {
+    background: var(--mvp-bg);
+    border-color: var(--mvp-border);
+    color: var(--mvp);
+  }
+  #lockBtn.locked:hover {
+    background: var(--mvp-strong);
+    border-color: var(--mvp);
+  }
+
+  /* body.locked iken: işaretler dondurulur, framework/reset/import disabled,
+     export/print görsel olarak vurgulanır (kullanıcı doğal aksiyonu görsün) */
+  body.locked .level {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+  /* Vurgulu Yazdır + Dışa Aktar — kilitli iken altın çerçeve + ışıma */
+  body.locked #printBtn,
+  body.locked #exportBtn {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18), 0 4px 14px rgba(249, 115, 22, 0.18);
+    font-weight: 600;
+  }
+  body.locked #exportBtn {
+    background: var(--hero-grad);
+    color: var(--text);
+  }
+  /* Kilit aktif iken hero-controls'un üstünde ince bir bilgi şeridi (ipucu) */
+  body.locked .hero::after {
+    content: "🔒 Liste kilitli — değiştirmek için 'Kilidi Aç'a bas";
+    display: block;
+    text-align: center;
+    background: var(--mvp-bg);
+    border: 1px solid var(--mvp-border);
+    border-radius: 999px;
+    color: var(--mvp);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    margin-top: 14px;
+  }
+
+  /* Seviye görünümü filtresi: karşı seviyenin satırını VE ilerleme bloğunu tamamen gizler.
+     Total ilerleme bloğu da gizlenir; tek seviye modunda kullanıcı sadece ilgili seviyeyi görür. */
+  body.view-mvp-only .level.release { display: none !important; }
+  body.view-mvp-only .progress-block[data-level="release"],
+  body.view-mvp-only .progress-block[data-level="total"] { display: none !important; }
+
+  body.view-release-only .level.mvp { display: none !important; }
+  body.view-release-only .progress-block[data-level="mvp"],
+  body.view-release-only .progress-block[data-level="total"] { display: none !important; }
 
   /* Toolbar */
   .toolbar {
@@ -322,6 +443,12 @@
     white-space: nowrap;
   }
   .btn:hover { background: var(--surface-3); border-color: #2c3445; }
+  .btn:disabled, .btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.6);
+  }
   .btn.primary {
     background: linear-gradient(180deg, var(--accent-2), var(--accent));
     color: #0b0f17;
@@ -351,7 +478,7 @@
     margin: 0;
   }
 
-  /* Mobil eylem aç/kapa düğmesi — masaüstünde gizli, mobilde görünür */
+  /* Mobil eylem aç/kapa düğmesi, masaüstünde gizli, mobilde görünür */
   .actions-toggle { display: none; }
   .actions-toggle .icon-close { display: none; }
 
@@ -867,7 +994,7 @@
     color: var(--accent-2);
   }
 
-  /* AI prompt kopyala — wrapper, ana buton, format seçenekleri */
+  /* AI prompt kopyala, wrapper, ana buton, format seçenekleri */
   .feature-ai-wrap {
     display: inline-flex;
     align-items: center;
@@ -1138,7 +1265,8 @@
     text-transform: none;
     letter-spacing: 0;
   }
-  .modal-confirm p {
+  .modal-confirm p,
+  .modal-confirm #confirmMessage {
     color: var(--text-dim);
     margin: 0 0 22px;
     font-size: 14px;
@@ -1147,6 +1275,147 @@
     display: flex;
     justify-content: center;
     gap: 10px;
+  }
+  /* Framework switch confirm yüksek bilgi yoğunluğunda; daha geniş modal */
+  .modal-content.modal-confirm.modal-confirm--wide {
+    max-width: 520px;
+  }
+
+  /* Framework değişimi onay UI'ı: mevcut → yeni kart akışı + etki listesi */
+  .fw-switch-confirm {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .fw-switch-confirm .fw-switch-intro {
+    text-align: center;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+  .fw-switch-row {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 10px;
+  }
+  .fw-switch-card {
+    flex: 1 1 0;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .fw-switch-card.from {
+    opacity: 0.78;
+  }
+  .fw-switch-card.to {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .fw-switch-tag {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9.5px;
+    color: var(--text-mute);
+    font-weight: 700;
+  }
+  .fw-switch-card.to .fw-switch-tag {
+    color: var(--accent);
+  }
+  .fw-switch-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin: 2px 0;
+  }
+  .fw-switch-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .fw-switch-arrow {
+    align-self: center;
+    font-size: 20px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* Etki listesi: işaretleri sıfırlanır vs korunur (renk-kodlu) */
+  .fw-switch-effects {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .fw-switch-effects li {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px !important;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text);
+    margin: 0 !important;
+    line-height: 1.4;
+  }
+  .fw-switch-effects li::before {
+    display: none !important;
+  }
+  .fw-switch-effects li.effect-clear {
+    border-color: rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .fw-switch-effects li.effect-keep {
+    border-color: var(--mvp-border);
+    background: var(--mvp-bg);
+  }
+  .fw-switch-effects .effect-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .fw-switch-effects li.effect-clear .effect-icon {
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+  }
+  .fw-switch-effects li.effect-keep .effect-icon {
+    background: var(--mvp-strong);
+    color: var(--mvp);
+  }
+  [data-theme="light"] .fw-switch-effects li.effect-clear {
+    background: rgba(239, 68, 68, 0.07);
+  }
+
+  @media (max-width: 460px) {
+    .fw-switch-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fw-switch-arrow {
+      transform: rotate(90deg);
+      align-self: center;
+    }
   }
   .btn.danger-solid {
     background: #dc2626;
@@ -1264,6 +1533,49 @@
     max-width: 540px;
     padding: 32px 30px 28px;
     text-align: center;
+    position: relative;
+  }
+  /* Sağ üst köşede sabit yardım butonu (her iki adımda da görünür) */
+  .welcome-help-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    z-index: 2;
+  }
+  .welcome-help-btn:hover {
+    background: var(--surface-3);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .welcome-help-btn > span:first-child {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0b0f17;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  @media (max-width: 420px) {
+    .welcome-help-btn .welcome-help-label { display: none; }
+    .welcome-help-btn { padding: 6px; }
   }
   .welcome-icon-wrap {
     width: 72px;
@@ -1346,18 +1658,201 @@
   .welcome-tip kbd {
     margin: 0 2px;
   }
-  #welcomeStart {
+  .welcome-cta {
     min-width: 200px;
     padding: 11px 18px;
     font-size: 14px;
   }
+  .welcome-cta:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.4);
+  }
+  /* Margin'i butona değil, butonu içeren konteynerlere ver — böylece step 2'de
+     welcomeBack + welcomeStart aynı yatay hizada kalır (welcome-actions üzerinde tek margin) */
+  .welcome-pane > .welcome-cta { margin-top: 22px; }
+  .welcome-actions { margin-top: 22px; }
+
+  /* 2 kademeli karşılama: adım göstergesi + pane geçişleri */
+  .welcome-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0 18px;
+  }
+  .welcome-step-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-mute);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+  .welcome-step-dot.active {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: #0b0f17;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18);
+  }
+  .welcome-step-dot.done {
+    background: var(--mvp);
+    color: #0b0f17;
+    border-color: var(--mvp);
+  }
+  .welcome-step-line {
+    width: 36px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    transition: background 0.2s ease;
+  }
+  .welcome-step-line.done {
+    background: var(--mvp);
+  }
+
+  .welcome-pane[hidden] { display: none; }
+
+  .welcome-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #welcomeBack {
+    min-width: auto;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
   @media (max-width: 540px) {
     .welcome-features {
       grid-template-columns: 1fr;
     }
+    .welcome-actions {
+      flex-direction: column-reverse;
+    }
+    .welcome-actions > .btn {
+      width: 100%;
+    }
   }
 
-  /* Promote banner — sayfa başında özel "Yükle" davet alanı */
+  /* Framework picker (welcome modalı içinde + framework switch modalı) */
+  .framework-pick {
+    text-align: left;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 16px 14px;
+    margin: 0 0 18px;
+  }
+  .framework-pick-q {
+    font-size: 14px !important;
+    font-weight: 600;
+    color: var(--text) !important;
+    margin: 0 0 4px !important;
+  }
+  .framework-pick-sub,
+  .framework-modal-sub {
+    font-size: 12.5px !important;
+    color: var(--text-dim) !important;
+    margin: 0 0 12px !important;
+    line-height: 1.5 !important;
+  }
+  .framework-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* Tek başına kalan 5. seçenek son satırda tam genişlik + yatay düzen
+     (yalnızca tek kalan tek-numaralı son element için, 4'lü grid'de etki yok) */
+  .framework-options > .framework-option:nth-child(odd):last-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-emoji {
+    font-size: 22px;
+    margin-bottom: 0;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-title {
+    font-size: 14px;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-desc {
+    font-size: 11.5px;
+    margin-left: 4px;
+  }
+  .framework-option {
+    appearance: none;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+  .framework-option:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .framework-option.selected {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .framework-option .fw-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .framework-option .fw-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .framework-option .fw-desc {
+    font-size: 11.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 420px) {
+    .framework-options { grid-template-columns: 1fr; }
+  }
+
+  .modal-content.modal-framework {
+    max-width: 520px;
+  }
+  .modal-content.modal-framework .modal-body {
+    padding-top: 4px;
+  }
+
+  /* Toolbar framework pill */
+  .framework-pill .fw-pill-icon {
+    font-size: 14px;
+    line-height: 1;
+    margin-right: 2px;
+  }
+  .framework-pill .fw-pill-label {
+    font-weight: 600;
+  }
+
+  /* Promote banner, sayfa başında özel "Yükle" davet alanı */
   .install-banner[hidden] {
     display: none !important;
   }
@@ -1565,7 +2060,7 @@
     color: var(--text-mute) !important;
   }
 
-  /* Versiyon damgası — gizli github easter egg (hazirlayan rozeti
+  /* Versiyon damgası, gizli github easter egg (hazirlayan rozeti
      ile ayni davranis: 3 sn basili tut -> github.com/OzcanOrhanDemirci) */
   footer .foot-version {
     font-size: 10.5px;
@@ -1764,24 +2259,23 @@
     .progress-label .lbl-extra { display: none; }
     .bar { height: 5px; }
 
-    /* === Hero legend: dar mobil ekranda pill'ler tek sutun === */
-    .legend {
+    /* === Hero kontrolleri: mobilde dikey istif === */
+    .hero-controls {
       flex-direction: column;
-      gap: 8px;
+      align-items: stretch;
+      gap: 10px;
     }
-    .legend .pill {
-      width: 100%;
-      align-items: flex-start;
-      line-height: 1.45;
-      padding: 9px 14px;
+    .level-filters {
+      justify-content: stretch;
     }
-    .legend .pill .dot {
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-    .legend .pill .pill-text {
+    .level-filter-pill {
       flex: 1 1 auto;
-      min-width: 0;
+      justify-content: center;
+      padding: 10px 12px;
+    }
+    .hero-framework-pill {
+      justify-content: center;
+      padding: 10px 14px;
     }
 
     /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */
@@ -1896,8 +2390,7 @@
 
     /* Tüm metinleri siyaha çevir */
     h1, h2, h3, h4, p, span, strong, li, td, th,
-    .lede, .feature-desc, .feature-head h3,
-    .legend strong, .legend .pill,
+    .feature-desc, .feature-head h3,
     .progress-label, .progress-label .num,
     .cat-header .title h2, .cat-header .title p,
     .cat-progress, .cat-progress .pct,
@@ -2036,20 +2529,10 @@
       break-inside: avoid !important;
     }
 
-    /* Hero üstündeki MVP / Release rozetleri (siyah arka planda yeşil/mavi yazı) */
-    .legend .pill {
-      color: #e5e7eb !important;
-    }
-    .legend .pill .dot.mvp ~ strong,
-    .legend .pill .dot.mvp + strong {
-      color: #4ade80 !important;
-    }
-    .legend .pill .dot.release ~ strong,
-    .legend .pill .dot.release + strong {
-      color: #60a5fa !important;
-    }
+    /* Hero kontrolleri (filtre pill'leri + framework seçici) yazdırmada gizlensin */
+    .hero-controls { display: none !important; }
 
-    /* Madde başlığı ve ID düzeni — yazdırmada kesilmeyi önler */
+    /* Madde başlığı ve ID düzeni, yazdırmada kesilmeyi önler */
     article.feature .feature-head {
       display: block !important;
       margin-bottom: 8px !important;
@@ -2101,21 +2584,29 @@
 <div class="wrap">
 
   <header class="hero">
-    <div class="eyebrow">Alsancak Gençlik Merkezi · Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</div>
-    <h1>Mobil Uygulamanın <em>Kalite Kontrol Listesi</em></h1>
+    <div class="eyebrow">MVP · Release · Kalite Kontrol</div>
+    <h1>Mobil Uygulama <em>Kalite Kontrol Listesi</em></h1>
     <div class="instructor">
       <span class="instructor-label">Hazırlayan</span>
       <span class="instructor-name">Özcan Orhan Demirci</span>
     </div>
-    <p class="lede">
-      Uygulamanın hangi seviyede olduğunu kendin değerlendirmen için hazırlanmış pratik bir kontrol listesi.
-      Her özellik iki seviyede sıralanmış: önce uygulamanın çalışmasını sağlayan <strong>temel özellikler (MVP)</strong>,
-      sonra mağazaya yüklenebilecek <strong>profesyonel kalite (Release)</strong> için olması gerekenler.
-      İşaretlemen tarayıcına otomatik kaydedilir.
-    </p>
-    <div class="legend">
-      <span class="pill"><span class="dot mvp"></span><span class="pill-text"><strong>MVP</strong>: Olmazsa olmaz, temel</span></span>
-      <span class="pill"><span class="dot release"></span><span class="pill-text"><strong>Release</strong>: Yayınlanabilir profesyonel kalite</span></span>
+    <div class="hero-controls">
+      <div class="level-filters" role="group" aria-label="Seviye görünümü">
+        <button type="button" class="level-filter-pill mvp" data-level-view="mvp" aria-pressed="false" title="Sadece MVP maddelerini göster">
+          <span class="dot mvp"></span><span>MVP</span>
+        </button>
+        <button type="button" class="level-filter-pill release" data-level-view="release" aria-pressed="false" title="Sadece Release maddelerini göster">
+          <span class="dot release"></span><span>Release</span>
+        </button>
+        <button type="button" class="level-filter-pill both active" data-level-view="both" aria-pressed="true" title="Hem MVP hem Release göster (varsayılan)">
+          <span>MVP + Release</span>
+        </button>
+      </div>
+      <button type="button" class="hero-framework-pill" id="frameworkBtn" title="Yazılım çerçevesini değiştir">
+        <span class="fw-pill-icon">🐦</span>
+        <span class="fw-pill-label">Flutter</span>
+        <span class="fw-pill-chevron" aria-hidden="true">▾</span>
+      </button>
     </div>
   </header>
 
@@ -2154,6 +2645,7 @@
         <button class="btn ghost btn-icon-text" id="themeToggle" title="Açık / Koyu tema"><span class="theme-icon">🌙</span><span class="theme-label">Koyu</span></button>
       </div>
       <div class="action-group" role="group" aria-label="Veri">
+        <button class="btn ghost btn-icon-text" id="lockBtn" title="Listeyi kilitle (işaretler/framework değişemez)"><span class="lock-icon">🔒</span><span class="lock-label">Kilit</span></button>
         <button class="btn ghost" id="exportBtn" title="İşaretlemeleri ve notları JSON olarak kaydet">Dışa Aktar</button>
         <button class="btn ghost" id="importBtn" title="Daha önce kaydettiğin JSON dosyasını yükle">İçe Aktar</button>
         <button class="btn danger" id="resetBtn" title="Tüm işaretleri temizle (notlar korunur)">Sıfırla</button>
@@ -2167,15 +2659,15 @@
 
   <div class="progress-card">
     <div class="progress-row">
-      <div class="progress-block">
+      <div class="progress-block" data-level="total">
         <div class="progress-label"><span>Toplam<span class="lbl-extra"> İlerleme</span></span><span class="num" id="total-num">0 / 0</span></div>
         <div class="bar total"><span id="total-bar"></span></div>
       </div>
-      <div class="progress-block">
+      <div class="progress-block" data-level="mvp">
         <div class="progress-label"><span style="color: var(--mvp);">MVP</span><span class="num" id="mvp-num">0 / 0</span></div>
         <div class="bar mvp-bar"><span id="mvp-bar"></span></div>
       </div>
-      <div class="progress-block">
+      <div class="progress-block" data-level="release">
         <div class="progress-label"><span style="color: var(--release);">Release</span><span class="num" id="release-num">0 / 0</span></div>
         <div class="bar release-bar"><span id="release-bar"></span></div>
       </div>
@@ -2189,8 +2681,7 @@
   <main id="content"></main>
 
   <footer>
-    <p class="foot-line foot-org">Alsancak Gençlik Merkezi · Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</p>
-    <p class="foot-line foot-title">Mobil Uygulamanın Kalite Kontrol Listesi</p>
+    <p class="foot-line foot-title">Mobil Uygulama Kalite Kontrol Listesi</p>
     <p class="foot-line foot-instructor"><span class="foot-label">Hazırlayan</span> Özcan Orhan Demirci</p>
     <p class="foot-version" id="footVersion"><span>v1.0</span><span class="version-dot">·</span><span>Mayıs 2026</span></p>
   </footer>
@@ -2214,113 +2705,340 @@
       <button class="modal-close" data-modal-close aria-label="Kapat">×</button>
     </header>
     <div class="modal-body">
-      <section>
-        <h3>Genel Bakış</h3>
-        <p>Bu kontrol listesi, mobil uygulamanın hangi seviyede olduğunu kendin değerlendirmen için hazırlanmıştır. <strong>13 kategoride 46 özellik</strong>, her özelliğin altında <strong>MVP (yeşil — olmazsa olmaz)</strong> ve <strong>Release (mavi — yayınlanabilir kalite)</strong> seviyeleri vardır.</p>
-      </section>
 
       <section>
-        <h3>İşaretleme ve İlerleme</h3>
-        <p>Bir maddeyi tamamladığında ilgili <strong>MVP</strong> veya <strong>Release</strong> kutusuna tıkla. Üstteki <strong>ilerleme barları</strong> tüm liste, MVP ve Release için ayrı ayrı yüzdeyi gösterir. Her kategorinin başlığında da kendi yüzdesi vardır.</p>
-        <p>İşaretlemen <strong>tarayıcıya otomatik kaydedilir</strong>. Tarayıcı temizlenmediği sürece korunur.</p>
-      </section>
-
-      <section>
-        <h3>Filtreleme</h3>
+        <h3>📋 Genel Bakış</h3>
+        <p>Bu uygulama, kendi geliştirdiğin <strong>mobil uygulamanın</strong> hangi seviyede olduğunu görmen ve eksiklerini fark etmen için hazırlanmış pratik bir <strong>kontrol listesidir</strong>.</p>
+        <p>Liste <strong>13 kategoride toplam 46 özellikten</strong> oluşur (proje planlama, tasarım, kod düzeni, API, güvenlik, yayın hazırlığı vb.).</p>
+        <p>Her özelliğin altında <strong>iki seviye</strong> vardır:</p>
         <ul>
-          <li><strong>MVP Eksik</strong> — sadece MVP seviyesi tamamlanmamış maddeleri gösterir</li>
-          <li><strong>Release Eksik</strong> — sadece Release seviyesi tamamlanmamış maddeleri gösterir</li>
-          <li><strong>Arama kutusu</strong> — başlık, açıklama veya içerik içinde anahtar kelime arar</li>
+          <li><strong style="color: var(--mvp);">🟢 MVP (yeşil)</strong>: Olmazsa olmaz, temel: uygulamanın <em>en azından çalışmasını</em> sağlayan minimum gereksinimler. Bu seviye tamamlanmadan uygulama yarım kalır.</li>
+          <li><strong style="color: var(--release);">🔵 Release (mavi)</strong>: Profesyonel kalite: uygulamanın <em>App Store / Play Store gibi mağazalara yüklenmeye hazır</em> hale gelmesi için olması gerekenler.</li>
         </ul>
+        <p>Yapacağın iş: her maddeyi okuyup, kendi uygulamanda yapıp yapmadığını işaretlemek. İlerledikçe yüzdelerin yükseldiğini göreceksin.</p>
       </section>
 
       <section>
-        <h3>Kategoriler</h3>
+        <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>iki adımda</strong> yardım eder:</p>
         <ul>
-          <li><strong>Kategori başlığına tıkla</strong> — o kategoriyi açıp kapatır</li>
-          <li><strong>Tümünü Aç</strong> — bütün kategorileri açar</li>
-          <li><strong>Tümünü Kapat</strong> — bütün kategorileri kapatır</li>
-        </ul>
-        <p>Sayfa ilk açıldığında bütün kategoriler kapalıdır. İhtiyacın olana tıklayarak açabilirsin.</p>
-      </section>
-
-      <section>
-        <h3>Madde Notları ve AI Yardımı</h3>
-        <p>Her maddenin altında iki buton vardır:</p>
-        <ul>
-          <li><strong>+ Not ekle</strong> — kendi açıklamanı veya hatırlatmanı yazabilirsin. Yazdığın anlık kaydedilir, notu olan maddeler turuncu işaretle gösterilir.</li>
-          <li><strong>🤖 AI'a sor</strong> — tıklayınca yanında iki seçenek açılır:
+          <li><strong>1. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
             <ul>
-              <li><strong>📝 Türkçe</strong> — Markdown formatında, başlangıç dostu, detaylı bir Türkçe prompt panoya kopyalar. Net adımlar, kod örneği, sık hatalar ve doğrulama testleri ister.</li>
-              <li><strong>{ } EN JSON</strong> — Yapılandırılmış İngilizce JSON formatında prompt kopyalar. AI'nın daha tutarlı çıktı vermesini sağlar; cevap yine Türkçedir. Daha gelişmiş kullanıcılar için.</li>
+              <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
+              <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
+              <li><strong>🍎 Swift</strong>: Apple'ın resmi yolu; sadece iPhone / iPad için yerel uygulamalar (<em>SwiftUI</em>).</li>
+              <li><strong>🤖 Kotlin</strong>: Google'ın resmi yolu; sadece Android için yerel uygulamalar (<em>Jetpack Compose</em>).</li>
+              <li><strong>🚀 Expo</strong>: React Native'in daha kolay hali; build / yayın işlerini bulutta yapar (<em>EAS Build</em>).</li>
+              <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
+          <li><strong>2. Adım: Hoş Geldin.</strong> Seçimi yaptıktan sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan <strong>"‹ Geri"</strong> ile dönebilirsin.</li>
         </ul>
-        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude veya Gemini</strong>'ye yapıştırarak adım adım yardım alabilirsin.</p>
+        <p>Seçtiğin framework, listedeki <strong>21 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır.</p>
       </section>
 
       <section>
-        <h3>Sunum Modu</h3>
-        <p><strong>Sunum</strong> butonuna basınca tek kategori tam ekran gösterilir. Sınıfta projeksiyona vurmak veya odaklanmış çalışmak için idealdir.</p>
+        <h3>✅ İşaretleme ve İlerleme Takibi</h3>
+        <p>Her maddenin altında MVP ve Release seviyeleri için <strong>tıklanabilir kutular</strong> vardır:</p>
         <ul>
-          <li><strong>← / →</strong> — kategoriler arasında gezinme</li>
-          <li><strong>Boşluk</strong> — sonraki kategori</li>
-          <li><strong>Esc</strong> — sunumdan çık</li>
+          <li>Bir maddeyi tamamladığında ilgili <strong>kutuya tıkla</strong>: kutu işaretlenir ve renkli arka plan alır.</li>
+          <li>Yanlışlıkla işaretlersen <strong>tekrar tıklayarak</strong> işareti kaldırabilirsin.</li>
+          <li>Aynı madde hem MVP hem Release seviyelerini ayrı ayrı işaretleyebilirsin.</li>
         </ul>
-      </section>
-
-      <section>
-        <h3>Veri Yönetimi</h3>
+        <p>Üstte sabit duran <strong>3 ilerleme barı</strong> hangisinin ne kadar tamamlandığını gösterir:</p>
         <ul>
-          <li><strong>Dışa Aktar</strong> — işaretlemelerin ve notların JSON dosyası olarak indirilir (yedek)</li>
-          <li><strong>İçe Aktar</strong> — daha önce dışa aktardığın dosyayı yükler</li>
-          <li><strong>Sıfırla</strong> — tüm işaretleri temizler (notlar korunur)</li>
+          <li><strong>Toplam İlerleme</strong>: bütün listenin yüzdesi (MVP + Release birlikte).</li>
+          <li><strong style="color: var(--mvp);">MVP</strong>: sadece yeşil seviyenin yüzdesi.</li>
+          <li><strong style="color: var(--release);">Release</strong>: sadece mavi seviyenin yüzdesi.</li>
+        </ul>
+        <p>Her kategori başlığında da <strong>o kategoriye ait kendi yüzdesi</strong> gözükür (örn. "60%, 6 / 10").</p>
+        <p><strong>📦 Otomatik Kayıt:</strong> İşaretlemen <strong>tarayıcına anında kaydedilir</strong>. Uygulamayı kapatıp tekrar açtığında kaldığın yerden devam edersin. Tarayıcı verisini temizlemediğin (veya gizli sekme kullanmadığın) sürece kaybolmaz.</p>
+        <p><strong>🎉 Kutlama:</strong> MVP'yi, Release'i veya tüm listeyi tamamladığında küçük bir kutlama ekranı gelir.</p>
+      </section>
+
+      <section>
+        <h3>🎯 Hero Filtreleri (MVP / Release / MVP+Release)</h3>
+        <p>Sayfanın üstündeki başlık alanında <strong>3 yuvarlak buton</strong> vardır. Bunlarla görüntüyü daraltır, sadece istediğin seviyeye odaklanırsın:</p>
+        <ul>
+          <li><strong style="color: var(--mvp);">🟢 MVP</strong>: Sadece MVP seviyesindeki maddeler görünür. Release satırları ve Release ilerleme barı tamamen <em>gizlenir</em> (yokmuş gibi olur). <em>Önce temel iskeleti tamamlamak istediğinde idealdir.</em></li>
+          <li><strong style="color: var(--release);">🔵 Release</strong>: Sadece Release seviyesi görünür. MVP gizlenir. <em>MVP'yi bitirip mağazaya hazırlık yaparken idealdir.</em></li>
+          <li><strong style="color: #ef4444;">🔴 MVP + Release</strong>: Her ikisi de görünür. <em>Varsayılan mod</em>, kırmızı renkle vurgulanır. Tüm liste açık.</li>
+        </ul>
+        <p>Tercihin <strong>kalıcı olarak kaydedilir</strong>; bir sonraki açılışta seçtiğin mod aktif kalır.</p>
+      </section>
+
+      <section>
+        <h3>🔄 Framework Değiştirme</h3>
+        <p>Üstteki başlık alanında <strong>framework butonu</strong> (örn. "🐦 Flutter ▾") vardır. Tıkladığında küçük bir pencere açılır ve <strong>farklı bir frameworke</strong> geçebilirsin.</p>
+        <p>Geçiş yaptığında:</p>
+        <ul>
+          <li>İlgili 21 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
+          <li><strong>İşaretlemelerin ve notların kaybolmaz</strong>: aynı kalır. Sadece anlatım dili / paket adları değişir.</li>
+          <li>İstediğin zaman tekrar değiştirebilirsin.</li>
         </ul>
       </section>
 
       <section>
-        <h3>Yazdırma ve PDF</h3>
-        <p><strong>Yazdır</strong> butonu veya <kbd>Ctrl+P</kbd> ile listeyi PDF olarak kaydedebilirsin. Yazdırma sırasında üstte kurs adı, altta hazırlayan bilgisi her sayfada otomatik görünür. Notlar yazdırma çıktısında gösterilmez.</p>
+        <h3>🔍 Toolbar Filtreleri ve Arama</h3>
+        <p>Üst toolbar'da, ekstra filtreler vardır:</p>
+        <ul>
+          <li><strong>MVP Eksik</strong>: Sadece <em>henüz işaretlenmemiş</em> MVP maddelerini gösterir. <em>"Hangi MVP'ler kaldı?"</em> sorusunu yanıtlar.</li>
+          <li><strong>Release Eksik</strong>: Sadece henüz işaretlenmemiş Release maddelerini gösterir.</li>
+          <li><strong>🔍 Arama Kutusu</strong>: Madde başlığı, açıklama veya içerik içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In".</li>
+        </ul>
+        <p><strong>💡 İpucu:</strong> Hero'daki "MVP" + toolbar'daki "MVP Eksik" filtresini birlikte kullanırsan ekran iyice odaklanır: sadece MVP seviyesi + sadece henüz yapılmamışlar.</p>
       </section>
 
       <section>
-        <h3>Tema</h3>
-        <p><strong>Koyu / Açık</strong> tema arasında geçiş yapabilirsin. Tercihin kaydedilir, bir sonraki açılışta hatırlanır.</p>
+        <h3>📂 Kategorileri Açma / Kapatma</h3>
+        <ul>
+          <li><strong>Kategori başlığına tıkla</strong>: sadece o kategori açılıp kapanır. Sağdaki ▾ ok yön gösterir.</li>
+          <li><strong>Tümünü Aç</strong> butonu, bütün kategorileri tek seferde açar.</li>
+          <li><strong>Tümünü Kapat</strong> butonu, bütün kategorileri tek seferde kapatır.</li>
+        </ul>
+        <p>Sayfa ilk açıldığında <strong>tüm kategoriler kapalıdır</strong> (sayfayı kalabalık göstermemek için). İhtiyacın olana tıklayarak açarsın. Açtığın / kapattığın durum tarayıcına kaydedilir; sonraki açılışta hatırlanır.</p>
       </section>
 
       <section>
-        <h3>Klavye Kısayolları</h3>
+        <h3>📝 Madde Notları</h3>
+        <p>Her maddenin altında <strong>"+ Not ekle"</strong> butonu vardır. Tıklayınca bir yazı alanı açılır.</p>
+        <ul>
+          <li>Buraya <strong>kendi açıklamanı, hatırlatmanı, problemini, kaynağını</strong> yazabilirsin. Örnekler:
+            <ul>
+              <li>"Bu maddeyi 12 Mayıs'ta hocaya soracağım"</li>
+              <li>"Şu pakete bak: <code>shared_preferences</code>"</li>
+              <li>"Tasarımı Figma'da yaptık, link: ..."</li>
+            </ul>
+          </li>
+          <li>Yazdığın <strong>her karakter anında otomatik kaydedilir</strong>: kaydet düğmesine basmana gerek yok.</li>
+          <li>Notu olan maddeler turuncu bir <strong>📝 işaretiyle</strong> vurgulanır; bulması kolaylaşır.</li>
+          <li><strong>"Notu temizle"</strong> butonu ile notu silebilirsin.</li>
+        </ul>
+        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir.</p>
+      </section>
+
+      <section>
+        <h3>🤖 AI'a Sor (Yapay Zekâ Yardımı)</h3>
+        <p>Her maddenin altında <strong>"🤖 AI'a sor"</strong> butonu vardır. Tıklayınca yanında <strong>2 seçenek</strong> açılır:</p>
+        <ul>
+          <li><strong>📝 Türkçe</strong>: Markdown formatında, yeni başlayanlar için detaylı bir Türkçe prompt panoya kopyalanır. Bu prompt:
+            <ul>
+              <li>Kavramı ve önemini açıklamasını ister</li>
+              <li>Adım adım uygulama yolunu ister</li>
+              <li>Çalışan bir kod örneği ister (Türkçe yorumlu)</li>
+              <li>Sık yapılan 2-3 hatayı sorar</li>
+              <li>Doğrulama testlerini ister</li>
+            </ul>
+          </li>
+          <li><strong>{ } EN JSON</strong>: Yapılandırılmış İngilizce JSON formatında prompt kopyalar. <em>Daha gelişmiş kullanıcılar için</em>; AI'nın daha tutarlı çıktı vermesini sağlar. Cevap yine Türkçe gelir.</li>
+        </ul>
+        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude, Gemini</strong> gibi sohbet botlarına yapıştırırsın; kapsamlı bir rehber alırsın.</p>
+        <p><strong>💡 Önemli:</strong> Prompt seçtiğin frameworke göre <strong>otomatik özelleşir</strong>: örneğin Flutter seçiliyken "<code>flutter pub add</code>" örnekleri verir, Kotlin seçiliyken Gradle dependency satırı.</p>
+      </section>
+
+      <section>
+        <h3>📺 Sunum Modu</h3>
+        <p><strong>"Sunum"</strong> butonuna basınca <em>tek bir kategori</em> tam ekranda gösterilir. Sınıfta <strong>projeksiyona vurmak</strong>, ekibe <strong>ilerleme raporu vermek</strong> veya tek bir konuya <strong>odaklanmak</strong> için idealdir.</p>
+        <ul>
+          <li><kbd>←</kbd> / <kbd>→</kbd>: önceki / sonraki kategori</li>
+          <li><kbd>Boşluk</kbd>: sonraki kategori (← / → alternatifi)</li>
+          <li><kbd>Esc</kbd>: sunum modundan çık</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>💾 Veri Yönetimi (Yedek Al / Geri Yükle / Sıfırla)</h3>
+        <ul>
+          <li><strong>Dışa Aktar</strong>: bütün işaretlemeleri ve notları tek bir <strong>JSON dosyası</strong> olarak bilgisayarına indirir. Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur.</li>
+          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seçerek <strong>tüm işaretler ve notlar geri yüklenir</strong>. Yeni cihazda devam etmek için kullanılır.</li>
+          <li><strong>Sıfırla</strong>: <em>tüm işaretleri</em> temizler. Notların korunur, sadece kutu işaretleri silinir. Önce <strong>onay sorulur</strong> (yanlışlıkla basmayasın diye).</li>
+        </ul>
+        <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>yedek almak</strong> iyi alışkanlıktır, çünkü tarayıcı verisi tarayıcı temizliğinde silinebilir.</p>
+      </section>
+
+      <section>
+        <h3>🖨 Yazdırma ve PDF</h3>
+        <p><strong>"Yazdır"</strong> butonu veya <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac'te <kbd>⌘</kbd>+<kbd>P</kbd>) ile listeyi yazıcıya gönderebilir veya <strong>PDF olarak kaydedebilirsin</strong>.</p>
+        <ul>
+          <li>Yazdırma sırasında <strong>üstte liste başlığı, altta hazırlayan bilgisi</strong> her sayfada otomatik tekrar eder.</li>
+          <li>Renkler (yeşil MVP, mavi Release) yazdırmada da korunur.</li>
+          <li>İçerik mantıklı yerden bölünür (madde ortadan kesilmez).</li>
+          <li>Sayfa kenarlıkları ve dolgular yazdırmaya uygun ayarlanmıştır.</li>
+          <li><strong>Notların ve filtre butonların</strong> yazdırma çıktısında <em>gözükmez</em> (sadece liste içeriği basılır).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>🌙 Tema (Koyu / Açık)</h3>
+        <p>Sağ üstteki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
+        <ul>
+          <li><strong>Koyu tema</strong>: gece veya az ışıklı ortamda gözü daha az yorar (<em>varsayılan</em>).</li>
+          <li><strong>Açık tema</strong>: gündüz ve aydınlık ortamlarda klasik beyaz görünüm.</li>
+        </ul>
+        <p>Tercihin kaydedilir; uygulamayı bir sonraki açılışında aynı tema gelir.</p>
+      </section>
+
+      <section>
+        <h3>📲 Uygulama Olarak Yükle (PWA)</h3>
+        <p>Bu kontrol listesini bilgisayarına veya telefonuna <strong>uygulama gibi yükleyebilirsin</strong>:</p>
+        <ul>
+          <li><strong>Mobilde:</strong> ana ekrana eklenir, ayrı bir ikon olarak açılır.</li>
+          <li><strong>Masaüstünde:</strong> başlat menüsüne / dock'a kısayol gelir.</li>
+          <li>Tek tıkla açılır, <strong>internet olmadan da çalışır</strong>.</li>
+        </ul>
+        <p>Sayfa açıldığında üstte beliren <strong>"📲 Yükle"</strong> banner'ı veya tarayıcının adres çubuğundaki "yükle" simgesi ile kurulum yapılır. Detaylı talimat için banner'a bas, cihazına göre adım adım gösterir.</p>
+      </section>
+
+      <section>
+        <h3>⌨️ Klavye Kısayolları</h3>
         <ul class="kbd-list">
           <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
-          <li><kbd>/</kbd><span>Arama kutusuna odaklan</span></li>
+          <li><kbd>/</kbd><span>Arama kutusuna odaklan (anında yazmaya başla)</span></li>
           <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
-          <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda kategoriler arası gezinme</span></li>
-          <li><kbd>Esc</kbd><span>Modalı veya sunumu kapat</span></li>
+          <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda önceki / sonraki kategori</span></li>
+          <li><kbd>Esc</kbd><span>Açık modal veya sunum modundan çık</span></li>
         </ul>
       </section>
+
+      <section>
+        <h3>💡 Pratik İpuçları</h3>
+        <ul>
+          <li><strong>Sırayla ilerle:</strong> Önce kategori 01'den başla; her kategori bir öncekine mantıklı bir devam gibi tasarlanmıştır (<em>planlama → tasarım → geliştirme → yayın</em>).</li>
+          <li><strong>İlk hedef MVP:</strong> Başlangıçta sadece "MVP" filtresine bas, sırf yeşil maddelere odaklan. Hepsini bitirince Release'e geç.</li>
+          <li><strong>AI'dan yararlan:</strong> Anlamadığın her madde için "🤖 AI'a sor" butonunu kullan. Saatlerce takılı kalmana gerek yok.</li>
+          <li><strong>Notlara yaz:</strong> Çözdüğünde <em>nasıl çözdüğünü</em>, <em>hangi paketi kullandığını</em> maddenin notuna yaz. İleride hatırlamak veya başkasına anlatmak için altın değerinde olur.</li>
+          <li><strong>Yedek al:</strong> Önemli aşamalarda "Dışa Aktar" ile JSON dosya indir.</li>
+          <li><strong>Sunumda göster:</strong> Hocaya / ekibe ilerleme raporu vereceksen "Sunum" modunda kategori kategori gez.</li>
+          <li><strong>Framework değiştirebilirsin:</strong> Aynı uygulamayı farklı bir frameworkle yeniden yapsan da işaretlerin korunur, yeni dilde nasıl yapıldığını öğrenirken kullanışlıdır.</li>
+        </ul>
+      </section>
+
     </div>
   </div>
 </div>
 
-<!-- Karşılama modalı (ilk açılışta) -->
+<!-- Karşılama modalı (ilk açılışta), 2 kademeli: 1) Framework seçimi  2) Hoşgeldin / nasıl kullanılır -->
 <div class="modal" id="welcomeModal" hidden>
   <div class="modal-backdrop"></div>
   <div class="modal-content modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <button type="button" class="welcome-help-btn" id="welcomeHelpBtn" title="Nasıl kullanılır? (Yardım)" aria-label="Yardım">
+      <span aria-hidden="true">?</span>
+      <span class="welcome-help-label">Yardım</span>
+    </button>
     <div class="welcome-icon-wrap">📱</div>
-    <div class="welcome-eyebrow">Alsancak Gençlik Merkezi<br>Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu</div>
+    <div class="welcome-eyebrow">Mobil Uygulama · Kalite Kontrol</div>
     <h2 id="welcomeTitle">Hoş Geldin!</h2>
-    <p class="welcome-lead">Bu web uygulaması, eğitim sürecinde geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
-    <p>13 kategoride 46 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
-    <ul class="welcome-features">
-      <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
-      <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
-      <li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li>
-      <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
-      <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li>
-      <li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>
-    </ul>
-    <p class="welcome-tip">İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.</p>
-    <button class="btn primary" id="welcomeStart">Tamam, Başlayalım</button>
+
+    <!-- Adım göstergesi -->
+    <div class="welcome-steps" aria-hidden="true">
+      <span class="welcome-step-dot active" data-step-dot="1">1</span>
+      <span class="welcome-step-line"></span>
+      <span class="welcome-step-dot" data-step-dot="2">2</span>
+    </div>
+
+    <!-- 1. Adım: Framework seçimi -->
+    <div class="welcome-pane" data-pane="1">
+      <p class="framework-pick-q">Hangi framework / dil ile çalışıyorsun?</p>
+      <p class="framework-pick-sub">Listede 21 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
+      <div class="framework-options" role="group" aria-label="Framework seçimi">
+        <button type="button" class="framework-option" data-welcome-fw="flutter">
+          <span class="fw-emoji">🐦</span>
+          <span class="fw-title">Flutter</span>
+          <span class="fw-desc">Dart · Cross-platform</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-fw="reactNative">
+          <span class="fw-emoji">⚛</span>
+          <span class="fw-title">React Native</span>
+          <span class="fw-desc">Bare CLI · JS / TS</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-fw="swift">
+          <span class="fw-emoji">🍎</span>
+          <span class="fw-title">Swift</span>
+          <span class="fw-desc">SwiftUI · iOS native</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-fw="kotlin">
+          <span class="fw-emoji">🤖</span>
+          <span class="fw-title">Kotlin</span>
+          <span class="fw-desc">Compose · Android native</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-fw="expo">
+          <span class="fw-emoji">🚀</span>
+          <span class="fw-title">Expo</span>
+          <span class="fw-desc">Managed RN · EAS Build</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-fw="pwa">
+          <span class="fw-emoji">🌐</span>
+          <span class="fw-title">PWA</span>
+          <span class="fw-desc">Web · Service Worker</span>
+        </button>
+      </div>
+      <button class="btn primary welcome-cta" id="welcomeNext" disabled>Devam etmek için framework seç</button>
+    </div>
+
+    <!-- 2. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="2" hidden>
+      <p class="welcome-lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
+      <p>13 kategoride 46 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
+      <ul class="welcome-features">
+        <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
+        <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
+        <li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li>
+        <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
+        <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li>
+        <li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>
+      </ul>
+      <p class="welcome-tip">İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.</p>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeBack">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeStart">Tamam, Başlayalım</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Framework değiştirme modalı (toolbar'dan açılır) -->
+<div class="modal" id="frameworkModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-framework" role="dialog" aria-modal="true" aria-labelledby="frameworkModalTitle">
+    <header class="modal-head">
+      <h2 id="frameworkModalTitle">Framework Seç</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="framework-modal-sub">21 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.</p>
+      <div class="framework-options" role="group" aria-label="Framework seçimi">
+        <button type="button" class="framework-option" data-switch-fw="flutter">
+          <span class="fw-emoji">🐦</span>
+          <span class="fw-title">Flutter</span>
+          <span class="fw-desc">Dart · Cross-platform</span>
+        </button>
+        <button type="button" class="framework-option" data-switch-fw="reactNative">
+          <span class="fw-emoji">⚛</span>
+          <span class="fw-title">React Native</span>
+          <span class="fw-desc">Bare CLI · JS / TS</span>
+        </button>
+        <button type="button" class="framework-option" data-switch-fw="swift">
+          <span class="fw-emoji">🍎</span>
+          <span class="fw-title">Swift</span>
+          <span class="fw-desc">SwiftUI · iOS native</span>
+        </button>
+        <button type="button" class="framework-option" data-switch-fw="kotlin">
+          <span class="fw-emoji">🤖</span>
+          <span class="fw-title">Kotlin</span>
+          <span class="fw-desc">Compose · Android native</span>
+        </button>
+        <button type="button" class="framework-option" data-switch-fw="expo">
+          <span class="fw-emoji">🚀</span>
+          <span class="fw-title">Expo</span>
+          <span class="fw-desc">Managed RN · EAS Build</span>
+        </button>
+        <button type="button" class="framework-option" data-switch-fw="pwa">
+          <span class="fw-emoji">🌐</span>
+          <span class="fw-title">PWA</span>
+          <span class="fw-desc">Web · Service Worker</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2356,7 +3074,7 @@
   <div class="modal-content modal-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
     <div class="modal-confirm-icon">!</div>
     <h3 id="confirmTitle">Emin misin?</h3>
-    <p id="confirmMessage">Bu işlem geri alınamaz.</p>
+    <div id="confirmMessage">Bu işlem geri alınamaz.</div>
     <div class="modal-confirm-actions">
       <button class="btn ghost" data-modal-close>İptal</button>
       <button class="btn danger-solid" id="confirmYes">Evet, devam et</button>
@@ -2440,8 +3158,32 @@ const DATA = [
       {
         id: "2.5", title: "Splash Screen ve Uygulama İkonu",
         desc: "Markanın ilk izlenimi: açılış ekranı ve uygulama ikonu.",
-        mvp: "Uygulama açılırken <strong>default Flutter/iOS/Android beyaz ekranı yerine kendi splash ekranı</strong> görünüyor. Uygulama ikonu özel tasarlanmış. Default Flutter logosu KULLANILMIYOR.",
-        release: "İkon <strong>tüm gerekli boyutlarda</strong> sağlandı (Android için adaptive icon, iOS için tüm @2x/@3x). Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+        variants: {
+          flutter: {
+            mvp: "Uygulama açılırken <strong>default Flutter/iOS/Android beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (örn. <code>flutter_native_splash</code> paketi ile). Uygulama ikonu özel tasarlanmış. Default Flutter logosu KULLANILMIYOR.",
+            release: "İkon <strong>tüm gerekli boyutlarda</strong> sağlandı (Android için adaptive icon, iOS için tüm @2x/@3x). Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+          },
+          reactNative: {
+            mvp: "Uygulama açılırken <strong>default React Native beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (örn. <code>react-native-bootsplash</code> ile). Uygulama ikonu özel tasarlanmış. Default React Native şablon logosu KULLANILMIYOR.",
+            release: "İkon <strong>tüm gerekli boyutlarda</strong> sağlandı (Android için adaptive icon, iOS için tüm @2x/@3x). Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+          },
+          swift: {
+            mvp: "Uygulama açılırken <strong>default Xcode beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (<code>LaunchScreen.storyboard</code> veya iOS 14+ için Info.plist'teki <code>UILaunchScreen</code> tanımı). Uygulama ikonu Asset Catalog'da (<code>AppIcon</code>) özel tasarlanmış. Default sistem ikonu KULLANILMIYOR.",
+            release: "İkon <strong>tüm gerekli boyutlarda</strong> Asset Catalog'da sağlandı (iPhone @2x/@3x, iPad, App Store 1024×1024 marketing icon). Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+          },
+          kotlin: {
+            mvp: "Uygulama açılırken <strong>default sistem beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (Android 12+ için <code>androidx.core:core-splashscreen</code> API'si veya temalı splash). Uygulama ikonu özel tasarlanmış. Default Android logosu KULLANILMIYOR.",
+            release: "İkon <strong>tüm gerekli boyutlarda</strong> sağlandı: <code>mipmap-mdpi</code>'den <code>mipmap-xxxhdpi</code>'ye kadar adaptive icon (foreground + background), Play Store için 512×512 yüksek çözünürlüklü ikon hazır. Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+          },
+          expo: {
+            mvp: "Uygulama açılırken <strong>default Expo beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (<code>expo-splash-screen</code> paketi + <code>app.json</code>/<code>app.config.js</code>'teki <code>expo.splash</code> konfigürasyonu). Uygulama ikonu <code>expo.icon</code> alanında tanımlı. Default Expo logosu KULLANILMIYOR.",
+            release: "<strong>Tek bir 1024×1024 ana ikon</strong> (<code>expo.icon</code>) yeterli; EAS Build sırasında platform-spesifik boyutlara (Android adaptive icon, iOS @2x/@3x, App Store marketing icon) otomatik dönüştürülür. <code>expo.android.adaptiveIcon</code> foreground/background ayrı tanımlı. Mağazada öne çıkacak güzellikte ve markanın kimliğini yansıtıyor."
+          },
+          pwa: {
+            mvp: "<strong><code>manifest.webmanifest</code></strong> dosyasında <code>theme_color</code> ve <code>background_color</code> tanımlı; tarayıcı boş ekran yerine markaya uygun zemin gösteriyor. <code>manifest.icons</code>'ta en az <code>192×192</code> ve <code>512×512</code> ikonlar tanımlı; tarayıcı 'Ana ekrana ekle' yapıldığında bu ikonlar kullanılıyor. Default framework template ikonu KULLANILMIYOR.",
+            release: "İkon <strong>tüm gerekli boyutlarda</strong>: <code>192×192</code> + <code>512×512</code> (zorunlu); <code>purpose: \"any\"</code> ve <code>purpose: \"maskable\"</code> her ikisi de tanımlı (Android adaptive icon için maskable şart). iOS Safari için <code>&lt;link rel=\"apple-touch-icon\" sizes=\"180×180\"&gt;</code> ayrıca tanımlı (Apple manifest icons'ı kullanmaz). Lighthouse PWA audit ✓ döndürüyor."
+          }
+        }
       },
       {
         id: "2.6", title: "Tüm Ekran Durumları (Loading / Empty / Error)",
@@ -2465,20 +3207,92 @@ const DATA = [
       {
         id: "3.1", title: "Geliştirme Ortamı Kurulumu",
         desc: "Bilgisayarda her şey hazır olmalı: SDK, IDE, emülatör, AI eklentileri.",
-        mvp: "<code>flutter doctor</code> (veya muadili) komutu çalışıyor ve büyük çoğunluğu ✓ işaretli. Bir <strong>IDE</strong> (Antigravity, Cursor, Android Studio) seçilmiş ve yapay zekâ asistanı aktif. <strong>Emülatör</strong> kurulmuş ve uygulama burada açılıyor.",
-        release: "Uygulama en az bir <strong>gerçek Android cihazda</strong> ve mümkünse bir iOS cihazda test edilmiş. Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+        variants: {
+          flutter: {
+            mvp: "<code>flutter doctor</code> komutu çalışıyor ve büyük çoğunluğu ✓ işaretli. Bir <strong>IDE</strong> (Antigravity, Cursor, Android Studio) seçilmiş ve yapay zekâ asistanı aktif. <strong>Emülatör</strong> kurulmuş ve uygulama burada açılıyor.",
+            release: "Uygulama en az bir <strong>gerçek Android cihazda</strong> ve mümkünse bir iOS cihazda test edilmiş. Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+          },
+          reactNative: {
+            mvp: "<code>npx react-native doctor</code> komutu çalışıyor ve büyük çoğunluğu ✓ işaretli. Node.js, Watchman, Xcode (iOS için) ve Android Studio kurulu. Bir <strong>IDE</strong> (Antigravity, Cursor, VS Code) seçilmiş ve yapay zekâ asistanı aktif. <strong>Emülatör/Simülatör</strong> kurulmuş ve uygulama burada açılıyor.",
+            release: "Uygulama en az bir <strong>gerçek Android cihazda</strong> ve mümkünse bir iOS cihazda test edilmiş. Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+          },
+          swift: {
+            mvp: "<strong>Xcode</strong> kurulu (App Store'dan veya Apple Developer portalından, en güncel kararlı sürüm). Komut satırı araçları (<code>xcode-select --install</code>) yüklü. Bir <strong>IDE</strong> (Xcode + opsiyonel Cursor/Antigravity yan editör) seçilmiş ve yapay zekâ asistanı aktif. <strong>iOS Simulator</strong> kurulmuş ve uygulama burada açılıyor.",
+            release: "Uygulama en az bir <strong>gerçek iPhone'da</strong> test edilmiş (Apple Developer hesabı ile USB üzerinden cihaza yüklenmiş). Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>iPad</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+          },
+          kotlin: {
+            mvp: "<strong>Android Studio</strong> kurulu (en güncel kararlı sürüm). JDK ve Android SDK yüklü, <code>adb</code> komutu çalışıyor. Bir <strong>IDE</strong> (Android Studio + opsiyonel Cursor/Antigravity yan editör) seçilmiş ve yapay zekâ asistanı aktif. <strong>Android Emulator</strong> kurulmuş ve uygulama burada açılıyor.",
+            release: "Uygulama en az bir <strong>gerçek Android cihazda</strong> test edilmiş (USB Debugging açık). Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş; yazılar kesilmiyor, butonlar yerinden kaymıyor, büyük ekranda gereksiz boş alan kalmıyor."
+          },
+          expo: {
+            mvp: "Node.js kurulu; <code>npx create-expo-app@latest</code> ile proje açılabiliyor. <code>npx expo-doctor</code> komutu ✓ döndürüyor. <strong>Expo Go</strong> uygulaması telefona kurulmuş (hızlı prototipleme için) VEYA bir <strong>development build</strong> (<code>npx expo run:ios / run:android</code> ya da EAS) hazır. Bir <strong>IDE</strong> (Antigravity, Cursor, VS Code) seçilmiş ve yapay zekâ asistanı aktif. <code>npx expo start</code> ile uygulama açılıyor.",
+            release: "Uygulama hem iOS Simulator hem Android Emulator'da test edildi. Production paritesi için <strong>development build</strong> veya <strong>EAS Build preview</strong> ile en az bir <strong>gerçek Android cihazda</strong> ve mümkünse iOS cihazda test edilmiş (Expo Go değil; native modüller burada çalışmaz). Küçük telefon (5\"), büyük telefon (6.7\") ve mümkünse <strong>tablet</strong> ekranında kontrol edilmiş."
+          },
+          pwa: {
+            mvp: "Modern bir tarayıcı (<strong>Chrome / Firefox / Safari / Edge</strong>) ve <strong>Node.js</strong> kurulu. Bir framework seçilmiş (Vite + React/Vue/Svelte, Next.js, Nuxt, SvelteKit, Astro, Remix, ya da vanilla HTML/JS). Bir <strong>IDE</strong> (Antigravity, Cursor, VS Code) seçilmiş ve yapay zekâ asistanı aktif. Geliştirme sunucusu (<code>npm run dev</code>) localhost'ta çalışıyor ve <strong>Chrome DevTools</strong>'un Application sekmesinden Service Worker / Manifest izlenebiliyor. <span class='hint'>Native simülatör/Xcode/Android Studio gerekmiyor, sadece tarayıcı.</span>",
+            release: "Uygulama <strong>Chrome (mobile + desktop), Safari (iOS + macOS), Firefox, Samsung Internet</strong> gibi büyük tarayıcılarda test edildi. <strong>Lighthouse audit</strong> mobil profilde çalıştırıldı (Performance, Accessibility, Best Practices, SEO, PWA puanları görüldü; PWA: ✓). Küçük telefon (5\"), büyük telefon (6.7\"), tablet ve masaüstü genişliklerinde <strong>responsive</strong> çalışıyor; standalone mod için <code>safe-area-inset</code> CSS'leri kullanılmış."
+          }
+        }
       },
       {
         id: "3.2", title: "Modüler Klasör Yapısı",
         desc: "Tüm kodun tek bir dosyada değil, mantıklı klasörlere ayrılması.",
-        mvp: "Her şey <code>main.dart</code> içinde DEĞİL. <strong>Ekranlar, widget'lar, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first yapıyla yaz\" demen yeterli.</span>",
-        release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/home/</code>). API çağrıları widget içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (Provider, Riverpod, Bloc vb.) tutarlı kullanılıyor."
+        variants: {
+          flutter: {
+            mvp: "Her şey <code>main.dart</code> içinde DEĞİL. <strong>Ekranlar, widget'lar, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first yapıyla yaz\" demen yeterli.</span>",
+            release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/home/</code>). API çağrıları widget içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (Provider, Riverpod, Bloc vb.) tutarlı kullanılıyor."
+          },
+          reactNative: {
+            mvp: "Her şey <code>App.tsx</code>/<code>App.js</code> içinde DEĞİL. <strong>Ekranlar, komponentler, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first yapıyla yaz\" demen yeterli.</span>",
+            release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/home/</code>). API çağrıları komponent içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (Redux Toolkit, Zustand, Jotai, MobX, Context API vb.) tutarlı kullanılıyor."
+          },
+          swift: {
+            mvp: "Her şey <code>ContentView.swift</code> veya <code>AppDelegate.swift</code> içinde DEĞİL. <strong>View'ler, Model'ler, ViewModel'ler</strong> ayrı klasör/grup'larda. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first MVVM yapıyla yaz\" demen yeterli.</span>",
+            release: "<strong>Feature klasörleri</strong> var (örn. <code>Features/Auth/</code>, <code>Features/Home/</code>). Network çağrıları View içinde değil, ayrı bir Service/Repository sınıfında. Bir mimari seçilmiş (MVVM, TCA / The Composable Architecture, Clean Architecture vb.) ve tutarlı kullanılıyor. State <code>@StateObject</code>, <code>@ObservedObject</code>, <code>@Observable</code> veya Combine ile yönetiliyor."
+          },
+          kotlin: {
+            mvp: "Her şey <code>MainActivity.kt</code> içinde DEĞİL. <strong>Composable'lar, Activity'ler, ViewModel'ler, modeller</strong> ayrı paketlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <span class='hint'>AI agent ile çalışırken bile temiz paket yapısı isteyebilirsin. Agent'a \"feature-first MVVM yapıyla yaz\" demen yeterli.</span>",
+            release: "<strong>Feature paketleri</strong> var (örn. <code>feature/auth/</code>, <code>feature/home/</code>). Network çağrıları Composable içinde değil, ayrı bir Repository/UseCase sınıfında. Bir mimari ve state management çözümü tutarlı kullanılıyor (MVVM + ViewModel + StateFlow, Hilt veya Koin ile Dependency Injection vb.). UI tarafında Jetpack Compose tercih ediliyor."
+          },
+          expo: {
+            mvp: "Her şey <code>App.tsx</code> veya <code>app/_layout.tsx</code> içinde DEĞİL. <strong>Ekranlar, komponentler, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. (Tercihen <strong><code>expo-router</code></strong> ile <strong>file-based routing</strong>: <code>app/</code> dizini içinde route'lar.) <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"expo-router ve feature-first yapıyla yaz\" demen yeterli.</span>",
+            release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/home/</code>) veya <code>expo-router</code> ile <code>app/</code> dizini route hiyerarşisi (group'lar, layouts, slot'lar). API çağrıları komponent içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (Zustand, Redux Toolkit, Jotai, Context API vb.) tutarlı kullanılıyor."
+          },
+          pwa: {
+            mvp: "Her şey tek bir HTML/JS dosyasında DEĞİL (basit landing page hariç). <strong>Sayfalar, komponentler, servisler, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. Framework varsa <strong>file-based routing</strong> tercih edilir (Next.js <code>app/</code>, SvelteKit <code>routes/</code>, Nuxt <code>pages/</code>, Astro <code>pages/</code>).",
+            release: "<strong>Feature klasörleri</strong> var (örn. <code>features/auth/</code>, <code>features/dashboard/</code>). API çağrıları komponent içinde değil, ayrı bir servis/repository sınıfında. Bir state management çözümü (TanStack Query + Zustand, Redux Toolkit, Pinia, Svelte stores, React Context vb.) tutarlı kullanılıyor. <strong><code>service-worker.js</code></strong> ayrı bir kaynak olarak yapılandırılmış (Workbox, Vite-PWA, next-pwa veya elle)."
+          }
+        }
       },
       {
         id: "3.3", title: "APK / IPA Çıktısı Alma",
         desc: "Uygulamayı paylaşılabilir/yüklenebilir bir paket olarak üretmek.",
-        mvp: "<code>flutter build apk</code> komutu ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. Arkadaşlarına test için APK gönderebiliyorsun.",
-        release: "Release modunda (debug değil) APK/AAB ve IPA üretildi. Kod <strong>obfuscated</strong> (tersine mühendisliğe karşı korunmuş). APK boyutu makul (50 MB altı tercih edilir). <strong>Kod imzalama</strong> (Android keystore, iOS certificate) tamamlandı."
+        variants: {
+          flutter: {
+            mvp: "<code>flutter build apk</code> komutu ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. Arkadaşlarına test için APK gönderebiliyorsun.",
+            release: "Release modunda (debug değil) APK/AAB ve IPA üretildi. Kod <strong>obfuscated</strong> (tersine mühendisliğe karşı korunmuş). APK boyutu makul (50 MB altı tercih edilir). <strong>Kod imzalama</strong> (Android keystore, iOS certificate) tamamlandı."
+          },
+          reactNative: {
+            mvp: "<code>cd android && ./gradlew assembleRelease</code> komutu ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. iOS için Xcode'da <code>Product → Archive</code> ile IPA üretiliyor. Arkadaşlarına test için APK gönderebiliyorsun.",
+            release: "Release modunda (debug değil) APK/AAB ve IPA üretildi. Hermes etkin; ProGuard/R8 ile <strong>kod obfuscated</strong> (tersine mühendisliğe karşı korunmuş). APK boyutu makul (50 MB altı tercih edilir). <strong>Kod imzalama</strong> (Android keystore, iOS certificate) tamamlandı."
+          },
+          swift: {
+            mvp: "Xcode'da <code>Product → Archive</code> ile <strong>IPA alınabiliyor</strong> (Ad-Hoc dağıtım veya Development imza ile). TestFlight'a yüklenebiliyor veya Apple Configurator ile arkadaşlarına test için gönderebiliyorsun.",
+            release: "Release konfigürasyonunda Archive üretildi, App Store Connect'e yüklenebiliyor. <strong>dSYM</strong> dosyaları ve symbolication ayarlandı (crash report'lar okunabilir). IPA boyutu makul (50 MB altı tercih edilir, App Thinning ile cihaza özel). <strong>Kod imzalama</strong> (Apple Developer certificate + provisioning profile) tamamlandı."
+          },
+          kotlin: {
+            mvp: "<code>./gradlew assembleRelease</code> (veya Android Studio'dan <code>Build → Generate Signed Bundle / APK</code>) ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. Arkadaşlarına test için APK gönderebiliyorsun.",
+            release: "Release modunda (debug değil) APK ve <strong>AAB (Android App Bundle)</strong> üretildi. <strong>R8/ProGuard</strong> ile kod minify edilmiş ve obfuscated (tersine mühendisliğe karşı korunmuş). APK boyutu makul (50 MB altı tercih edilir). <strong>Kod imzalama</strong> (Android keystore + signingConfigs) tamamlandı, AAB Play Console'a yüklenebiliyor."
+          },
+          expo: {
+            mvp: "<strong>EAS Build</strong> kullanıldı: <code>eas build --platform android --profile preview</code> ile internal-distribution <strong>APK alınabiliyor</strong> (cloud build, lokalde Xcode/Android Studio gerekmez). EAS hesabı açık ve <code>eas.json</code> hazır. Arkadaşlarına internal distribution link veya APK gönderebiliyorsun.",
+            release: "<code>eas build --platform all --profile production</code> ile <strong>release modunda</strong> AAB ve IPA üretildi (cloud). Hermes etkin; <strong>kod obfuscated</strong>. Build boyutu makul (50 MB altı tercih edilir). <strong>İmzalama EAS managed credentials</strong> ile otomatik (Android keystore + iOS certificate Expo sunucularında saklanıyor, kaybetme riski yok)."
+          },
+          pwa: {
+            mvp: "<strong><code>npm run build</code></strong> (veya framework karşılığı) ile production build üretildi (statik dosyalar <code>dist/</code> veya <code>build/</code> klasöründe). Build çıktısı bir host'a (<strong>Vercel, Netlify, Cloudflare Pages, Firebase Hosting, GitHub Pages</strong>) deploy edildi ve <strong>HTTPS URL</strong> ile erişilebiliyor. URL'i arkadaşlarına gönderebiliyorsun, telefonlarında 'Ana ekrana ekle' yapabiliyorlar. <span class='hint'>APK/IPA yok, PWA'da dağıtım URL üzerinden.</span>",
+            release: "Production deploy CI/CD ile otomatik (örn. <code>main</code> branch push → otomatik deploy). <strong>Service Worker</strong> üretim build'inde aktif ve cache stratejisi tanımlı (Workbox / Vite-PWA / next-pwa / Serwist vb.). Bundle boyutu makul (mobil için ana JS bundle <strong>200KB altı (gzip)</strong> tercih edilir). Code-splitting + tree-shaking aktif. Opsiyonel: <strong>PWABuilder veya Bubblewrap</strong> ile Play Store için TWA (Trusted Web Activity) AAB üretildi (Android keystore gerekir bu durumda)."
+          }
+        }
       }
     ]
   },
@@ -2527,8 +3341,32 @@ const DATA = [
       {
         id: "5.2", title: "API Anahtarı Güvenliği (.env)",
         desc: "API anahtarlarının kodda görünür olmaması ve uygulamadan tersine mühendislikle çalınamaması.",
-        mvp: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. <code>flutter_dotenv</code> veya muadili paket ile okunuyor. <code>.env</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı öğrenci projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
-        release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar mobil uygulamada hiç yok, Google'ın sunucularında saklanıyor. <strong>Cloud Console</strong>'dan anahtara IP/Bundle ID kısıtlaması ve günlük kota tanımlandı."
+        variants: {
+          flutter: {
+            mvp: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. <code>flutter_dotenv</code> veya muadili paket ile okunuyor. <code>.env</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+            release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar mobil uygulamada hiç yok, Google'ın sunucularında saklanıyor. <strong>Cloud Console</strong>'dan anahtara IP/Bundle ID kısıtlaması ve günlük kota tanımlandı."
+          },
+          reactNative: {
+            mvp: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. <code>react-native-config</code> veya <code>react-native-dotenv</code> ile okunuyor. <code>.env</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+            release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar mobil uygulamada hiç yok, Google'ın sunucularında saklanıyor. <strong>Cloud Console</strong>'dan anahtara IP/Bundle ID kısıtlaması ve günlük kota tanımlandı."
+          },
+          swift: {
+            mvp: "API anahtarı <strong><code>.xcconfig</code> dosyasında veya <code>Configuration.plist</code></strong>'te saklanıyor, Swift dosyasında hardcoded DEĞİL. Build configuration'a göre <code>Bundle.main.infoDictionary</code> üzerinden okunuyor. Hassas dosyalar <code>.gitignore</code>'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+            release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar uygulamada hiç yok, Apple/Google sunucularında saklanıyor. <strong>API Console</strong>'dan anahtara Bundle ID kısıtlaması ve günlük kota tanımlandı. Çalışma anında çekilen anahtarlar <strong>Keychain</strong>'de tutuluyor."
+          },
+          kotlin: {
+            mvp: "API anahtarı <strong><code>local.properties</code> veya <code>gradle.properties</code></strong> dosyasında saklanıyor, Kotlin kaynağında hardcoded DEĞİL. <code>BuildConfig</code> üzerinden veya Gradle build script ile okunuyor. <code>local.properties</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+            release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar uygulamada hiç yok, Google'ın sunucularında saklanıyor. <strong>Cloud Console</strong>'dan anahtara Application ID + SHA-1 fingerprint kısıtlaması ve günlük kota tanımlandı. Çalışma anında çekilen anahtarlar <strong>EncryptedSharedPreferences veya Android Keystore</strong>'da tutuluyor."
+          },
+          expo: {
+            mvp: "API anahtarı <strong><code>.env</code> dosyasında VEYA <code>app.config.js</code>'in <code>extra</code> alanında</strong> saklanıyor, koda yazılmamış. <code>expo-constants</code> ile <code>Constants.expoConfig.extra.X</code> üzerinden okunuyor. EAS build için <strong>EAS Secrets</strong> (<code>eas secret:create</code>) kullanılıyor. Hassas dosyalar .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor.</span>",
+            release: "<strong>Firebase AI Logic veya benzer bir backend proxy</strong> kullanılıyor; gerçek anahtar uygulamada hiç yok. Production secrets <strong>EAS Environment Variables</strong> (Expo Dashboard veya CLI) ile yönetiliyor; build sırasında inject ediliyor. <strong>Cloud Console</strong>'dan anahtara Bundle ID kısıtlaması ve günlük kota tanımlandı. Cihazda saklanan secret'lar <code>expo-secure-store</code>'da."
+          },
+          pwa: {
+            mvp: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. Framework convention'ına uygun prefix kullanılıyor (Vite: <code>VITE_X</code>, Next.js: <code>NEXT_PUBLIC_X</code>, Nuxt: <code>NUXT_PUBLIC_X</code>, CRA: <code>REACT_APP_X</code>). <code>.env</code>, .gitignore'da. <span class='hint'>UYARI: Public/client-side env değişkenleri build'e <strong>gömülür ve tarayıcıda görünür olur</strong>: gerçek gizli anahtarlar (server secret) bu değişkenlerde TUTULMAMALIDIR; sadece public anahtarlar (örn. Firebase apiKey, Stripe publishable key) tutulur.</span>",
+            release: "<strong>Gizli API anahtarları HİÇ tarayıcı kodunda yok</strong>: server-side (Next.js API route, Cloud Functions, Edge Function, Hono/Express backend) üzerinden proxy ediliyor. Public anahtarlar (Firebase Web config, Stripe publishable key) zaten görünür ve <strong>HTTP referrer (domain) kısıtlamasıyla</strong> güvende. Cloud Console'dan anahtara domain kısıtlaması ve günlük kota tanımlandı. Production env değişkenleri host platformunun (Vercel/Netlify/Cloudflare) secrets/env panelinden yönetiliyor."
+          }
+        }
       },
       {
         id: "5.3", title: "Hata Yönetimi ve Empatik UX",
@@ -2558,8 +3396,32 @@ const DATA = [
       {
         id: "6.1", title: "Firebase Projesi ve Authentication",
         desc: "Firebase'in uygulamaya bağlanması ve kullanıcıların kayıt olup giriş yapabilmesi.",
-        mvp: "Firebase Console'da proje açıldı, uygulamaya bağlandı. <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
-        release: "<strong>Google Sign-In + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. iOS yayını için <strong>Apple Sign-In</strong> de eklenmiş."
+        variants: {
+          flutter: {
+            mvp: "Firebase Console'da proje açıldı, uygulamaya bağlandı (FlutterFire CLI ile <code>flutterfire configure</code>). <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Google Sign-In + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. iOS yayını için <strong>Apple Sign-In</strong> de eklenmiş (App Store inceleme şartı)."
+          },
+          reactNative: {
+            mvp: "Firebase Console'da proje açıldı, uygulamaya bağlandı (<code>@react-native-firebase/app</code> veya Expo için <code>expo-firebase-core</code>). <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Google Sign-In + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. iOS yayını için <strong>Apple Sign-In</strong> de eklenmiş (App Store inceleme şartı)."
+          },
+          swift: {
+            mvp: "Firebase Console'da iOS app açıldı, <code>GoogleService-Info.plist</code> projeye eklendi (Xcode'a sürükle, Bundle Resource olarak). <code>FirebaseAuth</code> SPM ile eklendi. <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Apple Sign-In + Google Sign-In + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Apple Sign-In iOS için yerli (<code>AuthenticationServices</code> framework, ek paket gerekmez); App Store yayını için üçüncü taraf giriş varsa <strong>zorunludur</strong>. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor."
+          },
+          kotlin: {
+            mvp: "Firebase Console'da Android app açıldı, <code>google-services.json</code> <code>app/</code> klasörüne eklendi. <code>com.google.gms:google-services</code> Gradle plugin'i ve <code>firebase-auth-ktx</code> bağımlılığı eklendi. <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Google Sign-In (One Tap veya yeni Credential Manager API) + e-posta doğrulama + şifre sıfırlama</strong> akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. SHA-1 fingerprint Firebase Console'da kayıtlı (Google Sign-In için zorunlu)."
+          },
+          expo: {
+            mvp: "Firebase Console'da iOS+Android app açıldı. <strong>Firebase JS SDK</strong> (<code>firebase</code> npm paketi) entegre, bu seçenek <strong>Expo Go'da çalışır</strong>. Daha güçlü özellikler için <code>@react-native-firebase/*</code> kullanılırsa <strong>development build</strong> gerekir. <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş veya anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Google Sign-In</strong> (<code>expo-auth-session/providers/google</code>) + e-posta doğrulama + şifre sıfırlama akışı çalışıyor. Oturum kalıcı; uygulama kapatılıp açıldığında kullanıcı tekrar giriş yapmıyor. iOS yayını için <strong>Apple Sign-In</strong> (<code>expo-apple-authentication</code>) eklenmiş (App Store inceleme şartı). app.config.js'te bundle/package ID ve URL scheme yapılandırılmış."
+          },
+          pwa: {
+            mvp: "Firebase Console'da Web app açıldı, <strong>Firebase JS SDK</strong> (<code>firebase</code> npm paketi) entegre. Firebase config (apiKey, authDomain, projectId vb.) <code>.env</code> üzerinden okunuyor (public anahtarlar olduğu için tarayıcıda görünür olması güvenlik açığı değil). <strong>En az bir giriş yöntemi</strong> çalışıyor (e-posta/şifre, Google ile giriş popup/redirect, anonim). Kullanıcının UID'si alınıp Firestore'a kaydediliyor.",
+            release: "<strong>Google Sign-In</strong> (popup veya redirect) + e-posta doğrulama + şifre sıfırlama akışı çalışıyor. Oturum kalıcı (<code>browserLocalPersistence</code>); sayfa yenilense bile kullanıcı tekrar giriş yapmıyor. <strong>Authorized domains</strong> Firebase Console'da kayıtlı (production domain + test için <code>localhost</code>). Opsiyonel: <strong>WebAuthn / Passkey</strong> desteği için <code>signInWithCredential</code> akışı."
+          }
+        }
       },
       {
         id: "6.2", title: "Firestore (Bulut Veritabanı)",
@@ -2576,14 +3438,62 @@ const DATA = [
       {
         id: "6.4", title: "Firebase Storage ve Bildirimler (FCM)",
         desc: "Resim/dosya yükleme ve push bildirim altyapısı.",
-        mvp: "—",
-        release: "<strong>Firebase Storage</strong> ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre. Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre (<code>firebase_messaging</code>). Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre (<code>@react-native-firebase/messaging</code>). Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor."
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> (<code>FirebaseStorage</code> SPM) ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre (<code>FirebaseMessaging</code>). APNs key/certificate Firebase Console'da yüklü, Push Notifications capability Xcode'da aktif. Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> (<code>com.google.firebase:firebase-storage-ktx</code>) ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>FCM (Firebase Cloud Messaging)</strong> entegre (<code>com.google.firebase:firebase-messaging-ktx</code>). Kullanıcının cihaz token'ı kaydediliyor ve konsoldan test bildirimi gönderildiğinde uygulamaya ulaşıyor (Android 13+ için <code>POST_NOTIFICATIONS</code> izni alınmış)."
+          },
+          expo: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> (<code>firebase</code> JS SDK ile) entegre; profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. Push bildirim için <strong>Expo Push API</strong> (basit yol, FCM/APNs konfigürasyonu olmadan) veya <strong>FCM</strong> (development build + <code>@react-native-firebase/messaging</code>) entegre. Token kaydediliyor ve test bildirimi geliyor."
+          },
+          pwa: {
+            mvp: "—",
+            release: "<strong>Firebase Storage</strong> (<code>firebase</code> JS SDK) ile profil fotoğrafı veya benzer dosyalar yüklenip URL alınıyor, Firestore'a kaydediliyor. <strong>Web Push</strong> entegre, iki seçenek: (a) Firebase Cloud Messaging Web (<code>firebase/messaging</code>) ile FCM Web token alınıyor; (b) doğrudan <strong>VAPID key</strong> + <code>web-push</code> backend paketi ile native Web Push API. <strong>Service Worker</strong> push event'ini dinliyor. Test bildirimi gönderildiğinde tarayıcıya ulaşıyor."
+          }
+        }
       },
       {
         id: "6.5", title: "App Check (Sahte İstek Engelleme)",
         desc: "İsteğin gerçekten senin uygulamandan geldiğinden emin olma.",
-        mvp: "—",
-        release: "<strong>Firebase App Check</strong> aktif. Play Integrity (Android) ve App Attest (iOS) ile uygulamanın gerçekliği doğrulanıyor. Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. <strong>Play Integrity</strong> (Android) ve <strong>App Attest</strong> (iOS) ile uygulamanın gerçekliği doğrulanıyor. Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. <strong>Play Integrity</strong> (Android) ve <strong>App Attest</strong> (iOS) ile uygulamanın gerçekliği doğrulanıyor. Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. <strong>App Attest</strong> (iOS 14+) provider'ı ile uygulamanın gerçekliği doğrulanıyor (DeviceCheck fallback). Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. <strong>Play Integrity API</strong> provider'ı ile uygulamanın gerçekliği doğrulanıyor (Google Play tarafından imzalanmış olduğu kanıtlanır). Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          },
+          expo: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. Native modül entegrasyonu için <strong>development build / production build</strong> gerek (Expo Go'da çalışmaz; <code>@react-native-firebase/app-check</code> ile config plugin yapılandırılır). <strong>Play Integrity</strong> (Android) ve <strong>App Attest</strong> (iOS) ile uygulamanın gerçekliği doğrulanıyor. Sahte istemcilerin Firestore/Storage/AI Logic'e erişmesi engelleniyor. <span class='hint'>Authentication \"bu kullanıcı kim?\" sorusunu cevaplar; App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          },
+          pwa: {
+            mvp: "—",
+            release: "<strong>Firebase App Check</strong> aktif. Web için <strong>reCAPTCHA Enterprise</strong> (veya reCAPTCHA v3) provider'ı kullanılıyor; istek üreten her sayfada arka planda token alınıyor ve Firebase isteklerine ekleniyor. Sahte istemcilerin Firestore/Storage/Cloud Functions'a erişmesi engelleniyor. <span class='hint'>Native uygulamadaki Play Integrity / App Attest'in web karşılığı reCAPTCHA Enterprise. Authentication \"bu kullanıcı kim?\" sorusunu, App Check \"bu istek hangi uygulamadan?\" sorusunu cevaplar.</span>"
+          }
+        }
       }
     ]
   },
@@ -2595,20 +3505,92 @@ const DATA = [
       {
         id: "7.1", title: "Cihaza Kayıt (Tercih ve Veri Saklama)",
         desc: "Kullanıcı tercihlerinin ve verilerin cihazda saklanması.",
-        mvp: "<strong>Shared Preferences</strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
-        release: "Daha kompleks veriler için <strong>Hive, sqflite veya benzeri yerel veritabanı</strong> kullanılıyor. Hassas veriler (token, şifre) <strong>secure storage</strong>'da (Keychain/Keystore) tutuluyor, düz metin DEĞİL."
+        variants: {
+          flutter: {
+            mvp: "<strong>Shared Preferences</strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+            release: "Daha kompleks veriler için <strong>Hive, sqflite veya benzeri yerel veritabanı</strong> kullanılıyor. Hassas veriler (token, şifre) <strong>secure storage</strong>'da (Keychain/Keystore) tutuluyor, düz metin DEĞİL."
+          },
+          reactNative: {
+            mvp: "<strong>AsyncStorage</strong> (<code>@react-native-async-storage/async-storage</code>) ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+            release: "Daha kompleks veriler için <strong>MMKV, WatermelonDB, Realm veya SQLite (<code>op-sqlite</code>) gibi yerel veritabanı</strong> kullanılıyor. Hassas veriler (token, şifre) <code>react-native-keychain</code> ile <strong>secure storage</strong>'da (Keychain/Keystore) tutuluyor, düz metin DEĞİL."
+          },
+          swift: {
+            mvp: "<strong><code>UserDefaults</code></strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+            release: "Daha kompleks veriler için <strong>SwiftData (iOS 17+), Core Data, GRDB veya Realm</strong> kullanılıyor. Hassas veriler (token, şifre) <strong>Keychain Services</strong> API'si ile tutuluyor (<code>KeychainAccess</code> wrapper'ı yardımcı olur), düz metin DEĞİL."
+          },
+          kotlin: {
+            mvp: "<strong>SharedPreferences</strong> veya modern alternatifi <strong>Jetpack DataStore</strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+            release: "Daha kompleks veriler için <strong>Room (Jetpack, SQLite üzerinde) veya Realm</strong> yerel veritabanı kullanılıyor. Hassas veriler (token, şifre) <strong>EncryptedSharedPreferences</strong> veya doğrudan <strong>Android Keystore</strong> ile tutuluyor, düz metin DEĞİL."
+          },
+          expo: {
+            mvp: "<strong>AsyncStorage</strong> (<code>@react-native-async-storage/async-storage</code>) ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.",
+            release: "Daha kompleks veriler için <strong><code>expo-sqlite</code></strong> (yerel SQLite) veya development build ile <strong>MMKV / WatermelonDB</strong> kullanılıyor. Hassas veriler (token, şifre) <strong><code>expo-secure-store</code></strong> ile (arka planda iOS Keychain / Android Keystore) tutuluyor, düz metin DEĞİL."
+          },
+          pwa: {
+            mvp: "<strong><code>localStorage</code></strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Sayfa yenilense de tarayıcı temizlenmediği sürece tercihler hatırlanıyor. <span class='hint'>localStorage senkron ve string-only; kompleks veri için JSON.stringify gerekir, büyük veri için IndexedDB tercih edilmeli.</span>",
+            release: "Daha kompleks/yapısal veriler için <strong><code>IndexedDB</code></strong> doğrudan veya <code>idb</code> / <code>Dexie.js</code> / <code>localForage</code> wrapper'ları ile kullanılıyor. Hassas veriler (auth token) <strong><code>HttpOnly</code> + <code>Secure</code> + <code>SameSite=Lax/Strict</code> cookie</strong>'lerde tutuluyor (JS erişimi yok → XSS'ten korunur), tarayıcı storage'ında PLAIN tutulmuyor. Modern senaryoda kısa ömürlü access token + refresh token akışı."
+          }
+        }
       },
       {
         id: "7.2", title: "Offline Kullanım ve Cache",
         desc: "İnternet olmadığında uygulamanın kullanılabilir kalması.",
-        mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
-        release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor. Resimler için <code>cached_network_image</code> kullanılıyor."
+        variants: {
+          flutter: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor. Resimler için <code>cached_network_image</code> kullanılıyor."
+          },
+          reactNative: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor. Resimler için <code>react-native-fast-image</code> kullanılıyor (built-in cache, priority kontrolü)."
+          },
+          swift: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler <code>URLCache</code>, Core Data veya SwiftData ile cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor (<code>URLSession</code> background task veya custom queue). Resimler için <code>Kingfisher</code>, <code>SDWebImage</code> veya iOS 15+ yerli <code>AsyncImage</code> kullanılıyor."
+          },
+          kotlin: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler Room veya OkHttp cache ile cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>WorkManager</strong> ile otomatik senkronize oluyor. Resimler için <code>Coil</code> (Compose-friendly), <code>Glide</code> veya <code>Picasso</code> kullanılıyor."
+          },
+          expo: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. Önceden çekilen veriler cache'lenmiş, internet olmasa da okuma çalışıyor. Yazma işlemleri internet gelince <strong>otomatik senkronize</strong> oluyor (örn. <code>@tanstack/react-query</code> persist + retry, veya custom queue). Resimler için <strong><code>expo-image</code></strong> kullanılıyor (built-in disk cache, blurhash placeholder, animasyon desteği)."
+          },
+          pwa: {
+            mvp: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. <strong>Service Worker</strong> kayıtlı; daha önce yüklenmiş statik içerik (HTML/CSS/JS, resimler) <strong>Cache API</strong>'de tutuluyor. <code>navigator.onLine</code> kontrol ediliyor.",
+            release: "<strong>Offline-first</strong> yaklaşım uygulanmış. <strong>Service Worker</strong> stratejisi tanımlı (Workbox tercihen): static assets <code>precache</code> + dinamik içerik <code>stale-while-revalidate</code> veya <code>cache-first</code>. Offline'da yapılan yazma istekleri <strong>Background Sync API</strong> ile internet gelince otomatik gönderiliyor (Workbox <code>BackgroundSyncPlugin</code>). Resimler için lazy-load (<code>loading=\"lazy\"</code>) ve modern format (WebP/AVIF) kullanılıyor; <code>srcset</code> ile responsive."
+          }
+        }
       },
       {
         id: "7.3", title: "Bildirimler (Yerel ve Push)",
         desc: "Kullanıcıyı zamanında uyaran hatırlatma ve push bildirimleri.",
-        mvp: "—",
-        release: "Bildirim izni anlamlı bir noktada (uygulamanın değer önerisinden sonra) isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (\"yarın 9'da hatırlatma\") veya <strong>FCM push bildirimleri</strong> çalışıyor. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (deep-link)."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "Bildirim izni anlamlı bir noktada (uygulamanın değer önerisinden sonra) isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (<code>flutter_local_notifications</code> ile \"yarın 9'da hatırlatma\") veya <strong>FCM push bildirimleri</strong> (<code>firebase_messaging</code>) çalışıyor. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (deep-link)."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "Bildirim izni anlamlı bir noktada (uygulamanın değer önerisinden sonra) isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (<code>notifee</code> veya <code>@notifee/react-native</code>) veya <strong>FCM push</strong> (<code>@react-native-firebase/messaging</code>) çalışıyor. iOS için APNs sertifikası/key Firebase Console'da yüklü. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (deep-link)."
+          },
+          swift: {
+            mvp: "—",
+            release: "Bildirim izni (<code>UNUserNotificationCenter.requestAuthorization</code>) anlamlı bir noktada isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (<code>UNUserNotificationCenter</code> ile schedule) veya <strong>APNs push</strong> (Firebase Cloud Messaging veya doğrudan APNs) çalışıyor. <strong>Push Notifications capability</strong> Xcode'da etkin, APNs key/certificate yüklü. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (deep-link, <code>UNNotificationResponse</code>)."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "Android 13+ için <code>POST_NOTIFICATIONS</code> runtime izni anlamlı bir noktada isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (<code>NotificationManagerCompat</code> + <code>NotificationChannel</code> Android 8+) veya <strong>FCM push</strong> (<code>com.google.firebase:firebase-messaging-ktx</code>) çalışıyor. Bildirime tıklayan kullanıcı doğru ekrana gidiyor (PendingIntent + deep-link)."
+          },
+          expo: {
+            mvp: "—",
+            release: "Bildirim izni (<code>expo-notifications</code> ile <code>requestPermissionsAsync</code>) anlamlı bir noktada isteniyor; uygulama açılır açılmaz değil. <strong>Yerel bildirimler</strong> (<code>scheduleNotificationAsync</code>) veya <strong>push</strong> çalışıyor. Push için iki seçenek: (a) <strong>Expo Push API</strong>: kendi backend'inden Expo'ya gönderirsin, FCM/APNs yapılandırmasıyla uğraşmazsın; (b) doğrudan FCM/APNs (development build gerekir). Bildirime tıklayan kullanıcı doğru ekrana gidiyor (<code>expo-router</code> deep-link)."
+          },
+          pwa: {
+            mvp: "—",
+            release: "Bildirim izni (<code>Notification.requestPermission()</code>) anlamlı bir noktada (kullanıcı değer önerisinden sonra) isteniyor; sayfa açılır açılmaz değil (modern tarayıcılar zaten engeller). <strong>Web Push</strong> kuruldu: <strong>VAPID key</strong> üretildi (<code>web-push</code> npm paketi ile), <strong>Service Worker</strong> <code>push</code> event'ini dinliyor ve <code>self.registration.showNotification()</code> ile gösteriyor. Push subscription backend'e kaydediliyor. Bildirime tıklayan kullanıcı doğru sayfaya gidiyor (<code>notificationclick</code> event + <code>clients.openWindow</code>). <span class='hint'>iOS Safari için Web Push iOS 16.4+ ve PWA 'Add to Home Screen' standalone mode gerek.</span>"
+          }
+        }
       }
     ]
   },
@@ -2620,20 +3602,92 @@ const DATA = [
       {
         id: "8.1", title: "Manuel Test ve Edge Case Senaryoları",
         desc: "Köşedeki durumların elle test edilmesi.",
-        mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
-        release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı cihaz tipinde</strong> (küçük ekran + büyük ekran) test edildi. En az 3-5 dış kullanıcıyla beta test yapıldı."
+        variants: {
+          flutter: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı cihaz tipinde</strong> (küçük ekran + büyük ekran) test edildi. En az 3-5 dış kullanıcıyla beta test yapıldı."
+          },
+          reactNative: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı cihaz tipinde</strong> (küçük ekran + büyük ekran) test edildi. En az 3-5 dış kullanıcıyla beta test yapıldı."
+          },
+          swift: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı iPhone tipinde</strong> (küçük ekran 5\" + büyük ekran 6.7\") ve mümkünse iPad'de test edildi. <strong>Dynamic Type</strong> (büyük yazı) ve dark mode için özel kontrol yapıldı. En az 3-5 dış kullanıcıyla TestFlight beta yapıldı."
+          },
+          kotlin: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı Android cihaz tipinde</strong> (küçük ekran + büyük ekran) ve mümkünse tablet/foldable'da test edildi. Farklı API level'larında (Android 9, 12, 14) kontrol yapıldı. En az 3-5 dış kullanıcıyla Play Console internal testing beta yapıldı."
+          },
+          expo: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>Uçak modunda</strong> davranışı kontrol edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>İki farklı cihaz tipinde</strong> (küçük + büyük ekran) test edildi. Production paritesi için <strong>development build</strong> üzerinde de denendi (Expo Go değil). En az 3-5 dış kullanıcıyla beta test yapıldı (<code>eas update</code> preview channel veya TestFlight/Play Console)."
+          },
+          pwa: {
+            mvp: "Ana akış (giriş → temel eylem → çıkış) baştan sona test edildi. <strong>Boş input, çok uzun input, özel karakterler</strong> denendi; uygulama çökmüyor. <strong>DevTools → Network → Offline</strong> ile kapalıyken davranışı kontrol edildi. <strong>Mobil emülasyon</strong> (DevTools device toolbar) ile küçük ekran, tablet ve masaüstü genişliklerinde test edildi.",
+            release: "Test plan dökümanı var. Her sprint sonunda regression test yapılıyor. <strong>En az 3 farklı tarayıcı</strong> (Chrome, Safari, Firefox) ve <strong>2 farklı cihaz tipinde</strong> (mobil + masaüstü) test edildi. iOS Safari'de PWA standalone mod (Ana ekrana ekle sonrası) ayrıca test edildi. En az 3-5 dış kullanıcıyla beta test yapıldı (staging URL üzerinden, App Store onay süreci yok)."
+          }
+        }
       },
       {
         id: "8.2", title: "Performans ve Akıcılık",
         desc: "Uygulamanın takılmadan çalışması, 60 fps'in korunması.",
-        mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
-        release: "Resimler <strong>lazy loaded</strong> ve doğru boyutta optimize edilmiş. <strong>Gereksiz rebuild</strong> yok (DevTools ile kontrol edildi). Memory leak yok; uzun kullanımda uygulama yavaşlamıyor. APK boyutu makul tutulmuş."
+        variants: {
+          flutter: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+            release: "Resimler <strong>lazy loaded</strong> ve doğru boyutta optimize edilmiş. <strong>Flutter DevTools</strong> Performance overlay ile gereksiz rebuild yok. Memory leak yok; uzun kullanımda uygulama yavaşlamıyor. APK boyutu makul tutulmuş (split-per-abi, tree shaking aktif)."
+          },
+          reactNative: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+            release: "Resimler <strong>lazy loaded</strong> ve doğru boyutta optimize edilmiş. <strong>Hermes profiler</strong> veya <strong>Flipper</strong> ile gereksiz re-render yok (<code>React.memo</code>, <code>useMemo</code>, <code>useCallback</code> doğru kullanılıyor). Memory leak yok. APK boyutu makul (Hermes etkin, ProGuard/R8 minify)."
+          },
+          swift: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps (Pro Motion'da 120 fps) çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+            release: "Resimler <strong>lazy loaded</strong> ve doğru boyutta optimize edilmiş. <strong>Xcode Instruments</strong> (Time Profiler, Allocations, Leaks) ile profiling yapıldı; gereksiz View redraw yok. Memory leak yok; <code>weak</code> reference cycle'lar kontrol edildi. IPA boyutu makul (App Thinning ile cihaza özel)."
+          },
+          kotlin: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps (yüksek hızlı ekranlarda 90/120 fps) çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+            release: "Resimler <strong>lazy loaded</strong> (Coil/Glide) ve doğru boyutta optimize edilmiş. <strong>Android Studio Profiler</strong> ile CPU/Memory/Network profiling yapıldı; gereksiz Composable recomposition yok (stable parameters, <code>derivedStateOf</code>, <code>remember</code> doğru kullanılıyor). Memory leak yok (LeakCanary ile doğrulandı). APK boyutu makul (R8 minify aktif, AAB kullanılıyor)."
+          },
+          expo: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor.",
+            release: "Resimler <strong><code>expo-image</code></strong> ile lazy loaded ve doğru boyutta optimize edilmiş. <strong>React DevTools Profiler</strong> ile gereksiz re-render yok (<code>React.memo</code>, <code>useMemo</code> doğru kullanılıyor). Hermes etkin. Build boyutu makul. (Production paritesi development build üzerinde test edildi.)"
+          },
+          pwa: {
+            mvp: "Ekran <strong>geçişleri ve scroll</strong> takılmadan çalışıyor. Sayfa açılışı çok yavaş değil (<strong>LCP 2.5 sn altı</strong>). Resimler ekranda görünmeden önce sayfayı kilitlemiyor (<code>loading=\"lazy\"</code> + <code>width</code>/<code>height</code> ile CLS engellenmiş).",
+            release: "Resimler <strong>lazy loaded</strong> (<code>loading=\"lazy\"</code>), modern format (<strong>WebP/AVIF</strong>) ve <code>srcset</code> ile responsive sunulmuş. <strong>Lighthouse Performance</strong> puanı <strong>90+</strong> (mobil profilde). <strong>Core Web Vitals</strong> geçer: LCP &lt; 2.5 sn, CLS &lt; 0.1, INP &lt; 200 ms. JS bundle gzipped boyutu makul (ana bundle <strong>200KB altı</strong> tercih edilir). <strong>Code-splitting</strong> + route-based lazy loading uygulanmış. Tree-shaking aktif."
+          }
+        }
       },
       {
-        id: "8.3", title: "Crashlytics ve Çökme Takibi",
+        id: "8.3", title: "Çökme ve Hata Takibi",
         desc: "Kullanıcılarda oluşan çökmelerin senin haberin olmadan kaydedilmesi.",
-        mvp: "—",
-        release: "<strong>Firebase Crashlytics</strong> entegre. Release sürümünde de çalışıyor. Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Uygulamada non-fatal hatalar (yakalanmış ama anormal) da loglanıyor."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>Firebase Crashlytics</strong> (<code>firebase_crashlytics</code>) entegre. Release sürümünde de çalışıyor. <code>FlutterError.onError</code> ve <code>PlatformDispatcher.instance.onError</code> Crashlytics'e bağlanmış. Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Non-fatal hatalar (yakalanmış ama anormal) da loglanıyor."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>Firebase Crashlytics</strong> (<code>@react-native-firebase/crashlytics</code>) entegre. Release sürümünde de çalışıyor. JS hataları için <code>setJSExceptionHandler</code> veya Sentry RN entegrasyonu eklenmiş. Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Non-fatal hatalar da loglanıyor."
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>Firebase Crashlytics</strong> (<code>FirebaseCrashlytics</code> SPM) entegre. Release konfigürasyonunda da çalışıyor. dSYM upload script'i Xcode build phase'inde tanımlı (sembolize edilmiş stack trace için). Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Non-fatal hatalar (<code>Crashlytics.crashlytics().record(error:)</code>) da loglanıyor."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Firebase Crashlytics</strong> (<code>com.google.firebase:firebase-crashlytics-ktx</code>) entegre. Release variant'ında da çalışıyor. Crashlytics Gradle plugin yapılandırılmış (mappingFileUploadEnabled). Konsoldan hangi cihazda hangi hatanın oluştuğunu görebiliyorsun. Non-fatal hatalar (<code>FirebaseCrashlytics.getInstance().recordException(e)</code>) da loglanıyor."
+          },
+          expo: {
+            mvp: "—",
+            release: "Çökme takibi için <strong>Sentry</strong> (<code>sentry-expo</code> veya <code>@sentry/react-native</code>) önerilen yol, Expo Go ile uyumlu setup mevcut. Veya <strong>Firebase Crashlytics</strong> (<code>@react-native-firebase/crashlytics</code>, development build gerekir). Release sürümünde aktif. Source map'ler upload edilmiş (minify edilmiş kodda hata satırı görünür). Non-fatal hatalar da loglanıyor."
+          },
+          pwa: {
+            mvp: "—",
+            release: "<strong>Sentry</strong> (veya <strong>LogRocket</strong>, <strong>Bugsnag</strong>, <strong>Rollbar</strong>) entegre. Tarayıcıda <strong>uncaught error</strong> ve <strong>unhandled promise rejection</strong>'lar otomatik yakalanıyor. Production sürümünde de çalışıyor. <strong>Source map</strong>'ler upload edilmiş (minify edilmiş kodda hata satırı okunabilir). Konsoldan hangi tarayıcı/OS'te hangi hatanın oluştuğunu görebiliyorsun. Non-fatal hatalar (<code>Sentry.captureException</code>) da loglanıyor."
+          }
+        }
       }
     ]
   },
@@ -2645,8 +3699,32 @@ const DATA = [
       {
         id: "9.1", title: "HTTPS ve İzinler",
         desc: "Tüm trafiğin şifreli olması ve sadece gerekli izinlerin istenmesi.",
-        mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. Manifest/Info.plist içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
-        release: "Her izin için <strong>açıklama metni (purpose string)</strong> yazılı ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor; yani özellik kullanıldığında, açılışta değil."
+        variants: {
+          flutter: {
+            mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. AndroidManifest.xml ve Info.plist içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
+            release: "Her izin için <strong>açıklama metni (purpose string)</strong> yazılı ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor; yani özellik kullanıldığında, açılışta değil. <code>permission_handler</code> paketi tutarlı kullanılıyor."
+          },
+          reactNative: {
+            mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. AndroidManifest.xml ve Info.plist içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
+            release: "Her izin için <strong>açıklama metni (purpose string)</strong> yazılı ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor; yani özellik kullanıldığında, açılışta değil. <code>react-native-permissions</code> tutarlı kullanılıyor."
+          },
+          swift: {
+            mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK (App Transport Security default; istisnasız). <strong><code>Info.plist</code></strong> içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum, App Tracking izinleri kaldırılmış).",
+            release: "Her izin için <strong>purpose string</strong> (<code>NSCameraUsageDescription</code>, <code>NSLocationWhenInUseUsageDescription</code>, <code>NSPhotoLibraryUsageDescription</code> vb.) yazılı ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor (özellik kullanıldığında, açılışta değil)."
+          },
+          kotlin: {
+            mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK (Network Security Config default cleartextTrafficPermitted=false). <strong><code>AndroidManifest.xml</code></strong> içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
+            release: "Her tehlikeli (dangerous) izin için <strong>runtime permission rationale</strong> dialog'u gösteriliyor ve anlamlı (örn. \"Profil fotoğrafı yüklemek için kamera erişimi\"). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor; modern <code>ActivityResultContracts.RequestPermission</code> API'si ile yönetiliyor."
+          },
+          expo: {
+            mvp: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. <code>app.json</code>/<code>app.config.js</code> içinde <code>ios.infoPlist</code> ve <code>android.permissions</code> üzerinden <strong>sadece kullandığın izinler</strong> tanımlı (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).",
+            release: "Her izin için <strong>purpose string</strong> anlamlı yazılı (<code>expo-camera</code>, <code>expo-location</code> gibi modüller kullanıldığında otomatik enjekte edilir; manuel için <code>app.config.js</code>'te <code>ios.infoPlist.NSCameraUsageDescription</code> vb.). Kullanıcı reddederse uygulama çökmeyen bir alternatif sunuyor. İzinler <strong>just-in-time</strong> isteniyor (ilgili expo modülünün kendi <code>requestPermissionsAsync()</code> API'si ile)."
+          },
+          pwa: {
+            mvp: "Uygulama <strong>HTTPS</strong> üzerinden serve ediliyor (PWA için ZORUNLU; localhost test hariç). <strong>Mixed content yok</strong> (sayfada hiçbir HTTP kaynağı yok, resim, script, font dahil). <code>manifest.webmanifest</code>'te yalnızca kullanılacak özelliklere uygun ayarlar var.",
+            release: "<strong>HSTS</strong> (<code>Strict-Transport-Security</code>) header'ı set edilmiş (modern host'lar otomatik). Browser API izinleri (kamera, mikrofon, konum, bildirim, clipboard) <strong>just-in-time</strong> isteniyor, kullanıcı ilgili özelliği kullanmaya başladığında, sayfa açılışında değil. Reddedilirse uygulama çökmeyen bir alternatif sunuyor. <strong>Permissions API</strong> (<code>navigator.permissions.query</code>) ile mevcut durum kontrol ediliyor. Güvenlik header'ları (CSP, X-Frame-Options, Referrer-Policy) host platformundan ayarlanmış."
+          }
+        }
       },
       {
         id: "9.2", title: "Privacy Policy ve KVKK Uyumu",
@@ -2670,8 +3748,32 @@ const DATA = [
       {
         id: "10.2", title: "Çoklu Dil (Lokalizasyon)",
         desc: "Uygulamanın birden fazla dilde sunulması.",
-        mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde dağılmış değil, bir yerden yönetiliyor.",
-        release: "<code>flutter_localizations</code> + ARB dosyaları (veya muadili) ile <strong>en az 2 dil</strong> destekleniyor. Kullanıcı uygulama içinden dil değiştirebiliyor veya cihazın diline otomatik uyum sağlıyor."
+        variants: {
+          flutter: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde dağılmış değil, bir yerden yönetiliyor.",
+            release: "<code>flutter_localizations</code> + ARB dosyaları (veya muadili) ile <strong>en az 2 dil</strong> destekleniyor. Kullanıcı uygulama içinden dil değiştirebiliyor veya cihazın diline otomatik uyum sağlıyor."
+          },
+          reactNative: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde dağılmış değil, bir yerden yönetiliyor.",
+            release: "<code>i18next</code> + <code>react-i18next</code> (veya <code>react-native-localize</code> + <code>i18n-js</code>) ile JSON sözlük dosyaları üzerinden <strong>en az 2 dil</strong> destekleniyor. Kullanıcı uygulama içinden dil değiştirebiliyor veya cihazın diline otomatik uyum sağlıyor."
+          },
+          swift: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde değil, <code>Localizable.strings</code> (veya iOS 16+ için <strong>String Catalog</strong>: <code>.xcstrings</code>) dosyasından yönetiliyor.",
+            release: "<strong><code>Localizable.strings</code></strong> dosyaları (veya iOS 16+ için <strong>String Catalog</strong>) ile <strong>en az 2 dil</strong> destekleniyor. Metinler <code>String(localized:)</code> veya SwiftUI'de doğrudan key ile çekiliyor. Kullanıcı cihazın diline otomatik uyum sağlıyor; uygulama içi dil değiştirme için iOS 13+ <code>Bundle</code> swap yaklaşımı veya iOS 16+ <code>UIApplication.openSettings</code> akışı kullanılıyor."
+          },
+          kotlin: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde değil, <code>res/values/strings.xml</code> dosyasından yönetiliyor.",
+            release: "<strong><code>res/values/strings.xml</code></strong> + <strong><code>res/values-tr/strings.xml</code></strong>, <strong><code>res/values-en/strings.xml</code></strong> dosyaları ile <strong>en az 2 dil</strong> destekleniyor. Cihazın diline otomatik uyum sağlanıyor; uygulama içinden dil değiştirme için Android 13+ <code>AppCompatDelegate.setApplicationLocales()</code> (per-app language) kullanılıyor."
+          },
+          expo: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde dağılmış değil, JSON sözlük dosyalarından yönetiliyor.",
+            release: "<strong><code>expo-localization</code></strong> + <code>i18n-js</code> (veya <code>i18next</code> / <code>react-i18next</code>) ile JSON sözlük dosyaları üzerinden <strong>en az 2 dil</strong> destekleniyor. Cihaz dili <code>Localization.getLocales()</code> ile algılanıyor. Kullanıcı uygulama içinden dil değiştirebiliyor veya cihazın diline otomatik uyum sağlıyor."
+          },
+          pwa: {
+            mvp: "Uygulamada <strong>tutarlı tek bir dil</strong> kullanılıyor; Türkçe-İngilizce karışık ekran yok. Tüm metinler kod içinde değil, JSON sözlük dosyalarından yönetiliyor. <code>&lt;html lang=\"tr\"&gt;</code> doğru tanımlı (erişilebilirlik + SEO için).",
+            release: "<strong><code>i18next</code></strong> + <code>react-i18next</code> / <code>vue-i18n</code> / <code>svelte-i18n</code> (veya <code>react-intl</code> / <code>formatjs</code>) ile JSON sözlük dosyaları üzerinden <strong>en az 2 dil</strong> destekleniyor. Tarayıcı dili <code>navigator.language</code> ile algılanıyor. Kullanıcı uygulama içinden dil değiştirebiliyor; URL path veya query param ile dil korunabiliyor (<code>/tr/...</code> veya <code>?lang=tr</code>), SEO için tercih edilir. <code>&lt;html lang&gt;</code> dinamik güncelleniyor; <code>&lt;link rel=\"alternate\" hreflang=\"...\"&gt;</code> tag'leri ekli."
+          }
+        }
       }
     ]
   },
@@ -2683,20 +3785,92 @@ const DATA = [
       {
         id: "11.1", title: "Uygulama İsmi, Paket Adı ve İmzalama",
         desc: "Uygulamanın kimliği ve resmi yayın paketi.",
-        mvp: "Default \"Flutter Demo\" yerine <strong>kendi uygulama ismi</strong> var. Paket adı (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz. Uygulama ikonu özel tasarlanmış.",
-        release: "Android için <strong>keystore</strong> oluşturuldu ve güvenli yedekte (kaybedilirse Play Store'a yeni sürüm yüklenemez). iOS için <strong>certificate ve provisioning profile</strong> hazır. Release modunda imzalı build çıkıyor."
+        variants: {
+          flutter: {
+            mvp: "Default \"Flutter Demo\" yerine <strong>kendi uygulama ismi</strong> var. Paket adı (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz. Uygulama ikonu özel tasarlanmış.",
+            release: "Android için <strong>keystore</strong> oluşturuldu ve güvenli yedekte (kaybedilirse Play Store'a yeni sürüm yüklenemez). iOS için <strong>certificate ve provisioning profile</strong> hazır. Release modunda imzalı build çıkıyor."
+          },
+          reactNative: {
+            mvp: "Default React Native şablon ismi yerine <strong>kendi uygulama ismi</strong> var. Paket adı anlamlı ve benzersiz; iOS için <code>Bundle Identifier</code>, Android için <code>applicationId</code> (örn. <code>com.takim.uygulama</code>) güncellendi. Uygulama ikonu özel tasarlanmış.",
+            release: "Android için <strong>keystore</strong> oluşturuldu ve güvenli yedekte (kaybedilirse Play Store'a yeni sürüm yüklenemez). iOS için <strong>certificate ve provisioning profile</strong> hazır. Release modunda imzalı build çıkıyor."
+          },
+          swift: {
+            mvp: "Default \"My App\" / \"Untitled\" yerine <strong>kendi uygulama ismi</strong> var (Display Name). <strong>Bundle Identifier</strong> (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz; Apple Developer hesabında App ID olarak kayıtlı. Uygulama ikonu Asset Catalog'da özel tasarlanmış.",
+            release: "iOS için <strong>certificate ve provisioning profile</strong> hazır (Apple Developer Program üyeliği aktif, $99/yıl). Distribution certificate güvenli yedekte (.p12 export'u). Release konfigürasyonunda imzalı IPA çıkıyor; App Store Connect'e veya Ad-Hoc dağıtıma uygun."
+          },
+          kotlin: {
+            mvp: "Default şablon ismi yerine <strong>kendi uygulama ismi</strong> var (<code>AndroidManifest.xml</code> + <code>strings.xml</code>'deki <code>app_name</code>). <strong><code>applicationId</code></strong> (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz, <code>build.gradle.kts</code>'te tanımlı. Uygulama ikonu mipmap'lerde özel tasarlanmış.",
+            release: "Android için <strong>keystore (.jks)</strong> oluşturuldu ve güvenli yedekte (kaybedilirse Play Store'a yeni sürüm yüklenemez). <code>signingConfigs</code> block'unda yapılandırıldı, anahtar/şifreler <code>local.properties</code>'ten okunuyor. Release modunda imzalı AAB çıkıyor; Play Console'a yüklenebiliyor."
+          },
+          expo: {
+            mvp: "Default Expo şablon ismi yerine <code>app.json</code>/<code>app.config.js</code>'te <strong>kendi uygulama ismi</strong> (<code>expo.name</code>) tanımlı. <strong><code>expo.ios.bundleIdentifier</code></strong> ve <strong><code>expo.android.package</code></strong> (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz. Uygulama ikonu (<code>expo.icon</code> 1024×1024) özel tasarlanmış.",
+            release: "<strong>EAS managed credentials</strong> (önerilen): <code>eas credentials</code> ile keystore + provisioning profile EAS sunucularında saklanıyor (kaybetme riski yok, ekipte paylaşım kolay). Apple Developer Program + Google Play Developer hesapları aktif. <code>eas build --profile production</code> ile imzalı build çıkıyor; <code>eas submit</code> ile mağazalara yükleniyor."
+          },
+          pwa: {
+            mvp: "<strong><code>manifest.webmanifest</code></strong> dosyası tanımlı: <code>name</code>, <code>short_name</code>, <code>description</code>, <code>start_url</code>, <code>scope</code>, <code>display: \"standalone\"</code>, <code>theme_color</code>, <code>background_color</code>, <code>orientation</code>. Default framework template ismi yerine <strong>kendi uygulama ismi</strong> var. <code>&lt;link rel=\"manifest\" href=\"/manifest.webmanifest\"&gt;</code> HTML head'inde.",
+            release: "<strong>HTTPS sertifikası</strong> production domain'inde aktif (Let's Encrypt veya host'un yerli SSL'i, Vercel/Netlify/Cloudflare otomatik yönetir). Domain'in kendisi 'imza' rolünde, kullanıcılar bu URL'in senin uygulaman olduğuna domain SSL'i üzerinden güveniyor (kod imzalama PWA'da YOK). Opsiyonel: <strong>PWABuilder veya Bubblewrap</strong> ile Play Store için TWA (Trusted Web Activity) imzalı AAB üretildi (bu durumda Android keystore gerekir)."
+          }
+        }
       },
       {
         id: "11.2", title: "Mağaza Metadatası ve Ekran Görüntüleri",
         desc: "Store sayfasında görünen başlık, açıklama, görseller.",
-        mvp: "—",
-        release: "<strong>Başlık (max 30 karakter)</strong>, kısa ve uzun açıklamalar yazılı. Anahtar kelimeler (iOS keywords) dolu. <strong>En az 5 ekran görüntüsü</strong> doğru çözünürlükte (iPhone 6.7\" + Android Phone). Ekran görüntülerinde başlık metinleri ve markalı tasarım var."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>Başlık (max 30 karakter)</strong>, kısa ve uzun açıklamalar yazılı. Anahtar kelimeler (iOS keywords) dolu. <strong>En az 5 ekran görüntüsü</strong> doğru çözünürlükte (iPhone 6.7\" + Android Phone). Ekran görüntülerinde başlık metinleri ve markalı tasarım var."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>Başlık (max 30 karakter)</strong>, kısa ve uzun açıklamalar yazılı. Anahtar kelimeler (iOS keywords) dolu. <strong>En az 5 ekran görüntüsü</strong> doğru çözünürlükte (iPhone 6.7\" + Android Phone). Ekran görüntülerinde başlık metinleri ve markalı tasarım var."
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>Başlık (max 30 karakter)</strong>, <strong>promotional text</strong> (max 170 karakter), açıklama (max 4000 karakter) yazılı. <strong>Keywords</strong> alanı dolu (max 100 karakter, virgülle ayrılmış). <strong>En az 5 ekran görüntüsü</strong> App Store boyutlarında: <strong>iPhone 6.7\" zorunlu</strong>; iPhone 6.5\" ve iPad opsiyonel. Ekran görüntülerinde başlık metinleri ve markalı tasarım var. <strong>App Preview</strong> videosu (opsiyonel, 15-30 sn) eklenirse dönüşüm artar."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Başlık (max 30 karakter)</strong>, <strong>kısa açıklama (max 80 karakter)</strong>, tam açıklama (max 4000 karakter) yazılı. <strong>En az 2 ekran görüntüsü</strong> Play Store boyutlarında (Phone gerekli, 7\" + 10\" tablet opsiyonel, telefon için 16:9 veya 9:16). <strong>Feature graphic 1024×500</strong> hazır (Play Store ana görsel). Ekran görüntülerinde başlık metinleri ve markalı tasarım var. Promo video (opsiyonel, YouTube linki) eklenebilir."
+          },
+          expo: {
+            mvp: "—",
+            release: "Hem App Store hem Play Store metadata'ları hazır: <strong>Başlık (max 30 karakter)</strong>, kısa ve uzun açıklamalar yazılı. iOS keywords (max 100 karakter) ve Android kısa açıklama (max 80 karakter) dolu. <strong>En az 5 iPhone 6.7\" + Android Phone ekran görüntüsü</strong> doğru çözünürlükte. Android <strong>Feature graphic 1024×500</strong> hazır. Markalı tasarım var. (Opsiyonel: <code>eas metadata</code> CLI ile iki store metadata'sı tek YAML dosyasından senkronize yönetilebilir.)"
+          },
+          pwa: {
+            mvp: "—",
+            release: "<strong><code>&lt;title&gt;</code></strong> ve <strong><code>&lt;meta name=\"description\"&gt;</code></strong> her sayfada anlamlı yazılı. <strong>Open Graph</strong> tag'ları (<code>og:title</code>, <code>og:description</code>, <code>og:image</code> 1200×630) ve <strong>Twitter Card</strong> tag'ları yazılı (sosyal paylaşımlarda zengin önizleme). <code>manifest.webmanifest</code>'te <code>name</code>, <code>description</code>, <code>screenshots[]</code> tanımlı (PWA install banner'ı zenginleşir). <strong>sitemap.xml</strong> ve <strong>robots.txt</strong> hazır. <strong>Lighthouse SEO</strong> puanı 90+. Opsiyonel: PWABuilder ile Play Store / Microsoft Store yayını için store-spesifik metadata + ekran görüntüleri."
+          }
+        }
       },
       {
         id: "11.3", title: "Beta Testing ve Yayın",
         desc: "Yayın öncesi sınırlı kullanıcıyla test ve sonrasında store'a yükleme.",
-        mvp: "—",
-        release: "<strong>TestFlight (iOS)</strong> ve <strong>Play Console internal/closed track</strong> ile en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. Play Console ve Apple Developer hesapları açık. İçerik derecelendirmesi ve gizlilik beyanı tamamlandı."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>TestFlight (iOS)</strong> ve <strong>Play Console internal/closed track</strong> ile en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. Play Console ve Apple Developer hesapları açık. İçerik derecelendirmesi ve gizlilik beyanı tamamlandı."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>TestFlight (iOS)</strong> ve <strong>Play Console internal/closed track</strong> ile en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. Play Console ve Apple Developer hesapları açık. İçerik derecelendirmesi ve gizlilik beyanı tamamlandı."
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>TestFlight</strong> ile en az 5-10 dış test kullanıcısına ulaştırıldı (Internal Testing ekipten max 100 kişi, External Testing davetli max 10.000 kişi), geri bildirim alındı. <strong>Apple Developer Program</strong> hesabı aktif ($99/yıl). <strong>App Privacy</strong> raporu doldurulmuş, content rating belirlenmiş, App Store Connect'te submit-ready."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Play Console</strong>'da <strong>Internal testing</strong> (max 100 kişi) veya <strong>Closed testing</strong> track'i ile en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. <strong>Google Play Developer</strong> hesabı aktif ($25 tek seferlik). İçerik derecelendirmesi (IARC), <strong>Data safety</strong> formu ve gizlilik beyanı tamamlandı."
+          },
+          expo: {
+            mvp: "—",
+            release: "Geliştirme aşamasında <strong>Expo Go</strong> veya <strong>development build</strong> ile ekip içi test yapıldı. Production öncesi <strong><code>eas submit</code></strong> ile <strong>TestFlight (iOS)</strong> ve <strong>Play Console internal/closed track</strong>'e build yüklendi; en az 5-10 dış test kullanıcısına ulaştırıldı, geri bildirim alındı. Apple Developer + Google Play Developer hesapları açık. İçerik derecelendirmesi, App Privacy / Data safety formları ve gizlilik beyanı tamamlandı. (Hızlı düzeltmeler için <strong>EAS Update</strong> ile OTA güncelleme akışı opsiyonel olarak kurulabilir.)"
+          },
+          pwa: {
+            mvp: "—",
+            release: "<strong>Staging / preview deployment</strong> mevcut (Vercel preview URL, Netlify deploy preview, Firebase Hosting channels veya benzeri). Production'a çıkmadan önce <strong>staging URL'inde</strong> test edildi; en az 5-10 dış test kullanıcısına link yollandı, geri bildirim alındı. <strong>Feature flags</strong> (LaunchDarkly, GrowthBook, PostHog, Firebase Remote Config) ile yeni özellikler sınırlı kullanıcıya gradual rollout edildi. <span class='hint'>App store onay süreci yok, yayın saniyeler içinde olur. Bu nedenle staging + feature flag disiplini özellikle önemli.</span> Opsiyonel: PWABuilder/Bubblewrap üzerinden TWA paketlenmişse Play Console internal testing track'i de kullanılabilir."
+          }
+        }
       }
     ]
   },
@@ -2708,14 +3882,62 @@ const DATA = [
       {
         id: "12.1", title: "Uygulama İçi Satın Alma (IAP) ve Abonelik",
         desc: "Premium özellikler veya aylık/yıllık abonelik altyapısı.",
-        mvp: "—",
-        release: "Tek seferlik ürünler veya abonelikler tanımlı. <strong>Restore Purchases</strong> butonu çalışıyor (kullanıcı cihaz değiştirdiğinde aboneliğini geri alabiliyor). Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. <span class='hint'>Apple/Google %15-30 komisyon alır, fiyatlandırırken hesaba kat.</span>"
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "Tek seferlik ürünler veya abonelikler tanımlı (<code>in_app_purchase</code> paketi veya <strong>RevenueCat</strong>). <strong>Restore Purchases</strong> butonu çalışıyor (kullanıcı cihaz değiştirdiğinde aboneliğini geri alabiliyor). Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. <span class='hint'>Apple App Store / Google Play %15-30 komisyon alır; fiyatlandırırken hesaba kat. RevenueCat çoğu işi soyutlar.</span>"
+          },
+          reactNative: {
+            mvp: "—",
+            release: "Tek seferlik ürünler veya abonelikler tanımlı (<code>react-native-iap</code> veya <strong>RevenueCat</strong>). <strong>Restore Purchases</strong> butonu çalışıyor. Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. <span class='hint'>Apple/Google %15-30 komisyon alır; fiyatlandırırken hesaba kat. RevenueCat çoğu işi soyutlar.</span>"
+          },
+          swift: {
+            mvp: "—",
+            release: "Tek seferlik ürünler veya abonelikler tanımlı (<strong>StoreKit 2</strong>: iOS 15+, modern API; veya <strong>RevenueCat</strong>). <strong>Restore Purchases</strong> akışı (<code>AppStore.sync()</code>) çalışıyor. Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. App Store Connect'te In-App Purchase ürünleri tanımlı ve onaylı. <span class='hint'>Apple %15-30 komisyon alır; küçük geliştirici programında ilk $1M için %15.</span>"
+          },
+          kotlin: {
+            mvp: "—",
+            release: "Tek seferlik ürünler veya abonelikler tanımlı (<strong>Google Play Billing Library 6+</strong> veya <strong>RevenueCat</strong>). <strong>Restore Purchases</strong> akışı çalışıyor (purchase history'den geri alınıyor). Paywall sayfası net fayda listesi, fiyat karşılaştırması ve cancel garantisi içeriyor. Play Console'da ürünler ve abonelikler tanımlı, signed AAB ile test edildi. <span class='hint'>Google %15-30 komisyon alır; ilk $1M için %15.</span>"
+          },
+          expo: {
+            mvp: "—",
+            release: "Tek seferlik ürünler veya abonelikler tanımlı. <strong>RevenueCat</strong> (<code>react-native-purchases</code>) önerilen yol, Expo development build ile çalışır, iki store'da da tek API. Veya <code>expo-in-app-purchases</code> (deprecated) yerine native modül + dev build. <strong>Restore Purchases</strong> butonu çalışıyor. Paywall sayfası fayda listesi içeriyor. <span class='hint'>Apple/Google %15-30 komisyon. Expo Go'da IAP test edilemez; development build şart.</span>"
+          },
+          pwa: {
+            mvp: "—",
+            release: "PWA'da app store IAP YOK; <strong>web payments</strong> kullanılıyor: <strong>Stripe Checkout / Stripe Payment Links</strong>, <strong>Lemon Squeezy</strong> veya <strong>Paddle</strong> (Merchant of Record, KDV/sales tax otomatik) entegre. <strong>Webhook</strong>'larla ödeme/abonelik durumu backend'de doğrulanıyor (asla sadece client-side trust edilmez). Abonelik portalı (Stripe Customer Portal) ile kullanıcı kendi aboneliğini yönetebiliyor. <span class='hint'>App store IAP komisyonu (%15-30) yerine web payment komisyonu (%2.9 + 30¢ Stripe; MoR'larda %5 civarı). Native uygulamadan çok daha düşük.</span>"
+          }
+        }
       },
       {
         id: "12.2", title: "Reklam Entegrasyonu",
         desc: "Ücretsiz uygulamalarda gelir için reklam (opsiyonel).",
-        mvp: "—",
-        release: "AdMob veya benzeri ile banner/interstitial/rewarded reklamlar entegre. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; her sayfa geçişinde değil, anlamlı yerlerde gösteriliyor. Reklamsız <strong>premium tier</strong> sunuluyor."
+        variants: {
+          flutter: {
+            mvp: "—",
+            release: "<strong>Google AdMob</strong> (<code>google_mobile_ads</code>) ile banner/interstitial/rewarded reklamlar entegre. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; her sayfa geçişinde değil, anlamlı yerlerde gösteriliyor. Reklamsız <strong>premium tier</strong> sunuluyor."
+          },
+          reactNative: {
+            mvp: "—",
+            release: "<strong>Google AdMob</strong> (<code>react-native-google-mobile-ads</code>) ile banner/interstitial/rewarded reklamlar entegre. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; her sayfa geçişinde değil, anlamlı yerlerde gösteriliyor. Reklamsız <strong>premium tier</strong> sunuluyor."
+          },
+          swift: {
+            mvp: "—",
+            release: "<strong>Google Mobile Ads SDK</strong> (Swift Package) ile banner/interstitial/rewarded reklamlar entegre. <strong>App Tracking Transparency (ATT)</strong> izin diyaloğu (<code>ATTrackingManager.requestTrackingAuthorization</code>) iOS 14.5+ için entegre, kullanıcı reddederse non-personalized ad gösteriliyor. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>. Reklamsız <strong>premium tier</strong> sunuluyor."
+          },
+          kotlin: {
+            mvp: "—",
+            release: "<strong>Google Mobile Ads SDK</strong> (<code>com.google.android.gms:play-services-ads</code>) ile banner/interstitial/rewarded reklamlar entegre. AdMob app ID <code>AndroidManifest.xml</code>'de tanımlı. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; her sayfa geçişinde değil, anlamlı yerlerde gösteriliyor. Reklamsız <strong>premium tier</strong> sunuluyor."
+          },
+          expo: {
+            mvp: "—",
+            release: "<strong>Google AdMob</strong> (<code>react-native-google-mobile-ads</code> + Expo config plugin) ile banner/interstitial/rewarded reklamlar entegre. <strong>Development build</strong> gerekir (Expo Go'da çalışmaz). Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>. Reklamsız <strong>premium tier</strong> sunuluyor. iOS için ATT izni alınmış."
+          },
+          pwa: {
+            mvp: "—",
+            release: "PWA'da AdMob YOK; <strong>Google AdSense</strong> veya <strong>doğrudan reklam</strong> (sponsorlu içerik, affiliate, Carbon Ads gibi developer-friendly ağlar) entegre. Reklamlar <strong>kullanıcı deneyimini bozmuyor</strong>; <strong>CLS</strong> oluşturmuyor (önceden <code>width</code>/<code>height</code> ile boyut rezerve ediliyor). <strong>Cookie consent / GDPR</strong> banner'ı (kişiselleştirilmiş reklam için onay) gösteriliyor, yasal uyum için zorunlu (özellikle AB / Türkiye KVKK). Reklamsız <strong>premium tier</strong> sunuluyor."
+          }
+        }
       }
     ]
   },
@@ -2741,13 +3963,174 @@ const DATA = [
 ];
 
 /* ==================== STATE ==================== */
-const STORAGE_KEY = "agm_mobil_kontrol_v2";
-const NOTES_KEY = "agm_notlar_v1";
-const COLLAPSE_KEY = "agm_collapse_v1";
+const STORAGE_KEY = "mobil_kontrol_state_v1";
+const NOTES_KEY = "mobil_kontrol_notes_v1";
+const COLLAPSE_KEY = "mobil_kontrol_collapse_v1";
+const FRAMEWORK_KEY = "mobil_kontrol_framework_v1";
+const LEVEL_VIEW_KEY = "mobil_kontrol_level_view_v1";
 
 let state = loadState();
 let notes = loadNotes();
 let collapsedCats = loadCollapsed();
+let currentFramework = loadFramework();
+let levelView = loadLevelView();
+
+function loadLevelView() {
+  try {
+    const v = localStorage.getItem(LEVEL_VIEW_KEY);
+    return (v === "mvp" || v === "release" || v === "both") ? v : "both";
+  } catch { return "both"; }
+}
+
+const LOCK_KEY = "mobil_kontrol_lock_v1";
+let lockState = (() => {
+  try { return localStorage.getItem(LOCK_KEY) === "1"; }
+  catch { return false; }
+})();
+function saveLockState(v) {
+  lockState = !!v;
+  try { localStorage.setItem(LOCK_KEY, lockState ? "1" : "0"); } catch {}
+}
+
+/* Kilit görsel/etkileşim durumunu uygular: body class, etkilenen butonların disabled,
+   kilit butonunun kendi görüntüsü. Çağrı her state değişiminden sonra ve init'te. */
+function applyLock() {
+  document.body.classList.toggle("locked", lockState);
+
+  /* Kilitliyken devre dışı kalacak butonlar (state değiştiren tüm aksiyonlar) */
+  const lockedTargets = ["frameworkBtn", "resetBtn", "importBtn"];
+  lockedTargets.forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.disabled = lockState;
+  });
+
+  /* Kilit butonunun kendisi: ikon + etiket + active class */
+  const btn = document.getElementById("lockBtn");
+  if (btn) {
+    btn.classList.toggle("locked", lockState);
+    const icon = btn.querySelector(".lock-icon");
+    const label = btn.querySelector(".lock-label");
+    if (icon) icon.textContent = lockState ? "🔓" : "🔒";
+    if (label) label.textContent = lockState ? "Kilidi Aç" : "Kilit";
+    btn.title = lockState ? "Kilidi aç (işaretler düzenlenebilir hale gelir)" : "Listeyi kilitle (işaretler/framework değişemez)";
+    btn.setAttribute("aria-pressed", lockState ? "true" : "false");
+  }
+}
+function saveLevelView(v) {
+  if (v !== "mvp" && v !== "release" && v !== "both") return;
+  levelView = v;
+  try { localStorage.setItem(LEVEL_VIEW_KEY, v); } catch {}
+}
+function applyLevelView() {
+  document.body.classList.toggle("view-mvp-only", levelView === "mvp");
+  document.body.classList.toggle("view-release-only", levelView === "release");
+  document.querySelectorAll("[data-level-view]").forEach(b => {
+    const isActive = b.dataset.levelView === levelView;
+    b.classList.toggle("active", isActive);
+    b.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+  updateToolbarButtonStates();
+}
+
+/* Toolbar buton kullanılabilirlik kuralları:
+   A) levelView "mvp" iken Release Eksik kapalı; "release" iken MVP Eksik kapalı.
+      (Karşı seviye gizli olduğu için filtre anlamsız.)
+   B) İlgili seviyede 0 işaret varsa o filter butonu kapalı.
+      ("X Eksik" filtresi tüm maddeleri gösterir = filtre yokmuş gibi olur, gereksiz.)
+      → Hiç işaret yoksa: ikisi de kapalı.
+      → Sadece MVP işareti varsa: Release Eksik kapalı.
+      → Sadece Release işareti varsa: MVP Eksik kapalı.
+   C) filterMode "mvp" veya "release" aktifken Tümünü Aç / Tümünü Kapat kapalı.
+      (Filtre aktif iken kategori toggle'ı çelişkili duruma yol açar.)
+   Üçü bağımsız; tam açık durum: levelView=both + filterMode=all + her iki seviyede işaret. */
+function updateToolbarButtonStates() {
+  const mvpBtn = document.getElementById("filterMvpIncomplete");
+  const relBtn = document.getElementById("filterReleaseIncomplete");
+  const expandBtn = document.getElementById("expandAllBtn");
+  const collapseBtn = document.getElementById("collapseAllBtn");
+  if (!mvpBtn || !relBtn || !expandBtn || !collapseBtn) return;
+
+  const counts = (typeof countLevels === "function") ? countLevels() : { mvpChecked: 0, releaseChecked: 0 };
+  const mvpDisabledByView  = levelView === "release";
+  const relDisabledByView  = levelView === "mvp";
+  const mvpDisabledByCount = counts.mvpChecked === 0;
+  const relDisabledByCount = counts.releaseChecked === 0;
+
+  const mvpDisabled = mvpDisabledByView || mvpDisabledByCount;
+  const relDisabled = relDisabledByView || relDisabledByCount;
+  mvpBtn.disabled = mvpDisabled;
+  relBtn.disabled = relDisabled;
+
+  /* Aktif filtre devre dışı kalıyorsa otomatik 'all'a düşür */
+  let filterChanged = false;
+  if (mvpDisabled && filterMode === "mvp") { filterMode = "all"; filterChanged = true; }
+  if (relDisabled && filterMode === "release") { filterMode = "all"; filterChanged = true; }
+  if (filterChanged) {
+    mvpBtn.classList.remove("active");
+    relBtn.classList.remove("active");
+    if (typeof applyFilters === "function") applyFilters();
+  }
+
+  const expandCollapseDisabled = filterMode !== "all";
+  expandBtn.disabled = expandCollapseDisabled;
+  collapseBtn.disabled = expandCollapseDisabled;
+
+  /* Kilit butonu: hiç işaret yoksa gri (kilitlenecek bir şey yok).
+     AMA zaten kilitli iken (lockState=true) tıklanabilir kalmalı ki kullanıcı kilidi açabilsin. */
+  const lockBtn = document.getElementById("lockBtn");
+  if (lockBtn) {
+    lockBtn.disabled = !lockState && counts.totalChecked === 0;
+  }
+}
+
+const VALID_FRAMEWORKS = ["flutter", "reactNative", "swift", "kotlin", "expo", "pwa"];
+function loadFramework() {
+  try {
+    const v = localStorage.getItem(FRAMEWORK_KEY);
+    return VALID_FRAMEWORKS.includes(v) ? v : null;
+  } catch { return null; }
+}
+function saveFramework(fw) {
+  if (!VALID_FRAMEWORKS.includes(fw)) return;
+  currentFramework = fw;
+  try { localStorage.setItem(FRAMEWORK_KEY, fw); } catch {}
+}
+
+/* Bir feature'ın seçili framework'e göre mvp/release değerini döndürür.
+   Eğer feature'da variants yoksa, evrenseldir; doğrudan f[level] döner. */
+function resolveLevel(f, level) {
+  if (f.variants && currentFramework && f.variants[currentFramework]) {
+    return f.variants[currentFramework][level];
+  }
+  return f[level];
+}
+
+const FRAMEWORK_META = {
+  flutter:     { label: "Flutter",          short: "Flutter",      icon: "🐦", aiName: "Flutter / Dart" },
+  reactNative: { label: "React Native",     short: "React Native", icon: "⚛",  aiName: "React Native (bare / CLI) / TypeScript" },
+  swift:       { label: "Swift (iOS)",      short: "Swift",        icon: "🍎", aiName: "Swift / SwiftUI (Native iOS)" },
+  kotlin:      { label: "Kotlin (Android)", short: "Kotlin",       icon: "🤖", aiName: "Kotlin / Jetpack Compose (Native Android)" },
+  expo:        { label: "Expo",             short: "Expo",         icon: "🚀", aiName: "Expo (managed React Native workflow) / TypeScript" },
+  pwa:         { label: "PWA (Web)",        short: "PWA",          icon: "🌐", aiName: "Progressive Web App (PWA), basit web sitesinden web app'e geniş yelpaze, HTML/CSS/JS + framework seçimi serbest (React/Vue/Svelte/Next/Nuxt/SvelteKit/Astro veya vanilla)" }
+};
+
+const INSTALL_EXAMPLES = {
+  flutter:     "flutter pub add http",
+  reactNative: "npm install axios (autolinking otomatik)",
+  swift:       "Xcode → File → Add Packages... (SPM) veya `pod install` (CocoaPods)",
+  kotlin:      'build.gradle.kts → implementation("com.squareup.retrofit2:retrofit:2.11.0")',
+  expo:        "npx expo install expo-image (Expo uyumlu sürümü otomatik seçer)",
+  pwa:         "npm install workbox-window (veya seçilen web framework'üne uygun paket)"
+};
+
+const SETUP_ASSUMPTIONS = {
+  flutter:     "Assume the developer knows basic Flutter setup but not advanced concepts",
+  reactNative: "Assume the developer knows basic bare React Native (CLI) setup but not advanced concepts; do NOT assume Expo is installed",
+  swift:       "Assume the developer knows basic Swift/Xcode setup but not advanced concepts (SwiftUI preferred over UIKit)",
+  kotlin:      "Assume the developer knows basic Kotlin/Android Studio setup but not advanced concepts (Jetpack Compose preferred over Views)",
+  expo:        "Assume the developer knows basic Expo (managed workflow) setup but not advanced concepts (development build, EAS Build, app.config.js, EAS Submit)",
+  pwa:         "Assume the developer knows basic web development (HTML/CSS/JS) and either a modern framework (React/Vue/Svelte/Next/Nuxt/SvelteKit/Astro) or vanilla. Does NOT need native simulators, Xcode, or Android Studio. Service Worker and manifest.webmanifest are core PWA concepts. Distribution is via HTTPS URL deploy (Vercel/Netlify/Cloudflare/Firebase Hosting); optionally packaged for stores via PWABuilder/Bubblewrap (TWA)"
+};
 
 function loadState() {
   try {
@@ -2779,7 +4162,7 @@ function saveCollapsed() {
 
 /* İlk ziyarette tüm kategoriler varsayılan olarak kapalı */
 function initDefaultCollapsed() {
-  const INIT_FLAG = "agm_collapse_init_v1";
+  const INIT_FLAG = "mobil_kontrol_collapse_init_v1";
   if (!localStorage.getItem(INIT_FLAG)) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
@@ -2827,13 +4210,21 @@ function closeAllModals() {
   document.querySelectorAll(".modal").forEach(m => m.hidden = true);
 }
 
-/* Onay modalı (window.confirm yerine) */
+/* Onay modalı (window.confirm yerine).
+   opts.title, opts.yesText, opts.cancelText (default İptal),
+   opts.html (true ise message HTML olarak render edilir; default plain text),
+   opts.wide (true ise modal genişler — yoğun içerik için) */
 let confirmCallback = null;
 function customConfirm(message, onConfirm, opts = {}) {
   document.getElementById("confirmTitle").textContent = opts.title || "Emin misin?";
-  document.getElementById("confirmMessage").textContent = message;
+  const msgEl = document.getElementById("confirmMessage");
+  if (opts.html) msgEl.innerHTML = message; else msgEl.textContent = message;
   const yesBtn = document.getElementById("confirmYes");
   yesBtn.textContent = opts.yesText || "Evet, devam et";
+  const cancelBtn = document.querySelector("#confirmModal .modal-confirm-actions .btn.ghost");
+  if (cancelBtn) cancelBtn.textContent = opts.cancelText || "İptal";
+  const modalContent = document.querySelector("#confirmModal .modal-content");
+  if (modalContent) modalContent.classList.toggle("modal-confirm--wide", !!opts.wide);
   confirmCallback = onConfirm;
   openModal("confirmModal");
 }
@@ -2852,14 +4243,14 @@ document.addEventListener("click", (e) => {
     const modal = e.target.closest(".modal");
     if (modal) modal.hidden = true;
   }
-  /* AI format paneli — dışına tıklanırsa kapat */
+  /* AI format paneli, dışına tıklanırsa kapat */
   if (!e.target.closest(".feature-ai-wrap")) {
     document.querySelectorAll(".feature-ai-wrap.ai-open").forEach(w => w.classList.remove("ai-open"));
   }
 });
 
 /* ==================== TEMA ==================== */
-const THEME_KEY = "agm_theme_v1";
+const THEME_KEY = "mobil_kontrol_theme_v1";
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   const btn = document.getElementById("themeToggle");
@@ -2885,18 +4276,24 @@ document.getElementById("themeToggle").addEventListener("click", () => {
 
 /* ==================== AI PROMPT BUILDER'LARI ==================== */
 
-/* Türkçe — Markdown formatında, öğrenci dostu, detaylı rehber ister */
+/* Türkçe, Markdown formatında, başlangıç dostu, detaylı rehber ister */
 function buildAIPromptTR(cat, f) {
   const title = stripHtml(f.title);
   const desc = stripHtml(f.desc);
   const catTitle = stripHtml(cat.title);
   const catSub = stripHtml(cat.sub || "");
-  const mvp = (f.mvp && f.mvp !== "—") ? stripHtml(f.mvp) : null;
-  const release = (f.release && f.release !== "—") ? stripHtml(f.release) : null;
+  const mvpRaw = resolveLevel(f, "mvp");
+  const releaseRaw = resolveLevel(f, "release");
+  const mvp = (mvpRaw && mvpRaw !== "—") ? stripHtml(mvpRaw) : null;
+  const release = (releaseRaw && releaseRaw !== "—") ? stripHtml(releaseRaw) : null;
+  const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
+    ? FRAMEWORK_META[currentFramework].aiName
+    : "Flutter / Dart";
+  const installExample = INSTALL_EXAMPLES[currentFramework] || INSTALL_EXAMPLES.flutter;
 
   let p = "";
-  p += `# AGM Mobil Uygulama Kursu — Kalite Kontrol Maddesi Yardımı\n\n`;
-  p += `Merhaba! Alsancak Gençlik Merkezi'nin Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu kapsamında bir mobil uygulama geliştiriyorum. Aşağıdaki kalite kontrol maddesini uygulamamda hayata geçirmek istiyorum. Senden, başlangıç seviyesindeki bir öğrencinin takip edebileceği, **uygulanabilir ve net bir rehber** istiyorum.\n\n`;
+  p += `# Mobil Uygulama Kalite Kontrol Maddesi Yardımı\n\n`;
+  p += `Merhaba! Bir mobil uygulama geliştiriyorum. Aşağıdaki kalite kontrol maddesini uygulamamda hayata geçirmek istiyorum. Senden, yeni başlayan birinin takip edebileceği, **uygulanabilir ve net bir rehber** istiyorum.\n\n`;
 
   p += `## 📌 Madde Bilgileri\n\n`;
   p += `- **Kategori:** ${catTitle}${catSub ? ` (${catSub})` : ""}\n`;
@@ -2905,10 +4302,10 @@ function buildAIPromptTR(cat, f) {
 
   p += `## 🎯 Hedeflediğim Seviyeler\n\n`;
   if (mvp) {
-    p += `### 🟢 MVP — Olmazsa Olmaz (İlk Hedefim)\n${mvp}\n\n`;
+    p += `### 🟢 MVP, Olmazsa Olmaz (İlk Hedefim)\n${mvp}\n\n`;
   }
   if (release) {
-    p += `### 🔵 Release — Yayınlanabilir Profesyonel Kalite (İkinci Hedefim)\n${release}\n\n`;
+    p += `### 🔵 Release, Yayınlanabilir Profesyonel Kalite (İkinci Hedefim)\n${release}\n\n`;
   }
 
   p += `## 🛠️ Senden İhtiyacım Olan Cevap\n\n`;
@@ -2921,7 +4318,7 @@ function buildAIPromptTR(cat, f) {
   p += `### 2. Adım Adım Uygulama${mvp ? " (MVP Seviyesi)" : ""}\n`;
   p += `- Her adımı önce tek cümleyle özetle, sonra detayını ver.\n`;
   p += `- Hangi paket / SDK / servisi kullanacağımı belirt.\n`;
-  p += `- Tam kurulum komutlarını paylaş (örn: \`flutter pub add http\`).\n`;
+  p += `- Tam kurulum komutlarını paylaş (örn: \`${installExample}\`).\n`;
   p += `- Hangi dosyaları nerede oluşturacağımı söyle.\n\n`;
 
   p += `### 3. Çalışan Kod Örneği\n`;
@@ -2948,10 +4345,14 @@ function buildAIPromptTR(cat, f) {
   p += `- İleri okuma kaynakları (resmi dokümantasyon, kaliteli blog yazıları).\n`;
   p += `- Daha gelişmiş alternatif yaklaşımlar.\n\n`;
 
+  const targetPlatform = currentFramework === "swift" ? "iOS"
+                        : currentFramework === "kotlin" ? "Android"
+                        : currentFramework === "pwa" ? "Web (mobil tarayıcı + masaüstü, kurulabilir PWA, opsiyonel TWA ile Play Store)"
+                        : "Android + iOS";
   p += `## 📦 Proje Bilgileri\n\n`;
-  p += `- **Framework:** Flutter / Dart (eğer farklı bir framework kullansaydım — React Native, Swift, Kotlin gibi — sana bildirirdim).\n`;
+  p += `- **Framework:** ${fwName}.\n`;
   p += `- **IDE:** Antigravity (yapay zekâ asistanlı, Cursor benzeri).\n`;
-  p += `- **Hedef Platform:** Android + iOS.\n`;
+  p += `- **Hedef Platform:** ${targetPlatform}.\n`;
   p += `- **Cevap Dili:** **Türkçe**.\n`;
   p += `- **Format:** Markdown, kod blokları içinde.\n\n`;
 
@@ -2960,31 +4361,39 @@ function buildAIPromptTR(cat, f) {
   p += `- Çok fazla teknik jargon kullanma; kullanırsan parantez içinde Türkçesini yaz.\n`;
   p += `- Adımları sırayla anlat, ben hiç tanımıyormuş gibi davran.\n`;
   p += `- Eğer bu maddeyi uygulamak için **birden fazla yaklaşım** varsa, en yaygın ve basit olanıyla başla.\n\n`;
-  p += `Hadi başlayalım — bu maddeyi uygulamayı bitirdiğimde işaretleyebileyim!`;
+  p += `Hadi başlayalım, bu maddeyi uygulamayı bitirdiğimde işaretleyebileyim!`;
 
   return p;
 }
 
-/* İngilizce — Yapılandırılmış JSON formatı, AI'ın tutarlı çıktı vermesi için */
+/* İngilizce, Yapılandırılmış JSON formatı, AI'ın tutarlı çıktı vermesi için */
 function buildAIPromptJSON(cat, f) {
-  const mvp = (f.mvp && f.mvp !== "—") ? stripHtml(f.mvp) : null;
-  const release = (f.release && f.release !== "—") ? stripHtml(f.release) : null;
+  const mvpRaw = resolveLevel(f, "mvp");
+  const releaseRaw = resolveLevel(f, "release");
+  const mvp = (mvpRaw && mvpRaw !== "—") ? stripHtml(mvpRaw) : null;
+  const release = (releaseRaw && releaseRaw !== "—") ? stripHtml(releaseRaw) : null;
+  const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
+    ? FRAMEWORK_META[currentFramework].aiName
+    : "Flutter / Dart";
+  const installExample = INSTALL_EXAMPLES[currentFramework] || INSTALL_EXAMPLES.flutter;
+  const setupAssumption = SETUP_ASSUMPTIONS[currentFramework] || SETUP_ASSUMPTIONS.flutter;
 
   const payload = {
     role_and_tone: {
-      assistant_role: "Expert mobile app development mentor for a beginner-friendly course",
-      audience: "Student in the AGM AI-Powered Mobile App Development Course (12-week curriculum)",
+      assistant_role: "Expert mobile app development mentor for beginners",
+      audience: "Mobile app developer (beginner to intermediate level)",
       tone: "Practical, beginner-friendly, encouraging, no unnecessary jargon",
       response_language: "Turkish",
       response_format: "Markdown with code blocks; Turkish comments inside code"
     },
     project_context: {
-      course_name: "AGM AI-Powered Mobile App Development Course",
-      institution: "Alsancak Gençlik Merkezi",
-      framework: "Flutter / Dart",
+      framework: fwName,
       ide: "Antigravity (AI-assisted, similar to Cursor)",
-      target_platforms: ["Android", "iOS"],
-      student_level: "beginner_to_intermediate",
+      target_platforms: currentFramework === "swift" ? ["iOS"]
+                       : currentFramework === "kotlin" ? ["Android"]
+                       : currentFramework === "pwa" ? ["Web (mobile + desktop browsers)", "Installable PWA"]
+                       : ["Android", "iOS"],
+      developer_level: "beginner_to_intermediate",
       backend_options: ["Firebase", "Supabase", "REST APIs"]
     },
     quality_checklist_item: {
@@ -2995,7 +4404,7 @@ function buildAIPromptJSON(cat, f) {
       mvp_level: mvp ? {
         label: "Minimum Viable Product",
         priority: "must_have",
-        description: "Core requirement — without this the app does not function properly",
+        description: "Core requirement, without this the app does not function properly",
         requirements: mvp
       } : null,
       release_level: release ? {
@@ -3014,7 +4423,7 @@ function buildAIPromptJSON(cat, f) {
       {
         section: "2_step_by_step_implementation",
         title_tr: "Adım Adım Uygulama" + (mvp ? " (MVP)" : ""),
-        instructions: "Numbered steps. Each step: one-sentence summary, then details. Include exact package/SDK names and install commands (e.g. `flutter pub add http`). Specify file locations."
+        instructions: `Numbered steps. Each step: one-sentence summary, then details. Include exact package/SDK names and install commands (e.g. \`${installExample}\`). Specify file locations.`
       },
       {
         section: "3_working_code_example",
@@ -3045,10 +4454,10 @@ function buildAIPromptJSON(cat, f) {
     constraints: [
       "Respond entirely in Turkish",
       "Use Markdown headings matching the section titles in Turkish (title_tr)",
-      "Provide working code that the student can copy and run immediately",
+      "Provide working code that the developer can copy and run immediately",
       "Avoid unnecessary jargon; if a technical term must be used, give a brief Turkish explanation in parentheses",
-      "Assume the student is following the AGM course and knows basic Flutter setup but not advanced concepts",
-      "Keep total response focused — quality over length",
+      setupAssumption,
+      "Keep total response focused, quality over length",
       "Do not output the JSON back; respond as a structured Turkish guide"
     ],
     final_instruction: "Now produce the implementation guide following the expected_response_structure exactly. Begin your response in Turkish."
@@ -3094,8 +4503,12 @@ function renderCategoryNav() {
 function renderContent() {
   content.innerHTML = DATA.map(cat => {
     const features = cat.features.map(f => {
+      /* Framework henüz seçilmediyse framework'e özel maddeler gözükmez. */
+      if (f.variants && !currentFramework) return "";
+      const mvpVal = resolveLevel(f, "mvp");
+      const releaseVal = resolveLevel(f, "release");
       const levels = ["mvp", "release"].map(L => {
-        const value = f[L];
+        const value = L === "mvp" ? mvpVal : releaseVal;
         if (!value || value === "—") return "";
         const key = `${cat.id}.${f.id}.${L}`;
         const checked = state[key] ? "checked" : "";
@@ -3112,7 +4525,7 @@ function renderContent() {
       const hasNote = noteValue.trim().length > 0;
 
       return `
-        <article class="feature${hasNote ? " has-note" : ""}" data-search="${(f.title + " " + f.desc + " " + (f.mvp||"") + " " + (f.release||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
+        <article class="feature${hasNote ? " has-note" : ""}" data-search="${(f.title + " " + f.desc + " " + (mvpVal||"") + " " + (releaseVal||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
           <div class="feature-head">
             <span class="id">#${f.id}</span>
             <h3>${f.title}</h3>
@@ -3143,6 +4556,9 @@ function renderContent() {
         </article>`;
     }).join("");
 
+    /* Tüm featureları variant olup framework seçilmemişse kategori gözükmesin */
+    if (!features.trim()) return "";
+
     const collapsedClass = collapsedCats.has(`cat-${cat.id}`) ? " collapsed" : "";
 
     return `
@@ -3168,6 +4584,7 @@ function attachClickHandlers() {
   /* Seviye işaretleme */
   document.querySelectorAll(".level").forEach(el => {
     el.addEventListener("click", () => {
+      if (lockState) return; /* Kilit aktif: değişiklik yok */
       const key = el.dataset.key;
       if (state[key]) { delete state[key]; el.classList.remove("checked"); }
       else { state[key] = true; el.classList.add("checked"); }
@@ -3234,7 +4651,7 @@ function attachClickHandlers() {
     });
   });
 
-  /* AI Sor — toggle (format seçim panelini aç / kapat) */
+  /* AI Sor, toggle (format seçim panelini aç / kapat) */
   document.querySelectorAll("[data-ai-toggle]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -3248,7 +4665,7 @@ function attachClickHandlers() {
     });
   });
 
-  /* AI format seçimi — TR Metin veya EN JSON kopyala */
+  /* AI format seçimi, TR Metin veya EN JSON kopyala */
   document.querySelectorAll("[data-ai-format]").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.stopPropagation();
@@ -3308,7 +4725,7 @@ function countLevels() {
     perCat[cat.id] = { total: 0, checked: 0 };
     cat.features.forEach(f => {
       ["mvp", "release"].forEach(L => {
-        const v = f[L];
+        const v = resolveLevel(f, L);
         if (!v || v === "—") return;
         total++;
         perCat[cat.id].total++;
@@ -3351,10 +4768,12 @@ function updateProgress() {
   });
 
   checkCelebrations(c);
+  /* İşaret sayıları değiştiği için filter butonlarının disabled state'ini de güncelle */
+  if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
 /* ==================== TAMAMLAMA KUTLAMALARI ==================== */
-const CELEBRATION_KEY = "agm_celebrations_v1";
+const CELEBRATION_KEY = "mobil_kontrol_celebrations_v1";
 let celebrations = (() => {
   try { return JSON.parse(localStorage.getItem(CELEBRATION_KEY) || "{}"); }
   catch { return {}; }
@@ -3377,7 +4796,7 @@ function checkCelebrations(c) {
   const mvpDone    = c.mvp     > 0 && c.mvpChecked     === c.mvp;
   const releaseDone= c.release > 0 && c.releaseChecked === c.release;
 
-  /* En yüksek başarıdan başlayarak kutla — aynı anda çakışırsa sadece en üst seviyeyi göster */
+  /* En yüksek başarıdan başlayarak kutla, aynı anda çakışırsa sadece en üst seviyeyi göster */
   if (totalDone && !celebrations.total) {
     celebrations.total = true;
     celebrations.mvp = true;
@@ -3406,7 +4825,7 @@ function checkCelebrations(c) {
     );
   }
 
-  /* Eğer kullanıcı işareti geri alırsa bayrağı sıfırla — ileride tekrar tamamladığında kutlama yine gözüksün */
+  /* Eğer kullanıcı işareti geri alırsa bayrağı sıfırla, ileride tekrar tamamladığında kutlama yine gözüksün */
   if (!totalDone && celebrations.total) { celebrations.total = false; saveCelebrations(); }
   if (!releaseDone && celebrations.release) { celebrations.release = false; saveCelebrations(); }
   if (!mvpDone && celebrations.mvp) { celebrations.mvp = false; saveCelebrations(); }
@@ -3455,6 +4874,7 @@ function setFilterMode(mode) {
   document.getElementById("filterMvpIncomplete").classList.toggle("active", filterMode === "mvp");
   document.getElementById("filterReleaseIncomplete").classList.toggle("active", filterMode === "release");
   applyFilters();
+  updateToolbarButtonStates();
 }
 
 /* MVP Eksik / Release Eksik toggle */
@@ -3481,6 +4901,7 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
 
 /* Reset (custom confirm ile) */
 document.getElementById("resetBtn").addEventListener("click", () => {
+  if (lockState) return;
   customConfirm(
     "Tüm işaretlemeler temizlenecek. Notların ve tema tercihin korunacak.",
     () => {
@@ -3493,6 +4914,55 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     },
     { title: "Tüm işaretleri sıfırla?", yesText: "Evet, sıfırla" }
   );
+});
+
+/* ==================== KİLİT (LOCK) ==================== */
+document.getElementById("lockBtn").addEventListener("click", () => {
+  if (!lockState) {
+    /* Kilitle: zengin onay UI'ı */
+    const html = `
+      <div class="lock-confirm">
+        <p class="fw-switch-intro">Kilit etkinleştirilirse:</p>
+        <ul class="fw-switch-effects">
+          <li class="effect-clear"><span class="effect-icon">🔒</span><span><strong>MVP / Release işaretleri</strong> değiştirilemez (yeni işaret eklenemez, mevcut kaldırılamaz)</span></li>
+          <li class="effect-clear"><span class="effect-icon">🔒</span><span><strong>Framework</strong> değiştirilemez</span></li>
+          <li class="effect-clear"><span class="effect-icon">🔒</span><span><strong>Sıfırla</strong> ve <strong>İçe Aktar</strong> devre dışı kalır</span></li>
+          <li class="effect-keep"><span class="effect-icon">✓</span><span><strong>Yazdır</strong> ve <strong>Dışa Aktar</strong> görsel olarak vurgulanır</span></li>
+          <li class="effect-keep"><span class="effect-icon">✓</span><span><strong>Notlar, arama, filtreler, kategoriler, tema, sunum</strong> normal çalışır</span></li>
+        </ul>
+      </div>
+    `;
+    customConfirm(
+      html,
+      () => {
+        saveLockState(true);
+        applyLock();
+        showToast("🔒 Liste kilitlendi", "success", 1600);
+      },
+      { title: "Listeyi kilitle?", yesText: "Kilitle", cancelText: "Vazgeç", html: true, wide: true }
+    );
+  } else {
+    /* Kilidi aç: daha basit onay */
+    const html = `
+      <div class="lock-confirm">
+        <p class="fw-switch-intro">Kilidi açtığında düzenleme işlevleri eski haline döner:</p>
+        <ul class="fw-switch-effects">
+          <li class="effect-keep"><span class="effect-icon">🔓</span><span><strong>İşaretler</strong> tekrar düzenlenebilir</span></li>
+          <li class="effect-keep"><span class="effect-icon">🔓</span><span><strong>Framework</strong> değiştirilebilir</span></li>
+          <li class="effect-keep"><span class="effect-icon">🔓</span><span><strong>Sıfırla / İçe Aktar</strong> tekrar aktif olur</span></li>
+        </ul>
+      </div>
+    `;
+    customConfirm(
+      html,
+      () => {
+        saveLockState(false);
+        applyLock();
+        showToast("🔓 Kilit kaldırıldı", "info", 1400);
+      },
+      { title: "Kilidi aç?", yesText: "Kilidi Aç", cancelText: "Vazgeç", html: true, wide: true }
+    );
+  }
 });
 
 /* Mobil eylem menüsü aç/kapa
@@ -3547,7 +5017,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   });
 })();
 
-/* Long-press easter egg — generic kurulum.
+/* Long-press easter egg, generic kurulum.
    Kısa tıklama hiçbir şey yapmaz; ~3 sn basılı tutunca verilen URL
    yeni sekmede açılır. Mouse + dokunma desteklenir; parmak >14px
    kayarsa basış iptal olur (kullanıcı sayfayı kaydırmaya çalışırsa
@@ -3634,14 +5104,17 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `agm-mobil-kontrol-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `mobil-kontrol-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
 });
 
 /* Import: yeni format (state + notes) ve eski format (sadece state) */
 const importFile = document.getElementById("importFile");
-document.getElementById("importBtn").addEventListener("click", () => importFile.click());
+document.getElementById("importBtn").addEventListener("click", () => {
+  if (lockState) return;
+  importFile.click();
+});
 importFile.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -3761,7 +5234,7 @@ document.addEventListener("keydown", (e) => {
    http(s) ortamında <link rel="manifest" href="manifest.webmanifest">
    statik referansı kullanılır. file:// ile (offline tek-dosya açılış)
    manifest.webmanifest yüklenemediğinde blob URL'li bir manifest
-   üretip statik linki onunla değiştiririz — böylece offline indirilen
+   üretip statik linki onunla değiştiririz, böylece offline indirilen
    tek HTML dosyası da çalışır. */
 (function setupManifest() {
   if (location.protocol !== "file:") return;
@@ -3772,9 +5245,9 @@ document.addEventListener("keydown", (e) => {
     const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#0b0f17"/><path d="M52 96 L84 128 L140 64" stroke="#f97316" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
     const iconUrl = "data:image/svg+xml," + encodeURIComponent(iconSvg);
     const manifest = {
-      name: "Alsancak Gençlik Merkezi Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu Kalite Kontrol Listesi",
-      short_name: "AGM Kalite Kontrol",
-      description: "Alsancak Gençlik Merkezi'nin Yapay Zekâ Destekli Mobil Uygulama Geliştirme Kursu kapsamında, geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi.",
+      name: "Mobil Uygulama Kalite Kontrol Listesi",
+      short_name: "Kontrol Listesi",
+      description: "Geliştirilen mobil uygulamanın MVP ve Release seviyelerinde kalite kontrolünü yapmaya yarayan interaktif kontrol listesi.",
       start_url: ".",
       scope: ".",
       display: "standalone",
@@ -3798,7 +5271,7 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== SERVICE WORKER ====================
-   Gerçek bir sw.js dosyası kayıt için kullanılır — Chrome/Edge gibi
+   Gerçek bir sw.js dosyası kayıt için kullanılır, Chrome/Edge gibi
    Chromium tabanlı tarayıcılarda PWA install prompt için ZORUNLU
    (blob: URL'li SW kayıtları install kriterlerini geçmiyor).
    Eğer ./sw.js yüklenemezse (file:// veya 404), blob URL'li bir
@@ -3813,7 +5286,7 @@ document.addEventListener("keydown", (e) => {
       /* sw.js bulunamadıysa (örn. tek-dosya offline kullanım) blob fallback */
       try {
         const swCode = `
-          const CACHE_NAME = 'agm-mobil-kontrol-v3';
+          const CACHE_NAME = 'mobil-kontrol-v1';
           self.addEventListener('install', (e) => { self.skipWaiting(); });
           self.addEventListener('activate', (e) => {
             e.waitUntil(Promise.all([
@@ -3848,18 +5321,186 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-const WELCOME_KEY = "agm_welcome_v1";
+/* Framework henüz seçilmediyse karşılama modalını göster.
+   Karşılama modalı framework seçimi yapılana dek "Başlayalım"ı devre dışı tutar. */
 function showWelcomeIfFirstVisit() {
-  try {
-    if (localStorage.getItem(WELCOME_KEY)) return;
-  } catch { return; }
-  /* Sayfa render olduktan sonra hafif gecikmeyle göster */
-  setTimeout(() => openModal("welcomeModal"), 350);
+  if (currentFramework) return;
+  setTimeout(() => {
+    setWelcomeStep(1);
+    openModal("welcomeModal");
+  }, 350);
 }
-document.getElementById("welcomeStart").addEventListener("click", () => {
-  try { localStorage.setItem(WELCOME_KEY, "1"); } catch {}
-  closeModal("welcomeModal");
+
+/* Welcome modalı içindeki framework seçimi, geçici state, kullanıcı butona basana dek kaydedilmez */
+let pendingFramework = null;
+
+function setWelcomeStep(n) {
+  /* 1 → framework seçimi paneli, 2 → hoşgeldin / nasıl kullanılır paneli */
+  document.querySelectorAll(".welcome-pane").forEach(p => {
+    p.hidden = String(p.dataset.pane) !== String(n);
+  });
+  /* Adım göstergesini güncelle */
+  document.querySelectorAll("[data-step-dot]").forEach(d => {
+    const idx = Number(d.dataset.stepDot);
+    d.classList.toggle("active", idx === n);
+    d.classList.toggle("done", idx < n);
+  });
+  const line = document.querySelector(".welcome-step-line");
+  if (line) line.classList.toggle("done", n >= 2);
+}
+
+document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingFramework = btn.dataset.welcomeFw;
+    document.querySelectorAll("[data-welcome-fw]").forEach(b => {
+      b.classList.toggle("selected", b === btn);
+    });
+    const nextBtn = document.getElementById("welcomeNext");
+    nextBtn.disabled = false;
+    nextBtn.textContent = "İleri ›";
+  });
 });
+
+document.getElementById("welcomeNext").addEventListener("click", () => {
+  if (!pendingFramework) return;
+  setWelcomeStep(2);
+});
+
+document.getElementById("welcomeBack").addEventListener("click", () => {
+  setWelcomeStep(1);
+});
+
+/* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
+   helpModal DOM'da welcomeModal'dan önce, ikisi aynı z-index'te. Help'i welcome üstüne
+   getirebilmek için z-index'i geçici olarak yükselt. Yardım modalını kapattığında welcome
+   modalı altta görünür kalır. */
+document.getElementById("welcomeHelpBtn").addEventListener("click", () => {
+  const helpEl = document.getElementById("helpModal");
+  if (helpEl) helpEl.style.zIndex = "10001";
+  openModal("helpModal");
+});
+
+document.getElementById("welcomeStart").addEventListener("click", () => {
+  if (!pendingFramework) return;
+  saveFramework(pendingFramework);
+  closeModal("welcomeModal");
+  applyFrameworkUI();
+  renderContent();
+  attachClickHandlers();
+  applyFilters();
+  updateProgress();
+});
+
+/* ==================== FRAMEWORK SEÇİCİ (TOOLBAR + SWITCH MODALI) ==================== */
+function applyFrameworkUI() {
+  /* Toolbar pill etiketini güncelle */
+  const meta = currentFramework ? FRAMEWORK_META[currentFramework] : null;
+  const pillIcon = document.querySelector("#frameworkBtn .fw-pill-icon");
+  const pillLabel = document.querySelector("#frameworkBtn .fw-pill-label");
+  if (meta && pillIcon && pillLabel) {
+    pillIcon.textContent = meta.icon;
+    pillLabel.textContent = meta.short;
+  }
+  /* Switch modalında mevcut seçimi vurgula */
+  document.querySelectorAll("[data-switch-fw]").forEach(b => {
+    b.classList.toggle("selected", b.dataset.switchFw === currentFramework);
+  });
+}
+
+document.getElementById("frameworkBtn").addEventListener("click", () => {
+  /* Mobil toolbar otomatik kapanması zaten setupMobileActionsToggle içinde halledilmiş */
+  applyFrameworkUI();
+  openModal("frameworkModal");
+});
+
+document.querySelectorAll("[data-switch-fw]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const fw = btn.dataset.switchFw;
+    if (fw === currentFramework) {
+      closeModal("frameworkModal");
+      return;
+    }
+
+    /* Geçişi gerçekleştiren ortak fonksiyon */
+    const performSwitch = (clearMarks) => {
+      if (clearMarks) {
+        state = {};
+        saveState();
+        celebrations = {};
+        saveCelebrations();
+      }
+      saveFramework(fw);
+      applyFrameworkUI();
+      renderContent();
+      attachClickHandlers();
+      applyFilters();
+      updateProgress();
+      closeModal("frameworkModal");
+      const msg = clearMarks
+        ? `${FRAMEWORK_META[fw].label} seçildi, liste sıfırlandı`
+        : `${FRAMEWORK_META[fw].label} seçildi`;
+      showToast(msg, "success", clearMarks ? 1800 : 1400);
+    };
+
+    /* Eğer en az bir madde işaretliyse onay iste — geçiş yapılırsa state sıfırlanır.
+       Hiç işaret yoksa (yeni kullanıcı veya temizlenmiş liste) doğrudan geç. */
+    const hasMarks = Object.keys(state).length > 0;
+    if (!hasMarks) {
+      performSwitch(false);
+      return;
+    }
+
+    /* Onay popup'ı için önce framework switch modalını kapat (üst üste binmesin) */
+    closeModal("frameworkModal");
+    const currentMeta = (currentFramework && FRAMEWORK_META[currentFramework]) || { icon: "?", label: currentFramework || "—" };
+    const newMeta = FRAMEWORK_META[fw];
+    const html = `
+      <div class="fw-switch-confirm">
+        <p class="fw-switch-intro">Çalıştığın yazılım çerçevesini değiştirmek üzeresin.</p>
+        <div class="fw-switch-row">
+          <div class="fw-switch-card from">
+            <div class="fw-switch-tag">Mevcut</div>
+            <div class="fw-switch-emoji">${currentMeta.icon}</div>
+            <div class="fw-switch-name">${currentMeta.label}</div>
+          </div>
+          <div class="fw-switch-arrow" aria-hidden="true">→</div>
+          <div class="fw-switch-card to">
+            <div class="fw-switch-tag">Yeni</div>
+            <div class="fw-switch-emoji">${newMeta.icon}</div>
+            <div class="fw-switch-name">${newMeta.label}</div>
+          </div>
+        </div>
+        <ul class="fw-switch-effects">
+          <li class="effect-clear"><span class="effect-icon">⚠</span><span>Tüm <strong>MVP</strong> ve <strong>Release</strong> işaretleri sıfırlanır</span></li>
+          <li class="effect-clear"><span class="effect-icon">⚠</span><span>İlerleme barları <strong>%0</strong>'a döner</span></li>
+          <li class="effect-keep"><span class="effect-icon">✓</span><span><strong>Notların</strong> olduğu gibi korunur</span></li>
+          <li class="effect-keep"><span class="effect-icon">✓</span><span><strong>Kategori durumu</strong> (açık/kapalı) korunur</span></li>
+        </ul>
+      </div>
+    `;
+    customConfirm(
+      html,
+      () => performSwitch(true),
+      { title: "Framework değiştirilsin mi?", yesText: "Geçiş yap", cancelText: "Vazgeç", html: true, wide: true }
+    );
+  });
+});
+
+/* İlk yüklemede (eğer framework varsa) hero pill'i doğru göster */
+applyFrameworkUI();
+
+/* ==================== SEVİYE GÖRÜNÜMÜ FİLTRESİ (MVP / Release / Her ikisi) ==================== */
+document.querySelectorAll("[data-level-view]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const v = btn.dataset.levelView;
+    if (v === levelView) return;
+    saveLevelView(v);
+    applyLevelView();
+  });
+});
+
+/* İlk yüklemede mevcut seviye görünümünü uygula (localStorage'dan veya 'both' default) */
+applyLevelView();
 
 /* ==================== UYGULAMA YÜKLE (PWA INSTALL) ==================== */
 let deferredInstallPrompt = null;
@@ -3877,7 +5518,7 @@ window.addEventListener("appinstalled", () => {
   showToast("Uygulama yüklendi! Ana ekrandan / masaüstünden açabilirsin.", "success", 3200);
 });
 
-const INSTALL_DISMISS_KEY = "agm_install_dismissed_v1";
+const INSTALL_DISMISS_KEY = "mobil_kontrol_install_dismissed_v1";
 
 function showInstallBanner() {
   /* Daha önce kapatılmışsa veya yüklenmişse gösterme */
@@ -3985,7 +5626,7 @@ function getInstallSteps(platform) {
         steps: [
           "Adres çubuğunun sağında <strong>yükle simgesini</strong> ara (genellikle bir monitör veya artı ikonu).",
           "Tıkla, açılan kutuda <strong>\"Yükle\"</strong> butonuna bas.",
-          "Alternatif: Sağ üstteki üç nokta menüsünden <strong>\"AGM Kontrol Listesi'ni Yükle\"</strong> seçeneği.",
+          "Alternatif: Sağ üstteki üç nokta menüsünden <strong>\"Kontrol Listesi'ni Yükle\"</strong> seçeneği.",
         ],
         note: "Uygulama bağımsız bir pencerede açılır. Masaüstünde / başlat menüsünde simge oluşur, oradan tek tıkla başlatabilirsin.",
       };
@@ -4042,7 +5683,7 @@ function renderInstallInstructions() {
   container.innerHTML = html;
 }
 
-/* Banner üzerindeki "Yükle" butonu — tek tıkla install (destekleniyorsa) veya manuel talimat */
+/* Banner üzerindeki "Yükle" butonu, tek tıkla install (destekleniyorsa) veya manuel talimat */
 document.getElementById("installBannerBtn").addEventListener("click", async () => {
   if (deferredInstallPrompt) {
     try {
@@ -4068,7 +5709,7 @@ document.getElementById("installBannerBtn").addEventListener("click", async () =
   openModal("installModal");
 });
 
-/* Banner kapat butonu — bir daha gösterme bayrağı */
+/* Banner kapat butonu, bir daha gösterme bayrağı */
 document.getElementById("installBannerClose").addEventListener("click", () => {
   hideInstallBanner();
   try { localStorage.setItem(INSTALL_DISMISS_KEY, "dismissed"); } catch {}
@@ -4104,6 +5745,9 @@ attachSearch();
 
 /* İlk açılışta updateProgress kutlama tetiklemesin (zaten c.total === 0 koşulu sağlamasıyla tetiklenmiyor ama yine de güvenli) */
 updateProgress();
+
+/* Kilit durumunu localStorage'dan yükleyip uygula (button etiketi, body class, disabled hedefler) */
+applyLock();
 
 showWelcomeIfFirstVisit();
 </script>

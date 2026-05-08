@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agm-mobil-kontrol-v3';
+const CACHE_NAME = 'mobil-kontrol-v1';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
