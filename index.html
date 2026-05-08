@@ -111,11 +111,19 @@
     overflow: hidden;
     margin-bottom: 24px;
   }
+  /* Bir dropdown menüsü açıkken hero'nun overflow:hidden kuralını geçici olarak
+     gevşet ki menü altta kesilmesin. Modern tarayıcılarda :has() destekleniyor. */
+  header.hero:has(.lv-menu:not([hidden])) {
+    overflow: visible;
+  }
   header.hero::before {
     content: "";
     position: absolute; inset: 0;
     background: radial-gradient(600px 200px at 90% 0%, rgba(59, 130, 246, 0.18), transparent 60%);
     pointer-events: none;
+    /* Hero overflow:visible olduğu zamanlarda (dropdown açıkken) gradient'in
+       köşelerden taşmaması için pseudo'ya da rounded corner ver. */
+    border-radius: inherit;
   }
   .eyebrow {
     font-size: 12px;
@@ -358,15 +366,27 @@
     margin-top: 14px;
   }
 
-  /* Seviye görünümü filtresi: karşı seviyenin satırını VE ilerleme bloğunu tamamen gizler.
-     Total ilerleme bloğu da gizlenir; tek seviye modunda kullanıcı sadece ilgili seviyeyi görür. */
-  body.view-mvp-only .level.release { display: none !important; }
+  /* Seviye görünümü filtreleri:
+     - "Sadece MVP" → tüm Release satırları gizli (işaretli/işaretsiz fark etmez)
+     - "Sadece Release" → tüm MVP satırları gizli
+     - İlerleme bloklarındaki üst summary barlar da daralır. */
   body.view-mvp-only .progress-block[data-level="release"],
   body.view-mvp-only .progress-block[data-level="total"] { display: none !important; }
-
-  body.view-release-only .level.mvp { display: none !important; }
   body.view-release-only .progress-block[data-level="mvp"],
   body.view-release-only .progress-block[data-level="total"] { display: none !important; }
+
+  body.view-mvp-only .level.release { display: none !important; }
+  body.view-release-only .level.mvp { display: none !important; }
+
+  /* viewFilter (status) kuralları — viewMode (level group) ile birleşince 9 kombinasyon:
+     - filter-pending  → tüm işaretli satırlar gizli (yalnızca yapılacaklar görünür)
+     - filter-done     → tüm işaretsiz satırlar gizli (yalnızca yapılanlar görünür)
+     - (filter yok)    → tüm satırlar (status'undan bağımsız) görünür
+
+     view-mvp-only / view-release-only zaten karşı seviyeyi gizliyor; bu kurallarla
+     birleşince örn. view-mvp-only + filter-pending = yalnızca işaretsiz MVP satırları. */
+  body.filter-pending .level.checked { display: none !important; }
+  body.filter-done .level:not(.checked) { display: none !important; }
 
   /* Toolbar */
   .toolbar {
@@ -766,15 +786,115 @@
     color: var(--accent-2);
     border-color: var(--accent-2);
   }
-  #filterMvpIncomplete.active {
-    background: var(--mvp-bg);
-    color: var(--mvp);
-    border-color: var(--mvp-border);
+  /* Hero seviye pill'leri artık dropdown'lı: yan yana 3 grup, her biri pill + menü */
+  .lv-group {
+    position: relative;
+    display: inline-flex;
+    flex: 1 1 auto;
   }
-  #filterReleaseIncomplete.active {
-    background: var(--release-bg);
-    color: var(--release);
-    border-color: var(--release-border);
+  .lv-group .level-filter-pill {
+    flex: 1 1 auto;
+  }
+  .level-filter-pill .lv-label {
+    font-weight: inherit;
+  }
+  .level-filter-pill .lv-sub {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    margin-left: 4px;
+    color: inherit;
+  }
+  [data-theme="light"] .level-filter-pill .lv-sub {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .level-filter-pill .lv-chevron {
+    color: var(--text-mute);
+    font-size: 11px;
+    margin-left: 2px;
+    transition: transform 0.18s ease;
+  }
+  .level-filter-pill[aria-expanded="true"] .lv-chevron {
+    transform: rotate(180deg);
+    color: inherit;
+  }
+
+  /* Dropdown menü */
+  .lv-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    z-index: 200;
+    animation: lvMenuIn 0.15s ease;
+  }
+  [data-theme="light"] .lv-menu {
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+  }
+  .lv-menu[hidden] { display: none; }
+  @keyframes lvMenuIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .lv-menu button {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+  .lv-menu button:hover {
+    background: var(--surface-2);
+  }
+  .lv-menu button.active {
+    background: var(--accent);
+    color: #0b0f17;
+    font-weight: 700;
+  }
+  /* Disabled: ilgili seviyede işaret yoksa Yapılan/Yapılacak opsiyonu gri olur,
+     hover efekti gözükmez, "kapalı" hissi belirgin olur (Tümü her zaman aktif). */
+  .lv-menu button:disabled,
+  .lv-menu button[disabled] {
+    color: var(--text-mute);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .lv-menu button:disabled:hover,
+  .lv-menu button[disabled]:hover {
+    background: transparent;
+  }
+  /* Aktif menü item'ı için renk varyantları (pill rengine göre) */
+  .lv-group[data-view-mode="mvp"] .lv-menu button.active {
+    background: var(--mvp);
+    color: #0b0f17;
+  }
+  .lv-group[data-view-mode="release"] .lv-menu button.active {
+    background: var(--release);
+    color: #fff;
+  }
+  /* Mobilde menü pill genişliğinde, sağa taşmasın */
+  @media (max-width: 700px) {
+    .lv-menu { left: auto; right: auto; min-width: 140px; }
   }
 
   /* Kategori collapse / expand */
@@ -800,13 +920,16 @@
   .category.collapsed .feature-list {
     display: none;
   }
-  /* Filtre/arama aktifken collapse override edilir */
-  body.filtering .category.collapsed .feature-list,
-  body.filtering .category.collapsed .cat-header .chevron {
+  /* Sadece ARAMA aktifken collapse override edilir (kullanıcı "X" ararken
+     kapalı kategorilerdeki eşleşmeyi de görsün diye otomatik aç).
+     viewMode/viewFilter değişikliği aramayı tetiklemez — Tümünü Aç/Kapat
+     butonlarının manuel toggle'ı doğru çalışsın. */
+  body.searching .category.collapsed .feature-list,
+  body.searching .category.collapsed .cat-header .chevron {
     display: block;
     transform: none;
   }
-  body.filtering .category.collapsed .feature-list {
+  body.searching .category.collapsed .feature-list {
     display: block !important;
   }
 
@@ -892,6 +1015,7 @@
   body.presentation-mode .cat-nav,
   body.presentation-mode .progress-card,
   body.presentation-mode header.hero,
+  body.presentation-mode .install-banner,
   body.presentation-mode footer {
     display: none !important;
   }
@@ -948,6 +1072,233 @@
   @keyframes fadeSlide {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Sunum modu — üst sabit bağlam çubuğu */
+  .pres-context-bar { display: none; }
+  body.presentation-mode .pres-context-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 28px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    z-index: 1000;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    animation: presBarIn 0.3s ease;
+  }
+  @keyframes presBarIn {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .pres-context-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .pres-context-emoji {
+    font-size: 22px;
+    line-height: 1;
+  }
+  .pres-context-app {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pres-context-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pres-context-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--hero-grad);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.10);
+  }
+  .pres-context-chip-label {
+    letter-spacing: -0.005em;
+  }
+  .pres-context-chip-count {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    background: var(--surface);
+    color: var(--text-dim);
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    letter-spacing: 0.04em;
+  }
+  /* Filter rengine göre chip'i renklendir */
+  body.presentation-mode.pres-filter-mvp .pres-context-chip {
+    background: var(--mvp-bg);
+    border-color: var(--mvp-border);
+    box-shadow: 0 0 0 3px var(--mvp-strong);
+    color: var(--mvp);
+  }
+  body.presentation-mode.pres-filter-release .pres-context-chip {
+    background: var(--release-bg);
+    border-color: var(--release-border);
+    box-shadow: 0 0 0 3px var(--release-strong);
+    color: var(--release);
+  }
+
+  /* Sunum modu — kategori kart düzeni: her madde bir kart olacak */
+  body.presentation-mode .feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 18px;
+    padding: 0;
+    margin-top: 24px;
+  }
+  body.presentation-mode .feature {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px;
+    padding: 22px 24px;
+    background: var(--surface-2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  body.presentation-mode .feature:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  }
+  /* Filtre uygulanmış maddeler/kategoriler sunum modunda da gizli kalsın
+     (yukarıdaki .feature display: flex bunu override etmesin) */
+  body.presentation-mode .feature.hidden { display: none !important; }
+  body.presentation-mode .category.hidden { display: none !important; }
+  /* Kart başlığı: ID rozet + başlık */
+  body.presentation-mode .feature .feature-head {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  body.presentation-mode .feature .feature-head .id {
+    font-size: 12px;
+    background: var(--surface-3);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--accent-2);
+    flex-shrink: 0;
+  }
+  body.presentation-mode .feature .feature-head h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  body.presentation-mode .feature .feature-desc {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.55;
+    margin: 0;
+  }
+  body.presentation-mode .feature .level {
+    font-size: 13px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    cursor: default;
+    pointer-events: none;
+  }
+  body.presentation-mode .feature .level-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  body.presentation-mode .feature .level-tag {
+    font-size: 9.5px;
+    padding: 3px 8px;
+  }
+  /* Sunumda not toggle, düzenleme alanı ve AI butonu gizlensin (dağınıklık olmasın).
+     Ancak NOT İÇERİĞİ varsa, salt-okunur bir kart olarak görünür kalsın. */
+  body.presentation-mode .feature-note-toggle,
+  body.presentation-mode .feature-note,
+  body.presentation-mode .feature-ai-wrap {
+    display: none !important;
+  }
+
+  /* Salt-okunur not kartı: normalde gizli, sunum modunda has-note feature'larında görünür */
+  .feature-note-display {
+    display: none;
+  }
+  body.presentation-mode .feature.has-note .feature-note-display {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(249, 115, 22, 0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    margin-top: 4px;
+  }
+  [data-theme="light"] body.presentation-mode .feature.has-note .feature-note-display {
+    background: rgba(234, 88, 12, 0.06);
+  }
+  body.presentation-mode .feature-note-display .note-display-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  body.presentation-mode .feature-note-display .note-display-text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+    font-style: italic;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  /* Kategori başlığı sunumda biraz daha gösterişli olsun */
+  body.presentation-mode .cat-header {
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  }
+  /* Sunum modunda üst sabit çubuk için içerik üstten boşluk al */
+  body.presentation-mode section.category {
+    padding-top: 80px;
+  }
+  /* Dar ekranlarda tek sütun, padding küçült */
+  @media (max-width: 700px) {
+    body.presentation-mode .feature-list {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    body.presentation-mode .pres-context-bar {
+      padding: 10px 16px;
+      gap: 10px;
+    }
+    .pres-context-app { font-size: 12.5px; }
+    .pres-context-chip { font-size: 12px; padding: 5px 11px; }
+    .pres-context-chip-count { font-size: 10.5px; padding: 1px 6px; }
+    body.presentation-mode section.category {
+      padding-top: 70px;
+    }
   }
 
   .presentation-controls {
@@ -1170,6 +1521,54 @@
     color: var(--text);
     background: var(--surface-3);
   }
+
+  /* Yardım modalı başlığında, kapatma butonunun solunda anlık dil değiştirici.
+     Sadece ilk karşılama akışının 1. adımından (dil seçimi) açıldığında görünür.
+     Global currentLang'i değiştirmez; sadece help-modal içeriğini geçici olarak değiştirir. */
+  .modal-head-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .help-lang-switch {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px;
+    background: var(--surface-3);
+    gap: 0;
+  }
+  .help-lang-switch[hidden] {
+    display: none;
+  }
+  .help-lang-opt {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    color: var(--text-dim);
+    padding: 4px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .help-lang-opt:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .help-lang-opt.active {
+    background: var(--accent);
+    color: #0b0f17;
+    cursor: default;
+  }
+  .help-lang-opt.active:hover {
+    background: var(--accent);
+  }
   .modal-body {
     padding: 22px 24px;
     position: relative;
@@ -1237,6 +1636,101 @@
     min-width: 24px;
     text-align: center;
     flex-shrink: 0;
+  }
+
+  /* Reset scope seçim modalı (2 aşamalı sıfırlama akışı, 1. adım) */
+  .modal-content.modal-reset-scope {
+    max-width: 520px;
+  }
+  .reset-scope-sub {
+    font-size: 13.5px !important;
+    color: var(--text-dim) !important;
+    margin: 0 0 16px !important;
+    line-height: 1.55 !important;
+  }
+  .reset-scope-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .reset-scope-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .reset-scope-option:hover {
+    background: var(--surface-3);
+    border-color: var(--text-mute);
+  }
+  .reset-scope-option:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.14);
+  }
+  .reset-scope-option.danger:has(input:checked) {
+    border-color: #dc2626;
+    background: rgba(239, 68, 68, 0.08);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
+  }
+  .reset-scope-option input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .reset-scope-option.danger input[type="checkbox"] {
+    accent-color: #dc2626;
+  }
+  /* Disabled durumda (system seçildiğinde diğer 2 disable olur) */
+  .reset-scope-option:has(input:disabled) {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .reset-scope-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .reset-scope-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .reset-scope-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .reset-scope-option.danger .reset-scope-title {
+    color: #dc2626;
+  }
+  [data-theme="light"] .reset-scope-option.danger .reset-scope-title {
+    color: #b91c1c;
+  }
+  .reset-scope-desc {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .reset-scope-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
   }
 
   /* Confirm modalı */
@@ -1487,28 +1981,48 @@
     font-size: 13px;
   }
 
-  /* Dil butonu (TR/EN toggle) */
-  #langToggle {
+  /* Hero sağ taraf kontrolleri (dil + framework birlikte) */
+  .hero-controls-right {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    font-variant: small-caps;
+    gap: 8px;
+    flex-wrap: wrap;
   }
-  #langToggle .lang-icon {
+
+  /* Hero dil değiştirme pill'i (framework pill'in eşdeğeri) */
+  .hero-lang-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 999px;
     font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    letter-spacing: 0.02em;
   }
-  #langToggle .lang-current {
+  .hero-lang-pill:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+  }
+  .hero-lang-pill .lang-icon { font-size: 14px; line-height: 1; }
+  .hero-lang-pill .lang-current {
     font-weight: 700;
     color: var(--accent-2);
+    letter-spacing: 0.05em;
   }
-  #langToggle .lang-sep {
+  .hero-lang-pill .lang-sep {
     color: var(--text-mute);
     margin: 0 1px;
   }
-  #langToggle .lang-other {
+  .hero-lang-pill .lang-other {
     color: var(--text-mute);
+    letter-spacing: 0.05em;
   }
 
   /* Tamamlama kutlama modalı */
@@ -1601,6 +2115,25 @@
     .welcome-help-btn .welcome-help-label { display: none; }
     .welcome-help-btn { padding: 6px; }
   }
+
+  /* 1. adımda (dil seçimi) yardım butonu sadece "?" simgesi olarak görünsün
+     — kullanıcı henüz dil seçmediği için yazı iki dilde de yer kaplamasın. */
+  #welcomeModal[data-step="1"] .welcome-help-btn .welcome-help-label {
+    display: none;
+  }
+  #welcomeModal[data-step="1"] .welcome-help-btn {
+    padding: 6px;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+  }
+
+  /* Eyebrow + başlık: 1. adımda iki dilde, 2/3. adımda sadece seçilen dilde.
+     Default: mono (tek dil) görünür, bilingual gizli. 1. adımda tersine çevir. */
+  .welcome-bilingual { display: none; }
+  .welcome-mono { display: inline; }
+  #welcomeModal[data-step="1"] .welcome-bilingual { display: inline; }
+  #welcomeModal[data-step="1"] .welcome-mono { display: none; }
   .welcome-icon-wrap {
     width: 72px;
     height: 72px;
@@ -1623,15 +2156,6 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
     letter-spacing: -0.01em;
-  }
-  .welcome-eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 11px;
-    color: var(--text-mute);
-    font-weight: 600;
-    margin-bottom: 12px;
-    line-height: 1.55;
   }
   .welcome-lead {
     font-size: 15px !important;
@@ -1857,6 +2381,31 @@
   }
   @media (max-width: 420px) {
     .framework-options { grid-template-columns: 1fr; }
+  }
+
+  /* Dil seçimi: 2 seçenekli, sade metin tabanlı kartlar (bayrak yok) */
+  .framework-options--lang {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .framework-options--lang .framework-option {
+    padding: 22px 14px 18px;
+    gap: 6px;
+  }
+  .framework-options--lang .framework-option .fw-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .framework-options--lang .framework-option .fw-desc {
+    font-size: 12px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  @media (max-width: 420px) {
+    .framework-options--lang { grid-template-columns: 1fr 1fr; }
   }
 
   .modal-content.modal-framework {
@@ -2301,6 +2850,17 @@
       justify-content: center;
       padding: 10px 14px;
     }
+    .hero-controls-right {
+      display: flex;
+      gap: 8px;
+    }
+    .hero-controls-right > .hero-lang-pill {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+    }
+    .hero-controls-right > .hero-framework-pill {
+      flex: 1 1 auto;
+    }
 
     /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */
     footer .foot-title::before,
@@ -2377,7 +2937,7 @@
     .install-banner,
     .feature-note-toggle, .feature-note,
     .feature-ai-copy, .feature-ai-wrap,
-    .presentation-controls,
+    .presentation-controls, .pres-context-bar,
     .modal, .toast-container,
     .cat-header .chevron {
       display: none !important;
@@ -2607,7 +3167,7 @@
 
 <div class="wrap">
 
-  <header class="hero" data-i18n-attr-data-locked-msg="hero.lockedMsg" data-locked-msg="🔒 Liste kilitli — değiştirmek için 'Kilidi Aç'a bas">
+  <header class="hero" data-i18n-attr-data-locked-msg="hero.lockedMsg" data-locked-msg="🔒 Liste kilitli. Değiştirmek için 'Kilidi Aç'a bas.">
     <div class="eyebrow" data-i18n="hero.eyebrow">MVP · Release · Kalite Kontrol</div>
     <h1 data-i18n-html="hero.title">Mobil Uygulama <em>Kalite Kontrol Listesi</em></h1>
     <div class="instructor">
@@ -2616,21 +3176,58 @@
     </div>
     <div class="hero-controls">
       <div class="level-filters" role="group" aria-label="Seviye görünümü" data-i18n-aria-label="hero.levelView">
-        <button type="button" class="level-filter-pill mvp" data-level-view="mvp" aria-pressed="false" title="Sadece MVP maddelerini göster" data-i18n-title="hero.mvpOnly">
-          <span class="dot mvp"></span><span>MVP</span>
+        <div class="lv-group" data-view-mode="mvp">
+          <button type="button" class="level-filter-pill mvp" aria-haspopup="menu" aria-expanded="false" title="Sadece MVP maddelerini göster" data-i18n-title="hero.mvpOnly">
+            <span class="dot mvp"></span>
+            <span class="lv-label">MVP</span>
+            <span class="lv-sub" hidden></span>
+            <span class="lv-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="lv-menu" role="menu" hidden>
+            <button type="button" role="menuitem" data-view-filter="all" data-i18n="viewFilter.all">Tümü</button>
+            <button type="button" role="menuitem" data-view-filter="pending" data-i18n="viewFilter.pending">Yapılacak</button>
+            <button type="button" role="menuitem" data-view-filter="done" data-i18n="viewFilter.done">Yapılan</button>
+          </div>
+        </div>
+        <div class="lv-group" data-view-mode="release">
+          <button type="button" class="level-filter-pill release" aria-haspopup="menu" aria-expanded="false" title="Sadece Release maddelerini göster" data-i18n-title="hero.releaseOnly">
+            <span class="dot release"></span>
+            <span class="lv-label">Release</span>
+            <span class="lv-sub" hidden></span>
+            <span class="lv-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="lv-menu" role="menu" hidden>
+            <button type="button" role="menuitem" data-view-filter="all" data-i18n="viewFilter.all">Tümü</button>
+            <button type="button" role="menuitem" data-view-filter="pending" data-i18n="viewFilter.pending">Yapılacak</button>
+            <button type="button" role="menuitem" data-view-filter="done" data-i18n="viewFilter.done">Yapılan</button>
+          </div>
+        </div>
+        <div class="lv-group" data-view-mode="both">
+          <button type="button" class="level-filter-pill both active" aria-haspopup="menu" aria-expanded="false" title="Hem MVP hem Release göster (varsayılan)" data-i18n-title="hero.bothLevels">
+            <span class="lv-label" data-i18n="hero.bothLevelsLabel">MVP + Release</span>
+            <span class="lv-sub" hidden></span>
+            <span class="lv-chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="lv-menu" role="menu" hidden>
+            <button type="button" role="menuitem" data-view-filter="all" data-i18n="viewFilter.all">Tümü</button>
+            <button type="button" role="menuitem" data-view-filter="pending" data-i18n="viewFilter.pending">Yapılacak</button>
+            <button type="button" role="menuitem" data-view-filter="done" data-i18n="viewFilter.done">Yapılan</button>
+          </div>
+        </div>
+      </div>
+      <div class="hero-controls-right">
+        <button type="button" class="hero-lang-pill" id="langToggle" title="Dili değiştir / Switch language" data-i18n-title="btn.lang.title" aria-label="Dil değiştir" data-i18n-aria-label="btn.lang.aria">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          <span class="lang-current">TR</span>
+          <span class="lang-sep" aria-hidden="true">/</span>
+          <span class="lang-other">EN</span>
         </button>
-        <button type="button" class="level-filter-pill release" data-level-view="release" aria-pressed="false" title="Sadece Release maddelerini göster" data-i18n-title="hero.releaseOnly">
-          <span class="dot release"></span><span>Release</span>
-        </button>
-        <button type="button" class="level-filter-pill both active" data-level-view="both" aria-pressed="true" title="Hem MVP hem Release göster (varsayılan)" data-i18n-title="hero.bothLevels">
-          <span data-i18n="hero.bothLevelsLabel">MVP + Release</span>
+        <button type="button" class="hero-framework-pill" id="frameworkBtn" title="Yazılım çerçevesini değiştir" data-i18n-title="hero.frameworkBtn">
+          <span class="fw-pill-icon">🐦</span>
+          <span class="fw-pill-label">Flutter</span>
+          <span class="fw-pill-chevron" aria-hidden="true">▾</span>
         </button>
       </div>
-      <button type="button" class="hero-framework-pill" id="frameworkBtn" title="Yazılım çerçevesini değiştir" data-i18n-title="hero.frameworkBtn">
-        <span class="fw-pill-icon">🐦</span>
-        <span class="fw-pill-label">Flutter</span>
-        <span class="fw-pill-chevron" aria-hidden="true">▾</span>
-      </button>
     </div>
   </header>
 
@@ -2656,10 +3253,6 @@
       <svg class="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
     </button>
     <div class="actions" id="toolbarActions">
-      <div class="action-group" role="group" aria-label="Filtre" data-i18n-aria-label="group.filter">
-        <button class="btn ghost" id="filterMvpIncomplete" title="MVP seviyesinde tamamlanmamış maddeleri göster" data-i18n-title="filter.mvpIncomplete.title" data-i18n="filter.mvpIncomplete">MVP Eksik</button>
-        <button class="btn ghost" id="filterReleaseIncomplete" title="Release seviyesinde tamamlanmamış maddeleri göster" data-i18n-title="filter.releaseIncomplete.title" data-i18n="filter.releaseIncomplete">Release Eksik</button>
-      </div>
       <div class="action-group" role="group" aria-label="Kategori kontrolü" data-i18n-aria-label="group.category">
         <button class="btn ghost" id="expandAllBtn" title="Tüm kategorileri aç" data-i18n-title="btn.expandAll.title" data-i18n="btn.expandAll">Tümünü Aç</button>
         <button class="btn ghost" id="collapseAllBtn" title="Tüm kategorileri kapat" data-i18n-title="btn.collapseAll.title" data-i18n="btn.collapseAll">Tümünü Kapat</button>
@@ -2667,12 +3260,6 @@
       <div class="action-group" role="group" aria-label="Görünüm" data-i18n-aria-label="group.view">
         <button class="btn ghost" id="presentBtn" title="Sunum modu (P / Esc)" data-i18n-title="btn.present.title" data-i18n="btn.present">Sunum</button>
         <button class="btn ghost btn-icon-text" id="themeToggle" title="Açık / Koyu tema" data-i18n-title="btn.theme.title"><span class="theme-icon">🌙</span><span class="theme-label">Koyu</span></button>
-        <button class="btn ghost btn-icon-text" id="langToggle" title="Dili değiştir / Switch language" data-i18n-title="btn.lang.title">
-          <span class="lang-icon">🌐</span>
-          <span class="lang-current">TR</span>
-          <span class="lang-sep">/</span>
-          <span class="lang-other">EN</span>
-        </button>
       </div>
       <div class="action-group" role="group" aria-label="Veri" data-i18n-aria-label="group.data">
         <button class="btn ghost btn-icon-text" id="lockBtn" title="Listeyi kilitle (işaretler/framework değişemez)" data-i18n-title="btn.lock.title"><span class="lock-icon">🔒</span><span class="lock-label">Kilit</span></button>
@@ -2719,6 +3306,20 @@
 
 <div class="print-footer" data-i18n="footer.printFooter">Hazırlayan: Özcan Orhan Demirci</div>
 
+<!-- Sunum modu üst bilgi çubuğu (sabit, tüm kategoriler boyunca görünür) -->
+<div class="pres-context-bar" aria-hidden="true">
+  <div class="pres-context-left">
+    <span class="pres-context-emoji">📱</span>
+    <span class="pres-context-app" data-i18n="pres.appName">Mobil Uygulama Kalite Kontrol</span>
+  </div>
+  <div class="pres-context-right">
+    <span class="pres-context-chip" id="presContextChip">
+      <span class="pres-context-chip-label" id="presContextLabel">Tüm Liste</span>
+      <span class="pres-context-chip-count" id="presContextCount"></span>
+    </span>
+  </div>
+</div>
+
 <div class="presentation-controls" aria-hidden="true">
   <button id="presPrev" title="Önceki kategori (←)" data-i18n-title="pres.prev">‹</button>
   <span class="pres-index" id="presIndex">0 / 0</span>
@@ -2732,7 +3333,13 @@
   <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <header class="modal-head">
       <h2 id="helpTitle" data-i18n="help.title">Nasıl Kullanılır?</h2>
-      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+      <div class="modal-head-right">
+        <span class="help-lang-switch" id="helpLangSwitch" hidden role="group" aria-label="Yardım metni dili · Help text language">
+          <button type="button" class="help-lang-opt" data-help-lang="tr" title="Yardımı Türkçe göster">TR</button>
+          <button type="button" class="help-lang-opt" data-help-lang="en" title="Show help in English">EN</button>
+        </span>
+        <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+      </div>
     </header>
     <div class="modal-body" id="helpModalBody">
 
@@ -2750,9 +3357,10 @@
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>iki adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>üç adımda</strong> yardım eder:</p>
         <ul>
-          <li><strong>1. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
+          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir — yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
+          <li><strong>2. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
@@ -2762,7 +3370,7 @@
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>2. Adım: Hoş Geldin.</strong> Seçimi yaptıktan sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan <strong>"‹ Geri"</strong> ile dönebilirsin.</li>
+          <li><strong>3. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
         <p>Seçtiğin framework, listedeki <strong>21 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır.</p>
       </section>
@@ -2787,14 +3395,21 @@
       </section>
 
       <section>
-        <h3>🎯 Hero Filtreleri (MVP / Release / MVP+Release)</h3>
-        <p>Sayfanın üstündeki başlık alanında <strong>3 yuvarlak buton</strong> vardır. Bunlarla görüntüyü daraltır, sadece istediğin seviyeye odaklanırsın:</p>
+        <h3>🎯 Akıllı Filtreleme (3×3 = 9 Kombinasyon)</h3>
+        <p>Sayfanın üst başlık alanında <strong>3 ana pill</strong> vardır: <strong style="color: var(--mvp);">MVP ▾</strong>, <strong style="color: var(--release);">Release ▾</strong>, <strong style="color: #ef4444;">MVP + Release ▾</strong>. Her birine tıkladığında alt menüsü açılır ve <strong>3 alt seçenek</strong> sunar: <strong>Tümü</strong>, <strong>Yapılacak</strong>, <strong>Yapılan</strong>.</p>
+        <p>Bu sayede 3 seviye × 3 durum = <strong>9 farklı filtreleme kombinasyonu</strong> elde edersin:</p>
         <ul>
-          <li><strong style="color: var(--mvp);">🟢 MVP</strong>: Sadece MVP seviyesindeki maddeler görünür. Release satırları ve Release ilerleme barı tamamen <em>gizlenir</em> (yokmuş gibi olur). <em>Önce temel iskeleti tamamlamak istediğinde idealdir.</em></li>
-          <li><strong style="color: var(--release);">🔵 Release</strong>: Sadece Release seviyesi görünür. MVP gizlenir. <em>MVP'yi bitirip mağazaya hazırlık yaparken idealdir.</em></li>
-          <li><strong style="color: #ef4444;">🔴 MVP + Release</strong>: Her ikisi de görünür. <em>Varsayılan mod</em>, kırmızı renkle vurgulanır. Tüm liste açık.</li>
+          <li><strong style="color: var(--mvp);">MVP · Tümü</strong>: Sadece MVP satırları görünür (işaretli + işaretsiz hepsi). Release tamamen gizli.</li>
+          <li><strong style="color: var(--mvp);">MVP · Yapılacak</strong>: Sadece <em>işaretsiz</em> MVP satırları. "Hangi MVP'ler kaldı?"</li>
+          <li><strong style="color: var(--mvp);">MVP · Yapılan</strong>: Sadece <em>işaretli</em> MVP satırları. "Neleri tamamladım?"</li>
+          <li><strong style="color: var(--release);">Release · Tümü / Yapılacak / Yapılan</strong>: Aynı mantık Release seviyesi için.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Tümü</strong> (varsayılan): Her şey görünür, hiçbir filtre yok.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Yapılacak</strong>: Hangi seviyeden olursa olsun tüm <em>işaretsiz</em> satırlar (ToDo listesi gibi).</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Yapılan</strong>: Tüm <em>işaretli</em> satırlar (başarı listesi gibi).</li>
         </ul>
-        <p>Tercihin <strong>kalıcı olarak kaydedilir</strong>; bir sonraki açılışta seçtiğin mod aktif kalır.</p>
+        <p><strong>Aktif pill</strong> renkli vurgulanır ve seçili alt-filtre etiketi pill'in içinde görünür (örn. "MVP · Yapılan ▾"). Diğer pill'ler nötr durur.</p>
+        <p><strong>Disabled mantığı:</strong> İlgili seviyede hiç işaret yoksa, "Yapılacak" ve "Yapılan" alt-seçenekleri <em>gri</em> ve tıklanamaz olur (gösterecek bir şey yok). "Tümü" her zaman aktiftir.</p>
+        <p>Hem level group hem alt-filtre ayrı ayrı <strong>tarayıcına kaydedilir</strong>; bir sonraki açılışta tam olarak kaldığın yerden devam edersin.</p>
       </section>
 
       <section>
@@ -2809,14 +3424,15 @@
       </section>
 
       <section>
-        <h3>🔍 Toolbar Filtreleri ve Arama</h3>
-        <p>Üst toolbar'da, ekstra filtreler vardır:</p>
+        <h3>🔍 Arama Kutusu</h3>
+        <p>Üst toolbar'daki <strong>arama kutusu</strong>, madde başlığı, açıklaması veya içeriği içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In", "Crashlytics".</p>
         <ul>
-          <li><strong>MVP Eksik</strong>: Sadece <em>henüz işaretlenmemiş</em> MVP maddelerini gösterir. <em>"Hangi MVP'ler kaldı?"</em> sorusunu yanıtlar.</li>
-          <li><strong>Release Eksik</strong>: Sadece henüz işaretlenmemiş Release maddelerini gösterir.</li>
-          <li><strong>🔍 Arama Kutusu</strong>: Madde başlığı, açıklama veya içerik içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In".</li>
+          <li>Yazdıkça filtreleme <strong>anlık</strong> uygulanır; eşleşmeyen maddeler ve eşleşmesi olmayan kategoriler gizlenir.</li>
+          <li>Arama aktifken <strong>kapalı kategoriler otomatik açılır</strong>; eşleşen sonuçları görmen kolaylaşır. Aramayı temizleyince kategoriler eski açık/kapalı durumlarına döner.</li>
+          <li>Arama aktifken <strong>"Tümünü Aç" / "Tümünü Kapat"</strong> butonları geçici olarak devre dışı kalır (auto-expand zaten gösteriyor, manuel toggle çelişki yaratırdı).</li>
+          <li><kbd>/</kbd> tuşu arama kutusuna anında odaklanır.</li>
         </ul>
-        <p><strong>💡 İpucu:</strong> Hero'daki "MVP" + toolbar'daki "MVP Eksik" filtresini birlikte kullanırsan ekran iyice odaklanır: sadece MVP seviyesi + sadece henüz yapılmamışlar.</p>
+        <p><strong>💡 İpucu:</strong> Arama ile <strong>3×3 filtreleme</strong> sistemi birlikte çalışır. Örn: "MVP · Yapılacak" filtresinde "Firebase" arayarak yapılması gereken Firebase maddelerine odaklanabilirsin.</p>
       </section>
 
       <section>
@@ -2827,6 +3443,26 @@
           <li><strong>Tümünü Kapat</strong> butonu, bütün kategorileri tek seferde kapatır.</li>
         </ul>
         <p>Sayfa ilk açıldığında <strong>tüm kategoriler kapalıdır</strong> (sayfayı kalabalık göstermemek için). İhtiyacın olana tıklayarak açarsın. Açtığın / kapattığın durum tarayıcına kaydedilir; sonraki açılışta hatırlanır.</p>
+      </section>
+
+      <section>
+        <h3>🧭 Akıllı Kategori Navigasyonu</h3>
+        <p>Sayfanın üstündeki <strong>13 kategori chip'i</strong> (örn. "01. Proje Fikri ve Planlama") basit bir scroll-to-anchor değil; <strong>akıllı navigasyon</strong> yapar:</p>
+        <ul>
+          <li>Bir chip'e tıklayınca kategori başlığına değil, <strong>"kullanıcının kaldığı" maddeye</strong> kaydırır.</li>
+          <li>Hedef madde aktif filtreye göre değişir:
+            <ul>
+              <li><strong>MVP filtresi aktifse</strong> → MVP'si işaretsiz ilk maddeye gider.</li>
+              <li><strong>Release filtresi aktifse</strong> → Release'i işaretsiz ilk maddeye gider.</li>
+              <li><strong>MVP+Release filtresi aktifse</strong> → MVP veya Release'inden en az biri işaretsiz olan ilk maddeye gider.</li>
+            </ul>
+          </li>
+          <li><strong>Hiç işaret yoksa</strong> ilk maddeye gider (zaten ilki yapılacak).</li>
+          <li><strong>Tüm maddeler tamamlandıysa</strong> kategorinin son maddesine gider (referans için).</li>
+          <li><strong>Kategori kapalıysa otomatik açılır</strong>, sonra hedef maddeye yumuşak bir kaydırma yapar.</li>
+          <li>Sticky toolbar'ın yüksekliği hesaba katılır; hedef madde tam toolbar'ın altına yerleşir, üzerine binmez.</li>
+        </ul>
+        <p>Bu sayede 30+ saatlik bir projede arama yapmadan, kapalı kategorileri açmadan, sadece chip'e tıklayarak <strong>yapacağın bir sonraki maddeye anında ulaşırsın</strong>.</p>
       </section>
 
       <section>
@@ -2843,8 +3479,9 @@
           <li>Yazdığın <strong>her karakter anında otomatik kaydedilir</strong>: kaydet düğmesine basmana gerek yok.</li>
           <li>Notu olan maddeler turuncu bir <strong>📝 işaretiyle</strong> vurgulanır; bulması kolaylaşır.</li>
           <li><strong>"Notu temizle"</strong> butonu ile notu silebilirsin.</li>
+          <li><strong>Sunum modunda</strong> not yazılı maddelerin altında <em>📝 ikonlu, italic, turuncu kenarlıklı</em> bir kart olarak <strong>otomatik görünür</strong>. Notu olmayan maddelerin altında bu kart hiç çıkmaz. Multi-line (çok satırlı) notlar düzgün biçimde gösterilir.</li>
         </ul>
-        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir.</p>
+        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir. Sunum modunda görünür çünkü orada bilinçli olarak ekibe gösteriyorsundur.</p>
       </section>
 
       <section>
@@ -2881,7 +3518,7 @@
         <ul>
           <li><strong>Dışa Aktar</strong>: bütün işaretlemeleri ve notları tek bir <strong>JSON dosyası</strong> olarak bilgisayarına indirir. Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur.</li>
           <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seçerek <strong>tüm işaretler ve notlar geri yüklenir</strong>. Yeni cihazda devam etmek için kullanılır.</li>
-          <li><strong>Sıfırla</strong>: <em>tüm işaretleri</em> temizler. Notların korunur, sadece kutu işaretleri silinir. Önce <strong>onay sorulur</strong> (yanlışlıkla basmayasın diye).</li>
+          <li><strong>Sıfırla</strong>: 2 aşamalı bir modal açar. İlk aşamada <strong>neyi sıfırlamak istediğini</strong> seçersin (4 seçenek): <em>📋 Seçimler</em> (MVP / Release işaretleri), <em>📝 Notlar</em> (her madde için yazdıkların), <em>⚙️ Ayarlar</em> (kategori, tema, filtreler, kilit) veya <em>⚠️ Tüm Sistem</em> (her şey, ilk açılışa döner). İlk üçünü serbestçe kombinleyebilirsin; "Tüm Sistem" seçilirse diğerleri otomatik kapanır. İkinci aşamada onay alınır, sonra silme uygulanır.</li>
         </ul>
         <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>yedek almak</strong> iyi alışkanlıktır, çünkü tarayıcı verisi tarayıcı temizliğinde silinebilir.</p>
       </section>
@@ -2956,18 +3593,39 @@
       <span class="welcome-help-label" data-i18n="welcome.helpLabel">Yardım</span>
     </button>
     <div class="welcome-icon-wrap">📱</div>
-    <div class="welcome-eyebrow" data-i18n="welcome.eyebrow">Mobil Uygulama · Kalite Kontrol</div>
-    <h2 id="welcomeTitle" data-i18n="welcome.title">Hoş Geldin!</h2>
+    <h2 id="welcomeTitle">
+      <span class="welcome-bilingual" data-i18n="welcome.title.bilingual">Hoş Geldin! · Welcome!</span>
+      <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
+    </h2>
 
-    <!-- Adım göstergesi -->
+    <!-- Adım göstergesi (3 adım: Dil, Framework, Karşılama) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
-      <span class="welcome-step-line"></span>
+      <span class="welcome-step-line" data-step-line="1"></span>
       <span class="welcome-step-dot" data-step-dot="2">2</span>
+      <span class="welcome-step-line" data-step-line="2"></span>
+      <span class="welcome-step-dot" data-step-dot="3">3</span>
     </div>
 
-    <!-- 1. Adım: Framework seçimi -->
+    <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
     <div class="welcome-pane" data-pane="1">
+      <p class="framework-pick-q" data-i18n="welcome.langQuestion">Hangi dilde devam etmek istersin? · Which language would you like to continue in?</p>
+      <p class="framework-pick-sub" data-i18n="welcome.langSub">Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.</p>
+      <div class="framework-options framework-options--lang" role="group" aria-label="Dil seçimi · Language selection" data-i18n-aria-label="welcome.langAria">
+        <button type="button" class="framework-option" data-welcome-lang="tr">
+          <span class="fw-title">Türkçe</span>
+          <span class="fw-desc">Turkish</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-lang="en">
+          <span class="fw-title">English</span>
+          <span class="fw-desc">İngilizce</span>
+        </button>
+      </div>
+      <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
+    </div>
+
+    <!-- 2. Adım: Framework seçimi -->
+    <div class="welcome-pane" data-pane="2" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 21 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -3002,20 +3660,29 @@
           <span class="fw-desc">Web · Service Worker</span>
         </button>
       </div>
-      <button class="btn primary welcome-cta" id="welcomeNext" disabled data-i18n="welcome.cta.pickFw">Devam etmek için framework seç</button>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeFwBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeNext" disabled data-i18n="welcome.cta.pickFw">Devam etmek için framework seç</button>
+      </div>
     </div>
 
-    <!-- 2. Adım: Hoşgeldin / Nasıl kullanılır -->
-    <div class="welcome-pane" data-pane="2" hidden>
+    <!-- 3. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="3" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">13 kategoride 46 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
         <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
         <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
+        <li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ↔ İngilizce çevir</li>
+        <li><strong>🎯 Seviye filtresi</strong>sadece MVP, sadece Release ya da hepsi</li>
+        <li><strong>🔄 Framework</strong>21 madde stack'ine göre özelleşir</li>
+        <li><strong>🔒 Kilit</strong>liste salt-okunur, yanlışlıkla bozulmaz</li>
+        <li><strong>🔍 Arama</strong>başlık, açıklama ve içerikte anahtar kelime ara</li>
         <li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li>
-        <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
         <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li>
+        <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
         <li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>
+        <li><strong>📲 PWA yükle</strong>uygulama gibi cihazına ekle, çevrimdışı çalışsın</li>
       </ul>
       <p class="welcome-tip" data-i18n-html="welcome.tip">İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.</p>
       <div class="welcome-actions">
@@ -3087,6 +3754,58 @@
   </div>
 </div>
 
+<!-- Reset scope seçim modalı (2 aşamalı reset akışının 1. adımı) -->
+<div class="modal" id="resetScopeModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-reset-scope" role="dialog" aria-modal="true" aria-labelledby="resetScopeTitle">
+    <header class="modal-head">
+      <h2 id="resetScopeTitle" data-i18n="reset.scopeTitle">Neyi sıfırlamak istersin?</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="reset-scope-sub" data-i18n="reset.scopeSub">Bir veya birden fazla seçenek seçebilirsin. "Tüm Sistem" seçilirse diğerleri otomatik iptal olur.</p>
+      <div class="reset-scope-options">
+        <label class="reset-scope-option" data-scope="selections">
+          <input type="checkbox" data-reset-scope="selections" />
+          <span class="reset-scope-icon" aria-hidden="true">📋</span>
+          <span class="reset-scope-text">
+            <span class="reset-scope-title" data-i18n="reset.scope.selections">Seçimler (MVP / Release)</span>
+            <span class="reset-scope-desc" data-i18n="reset.scope.selections.desc">MVP ve Release işaretlerin silinir, ilerleme barları sıfırlanır.</span>
+          </span>
+        </label>
+        <label class="reset-scope-option" data-scope="notes">
+          <input type="checkbox" data-reset-scope="notes" />
+          <span class="reset-scope-icon" aria-hidden="true">📝</span>
+          <span class="reset-scope-text">
+            <span class="reset-scope-title" data-i18n="reset.scope.notes">Notlar</span>
+            <span class="reset-scope-desc" data-i18n="reset.scope.notes.desc">Her madde için yazdığın notlar silinir.</span>
+          </span>
+        </label>
+        <label class="reset-scope-option" data-scope="settings">
+          <input type="checkbox" data-reset-scope="settings" />
+          <span class="reset-scope-icon" aria-hidden="true">⚙️</span>
+          <span class="reset-scope-text">
+            <span class="reset-scope-title" data-i18n="reset.scope.settings">Ayarlar</span>
+            <span class="reset-scope-desc" data-i18n="reset.scope.settings.desc">Kategori açık/kapalı durumu, tema, seviye filtreleri ve kilit varsayılana döner.</span>
+          </span>
+        </label>
+        <label class="reset-scope-option danger" data-scope="system">
+          <input type="checkbox" data-reset-scope="system" />
+          <span class="reset-scope-icon" aria-hidden="true">⚠️</span>
+          <span class="reset-scope-text">
+            <span class="reset-scope-title" data-i18n="reset.scope.system">Tüm Sistem</span>
+            <span class="reset-scope-desc" data-i18n="reset.scope.system.desc">Her şey silinir: işaretler, notlar, ayarlar, dil, framework. Uygulama ilk açılıştaki gibi başlar.</span>
+          </span>
+        </label>
+      </div>
+      <div class="reset-scope-actions">
+        <button class="btn ghost" data-modal-close data-i18n="confirm.cancel">İptal</button>
+        <button class="btn primary" id="resetScopeNext" disabled data-i18n="reset.continue">İleri ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Tamamlama kutlama modalı -->
 <div class="modal" id="celebrationModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
@@ -3152,7 +3871,7 @@ const UI_STRINGS = {
   "hero.bothLevels": { tr: "Hem MVP hem Release göster (varsayılan)", en: "Show both MVP and Release (default)" },
   "hero.bothLevelsLabel": { tr: "MVP + Release", en: "MVP + Release" },
   "hero.frameworkBtn": { tr: "Yazılım çerçevesini değiştir", en: "Switch software framework" },
-  "hero.lockedMsg": { tr: "🔒 Liste kilitli — değiştirmek için 'Kilidi Aç'a bas", en: "🔒 List locked — press 'Unlock' to make changes" },
+  "hero.lockedMsg": { tr: "🔒 Liste kilitli. Değiştirmek için 'Kilidi Aç'a bas.", en: "🔒 List locked. Press 'Unlock' to make changes." },
 
   // install banner
   "install.bannerTitle": { tr: "Bu uygulamayı tek tıkla cihazına yükle", en: "Install this app to your device with one click" },
@@ -3174,11 +3893,11 @@ const UI_STRINGS = {
   "group.data": { tr: "Veri", en: "Data" },
   "group.helpPrint": { tr: "Yardım ve yazdır", en: "Help and print" },
 
-  // filter buttons
-  "filter.mvpIncomplete": { tr: "MVP Eksik", en: "MVP Missing" },
-  "filter.mvpIncomplete.title": { tr: "MVP seviyesinde tamamlanmamış maddeleri göster", en: "Show incomplete MVP items" },
-  "filter.releaseIncomplete": { tr: "Release Eksik", en: "Release Missing" },
-  "filter.releaseIncomplete.title": { tr: "Release seviyesinde tamamlanmamış maddeleri göster", en: "Show incomplete Release items" },
+  // dropdown opsiyon label'ları (3x3 view × filter matrisi)
+  "viewFilter.all": { tr: "Tümü", en: "All" },
+  "viewFilter.pending": { tr: "Yapılacak", en: "Pending" },
+  "viewFilter.done": { tr: "Yapılan", en: "Done" },
+  "viewFilter.menuTitle": { tr: "Filtre seç", en: "Pick a filter" },
 
   // toolbar buttons
   "btn.expandAll": { tr: "Tümünü Aç", en: "Expand All" },
@@ -3189,6 +3908,7 @@ const UI_STRINGS = {
   "btn.present.title": { tr: "Sunum modu (P / Esc)", en: "Presentation mode (P / Esc)" },
   "btn.theme.title": { tr: "Açık / Koyu tema", en: "Light / Dark theme" },
   "btn.lang.title": { tr: "Dili değiştir / Switch language", en: "Switch language / Dili değiştir" },
+  "btn.lang.aria": { tr: "Dil değiştir", en: "Switch language" },
   "btn.lock.title": { tr: "Listeyi kilitle (işaretler/framework değişemez)", en: "Lock the list (marks/framework cannot change)" },
   "btn.lock.unlockTitle": { tr: "Kilidi aç (işaretler düzenlenebilir hale gelir)", en: "Unlock (marks become editable again)" },
   "btn.export": { tr: "Dışa Aktar", en: "Export" },
@@ -3245,6 +3965,21 @@ const UI_STRINGS = {
   "pres.exit": { tr: "Sunumdan çık (Esc)", en: "Exit presentation (Esc)" },
   "pres.exitLabel": { tr: "Kapat", en: "Close" },
 
+  // presentation context bar (üst başlık)
+  "pres.appName": { tr: "Mobil Uygulama Kalite Kontrol", en: "Mobile App Quality Check" },
+  "pres.context.all": { tr: "Tüm Liste", en: "All Items" },
+  "pres.context.mvp": { tr: "Sadece MVP Seviyesi", en: "MVP Level Only" },
+  "pres.context.release": { tr: "Sadece Release Seviyesi", en: "Release Level Only" },
+  "pres.context.mvpPending": { tr: "Yapılacak MVP'ler", en: "MVP Pending" },
+  "pres.context.mvpDone": { tr: "Yapılan MVP'ler", en: "MVP Done" },
+  "pres.context.releasePending": { tr: "Yapılacak Release'ler", en: "Release Pending" },
+  "pres.context.releaseDone": { tr: "Yapılan Release'ler", en: "Release Done" },
+  "pres.context.bothPending": { tr: "Yapılacak Tümü (MVP + Release)", en: "All Pending (MVP + Release)" },
+  "pres.context.bothDone": { tr: "Yapılan Tümü (MVP + Release)", en: "All Done (MVP + Release)" },
+  "pres.itemCount": { tr: "{n} madde", en: "{n} items" },
+  "pres.itemCountOne": { tr: "1 madde", en: "1 item" },
+  "pres.empty": { tr: "Sunulacak madde yok (filtre boş)", en: "Nothing to present (filter is empty)" },
+
   // help modal
   "help.title": { tr: "Nasıl Kullanılır?", en: "How to Use?" },
 
@@ -3252,8 +3987,12 @@ const UI_STRINGS = {
   "welcome.helpBtnTitle": { tr: "Nasıl kullanılır? (Yardım)", en: "How to use? (Help)" },
   "welcome.helpBtnAria": { tr: "Yardım", en: "Help" },
   "welcome.helpLabel": { tr: "Yardım", en: "Help" },
-  "welcome.eyebrow": { tr: "Mobil Uygulama · Kalite Kontrol", en: "Mobile App · Quality Check" },
   "welcome.title": { tr: "Hoş Geldin!", en: "Welcome!" },
+  "welcome.title.bilingual": { tr: "Hoş Geldin! · Welcome!", en: "Hoş Geldin! · Welcome!" },
+  "welcome.langQuestion": { tr: "Hangi dilde devam etmek istersin? · Which language would you like to continue in?", en: "Which language would you like to continue in? · Hangi dilde devam etmek istersin?" },
+  "welcome.langSub": { tr: "Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.", en: "All texts will appear in your chosen language. You can change it any time from the 🌐 button on top. · Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin." },
+  "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
+  "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
   "welcome.fwQuestion": { tr: "Hangi framework / dil ile çalışıyorsun?", en: "Which framework / language are you using?" },
   "welcome.fwSub": { tr: "Listede 21 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.", en: "21 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 25 are universal. You can change it later from the top button." },
   "welcome.fwAria": { tr: "Framework seçimi", en: "Framework selection" },
@@ -3262,8 +4001,8 @@ const UI_STRINGS = {
   "welcome.lead": { tr: "Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.", en: "This web app is built to help you audit the quality of the mobile app you are developing." },
   "welcome.body": { tr: "13 kategoride 46 özellik var. Her özelliğin <strong style=\"color: var(--mvp);\">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style=\"color: var(--release);\">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.", en: "46 features across 13 categories. Track progress by marking each feature's <strong style=\"color: var(--mvp);\">MVP (green, must-have)</strong> and <strong style=\"color: var(--release);\">Release (blue, store-ready professional quality)</strong> levels. Your marks are auto-saved in your browser." },
   "welcome.featuresList": {
-    tr: "<li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li><li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li><li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>",
-    en: "<li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>🎨 Theme</strong>switch between light and dark mode</li><li><strong>🖨 Print</strong>download as PDF, share</li><li><strong>📺 Presentation</strong>one-category fullscreen mode</li><li><strong>💾 Backup</strong>JSON export / import</li>"
+    tr: "<li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ↔ İngilizce çevir</li><li><strong>🎯 Seviye filtresi</strong>sadece MVP, sadece Release ya da hepsi</li><li><strong>🔄 Framework</strong>21 madde stack'ine göre özelleşir</li><li><strong>🔒 Kilit</strong>liste salt-okunur, yanlışlıkla bozulmaz</li><li><strong>🔍 Arama</strong>başlık, açıklama ve içerikte anahtar kelime ara</li><li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li><li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li><li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihazına ekle, çevrimdışı çalışsın</li>",
+    en: "<li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>🌐 TR / EN</strong>switch the app between Turkish ↔ English instantly</li><li><strong>🎯 Level filter</strong>MVP only, Release only, or both</li><li><strong>🔄 Framework</strong>21 items adapt to your stack</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🔍 Search</strong>find a keyword in title, description and content</li><li><strong>🎨 Theme</strong>switch between light and dark mode</li><li><strong>📺 Presentation</strong>one-category fullscreen mode</li><li><strong>🖨 Print</strong>download as PDF, share</li><li><strong>💾 Backup</strong>JSON export / import</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
   },
   "welcome.tip": { tr: "İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.", en: "Whenever you need it, open the detailed guide via the <strong>? Help</strong> button on top. Press <kbd>?</kbd> for keyboard shortcuts." },
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
@@ -3304,11 +4043,27 @@ const UI_STRINGS = {
   "confirm.yes": { tr: "Evet, devam et", en: "Yes, continue" },
   "confirm.cancel": { tr: "İptal", en: "Cancel" },
 
-  // reset confirm
-  "reset.title": { tr: "Tüm işaretleri sıfırla?", en: "Reset all marks?" },
-  "reset.msg": { tr: "Tüm işaretlemeler temizlenecek. Notların ve tema tercihin korunacak.", en: "All marks will be cleared. Your notes and theme preference will be kept." },
+  // reset (2 aşamalı: scope seçimi + onay; 4 seçenek)
+  "reset.scopeTitle": { tr: "Neyi sıfırlamak istersin?", en: "What do you want to reset?" },
+  "reset.scopeSub": { tr: "Bir veya birden fazla seçenek seçebilirsin. \"Tüm Sistem\" seçilirse diğerleri otomatik iptal olur (zaten her şeyi kapsar).", en: "Pick one or more options. \"Whole System\" cancels the others (it already covers everything)." },
+  "reset.scope.selections": { tr: "Seçimler (MVP / Release)", en: "Selections (MVP / Release)" },
+  "reset.scope.selections.desc": { tr: "MVP ve Release işaretlerin silinir, ilerleme barları sıfırlanır.", en: "MVP and Release marks are cleared, progress bars reset." },
+  "reset.scope.notes": { tr: "Notlar", en: "Notes" },
+  "reset.scope.notes.desc": { tr: "Her madde için yazdığın notlar silinir.", en: "All your per-item notes are deleted." },
+  "reset.scope.settings": { tr: "Ayarlar", en: "Settings" },
+  "reset.scope.settings.desc": { tr: "Kategori açık/kapalı durumu, tema (koyu/açık), seviye filtreleri ve kilit varsayılana döner.", en: "Category open/closed state, theme (dark/light), level filters and lock revert to defaults." },
+  "reset.scope.system": { tr: "Tüm Sistem", en: "Whole System" },
+  "reset.scope.system.desc": { tr: "Her şey silinir: işaretler, notlar, ayarlar, dil, framework. Uygulama ilk açılıştaki gibi başlar (karşılama akışı tekrar gelir).", en: "Everything is wiped: marks, notes, settings, language, framework. The app starts like first launch (welcome flow appears again)." },
+  "reset.continue": { tr: "İleri ›", en: "Next ›" },
+  "reset.confirmTitle": { tr: "Sıfırlamayı onayla?", en: "Confirm reset?" },
+  "reset.confirm.intro": { tr: "Aşağıdakiler sıfırlanacak:", en: "The following will be reset:" },
+  "reset.confirm.part.selections": { tr: "<strong>İşaretler</strong> (MVP / Release) silinir, ilerleme barları sıfırlanır", en: "<strong>Marks</strong> (MVP / Release) cleared, progress bars reset" },
+  "reset.confirm.part.notes": { tr: "<strong>Notlar</strong> silinir (her madde için yazdıkların)", en: "<strong>Notes</strong> deleted (your annotations on items)" },
+  "reset.confirm.part.settings": { tr: "<strong>Ayarlar</strong> varsayılana döner (kategoriler, tema, filtreler, kilit)", en: "<strong>Settings</strong> revert to defaults (categories, theme, filters, lock)" },
+  "reset.confirm.system": { tr: "⚠ <strong>TÜM SİSTEM</strong> sıfırlanacak: işaretler, notlar, ayarlar, dil, framework. Uygulama yeniden ilk açılıştaki gibi başlar.", en: "⚠ <strong>THE WHOLE SYSTEM</strong> will be reset: marks, notes, settings, language, framework. The app starts fresh." },
   "reset.yes": { tr: "Evet, sıfırla", en: "Yes, reset" },
-  "reset.toast": { tr: "Tüm işaretler temizlendi", en: "All marks cleared" },
+  "reset.yesSystem": { tr: "Evet, hepsini sil", en: "Yes, wipe everything" },
+  "reset.toast.done": { tr: "Sıfırlandı", en: "Reset complete" },
 
   // notes
   "note.add": { tr: "Not ekle", en: "Add note" },
@@ -3382,9 +4137,10 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>iki adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>üç adımda</strong> yardım eder:</p>
         <ul>
-          <li><strong>1. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
+          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir — yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
+          <li><strong>2. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
@@ -3394,7 +4150,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>2. Adım: Hoş Geldin.</strong> Seçimi yaptıktan sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan <strong>"‹ Geri"</strong> ile dönebilirsin.</li>
+          <li><strong>3. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
         <p>Seçtiğin framework, listedeki <strong>21 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır.</p>
       </section>
@@ -3420,18 +4176,31 @@ const HELP_HTML = {
 
       <section>
         <h3>🌐 Dil Değiştirme (TR / EN)</h3>
-        <p>Üst toolbar'daki <strong>🌐 TR / EN</strong> butonu ile uygulamayı <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında anında değiştirebilirsin. Tüm metinler (kategoriler, maddeler, modaller, butonlar) tercüme edilir. Tercihin kaydedilir.</p>
+        <p>Sayfanın üst başlık alanında, framework butonunun yanında <strong>🌐 TR / EN</strong> butonu vardır. Tıkladığında uygulama anında <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında geçiş yapar.</p>
+        <ul>
+          <li>Tüm metinler tercüme edilir: kategoriler, 46 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
+          <li>Hangi framework'ü seçtiysen, onun varyant metinleri de seçilen dilde gösterilir.</li>
+          <li>Tercihin <strong>tarayıcına kaydedilir</strong>; sonraki açılışta seçtiğin dil aktif gelir.</li>
+          <li>İlk kez girişte karşılama akışı sana ilk önce <strong>dil seçtirir</strong>; o seçim hem ekranı hem sonraki framework adımının metnini belirler.</li>
+        </ul>
       </section>
 
       <section>
-        <h3>🎯 Hero Filtreleri (MVP / Release / MVP+Release)</h3>
-        <p>Sayfanın üstündeki başlık alanında <strong>3 yuvarlak buton</strong> vardır. Bunlarla görüntüyü daraltır, sadece istediğin seviyeye odaklanırsın:</p>
+        <h3>🎯 Akıllı Filtreleme (3×3 = 9 Kombinasyon)</h3>
+        <p>Sayfanın üst başlık alanında <strong>3 ana pill</strong> vardır: <strong style="color: var(--mvp);">MVP ▾</strong>, <strong style="color: var(--release);">Release ▾</strong>, <strong style="color: #ef4444;">MVP + Release ▾</strong>. Her birine tıkladığında alt menüsü açılır ve <strong>3 alt seçenek</strong> sunar: <strong>Tümü</strong>, <strong>Yapılacak</strong>, <strong>Yapılan</strong>.</p>
+        <p>Bu sayede 3 seviye × 3 durum = <strong>9 farklı filtreleme kombinasyonu</strong> elde edersin:</p>
         <ul>
-          <li><strong style="color: var(--mvp);">🟢 MVP</strong>: Sadece MVP seviyesindeki maddeler görünür. Release satırları ve Release ilerleme barı tamamen <em>gizlenir</em> (yokmuş gibi olur). <em>Önce temel iskeleti tamamlamak istediğinde idealdir.</em></li>
-          <li><strong style="color: var(--release);">🔵 Release</strong>: Sadece Release seviyesi görünür. MVP gizlenir. <em>MVP'yi bitirip mağazaya hazırlık yaparken idealdir.</em></li>
-          <li><strong style="color: #ef4444;">🔴 MVP + Release</strong>: Her ikisi de görünür. <em>Varsayılan mod</em>, kırmızı renkle vurgulanır. Tüm liste açık.</li>
+          <li><strong style="color: var(--mvp);">MVP · Tümü</strong>: Sadece MVP satırları görünür (işaretli + işaretsiz hepsi). Release tamamen gizli.</li>
+          <li><strong style="color: var(--mvp);">MVP · Yapılacak</strong>: Sadece <em>işaretsiz</em> MVP satırları. "Hangi MVP'ler kaldı?"</li>
+          <li><strong style="color: var(--mvp);">MVP · Yapılan</strong>: Sadece <em>işaretli</em> MVP satırları. "Neleri tamamladım?"</li>
+          <li><strong style="color: var(--release);">Release · Tümü / Yapılacak / Yapılan</strong>: Aynı mantık Release seviyesi için.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Tümü</strong> (varsayılan): Her şey görünür, hiçbir filtre yok.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Yapılacak</strong>: Hangi seviyeden olursa olsun tüm <em>işaretsiz</em> satırlar (ToDo listesi gibi).</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Yapılan</strong>: Tüm <em>işaretli</em> satırlar (başarı listesi gibi).</li>
         </ul>
-        <p>Tercihin <strong>kalıcı olarak kaydedilir</strong>; bir sonraki açılışta seçtiğin mod aktif kalır.</p>
+        <p><strong>Aktif pill</strong> renkli vurgulanır ve seçili alt-filtre etiketi pill'in içinde görünür (örn. "MVP · Yapılan ▾"). Diğer pill'ler nötr durur.</p>
+        <p><strong>Disabled mantığı:</strong> İlgili seviyede hiç işaret yoksa, "Yapılacak" ve "Yapılan" alt-seçenekleri <em>gri</em> ve tıklanamaz olur (gösterecek bir şey yok). "Tümü" her zaman aktiftir.</p>
+        <p>Hem level group hem alt-filtre ayrı ayrı <strong>tarayıcına kaydedilir</strong>; bir sonraki açılışta tam olarak kaldığın yerden devam edersin.</p>
       </section>
 
       <section>
@@ -3446,14 +4215,30 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🔍 Toolbar Filtreleri ve Arama</h3>
-        <p>Üst toolbar'da, ekstra filtreler vardır:</p>
+        <h3>🔒 Liste Kilidi</h3>
+        <p>Toolbar'daki <strong>🔒 Kilit</strong> butonu, üzerinde çalıştığın listeyi <em>salt-okunur</em> moda alır. Sunum yaparken, mağazaya yüklenmeye hazır halde son görüntüyü dondururken veya yanlışlıkla işaretlere dokunmamak için faydalıdır.</p>
+        <p><strong>Kilit aktifken neler olur?</strong></p>
         <ul>
-          <li><strong>MVP Eksik</strong>: Sadece <em>henüz işaretlenmemiş</em> MVP maddelerini gösterir. <em>"Hangi MVP'ler kaldı?"</em> sorusunu yanıtlar.</li>
-          <li><strong>Release Eksik</strong>: Sadece henüz işaretlenmemiş Release maddelerini gösterir.</li>
-          <li><strong>🔍 Arama Kutusu</strong>: Madde başlığı, açıklama veya içerik içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In".</li>
+          <li><strong>MVP / Release işaretleri</strong> değiştirilemez, yeni işaret eklenemez, mevcut kaldırılamaz.</li>
+          <li><strong>Framework</strong> değiştirme butonu disabled olur.</li>
+          <li><strong>Sıfırla</strong> ve <strong>İçe Aktar</strong> butonları disabled olur (yanlışlıkla veriyi silemezsin).</li>
+          <li><strong>Yazdır</strong> ve <strong>Dışa Aktar</strong> butonları görsel olarak vurgulanır (kilitli halde doğal aksiyon: çıktı al / yedekle).</li>
+          <li><strong>Notlar, arama, filtreler, kategoriler, tema, sunum, dil değiştirme</strong> normal çalışır (sadece veri-değiştiren aksiyonlar kapalı).</li>
         </ul>
-        <p><strong>💡 İpucu:</strong> Hero'daki "MVP" + toolbar'daki "MVP Eksik" filtresini birlikte kullanırsan ekran iyice odaklanır: sadece MVP seviyesi + sadece henüz yapılmamışlar.</p>
+        <p>Hero (başlık) alanının altında ince bir <strong>"🔒 Liste kilitli"</strong> bilgi şeridi belirir; kilitli olduğunu unutmazsın.</p>
+        <p>Kilit durumu <strong>tarayıcına kaydedilir</strong>; uygulamayı kapatıp tekrar açtığında kilit aynen devam eder. Tekrar düzenleme yapmak için <strong>"Kilidi Aç"</strong> butonuna basıp onaylaman yeterli.</p>
+      </section>
+
+      <section>
+        <h3>🔍 Arama Kutusu</h3>
+        <p>Üst toolbar'daki <strong>arama kutusu</strong>, madde başlığı, açıklaması veya içeriği içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In", "Crashlytics".</p>
+        <ul>
+          <li>Yazdıkça filtreleme <strong>anlık</strong> uygulanır; eşleşmeyen maddeler ve eşleşmesi olmayan kategoriler gizlenir.</li>
+          <li>Arama aktifken <strong>kapalı kategoriler otomatik açılır</strong>; eşleşen sonuçları görmen kolaylaşır. Aramayı temizleyince kategoriler eski açık/kapalı durumlarına döner.</li>
+          <li>Arama aktifken <strong>"Tümünü Aç" / "Tümünü Kapat"</strong> butonları geçici olarak devre dışı kalır (auto-expand zaten gösteriyor, manuel toggle çelişki yaratırdı).</li>
+          <li><kbd>/</kbd> tuşu arama kutusuna anında odaklanır.</li>
+        </ul>
+        <p><strong>💡 İpucu:</strong> Arama ile <strong>3×3 filtreleme</strong> sistemi birlikte çalışır. Örn: "MVP · Yapılacak" filtresinde "Firebase" arayarak yapılması gereken Firebase maddelerine odaklanabilirsin.</p>
       </section>
 
       <section>
@@ -3464,6 +4249,26 @@ const HELP_HTML = {
           <li><strong>Tümünü Kapat</strong> butonu, bütün kategorileri tek seferde kapatır.</li>
         </ul>
         <p>Sayfa ilk açıldığında <strong>tüm kategoriler kapalıdır</strong> (sayfayı kalabalık göstermemek için). İhtiyacın olana tıklayarak açarsın. Açtığın / kapattığın durum tarayıcına kaydedilir; sonraki açılışta hatırlanır.</p>
+      </section>
+
+      <section>
+        <h3>🧭 Akıllı Kategori Navigasyonu</h3>
+        <p>Sayfanın üstündeki <strong>13 kategori chip'i</strong> (örn. "01. Proje Fikri ve Planlama") basit bir scroll-to-anchor değil; <strong>akıllı navigasyon</strong> yapar:</p>
+        <ul>
+          <li>Bir chip'e tıklayınca kategori başlığına değil, <strong>"kullanıcının kaldığı" maddeye</strong> kaydırır.</li>
+          <li>Hedef madde aktif filtreye göre değişir:
+            <ul>
+              <li><strong>MVP filtresi aktifse</strong> → MVP'si işaretsiz ilk maddeye gider.</li>
+              <li><strong>Release filtresi aktifse</strong> → Release'i işaretsiz ilk maddeye gider.</li>
+              <li><strong>MVP+Release filtresi aktifse</strong> → MVP veya Release'inden en az biri işaretsiz olan ilk maddeye gider.</li>
+            </ul>
+          </li>
+          <li><strong>Hiç işaret yoksa</strong> ilk maddeye gider (zaten ilki yapılacak).</li>
+          <li><strong>Tüm maddeler tamamlandıysa</strong> kategorinin son maddesine gider (referans için).</li>
+          <li><strong>Kategori kapalıysa otomatik açılır</strong>, sonra hedef maddeye yumuşak bir kaydırma yapar.</li>
+          <li>Sticky toolbar'ın yüksekliği hesaba katılır; hedef madde tam toolbar'ın altına yerleşir, üzerine binmez.</li>
+        </ul>
+        <p>Bu sayede 30+ saatlik bir projede arama yapmadan, kapalı kategorileri açmadan, sadece chip'e tıklayarak <strong>yapacağın bir sonraki maddeye anında ulaşırsın</strong>.</p>
       </section>
 
       <section>
@@ -3480,48 +4285,99 @@ const HELP_HTML = {
           <li>Yazdığın <strong>her karakter anında otomatik kaydedilir</strong>: kaydet düğmesine basmana gerek yok.</li>
           <li>Notu olan maddeler turuncu bir <strong>📝 işaretiyle</strong> vurgulanır; bulması kolaylaşır.</li>
           <li><strong>"Notu temizle"</strong> butonu ile notu silebilirsin.</li>
+          <li><strong>Sunum modunda</strong> not yazılı maddelerin altında <em>📝 ikonlu, italic, turuncu kenarlıklı</em> bir kart olarak <strong>otomatik görünür</strong>. Notu olmayan maddelerin altında bu kart hiç çıkmaz. Multi-line (çok satırlı) notlar düzgün biçimde gösterilir.</li>
         </ul>
-        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir.</p>
+        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir. Sunum modunda görünür çünkü orada bilinçli olarak ekibe gösteriyorsundur.</p>
       </section>
 
       <section>
         <h3>🤖 AI'a Sor (Yapay Zekâ Yardımı)</h3>
         <p>Her maddenin altında <strong>"🤖 AI'a sor"</strong> butonu vardır. Tıklayınca yanında <strong>2 seçenek</strong> açılır:</p>
         <ul>
-          <li><strong>📝 Türkçe</strong>: Markdown formatında, yeni başlayanlar için detaylı bir Türkçe prompt panoya kopyalanır.</li>
-          <li><strong>{ } EN JSON</strong>: Yapılandırılmış İngilizce JSON formatında prompt kopyalar. <em>Daha gelişmiş kullanıcılar için</em>; AI'nın daha tutarlı çıktı vermesini sağlar.</li>
+          <li><strong>📝 Türkçe / English (Markdown)</strong>: Aktif uygulama dilinde, Markdown formatında, yeni başlayanlar için detaylı bir prompt panoya kopyalanır. Prompt:
+            <ul>
+              <li>Konsepti ve önemini açıklamasını ister</li>
+              <li>Adım adım uygulama yolunu ister (paket, komut, dosya yolu detaylarıyla)</li>
+              <li>Çalışan, kopyala-yapıştır kod örneği ister (yorum satırları seçili dilde)</li>
+              <li>Sık yapılan 2-3 hatayı ve nasıl kaçınılacağını sorar</li>
+              <li>Doğrulama testlerini ister</li>
+            </ul>
+          </li>
+          <li><strong>{ } EN JSON</strong>: AI'a yapılandırılmış İngilizce JSON formatında prompt kopyalar. <em>Daha gelişmiş kullanıcılar için</em>; AI'nın daha tutarlı çıktı vermesini sağlar (role, project_context, expected_response_structure, constraints alanlarıyla). Cevap dili AI'a yine seçili uygulama diliyle (TR veya EN) söylenir.</li>
         </ul>
-        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude, Gemini</strong> gibi sohbet botlarına yapıştırırsın; kapsamlı bir rehber alırsın.</p>
-        <p><strong>💡 Önemli:</strong> Prompt seçtiğin frameworke göre <strong>otomatik özelleşir</strong>: örneğin Flutter seçiliyken "<code>flutter pub add</code>" örnekleri verir, Kotlin seçiliyken Gradle dependency satırı.</p>
+        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude, Gemini</strong> gibi sohbet botlarına yapıştırırsın; kapsamlı bir rehber alırsın. Toast bildirim "panoya kopyalandı" der.</p>
+        <p><strong>💡 Çift özelleşme:</strong></p>
+        <ul>
+          <li><strong>Framework özelleşmesi:</strong> Flutter seçiliyken "<code>flutter pub add</code>" örnekleri; Kotlin seçiliyken Gradle dependency; Swift seçiliyken SPM kurulumu vb. AI'a doğru paket/komut isimleri gider.</li>
+          <li><strong>Dil özelleşmesi:</strong> Uygulama dili TR ise prompt Türkçe, EN ise İngilizce. AI cevabı da seçilen dilde gelir.</li>
+        </ul>
       </section>
 
       <section>
         <h3>📺 Sunum Modu</h3>
-        <p><strong>"Sunum"</strong> butonuna basınca <em>tek bir kategori</em> tam ekranda gösterilir.</p>
+        <p><strong>"Sunum"</strong> butonuna (veya <kbd>P</kbd> tuşuna) basınca uygulama tamamen sunum-odaklı bir görünüme geçer. Sınıfta projeksiyona vurmak, ekiple ilerleme paylaşmak veya bir konuya odaklanmak için tasarlandı.</p>
+        <p><strong>Tasarım özellikleri:</strong></p>
         <ul>
-          <li><kbd>←</kbd> / <kbd>→</kbd>: önceki / sonraki kategori</li>
-          <li><kbd>Boşluk</kbd>: sonraki kategori (← / → alternatifi)</li>
-          <li><kbd>Esc</kbd>: sunum modundan çık</li>
+          <li><strong>Üstte sabit bağlam çubuğu</strong>: 📱 uygulama adı solda, sağda <em>renkli chip</em> ile <strong>ne sunuyorsun</strong> bilgisi (örn. "Yapılan MVP'ler · 5 madde"). Chip rengi viewMode'a göre değişir: MVP=yeşil, Release=mavi, MVP+Release=turuncu.</li>
+          <li><strong>Kategori kartı</strong>: Her kategori tam-ekran bir slayt. Kategori başlığı, açıklaması, yüzde ve madde sayısı üstte; altında maddeler.</li>
+          <li><strong>Madde kartları</strong>: Her madde, gölgeli ve kenarlıklı bir kart olarak görünür (2 sütunlu grid). Kartın içinde: ID rozeti, başlık, açıklama, MVP/Release seviye satırları, ve eğer not varsa not kartı.</li>
+          <li><strong>Notlar</strong> not yazılı olan maddelerin altında 📝 ikonu ile otomatik görünür.</li>
+          <li>Editör elemanları (not toggle, AI butonu, not textarea) sunumda gizlenir; sadece okumalık görünüm vardır.</li>
         </ul>
+        <p><strong>Aktif filtre + Sunum:</strong> Sunum modu mevcut filtrelemeye saygı duyar. Örn: "Yapılan MVP" filtresinde sunum başlatınca yalnızca <em>MVP'si işaretli kategoriler</em> arasında gezersin (boş kategoriler atlanır). Üst chip filtreyi belirtir, alt navigasyon ise filtreyle eşleşen kategori sayısını gösterir (örn. "1 / 5"). Filtre boşsa "Sunulacak madde yok" toast'ı çıkar, sunum açılmaz.</p>
+        <p><strong>Klavye:</strong></p>
+        <ul class="kbd-list">
+          <li><kbd>←</kbd> / <kbd>→</kbd><span>önceki / sonraki kategori</span></li>
+          <li><kbd>Boşluk</kbd> / <kbd>PageDown</kbd><span>sonraki kategori (alternatif)</span></li>
+          <li><kbd>PageUp</kbd><span>önceki kategori (alternatif)</span></li>
+          <li><kbd>Esc</kbd><span>sunum modundan çık</span></li>
+        </ul>
+        <p><strong>💡 İpucu:</strong> Sunum'a girmeden önce "MVP · Yapılacak" gibi bir filtre seç; tartışmaya odaklanmak istediğin konuyu izole edersin. <strong>"📋 Liste Kilidi"</strong> ile birlikte kullanırsan kazara işaretlere dokunma riski sıfırlanır.</p>
       </section>
 
       <section>
         <h3>💾 Veri Yönetimi (Yedek Al / Geri Yükle / Sıfırla)</h3>
         <ul>
-          <li><strong>Dışa Aktar</strong>: bütün işaretlemeleri ve notları tek bir <strong>JSON dosyası</strong> olarak bilgisayarına indirir.</li>
-          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seçerek <strong>tüm işaretler ve notlar geri yüklenir</strong>.</li>
-          <li><strong>Sıfırla</strong>: <em>tüm işaretleri</em> temizler. Notların korunur, sadece kutu işaretleri silinir.</li>
+          <li><strong>Dışa Aktar</strong>: tüm işaretler ve notlar tek bir <strong>JSON dosyası</strong> olarak bilgisayarına iner. Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur. <em>İlk işaret/not eklenmeden buton gri durur (yedeklenecek bir şey yok).</em></li>
+          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seç → <strong>tüm işaretler ve notlar geri yüklenir</strong>. Yeni cihazda devam etmek için kullanılır.</li>
+          <li><strong>Sıfırla</strong>: 2 aşamalı modal açar.
+            <ul>
+              <li><strong>1. Aşama</strong> — Neyi sıfırlamak istediğini seç (4 seçenek):
+                <ul>
+                  <li>📋 <strong>Seçimler</strong> (MVP / Release işaretleri ve ilerleme)</li>
+                  <li>📝 <strong>Notlar</strong> (her madde için yazdıklarını siler)</li>
+                  <li>⚙️ <strong>Ayarlar</strong> (kategori açık/kapalı, tema, filtreler, kilit varsayılana döner)</li>
+                  <li>⚠️ <strong>Tüm Sistem</strong> (her şey: işaretler, notlar, ayarlar, dil, framework — ilk açılışa döner, karşılama akışı tekrar gelir)</li>
+                </ul>
+              </li>
+              <li>İlk üçünü serbestçe kombinleyebilirsin. "Tüm Sistem" seçilirse diğer üçü <em>otomatik kapanır + disabled</em> olur (zaten her şeyi kapsıyor).</li>
+              <li><strong>2. Aşama</strong> — onay metni ne sileceğini madde-madde gösterir. Onaylarsan sıfırlama uygulanır.</li>
+            </ul>
+          </li>
         </ul>
+        <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>"Dışa Aktar" ile yedek almak</strong> iyi alışkanlıktır; tarayıcı verisi tarayıcı temizliğinde silinebilir.</p>
       </section>
 
       <section>
         <h3>🖨 Yazdırma ve PDF</h3>
-        <p><strong>"Yazdır"</strong> butonu veya <kbd>Ctrl</kbd>+<kbd>P</kbd> ile listeyi yazıcıya gönderebilir veya <strong>PDF olarak kaydedebilirsin</strong>.</p>
+        <p><strong>"Yazdır"</strong> butonu veya <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac'te <kbd>⌘</kbd>+<kbd>P</kbd>) ile listeyi yazıcıya gönderebilir veya <strong>PDF olarak kaydedebilirsin</strong>.</p>
+        <ul>
+          <li><strong>Üstte liste başlığı, altta hazırlayan bilgisi</strong> her sayfada otomatik tekrar eder.</li>
+          <li>Renkler (yeşil MVP, mavi Release) yazdırmada da korunur.</li>
+          <li>Madde (feature) içerikleri sayfa ortasından bölünmez; mantıklı yerden bölünür.</li>
+          <li>Kategori başlığı sayfanın altında yalnız kalmaz; yazdırma motoru bunu otomatik düzeltir.</li>
+          <li><strong>Notların, AI butonlarının, filtre butonlarının, sunum kontrollerinin yazdırma çıktısında gözükmez</strong>; sadece liste içeriği basılır (temiz çıktı).</li>
+        </ul>
       </section>
 
       <section>
         <h3>🌙 Tema (Koyu / Açık)</h3>
-        <p>Sağ üstteki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
+        <p>Toolbar'daki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
+        <ul>
+          <li><strong>Koyu tema</strong>: gece veya az ışıklı ortamda gözü daha az yorar (varsayılan).</li>
+          <li><strong>Açık tema</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. Tüm renkler (MVP yeşil, Release mavi, accent turuncu) açık temada da koruma altında.</li>
+        </ul>
+        <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Tema değişikliği toast bildirimiyle onaylanır.</p>
       </section>
 
       <section>
@@ -3530,19 +4386,30 @@ const HELP_HTML = {
         <ul>
           <li><strong>Mobilde:</strong> ana ekrana eklenir, ayrı bir ikon olarak açılır.</li>
           <li><strong>Masaüstünde:</strong> başlat menüsüne / dock'a kısayol gelir.</li>
-          <li>Tek tıkla açılır, <strong>internet olmadan da çalışır</strong>.</li>
+          <li>Tek tıkla açılır, <strong>internet olmadan da çalışır</strong> (Service Worker önbelleği).</li>
         </ul>
+        <p><strong>Yükleme yolu:</strong></p>
+        <ul>
+          <li>Sayfa açıldığında üstte <strong>"📲 Yükle"</strong> banner'ı belirebilir. Tıkla → tarayıcı yerli yükleme penceresi açılır → "Yükle" → tamam.</li>
+          <li>Banner desteklenmiyorsa (örn. iOS Safari, Firefox masaüstü), <strong>cihaza özel adım-adım talimat modalı</strong> açılır. Modal sayfanı açtığın platformu otomatik algılar (iOS Safari, Android Chrome, Samsung Internet, Firefox, Edge, macOS Safari…) ve doğru menü yolunu (örn. Safari'de "Paylaş → Ana Ekrana Ekle") gösterir.</li>
+          <li>Banner'ı kapatırsan bir daha gözükmez (tarayıcına işaretlenir). Yine de tarayıcı menüsünden manuel yükleyebilirsin.</li>
+        </ul>
+        <p>Yüklendikten sonra: ikona tıklayınca uygulama <strong>kendi penceresinde</strong> (browser tab'ı değil) açılır, adres çubuğu gözükmez, gerçek bir uygulama gibi davranır.</p>
       </section>
 
       <section>
         <h3>⌨️ Klavye Kısayolları</h3>
         <ul class="kbd-list">
           <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
-          <li><kbd>/</kbd><span>Arama kutusuna odaklan</span></li>
+          <li><kbd>/</kbd><span>Arama kutusuna odaklan (anında yazmaya başla)</span></li>
           <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda önceki / sonraki kategori</span></li>
-          <li><kbd>Esc</kbd><span>Açık modal veya sunum modundan çık</span></li>
+          <li><kbd>Boşluk</kbd> / <kbd>PageDown</kbd><span>Sunumda sonraki kategori (alternatif)</span></li>
+          <li><kbd>PageUp</kbd><span>Sunumda önceki kategori (alternatif)</span></li>
+          <li><kbd>Esc</kbd><span>Açık modal / dropdown / sunum modundan çık</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Tarayıcı yazdır (PDF kaydet de mümkün)</span></li>
         </ul>
+        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) tetiklenmez — yazdığın metni bozmaz.</em></p>
       </section>
   `,
   en: `
@@ -3560,9 +4427,10 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 First Run: Welcome Flow</h3>
-        <p>The first time you open the app a welcome dialog appears and helps you in <strong>two steps</strong>:</p>
+        <p>The first time you open the app a welcome dialog appears and helps you in <strong>three steps</strong>:</p>
         <ul>
-          <li><strong>Step 1: Pick a framework.</strong> Which language / framework are you using? Pick one of 6 options:
+          <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong> — you can read the help in either language (momentary, not saved).</em></li>
+          <li><strong>Step 2: Pick a framework.</strong> Which language / framework are you using? Pick one of 6 options:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google's framework that builds Android + iOS from one codebase (<em>Dart</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta's cross-platform framework written in JavaScript / TypeScript (bare CLI).</li>
@@ -3572,7 +4440,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web technologies (HTML/CSS/JS) installable on phones via "Add to Home Screen".</li>
             </ul>
           </li>
-          <li><strong>Step 2: Welcome.</strong> After picking, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong>.</li>
+          <li><strong>Step 3: Welcome.</strong> After picking the framework, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
         </ul>
         <p>The framework you pick determines how <strong>21 items appear</strong> (package names, build commands, code samples differ). 25 items are common across all frameworks.</p>
       </section>
@@ -3598,18 +4466,31 @@ const HELP_HTML = {
 
       <section>
         <h3>🌐 Switch Language (TR / EN)</h3>
-        <p>The <strong>🌐 TR / EN</strong> button in the top toolbar instantly switches the app between <strong>Turkish</strong> and <strong>English</strong>. Every text (categories, items, modals, buttons) is translated. Your preference is saved.</p>
+        <p>In the page header, next to the framework button, there is a <strong>🌐 TR / EN</strong> button. Click it to switch instantly between <strong>Turkish</strong> and <strong>English</strong>.</p>
+        <ul>
+          <li>Every text is translated: categories, the 46 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
+          <li>Whichever framework you picked, its variant texts also appear in the chosen language.</li>
+          <li>Your preference is <strong>saved in the browser</strong>; the chosen language is active on next open.</li>
+          <li>On the very first run, the welcome flow first asks you to <strong>pick a language</strong>; that choice drives the UI as well as the framework step that follows.</li>
+        </ul>
       </section>
 
       <section>
-        <h3>🎯 Hero Filters (MVP / Release / MVP+Release)</h3>
-        <p>The header has <strong>3 round buttons</strong>. Use them to narrow the view to a single level:</p>
+        <h3>🎯 Smart Filtering (3×3 = 9 Combinations)</h3>
+        <p>The header has <strong>3 main pills</strong>: <strong style="color: var(--mvp);">MVP ▾</strong>, <strong style="color: var(--release);">Release ▾</strong>, <strong style="color: #ef4444;">MVP + Release ▾</strong>. Click any to open its dropdown with <strong>3 sub-options</strong>: <strong>All</strong>, <strong>Pending</strong>, <strong>Done</strong>.</p>
+        <p>That gives you 3 levels × 3 statuses = <strong>9 different filter combinations</strong>:</p>
         <ul>
-          <li><strong style="color: var(--mvp);">🟢 MVP</strong>: only MVP items show. Release rows and the Release progress bar are <em>hidden entirely</em>. <em>Ideal when you want to nail the foundation first.</em></li>
-          <li><strong style="color: var(--release);">🔵 Release</strong>: only Release items show. MVP is hidden. <em>Ideal once MVP is done and you're prepping for the store.</em></li>
-          <li><strong style="color: #ef4444;">🔴 MVP + Release</strong>: both visible. <em>Default mode</em>, highlighted in red. Full list visible.</li>
+          <li><strong style="color: var(--mvp);">MVP · All</strong>: only MVP rows (checked + unchecked). Release entirely hidden.</li>
+          <li><strong style="color: var(--mvp);">MVP · Pending</strong>: only <em>unchecked</em> MVP rows. "Which MVPs are left?"</li>
+          <li><strong style="color: var(--mvp);">MVP · Done</strong>: only <em>checked</em> MVP rows. "What have I completed?"</li>
+          <li><strong style="color: var(--release);">Release · All / Pending / Done</strong>: same logic for Release level.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · All</strong> (default): everything visible, no filter.</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Pending</strong>: all <em>unchecked</em> rows from any level (a global to-do).</li>
+          <li><strong style="color: #ef4444;">MVP + Release · Done</strong>: all <em>checked</em> rows (a global achievements list).</li>
         </ul>
-        <p>Your choice is <strong>saved permanently</strong>; the same mode is active next time.</p>
+        <p>The <strong>active pill</strong> is color-highlighted and shows the chosen sub-filter as a label inside (e.g. "MVP · Done ▾"). Other pills stay neutral.</p>
+        <p><strong>Disabled logic:</strong> If the relevant level has no marks, "Pending" and "Done" sub-options are <em>grayed out</em> (nothing to show). "All" is always active.</p>
+        <p>Both the level group and sub-filter are <strong>saved separately in your browser</strong>; you pick up exactly where you left off next time.</p>
       </section>
 
       <section>
@@ -3624,14 +4505,30 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🔍 Toolbar Filters and Search</h3>
-        <p>The top toolbar has extra filters:</p>
+        <h3>🔒 List Lock</h3>
+        <p>The <strong>🔒 Lock</strong> button in the toolbar puts the list you're working on into <em>read-only</em> mode. Useful for presenting, freezing the view when you are store-ready, or to avoid accidentally toggling marks.</p>
+        <p><strong>What happens when lock is on?</strong></p>
         <ul>
-          <li><strong>MVP Missing</strong>: only <em>still-unchecked</em> MVP items. Answers <em>"Which MVPs are left?"</em></li>
-          <li><strong>Release Missing</strong>: only still-unchecked Release items.</li>
-          <li><strong>🔍 Search box</strong>: searches by <strong>keyword</strong> in title, description and content. Examples: "API", "dark mode", "Firebase", "Apple Sign-In".</li>
+          <li><strong>MVP / Release marks</strong> cannot be changed; you can't add a new mark or remove an existing one.</li>
+          <li>The <strong>Framework</strong> switch button is disabled.</li>
+          <li><strong>Reset</strong> and <strong>Import</strong> are disabled (so you can't accidentally lose data).</li>
+          <li><strong>Print</strong> and <strong>Export</strong> are visually emphasized (the natural actions while locked: print / back up).</li>
+          <li><strong>Notes, search, filters, categories, theme, presentation, language switching</strong> still work — only data-mutating actions are blocked.</li>
         </ul>
-        <p><strong>💡 Tip:</strong> Combine the hero "MVP" filter with the toolbar "MVP Missing" filter to focus the screen down to: only MVP level + only undone.</p>
+        <p>A thin <strong>"🔒 List locked"</strong> banner appears below the hero so you don't forget the lock is active.</p>
+        <p>The lock state is <strong>saved in your browser</strong>; closing and reopening the app keeps it locked. To edit again, press <strong>"Unlock"</strong> and confirm.</p>
+      </section>
+
+      <section>
+        <h3>🔍 Search Box</h3>
+        <p>The toolbar's <strong>search box</strong> searches by <strong>keyword</strong> in title, description and content. Examples: "API", "dark mode", "Firebase", "Apple Sign-In", "Crashlytics".</p>
+        <ul>
+          <li>Filtering applies <strong>instantly</strong> as you type; non-matching items and empty categories are hidden.</li>
+          <li>While searching, <strong>collapsed categories auto-expand</strong> so matches are visible. Clearing the search restores their previous open/closed state.</li>
+          <li>While searching, <strong>"Expand All" / "Collapse All"</strong> are temporarily disabled (auto-expand already shows results; manual toggle would conflict).</li>
+          <li>Press <kbd>/</kbd> to focus the search box instantly.</li>
+        </ul>
+        <p><strong>💡 Tip:</strong> Search composes with the <strong>3×3 filter</strong> system. E.g. with "MVP · Pending" active, search "Firebase" to focus on Firebase MVPs you still need to do.</p>
       </section>
 
       <section>
@@ -3642,6 +4539,26 @@ const HELP_HTML = {
           <li><strong>Collapse All</strong>: closes every category at once.</li>
         </ul>
         <p>On first load <strong>all categories are collapsed</strong> (to keep the page tidy). Click what you need to open. Open/closed state is saved in your browser.</p>
+      </section>
+
+      <section>
+        <h3>🧭 Smart Category Navigation</h3>
+        <p>The <strong>13 category chips</strong> at the top (e.g. "01. Project Idea and Planning") aren't simple scroll-to-anchor links — they perform <strong>smart navigation</strong>:</p>
+        <ul>
+          <li>Clicking a chip scrolls not to the category header but to <strong>"where you left off"</strong> — the next item that needs attention.</li>
+          <li>The target depends on the active filter:
+            <ul>
+              <li><strong>MVP filter active</strong> → first item with an unchecked MVP.</li>
+              <li><strong>Release filter active</strong> → first item with an unchecked Release.</li>
+              <li><strong>MVP+Release filter active</strong> → first item where at least one of MVP or Release is unchecked.</li>
+            </ul>
+          </li>
+          <li><strong>Nothing checked yet</strong> → goes to the first item (which is the next thing to do anyway).</li>
+          <li><strong>All items complete</strong> → goes to the last item in that category (for reference).</li>
+          <li><strong>Category collapsed?</strong> → it auto-expands, then smooth-scrolls to the target.</li>
+          <li>The sticky toolbar height is accounted for; the target item lands just below the toolbar, not behind it.</li>
+        </ul>
+        <p>So in a 30+ hour project, without searching, without opening collapsed categories — one chip click takes you to the <strong>next item to do</strong>.</p>
       </section>
 
       <section>
@@ -3658,69 +4575,131 @@ const HELP_HTML = {
           <li><strong>Every keystroke is saved automatically</strong>: no save button needed.</li>
           <li>Items with notes are highlighted with an orange <strong>📝 mark</strong>; easier to find.</li>
           <li>Use <strong>"Clear note"</strong> to delete the note.</li>
+          <li>In <strong>presentation mode</strong>, items with notes <strong>auto-display the note</strong> as a <em>📝 italic card with an orange accent</em> below the levels. Items with no note simply don't render the card. Multi-line notes display correctly with line breaks preserved.</li>
         </ul>
-        <p>Notes are <strong>not shown when printing</strong>: they're personal.</p>
+        <p>Notes are <strong>not shown when printing</strong>: they're personal. They DO show in presentation mode because there you're consciously sharing with your team.</p>
       </section>
 
       <section>
         <h3>🤖 Ask AI (AI Assistance)</h3>
         <p>Each item has an <strong>"🤖 Ask AI"</strong> button. It opens <strong>2 options</strong>:</p>
         <ul>
-          <li><strong>📝 English Markdown</strong>: A detailed beginner-friendly prompt is copied to your clipboard.</li>
-          <li><strong>{ } EN JSON</strong>: A structured JSON prompt copied. <em>For more advanced users</em>; produces more consistent AI output.</li>
+          <li><strong>📝 English / Türkçe (Markdown)</strong>: A detailed beginner-friendly prompt copied in the active app language. The prompt asks for:
+            <ul>
+              <li>Concept explanation and why it matters</li>
+              <li>Step-by-step implementation (with packages, commands, file paths)</li>
+              <li>A working copy-paste code example (comments in the selected language)</li>
+              <li>2-3 common mistakes and how to avoid each</li>
+              <li>Verification tests</li>
+            </ul>
+          </li>
+          <li><strong>{ } EN JSON</strong>: Copies a structured English JSON prompt. <em>For more advanced users</em>; produces more consistent AI output (with role, project_context, expected_response_structure, constraints fields). The AI is instructed to answer in the active app language (TR or EN).</li>
         </ul>
-        <p>Paste the copied prompt into <strong>ChatGPT, Claude, Gemini</strong> and you'll get a thorough guide.</p>
-        <p><strong>💡 Important:</strong> The prompt <strong>auto-specializes</strong> to your framework: with Flutter selected you get "<code>flutter pub add</code>" examples; with Kotlin selected, Gradle dependency lines.</p>
+        <p>Paste the copied prompt into <strong>ChatGPT, Claude, Gemini</strong> and you'll get a thorough guide. A toast notification confirms "copied to clipboard".</p>
+        <p><strong>💡 Dual specialization:</strong></p>
+        <ul>
+          <li><strong>Framework specialization:</strong> with Flutter selected you get "<code>flutter pub add</code>" examples; with Kotlin selected, Gradle dependency lines; with Swift, SPM setup; etc. The right package/command names go to the AI.</li>
+          <li><strong>Language specialization:</strong> if the app is in TR, the prompt is in Turkish; if EN, in English. The AI's reply also comes in the selected language.</li>
+        </ul>
       </section>
 
       <section>
         <h3>📺 Presentation Mode</h3>
-        <p>Press <strong>"Present"</strong> to show <em>one category</em> fullscreen.</p>
+        <p>Press <strong>"Present"</strong> (or <kbd>P</kbd>) to switch the app into a fully presentation-focused view. Designed for projecting in class, sharing progress with the team, or focusing on a single topic.</p>
+        <p><strong>Design features:</strong></p>
         <ul>
-          <li><kbd>←</kbd> / <kbd>→</kbd>: previous / next category</li>
-          <li><kbd>Space</kbd>: next category (alternative)</li>
-          <li><kbd>Esc</kbd>: exit presentation</li>
+          <li><strong>Fixed top context bar</strong>: 📱 app name on the left, on the right a <em>colored chip</em> shows <strong>what you're presenting</strong> (e.g. "MVP Done · 5 items"). The chip color follows the view mode: MVP=green, Release=blue, MVP+Release=orange.</li>
+          <li><strong>Category slide</strong>: Each category is a full-screen slide. Title, subtitle, percentage and item count at the top; items below.</li>
+          <li><strong>Item cards</strong>: Each item is a shadowed bordered card (2-column grid). Inside: ID badge, title, description, MVP/Release level rows, and a note card if a note exists.</li>
+          <li><strong>Notes</strong> auto-render below items that have one, with a 📝 icon.</li>
+          <li>Editor elements (note toggle, AI button, note textarea) are hidden in presentation; only a read-only view remains.</li>
         </ul>
+        <p><strong>Active filter + Presentation:</strong> Presentation respects the current filter. E.g. with "MVP Done" active, you only navigate between categories that have at least one done MVP (empty categories are skipped). The chip indicates the filter; the bottom counter shows the matching-category count (e.g. "1 / 5"). If the filter matches nothing, a "Nothing to present" toast appears and presentation doesn't open.</p>
+        <p><strong>Keyboard:</strong></p>
+        <ul class="kbd-list">
+          <li><kbd>←</kbd> / <kbd>→</kbd><span>previous / next category</span></li>
+          <li><kbd>Space</kbd> / <kbd>PageDown</kbd><span>next category (alternative)</span></li>
+          <li><kbd>PageUp</kbd><span>previous category (alternative)</span></li>
+          <li><kbd>Esc</kbd><span>exit presentation</span></li>
+        </ul>
+        <p><strong>💡 Tip:</strong> Pick a filter like "MVP · Pending" before entering presentation to isolate exactly what you want to discuss. Combine with <strong>"📋 List Lock"</strong> to eliminate any risk of accidentally toggling marks during the talk.</p>
       </section>
 
       <section>
         <h3>💾 Data Management (Backup / Restore / Reset)</h3>
         <ul>
-          <li><strong>Export</strong>: download all marks and notes as a single <strong>JSON file</strong>.</li>
-          <li><strong>Import</strong>: pick a previously downloaded JSON file to <strong>restore all marks and notes</strong>.</li>
-          <li><strong>Reset</strong>: clears <em>all marks</em>. Notes are kept; only ticks are erased.</li>
+          <li><strong>Export</strong>: downloads all marks and notes as a single <strong>JSON file</strong>. A safety net in case the browser is wiped or you want to migrate. <em>If there are no marks AND no notes yet, the button is greyed out (nothing to export).</em></li>
+          <li><strong>Import</strong>: pick a previously downloaded JSON file → <strong>marks and notes are restored</strong>. Used to continue on a new device.</li>
+          <li><strong>Reset</strong>: opens a 2-step modal.
+            <ul>
+              <li><strong>Step 1</strong> — pick what to reset (4 options):
+                <ul>
+                  <li>📋 <strong>Selections</strong> (MVP / Release marks and progress)</li>
+                  <li>📝 <strong>Notes</strong> (deletes everything you've written per item)</li>
+                  <li>⚙️ <strong>Settings</strong> (category open/closed, theme, filters, lock revert to defaults)</li>
+                  <li>⚠️ <strong>Whole System</strong> (everything: marks, notes, settings, language, framework — back to first launch, welcome flow appears again)</li>
+                </ul>
+              </li>
+              <li>The first three combine freely. Picking "Whole System" <em>auto-unchecks and disables</em> the other three (already covers everything).</li>
+              <li><strong>Step 2</strong> — the confirmation lists exactly what will be deleted. Confirm to apply the reset.</li>
+            </ul>
+          </li>
         </ul>
+        <p><strong>💡 Tip:</strong> Get into the habit of <strong>exporting at major milestones</strong>; browser data can be wiped by browser cleanup.</p>
       </section>
 
       <section>
         <h3>🖨 Print and PDF</h3>
-        <p>Use the <strong>"Print"</strong> button or <kbd>Ctrl</kbd>+<kbd>P</kbd> to print or <strong>save as PDF</strong>.</p>
+        <p>Use the <strong>"Print"</strong> button or <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac: <kbd>⌘</kbd>+<kbd>P</kbd>) to print, or <strong>save as PDF</strong>.</p>
+        <ul>
+          <li><strong>List title at top, author info at bottom</strong> repeats on every page automatically.</li>
+          <li>Colors (green MVP, blue Release) are preserved when printing.</li>
+          <li>Items (features) are not split mid-content; pagination breaks at sensible points.</li>
+          <li>A category header never sits alone at the bottom of a page; the print engine handles it.</li>
+          <li><strong>Notes, AI buttons, filter buttons, presentation controls do NOT appear</strong> in the printout; only the list content is printed (clean output).</li>
+        </ul>
       </section>
 
       <section>
         <h3>🌙 Theme (Dark / Light)</h3>
-        <p>The <strong>🌙 Dark / ☀ Light</strong> button toggles theme.</p>
+        <p>The toolbar's <strong>🌙 Dark / ☀ Light</strong> button toggles theme.</p>
+        <ul>
+          <li><strong>Dark</strong>: easier on the eyes at night or in low light (default).</li>
+          <li><strong>Light</strong>: classic white look for daytime / well-lit environments. All accent colors (MVP green, Release blue, accent orange) hold up in light mode too.</li>
+        </ul>
+        <p>Your preference is <strong>saved in the browser</strong>. A toast confirms each change.</p>
       </section>
 
       <section>
         <h3>📲 Install as App (PWA)</h3>
         <p>Install this checklist on your phone or computer <strong>like a real app</strong>:</p>
         <ul>
-          <li><strong>Mobile:</strong> goes to the home screen as its own icon.</li>
-          <li><strong>Desktop:</strong> a shortcut is added to the start menu / dock.</li>
-          <li>One-click open, <strong>works offline too</strong>.</li>
+          <li><strong>Mobile:</strong> added to the home screen as its own icon.</li>
+          <li><strong>Desktop:</strong> shortcut added to the start menu / dock.</li>
+          <li>One-click open, <strong>works offline too</strong> (Service Worker cache).</li>
         </ul>
+        <p><strong>How to install:</strong></p>
+        <ul>
+          <li>An <strong>"📲 Install"</strong> banner may appear at the top of the page. Click it → the browser's native install dialog opens → click "Install".</li>
+          <li>If the banner is unsupported (e.g. iOS Safari, Firefox desktop), a <strong>device-specific step-by-step instructions modal</strong> opens. The modal auto-detects your platform (iOS Safari, Android Chrome, Samsung Internet, Firefox, Edge, macOS Safari, etc.) and shows the right menu path (e.g. "Share → Add to Home Screen" in Safari).</li>
+          <li>If you dismiss the banner it won't return (your browser is flagged). You can still install manually from your browser menu.</li>
+        </ul>
+        <p>After install: clicking the icon launches the app in <strong>its own window</strong> (not a browser tab) — no address bar, behaves like a real app.</p>
       </section>
 
       <section>
         <h3>⌨️ Keyboard Shortcuts</h3>
         <ul class="kbd-list">
           <li><kbd>?</kbd><span>Open this help dialog</span></li>
-          <li><kbd>/</kbd><span>Focus the search box</span></li>
+          <li><kbd>/</kbd><span>Focus the search box (start typing immediately)</span></li>
           <li><kbd>P</kbd><span>Open presentation mode</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Previous / next category in presentation</span></li>
-          <li><kbd>Esc</kbd><span>Close open modal or exit presentation</span></li>
+          <li><kbd>Space</kbd> / <kbd>PageDown</kbd><span>Next category in presentation (alternative)</span></li>
+          <li><kbd>PageUp</kbd><span>Previous category in presentation (alternative)</span></li>
+          <li><kbd>Esc</kbd><span>Close open modal / dropdown / exit presentation</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Browser print (also Save as PDF)</span></li>
         </ul>
+        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) won't fire while typing inside an input/textarea — your text stays intact.</em></p>
       </section>
   `
 };
@@ -4663,19 +5642,27 @@ const STORAGE_KEY = "mobil_kontrol_state_v1";
 const NOTES_KEY = "mobil_kontrol_notes_v1";
 const COLLAPSE_KEY = "mobil_kontrol_collapse_v1";
 const FRAMEWORK_KEY = "mobil_kontrol_framework_v1";
-const LEVEL_VIEW_KEY = "mobil_kontrol_level_view_v1";
+const LEVEL_VIEW_KEY = "mobil_kontrol_level_view_v1";       // viewMode (level group)
+const VIEW_FILTER_KEY = "mobil_kontrol_view_filter_v1";      // viewFilter (status sub-filter)
 
 let state = loadState();
 let notes = loadNotes();
 let collapsedCats = loadCollapsed();
 let currentFramework = loadFramework();
-let levelView = loadLevelView();
+let viewMode = loadViewMode();      // "mvp" | "release" | "both"
+let viewFilter = loadViewFilter();  // "all" | "pending" | "done"
 
-function loadLevelView() {
+function loadViewMode() {
   try {
     const v = localStorage.getItem(LEVEL_VIEW_KEY);
     return (v === "mvp" || v === "release" || v === "both") ? v : "both";
   } catch { return "both"; }
+}
+function loadViewFilter() {
+  try {
+    const v = localStorage.getItem(VIEW_FILTER_KEY);
+    return (v === "all" || v === "pending" || v === "done") ? v : "all";
+  } catch { return "all"; }
 }
 
 const LOCK_KEY = "mobil_kontrol_lock_v1";
@@ -4712,70 +5699,148 @@ function applyLock() {
     btn.setAttribute("aria-pressed", lockState ? "true" : "false");
   }
 }
-function saveLevelView(v) {
+function saveViewMode(v) {
   if (v !== "mvp" && v !== "release" && v !== "both") return;
-  levelView = v;
+  viewMode = v;
   try { localStorage.setItem(LEVEL_VIEW_KEY, v); } catch {}
 }
-function applyLevelView() {
-  document.body.classList.toggle("view-mvp-only", levelView === "mvp");
-  document.body.classList.toggle("view-release-only", levelView === "release");
-  document.querySelectorAll("[data-level-view]").forEach(b => {
-    const isActive = b.dataset.levelView === levelView;
-    b.classList.toggle("active", isActive);
-    b.setAttribute("aria-pressed", isActive ? "true" : "false");
-  });
-  updateToolbarButtonStates();
+function saveViewFilter(v) {
+  if (v !== "all" && v !== "pending" && v !== "done") return;
+  viewFilter = v;
+  try { localStorage.setItem(VIEW_FILTER_KEY, v); } catch {}
 }
 
-/* Toolbar buton kullanılabilirlik kuralları:
-   A) levelView "mvp" iken Release Eksik kapalı; "release" iken MVP Eksik kapalı.
-      (Karşı seviye gizli olduğu için filtre anlamsız.)
-   B) İlgili seviyede 0 işaret varsa o filter butonu kapalı.
-      ("X Eksik" filtresi tüm maddeleri gösterir = filtre yokmuş gibi olur, gereksiz.)
-      → Hiç işaret yoksa: ikisi de kapalı.
-      → Sadece MVP işareti varsa: Release Eksik kapalı.
-      → Sadece Release işareti varsa: MVP Eksik kapalı.
-   C) filterMode "mvp" veya "release" aktifken Tümünü Aç / Tümünü Kapat kapalı.
-      (Filtre aktif iken kategori toggle'ı çelişkili duruma yol açar.)
-   Üçü bağımsız; tam açık durum: levelView=both + filterMode=all + her iki seviyede işaret. */
+/* Tek setView fonksiyonu: hem viewMode hem viewFilter'ı uygular,
+   body class'larını günceller, hero pill'lerini ve dropdown'ları işaretler,
+   feature/category visibility'sini ve sunum bağlam çubuğunu yeniler. */
+function applyView() {
+  /* Body class'ları: CSS satır gizleme kuralları için */
+  document.body.classList.toggle("view-mvp-only", viewMode === "mvp");
+  document.body.classList.toggle("view-release-only", viewMode === "release");
+  document.body.classList.toggle("filter-pending", viewFilter === "pending");
+  document.body.classList.toggle("filter-done", viewFilter === "done");
+
+  /* Hero pill aktif state + sub-label + dropdown menü active item */
+  document.querySelectorAll(".lv-group").forEach(group => {
+    const mode = group.dataset.viewMode;
+    const isActive = mode === viewMode;
+    const pill = group.querySelector(".level-filter-pill");
+    pill.classList.toggle("active", isActive);
+    pill.setAttribute("aria-pressed", isActive ? "true" : "false");
+    /* Sub-label: aktif pill'de ve viewFilter "all" değilse göster */
+    const subEl = pill.querySelector(".lv-sub");
+    if (subEl) {
+      if (isActive && viewFilter !== "all") {
+        subEl.hidden = false;
+        subEl.textContent = t("viewFilter." + viewFilter);
+      } else {
+        subEl.hidden = true;
+        subEl.textContent = "";
+      }
+    }
+    /* Menü active item — sadece aktif pill'in menüsünde işaretle */
+    group.querySelectorAll(".lv-menu button").forEach(b => {
+      const isItemActive = isActive && b.dataset.viewFilter === viewFilter;
+      b.classList.toggle("active", isItemActive);
+    });
+  });
+
+  applyFilters();
+  updateToolbarButtonStates();
+  /* Sunum modu açıksa context bar'ı güncelle */
+  if (document.body.classList.contains("presentation-mode") && typeof updatePresentationContextBar === "function") {
+    updatePresentationContextBar();
+  }
+}
+
+/* Genel API: hem mode hem filter'ı tek seferde değiştir.
+   Örn: setView("mvp", "pending") → MVP + Yapılacak. */
+function setView(mode, filter) {
+  if (mode !== undefined) saveViewMode(mode);
+  if (filter !== undefined) saveViewFilter(filter);
+  applyView();
+}
+
+/* Hero dropdown'larındaki opsiyonların ve toolbar yan butonlarının disabled state'i:
+   - Pending opsiyonu: ilgili seviyede hiç işaret yoksa devre dışı (filtre tüm maddeyi gösterir = gereksiz).
+   - Done opsiyonu: ilgili seviyede hiç işaret yoksa devre dışı (gösterecek bir şey yok).
+   - Tümü opsiyonu: her zaman aktif.
+   - Aktif viewFilter devre dışı bir opsiyona düşerse otomatik "all"a fallback yapılır.
+   - Tümünü Aç / Kapat: viewFilter "all" değilse devre dışı (filtre aktifken collapse çelişkili). */
 function updateToolbarButtonStates() {
-  const mvpBtn = document.getElementById("filterMvpIncomplete");
-  const relBtn = document.getElementById("filterReleaseIncomplete");
-  const expandBtn = document.getElementById("expandAllBtn");
+  const expandBtn   = document.getElementById("expandAllBtn");
   const collapseBtn = document.getElementById("collapseAllBtn");
-  if (!mvpBtn || !relBtn || !expandBtn || !collapseBtn) return;
+  if (!expandBtn || !collapseBtn) return;
 
-  const counts = (typeof countLevels === "function") ? countLevels() : { mvpChecked: 0, releaseChecked: 0 };
-  const mvpDisabledByView  = levelView === "release";
-  const relDisabledByView  = levelView === "mvp";
-  const mvpDisabledByCount = counts.mvpChecked === 0;
-  const relDisabledByCount = counts.releaseChecked === 0;
+  const counts = (typeof countLevels === "function") ? countLevels() : { mvpChecked: 0, releaseChecked: 0, totalChecked: 0 };
+  const mvpHasNoChecks = counts.mvpChecked === 0;
+  const relHasNoChecks = counts.releaseChecked === 0;
 
-  const mvpDisabled = mvpDisabledByView || mvpDisabledByCount;
-  const relDisabled = relDisabledByView || relDisabledByCount;
-  mvpBtn.disabled = mvpDisabled;
-  relBtn.disabled = relDisabled;
+  /* Hero dropdown'larında her opsiyonu disabled veya değil olarak işaretle */
+  document.querySelectorAll(".lv-group").forEach(group => {
+    const mode = group.dataset.viewMode; // mvp | release | both
+    const items = group.querySelectorAll(".lv-menu button");
+    items.forEach(btn => {
+      const filt = btn.dataset.viewFilter; // all | pending | done
+      let disabled = false;
+      if (filt === "all") {
+        disabled = false;
+      } else if (mode === "mvp") {
+        disabled = mvpHasNoChecks;
+      } else if (mode === "release") {
+        disabled = relHasNoChecks;
+      } else { // both
+        /* "both + pending/done" en az bir seviyede işaret varsa anlamlı */
+        disabled = mvpHasNoChecks && relHasNoChecks;
+      }
+      btn.disabled = disabled;
+    });
+  });
 
-  /* Aktif filtre devre dışı kalıyorsa otomatik 'all'a düşür */
-  let filterChanged = false;
-  if (mvpDisabled && filterMode === "mvp") { filterMode = "all"; filterChanged = true; }
-  if (relDisabled && filterMode === "release") { filterMode = "all"; filterChanged = true; }
-  if (filterChanged) {
-    mvpBtn.classList.remove("active");
-    relBtn.classList.remove("active");
+  /* Aktif kombinasyon devre dışı kaldıysa "all"a fallback */
+  let invalid = false;
+  if (viewFilter === "pending" || viewFilter === "done") {
+    if (viewMode === "mvp" && mvpHasNoChecks) invalid = true;
+    else if (viewMode === "release" && relHasNoChecks) invalid = true;
+    else if (viewMode === "both" && mvpHasNoChecks && relHasNoChecks) invalid = true;
+  }
+  if (invalid) {
+    saveViewFilter("all");
+    document.body.classList.remove("filter-pending", "filter-done");
+    /* Aktif menü item'ı güncelle, sub-label'ı sıfırla */
+    document.querySelectorAll(".lv-group").forEach(group => {
+      const mode = group.dataset.viewMode;
+      const isActive = mode === viewMode;
+      const pill = group.querySelector(".level-filter-pill");
+      const subEl = pill?.querySelector(".lv-sub");
+      if (subEl) { subEl.hidden = true; subEl.textContent = ""; }
+      group.querySelectorAll(".lv-menu button").forEach(b => {
+        b.classList.toggle("active", isActive && b.dataset.viewFilter === "all");
+      });
+    });
     if (typeof applyFilters === "function") applyFilters();
   }
 
-  const expandCollapseDisabled = filterMode !== "all";
-  expandBtn.disabled = expandCollapseDisabled;
-  collapseBtn.disabled = expandCollapseDisabled;
+  /* Tümünü Aç/Kapat: yalnızca aktif aramada devre dışı (CSS auto-expand override
+     ediyor, manuel toggle görünmez kalır). viewMode/viewFilter aktif olsa bile
+     kullanıcı kategorileri manuel açıp kapayabilir. */
+  const isSearching = document.body.classList.contains("searching");
+  expandBtn.disabled = isSearching;
+  collapseBtn.disabled = isSearching;
 
-  /* Kilit butonu: hiç işaret yoksa gri (kilitlenecek bir şey yok).
-     AMA zaten kilitli iken (lockState=true) tıklanabilir kalmalı ki kullanıcı kilidi açabilsin. */
+  /* Kilit butonu: hiç işaret yoksa gri */
   const lockBtn = document.getElementById("lockBtn");
   if (lockBtn) {
     lockBtn.disabled = !lockState && counts.totalChecked === 0;
+  }
+
+  /* Dışa Aktar: hiç işaret VE not yoksa devre dışı (yedeklenecek bir şey yok).
+     Notes sadece dolu (trim'li) içerikleri tutuyor (saveNotes boşları siliyor),
+     bu yüzden Object.keys(notes).length === 0 = "hiç not yok" demek. */
+  const exportBtn = document.getElementById("exportBtn");
+  if (exportBtn) {
+    const hasAnyData = counts.totalChecked > 0 || (notes && Object.keys(notes).length > 0);
+    exportBtn.disabled = !hasAnyData;
   }
 }
 
@@ -4950,7 +6015,14 @@ document.getElementById("confirmYes").addEventListener("click", () => {
 document.addEventListener("click", (e) => {
   if (e.target.matches("[data-modal-close]")) {
     const modal = e.target.closest(".modal");
-    if (modal) modal.hidden = true;
+    if (modal) {
+      modal.hidden = true;
+      /* Yardım modalı kapanıyorsa anlık dil switcher'ını sıfırla */
+      if (modal.id === "helpModal" && typeof setHelpLangSwitchVisible === "function") {
+        setHelpLangSwitchVisible(false);
+        if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
+      }
+    }
   }
   /* AI format paneli, dışına tıklanırsa kapat */
   if (!e.target.closest(".feature-ai-wrap")) {
@@ -5066,7 +6138,17 @@ function applyLang() {
   if (typeof applyLock === "function") applyLock();
   /* Hero framework pill (varsa label güncellenmeli) */
   if (typeof applyFrameworkUI === "function") applyFrameworkUI();
-  /* Welcome modalında sefte buton label'ları (eğer karşılama henüz açıksa pendingFramework'e göre) */
+  /* Welcome modalında sefte buton label'ları — pending state'e göre dinamik */
+  const welcomeLangNext = document.getElementById("welcomeLangNext");
+  if (welcomeLangNext) {
+    if (window.pendingLang) {
+      welcomeLangNext.textContent = t("welcome.cta.next");
+      welcomeLangNext.disabled = false;
+    } else {
+      welcomeLangNext.textContent = t("welcome.cta.pickLang");
+      welcomeLangNext.disabled = true;
+    }
+  }
   const welcomeNext = document.getElementById("welcomeNext");
   if (welcomeNext) {
     if (window.pendingFramework) {
@@ -5386,9 +6468,88 @@ function levelLabel(l) {
 
 function renderCategoryNav() {
   catNav.innerHTML = DATA.map(c =>
-    `<a href="#cat-${c.id}">${c.id}. ${tx(c.title)}</a>`
+    `<a href="#cat-${c.id}" data-cat-nav="${c.id}">${c.id}. ${tx(c.title)}</a>`
   ).join("");
 }
+
+/* Bir kategorideki "kullanıcının kaldığı" maddeyi bulur. viewMode'a göre adayları
+   belirler, viewFilter'dan bağımsız olarak işaretsiz olan ilk maddeye gider. Hepsi
+   tam ise kategorinin son uygun maddesini döner. */
+function findCategoryTargetFeature(catId) {
+  const cat = DATA.find(c => c.id === catId);
+  if (!cat) return null;
+
+  const mvpVal = (f) => resolveLevelText(f, "mvp");
+  const releaseVal = (f) => resolveLevelText(f, "release");
+  const exists = (v) => v && v !== "—";
+  const isMvpExists = (f) => exists(mvpVal(f));
+  const isReleaseExists = (f) => exists(releaseVal(f));
+
+  /* Aday: framework filtresinden geçen + mevcut viewMode'a uygun seviyesi olan */
+  const candidates = cat.features.filter(f => {
+    if (f.variants && !currentFramework) return false;
+    if (viewMode === "mvp") return isMvpExists(f);
+    if (viewMode === "release") return isReleaseExists(f);
+    return isMvpExists(f) || isReleaseExists(f); // both
+  });
+  if (candidates.length === 0) {
+    return cat.features.find(f => !(f.variants && !currentFramework)) || null;
+  }
+
+  const isIncomplete = (f) => {
+    const mvpKey = `${cat.id}.${f.id}.mvp`;
+    const releaseKey = `${cat.id}.${f.id}.release`;
+    if (viewMode === "mvp") return isMvpExists(f) && !state[mvpKey];
+    if (viewMode === "release") return isReleaseExists(f) && !state[releaseKey];
+    return (isMvpExists(f) && !state[mvpKey]) || (isReleaseExists(f) && !state[releaseKey]);
+  };
+
+  const firstIncomplete = candidates.find(isIncomplete);
+  if (firstIncomplete) return firstIncomplete;
+  return candidates[candidates.length - 1];
+}
+
+/* Kategorinin akıllı navigasyonu:
+   - Kategori kapalıysa aç
+   - Hedef maddeyi bul, sticky bar'ı hesaba katarak yumuşak kaydır */
+function navigateToCategorySmart(catId) {
+  const targetFeat = findCategoryTargetFeature(catId);
+
+  /* Kategoriyi aç (kapalıysa) */
+  const catSelector = `cat-${catId}`;
+  const catEl = document.getElementById(catSelector);
+  if (catEl && catEl.classList.contains("collapsed")) {
+    catEl.classList.remove("collapsed");
+    collapsedCats.delete(catSelector);
+    saveCollapsed();
+  }
+
+  /* Layout'un genişlemesi için bir frame bekle, sonra scroll */
+  requestAnimationFrame(() => {
+    let target;
+    if (targetFeat) {
+      const id = `feat-${catId}-${targetFeat.id.replace(/\./g, "-")}`;
+      target = document.getElementById(id);
+    }
+    if (!target) target = catEl; // yedek: kategori başlığı
+
+    if (!target) return;
+
+    /* Sticky bar yüksekliğini hesaba kat: hedef üst kenarı sticky'nin altında dursun */
+    const stickyBar = document.querySelector(".sticky-bar");
+    const stickyH = stickyBar ? stickyBar.getBoundingClientRect().height : 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - stickyH - 16;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  });
+}
+
+/* Kategori nav linklerine event delegation: default jump'ı engelle, akıllı git */
+catNav.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-cat-nav]");
+  if (!a) return;
+  e.preventDefault();
+  navigateToCategorySmart(a.dataset.catNav);
+});
 
 function renderContent() {
   content.innerHTML = DATA.map(cat => {
@@ -5419,8 +6580,9 @@ function renderContent() {
       const hasNote = noteValue.trim().length > 0;
       const noteLabel = hasNote ? t("note.mine") : t("note.add");
 
+      const featAnchor = `feat-${cat.id}-${f.id.replace(/\./g, "-")}`;
       return `
-        <article class="feature${hasNote ? " has-note" : ""}" data-search="${(fTitle + " " + fDesc + " " + (mvpVal||"") + " " + (releaseVal||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
+        <article class="feature${hasNote ? " has-note" : ""}" id="${featAnchor}" data-search="${(fTitle + " " + fDesc + " " + (mvpVal||"") + " " + (releaseVal||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
           <div class="feature-head">
             <span class="id">#${f.id}</span>
             <h3>${fTitle}</h3>
@@ -5447,6 +6609,10 @@ function renderContent() {
               <span>${t("note.autoSave")}</span>
               <button type="button" class="note-clear" data-note-clear="${noteId}">${t("note.clear")}</button>
             </div>
+          </div>
+          <div class="feature-note-display" aria-hidden="true">
+            <span class="note-display-icon" aria-hidden="true">📝</span>
+            <span class="note-display-text">${escapeHtml(noteValue)}</span>
           </div>
         </article>`;
     }).join("");
@@ -5485,7 +6651,7 @@ function attachClickHandlers() {
       else { state[key] = true; el.classList.add("checked"); }
       saveState();
       updateProgress();
-      if (filterMode !== "all") applyFilters();
+      if (viewFilter !== "all" || viewMode !== "both") applyFilters();
     });
   });
 
@@ -5539,6 +6705,11 @@ function attachClickHandlers() {
         }
       }
       saveNotes();
+      /* Sunum modunda gösterilen not kartını da güncelle (varsa) */
+      const displayEl = feature.querySelector(".note-display-text");
+      if (displayEl) displayEl.textContent = value;
+      /* Dışa Aktar butonu sadece-not durumunda da aktif olmalı */
+      if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
         showToast(value.trim() ? t("note.saved") : t("note.deleted"), "success", 1100);
@@ -5724,31 +6895,42 @@ function checkCelebrations(c) {
   if (!mvpDone && celebrations.mvp) { celebrations.mvp = false; saveCelebrations(); }
 }
 
-/* Filtreleme: arama + filterMode (all / mvp / release) */
-let filterMode = "all"; // "all" | "mvp" | "release"
-
-function featureHasUnchecked(featureEl, level) {
-  if (level === "all") {
-    const totalLevels = featureEl.querySelectorAll(".level").length;
-    const checkedLevels = featureEl.querySelectorAll(".level.checked").length;
-    return totalLevels > 0 && checkedLevels < totalLevels;
-  }
-  const lvl = featureEl.querySelector(`.level.${level}`);
-  if (!lvl) return false;
-  return !lvl.classList.contains("checked");
-}
+/* Filtreleme: arama + (viewMode, viewFilter) çifti.
+   Bir feature görünür sayılır ancak ve ancak: en az bir level satırı (viewMode'a uygun
+   seviyede ve viewFilter'a uygun status'da) gösterilebiliyorsa. Bu yaklaşım hem dropdown
+   menüsündeki 9 kombinasyonun hepsi için tek bir mantıkla çalışır hem de CSS satır
+   gizleme kurallarıyla tutarlıdır. */
 
 function applyFilters() {
   const input = document.getElementById("searchInput");
   const q = input.value.trim().toLowerCase();
-  const filtering = q !== "" || filterMode !== "all";
+  const filtering = q !== "" || viewMode !== "both" || viewFilter !== "all";
   document.body.classList.toggle("filtering", filtering);
+  /* Search özel: kapalı kategorilerin auto-expand olması yalnızca arama varken */
+  document.body.classList.toggle("searching", q !== "");
 
   document.querySelectorAll(".feature").forEach(f => {
     const matchesSearch = q === "" || f.dataset.search.includes(q);
-    let matchesLevel = true;
-    if (filterMode === "mvp") matchesLevel = featureHasUnchecked(f, "mvp");
-    else if (filterMode === "release") matchesLevel = featureHasUnchecked(f, "release");
+    let matchesLevel;
+    if (viewMode === "both" && viewFilter === "all") {
+      matchesLevel = true; // varsayılan: hiçbir level kısıtı yok
+    } else {
+      /* En az bir level satırı viewMode + viewFilter ile uyuşuyor mu? */
+      const levels = f.querySelectorAll(".level");
+      let hasMatch = false;
+      for (const lvl of levels) {
+        const isMvp = lvl.classList.contains("mvp");
+        const isRelease = lvl.classList.contains("release");
+        const isChecked = lvl.classList.contains("checked");
+        if (viewMode === "mvp" && !isMvp) continue;
+        if (viewMode === "release" && !isRelease) continue;
+        if (viewFilter === "pending" && isChecked) continue;
+        if (viewFilter === "done" && !isChecked) continue;
+        hasMatch = true;
+        break;
+      }
+      matchesLevel = hasMatch;
+    }
     f.classList.toggle("hidden", !(matchesSearch && matchesLevel));
   });
   document.querySelectorAll(".category").forEach(cat => {
@@ -5759,20 +6941,13 @@ function applyFilters() {
 
 function attachSearch() {
   const input = document.getElementById("searchInput");
-  input.addEventListener("input", applyFilters);
+  input.addEventListener("input", () => {
+    applyFilters();
+    /* Search aktif olup olmamasına göre Tümünü Aç/Kapat butonlarının
+       disabled state'i güncellenmeli (CSS auto-expand çakışıyor). */
+    if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
+  });
 }
-
-function setFilterMode(mode) {
-  filterMode = filterMode === mode ? "all" : mode;
-  document.getElementById("filterMvpIncomplete").classList.toggle("active", filterMode === "mvp");
-  document.getElementById("filterReleaseIncomplete").classList.toggle("active", filterMode === "release");
-  applyFilters();
-  updateToolbarButtonStates();
-}
-
-/* MVP Eksik / Release Eksik toggle */
-document.getElementById("filterMvpIncomplete").addEventListener("click", () => setFilterMode("mvp"));
-document.getElementById("filterReleaseIncomplete").addEventListener("click", () => setFilterMode("release"));
 
 /* Tümünü Aç */
 document.getElementById("expandAllBtn").addEventListener("click", () => {
@@ -5792,22 +6967,147 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
   saveCollapsed();
 });
 
-/* Reset (custom confirm ile) */
+/* Reset (2 aşamalı: scope seçimi → onay → uygula) */
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (lockState) return;
+  /* Modalı her açılışta sıfırla: tüm checkbox'ları temizle, "İleri" disabled */
+  document.querySelectorAll("[data-reset-scope]").forEach(cb => {
+    cb.checked = false;
+    cb.disabled = false;
+  });
+  document.getElementById("resetScopeNext").disabled = true;
+  openModal("resetScopeModal");
+});
+
+/* Scope seçim kuralları (4 seçenek: selections, notes, settings, system):
+   - "system" seçilirse diğer 3 otomatik kapanır + disable olur (zaten her şeyi kapsar)
+   - "system" işareti kaldırılırsa diğer 3 enable olur
+   - Diğer 3'ten biri seçilirken "system" varsa otomatik kapanır (defansif)
+   - "İleri" en az 1 seçim varsa enable olur */
+const RESET_INDEPENDENT_SCOPES = ["selections", "notes", "settings"];
+document.querySelectorAll("[data-reset-scope]").forEach(cb => {
+  cb.addEventListener("change", () => {
+    const others = RESET_INDEPENDENT_SCOPES.map(s => document.querySelector(`[data-reset-scope="${s}"]`));
+    const sys = document.querySelector('[data-reset-scope="system"]');
+    if (cb === sys) {
+      if (sys.checked) {
+        others.forEach(o => { o.checked = false; o.disabled = true; });
+      } else {
+        others.forEach(o => { o.disabled = false; });
+      }
+    } else if (cb.checked && sys.checked) {
+      sys.checked = false;
+      others.forEach(o => { o.disabled = false; });
+    }
+    const anyChecked = sys.checked || others.some(o => o.checked);
+    document.getElementById("resetScopeNext").disabled = !anyChecked;
+  });
+});
+
+/* "İleri" → 1. modalı kapat, customConfirm (2. adım) aç */
+document.getElementById("resetScopeNext").addEventListener("click", () => {
+  const scope = {
+    selections: document.querySelector('[data-reset-scope="selections"]').checked,
+    notes:      document.querySelector('[data-reset-scope="notes"]').checked,
+    settings:   document.querySelector('[data-reset-scope="settings"]').checked,
+    system:     document.querySelector('[data-reset-scope="system"]').checked,
+  };
+  closeModal("resetScopeModal");
+
+  /* Onay HTML'ini dinamik kur: "system" ise tek satır uyarı; diğer 1-3 kombinasyonu ise liste */
+  let html, yesKey = "reset.yes";
+  if (scope.system) {
+    html = t("reset.confirm.system");
+    yesKey = "reset.yesSystem";
+  } else {
+    const parts = [];
+    if (scope.selections) parts.push(t("reset.confirm.part.selections"));
+    if (scope.notes)      parts.push(t("reset.confirm.part.notes"));
+    if (scope.settings)   parts.push(t("reset.confirm.part.settings"));
+    if (parts.length === 0) return;
+    html = `
+      <p class="fw-switch-intro">${t("reset.confirm.intro")}</p>
+      <ul class="fw-switch-effects">
+        ${parts.map(p => `<li class="effect-clear"><span class="effect-icon">⚠</span><span>${p}</span></li>`).join("")}
+      </ul>
+    `;
+  }
+
   customConfirm(
-    t("reset.msg"),
-    () => {
-      state = {};
-      saveState();
-      document.querySelectorAll(".level.checked").forEach(el => el.classList.remove("checked"));
-      updateProgress();
-      applyFilters();
-      showToast(t("reset.toast"), "info", 1400);
-    },
-    { title: t("reset.title"), yesText: t("reset.yes"), cancelText: t("confirm.cancel") }
+    html,
+    () => performReset(scope),
+    { title: t("reset.confirmTitle"), yesText: t(yesKey), cancelText: t("confirm.cancel"), html: true, wide: !scope.system }
   );
 });
+
+/* Asıl sıfırlama mantığı, scope objesine göre */
+function performReset(scope) {
+  /* "Tüm Sistem": localStorage'ı tamamen temizle ve sayfayı yenile.
+     Böylece welcome akışı yeniden tetiklenir, kullanıcı baştan başlar. */
+  if (scope.system) {
+    showToast("✓", "info", 600);
+    setTimeout(() => {
+      try { localStorage.clear(); } catch {}
+      location.reload();
+    }, 200);
+    return;
+  }
+
+  /* Seçimler: işaretler + kutlama bayrakları */
+  if (scope.selections) {
+    state = {};
+    saveState();
+    celebrations = {};
+    saveCelebrations();
+    document.querySelectorAll(".level.checked").forEach(el => el.classList.remove("checked"));
+  }
+
+  /* Notlar: tüm notlar silinir */
+  if (scope.notes) {
+    notes = {};
+    saveNotes();
+    /* Açık not textarea'larını temizle, has-note class'ını kaldır, sunum-notu textini sil */
+    document.querySelectorAll("[data-note-input]").forEach(ta => { ta.value = ""; });
+    document.querySelectorAll(".feature.has-note").forEach(f => f.classList.remove("has-note"));
+    document.querySelectorAll(".note-display-text").forEach(el => { el.textContent = ""; });
+    /* Not toggle butonlarındaki ikon/etiket güncelle ("+ Not ekle" haline dön) */
+    document.querySelectorAll("[data-note-toggle]").forEach(btn => {
+      const icon = btn.querySelector(".note-icon");
+      const label = btn.querySelector(".note-label");
+      if (icon) icon.textContent = "+";
+      if (label) label.textContent = t("note.add");
+    });
+  }
+
+  /* Ayarlar: kategori collapse + tema + view + lock */
+  if (scope.settings) {
+    collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
+    saveCollapsed();
+    applyTheme("dark");
+    saveViewMode("both");
+    saveViewFilter("all");
+    saveLockState(false);
+  }
+
+  /* UI'ı yenile */
+  if (scope.selections || scope.notes || scope.settings) {
+    if (scope.settings) {
+      /* renderContent collapsedCats'i uygular (tüm cats kapalı) — selections/notes
+         de zaten yeni state'i okuyarak doğru render edecek */
+      renderContent();
+      attachClickHandlers();
+    }
+    applyView();      // body class'ları, hero pill'leri, filter
+    applyLock();      // lock UI
+    updateProgress(); // ilerleme barı + toolbar buton state'leri
+    applyFilters();   // feature/category visibility
+  }
+
+  /* Toast */
+  if (scope.selections || scope.notes || scope.settings) {
+    showToast(t("reset.toast.done"), "info", 1500);
+  }
+}
 
 /* ==================== KİLİT (LOCK) ==================== */
 document.getElementById("lockBtn").addEventListener("click", () => {
@@ -5891,7 +7191,7 @@ document.getElementById("lockBtn").addEventListener("click", () => {
   /* Filtre toggle butonları (MVP/Release Eksik) görsel toggle olduğu için
      panel açık kalsın. Diğer eylemler genelde modal/işlem açar; tıklayınca
      mobilde görüş alanını boşaltmak için paneli kapat. */
-  const KEEP_OPEN_IDS = new Set(["filterMvpIncomplete", "filterReleaseIncomplete"]);
+  const KEEP_OPEN_IDS = new Set(["filterMvpPending", "filterMvpDone", "filterReleasePending", "filterReleaseDone"]);
   toolbarEl.querySelectorAll(".actions .btn").forEach(btn => {
     btn.addEventListener("click", () => {
       if (KEEP_OPEN_IDS.has(btn.id)) return;
@@ -5986,8 +7286,14 @@ setupLongPressEasterEgg(
   () => t("easter.github")
 );
 
-/* Yardım butonu */
-document.getElementById("helpBtn").addEventListener("click", () => openModal("helpModal"));
+/* Yardım butonu (toolbar) — anlık dil switcher'ı göstermez (zaten dil seçilmiştir,
+   üst-sağdaki global 🌐 TR/EN butonu var). */
+document.getElementById("helpBtn").addEventListener("click", () => {
+  if (typeof setHelpLangSwitchVisible === "function") setHelpLangSwitchVisible(false);
+  /* Eğer önceki açılıştan in-modal switcher ile dil değişmiş kaldıysa global dile çek */
+  if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
+  openModal("helpModal");
+});
 
 /* Print */
 document.getElementById("printBtn").addEventListener("click", () => window.print());
@@ -6045,33 +7351,80 @@ importFile.addEventListener("change", (e) => {
 /* ==================== SUNUM MODU ==================== */
 let presentationIndex = 0;
 
+/* Sunulabilir kategoriler: aktif filtrelerle gizlenmemiş olanlar.
+   Bu sayede "Yapılan MVP" filtresinde sadece o filtreye uyan kategoriler arası geçilir. */
+function getPresentableCategories() {
+  return [...document.querySelectorAll(".category:not(.hidden)")];
+}
+
 function enterPresentation() {
-  const cats = document.querySelectorAll(".category");
-  if (cats.length === 0) return;
+  const cats = getPresentableCategories();
+  if (cats.length === 0) {
+    /* Filtre + arama hiçbir şeyle eşleşmiyorsa sunum boş olur — uyarı verip iptal */
+    showToast(t("pres.empty") || "Sunulacak madde yok", "info", 1800);
+    return;
+  }
   document.body.classList.add("presentation-mode");
-  cats.forEach(c => c.classList.remove("hidden"));
   presentationIndex = 0;
   showPresentationCategory(0);
+  updatePresentationContextBar();
 }
 
 function exitPresentation() {
-  document.body.classList.remove("presentation-mode");
+  document.body.classList.remove("presentation-mode", "pres-filter-mvp", "pres-filter-release");
   document.querySelectorAll(".category.presenting").forEach(c => c.classList.remove("presenting"));
   applyFilters();
 }
 
 function showPresentationCategory(index) {
-  const cats = document.querySelectorAll(".category");
+  const cats = getPresentableCategories();
   if (cats.length === 0) return;
   if (index < 0) index = 0;
   if (index >= cats.length) index = cats.length - 1;
   presentationIndex = index;
-  cats.forEach((c, i) => {
-    c.classList.toggle("presenting", i === index);
-    if (i === index) c.classList.remove("collapsed");
-  });
+  /* Önce tüm presenting class'ını temizle (önceki sunumlardan kalmamış olsun) */
+  document.querySelectorAll(".category.presenting").forEach(c => c.classList.remove("presenting"));
+  /* Aktif olan görünür kategoriye presenting ekle, kapalıysa aç */
+  const activeCat = cats[index];
+  if (activeCat) {
+    activeCat.classList.add("presenting");
+    activeCat.classList.remove("collapsed");
+  }
   window.scrollTo(0, 0);
   document.getElementById("presIndex").textContent = `${index + 1} / ${cats.length}`;
+  updatePresentationContextBar();
+}
+
+/* Sunum modu üst başlık çubuğunu mevcut filter + level view'e göre günceller.
+   Hangi süzgeçle sunum yapıldığını ve görünür madde sayısını gösterir. */
+function updatePresentationContextBar() {
+  const labelEl = document.getElementById("presContextLabel");
+  const countEl = document.getElementById("presContextCount");
+  if (!labelEl || !countEl) return;
+
+  /* Chip rengi: viewMode mvp ise yeşil, release ise mavi, both ise nötr */
+  document.body.classList.toggle("pres-filter-mvp", viewMode === "mvp");
+  document.body.classList.toggle("pres-filter-release", viewMode === "release");
+
+  /* Bağlam etiketi: 9 kombinasyon (viewMode × viewFilter) */
+  let labelKey = "pres.context.all";
+  if (viewMode === "mvp" && viewFilter === "all") labelKey = "pres.context.mvp";
+  else if (viewMode === "mvp" && viewFilter === "pending") labelKey = "pres.context.mvpPending";
+  else if (viewMode === "mvp" && viewFilter === "done") labelKey = "pres.context.mvpDone";
+  else if (viewMode === "release" && viewFilter === "all") labelKey = "pres.context.release";
+  else if (viewMode === "release" && viewFilter === "pending") labelKey = "pres.context.releasePending";
+  else if (viewMode === "release" && viewFilter === "done") labelKey = "pres.context.releaseDone";
+  else if (viewMode === "both" && viewFilter === "pending") labelKey = "pres.context.bothPending";
+  else if (viewMode === "both" && viewFilter === "done") labelKey = "pres.context.bothDone";
+  /* both + all → "Tüm Liste" (default labelKey) */
+  labelEl.textContent = t(labelKey);
+
+  /* Görünür madde sayısı: aktif (presenting) kategorideki .feature:not(.hidden) sayısı */
+  const activeCat = document.querySelector(".category.presenting");
+  const visibleCount = activeCat ? activeCat.querySelectorAll(".feature:not(.hidden)").length : 0;
+  countEl.textContent = visibleCount === 1
+    ? t("pres.itemCountOne")
+    : t("pres.itemCount", { n: visibleCount });
 }
 
 document.getElementById("presentBtn").addEventListener("click", enterPresentation);
@@ -6092,6 +7445,11 @@ document.addEventListener("keydown", (e) => {
       if (openModalEl.id === "welcomeModal") return;
       e.preventDefault();
       openModalEl.hidden = true;
+      /* Yardım modalı Esc ile kapatıldıysa anlık dil switcher'ını sıfırla */
+      if (openModalEl.id === "helpModal" && typeof setHelpLangSwitchVisible === "function") {
+        setHelpLangSwitchVisible(false);
+        if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
+      }
       return;
     }
     const openAi = document.querySelector(".feature-ai-wrap.ai-open");
@@ -6221,8 +7579,9 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Framework henüz seçilmediyse karşılama modalını göster.
-   Karşılama modalı framework seçimi yapılana dek "Başlayalım"ı devre dışı tutar. */
+/* Framework henüz seçilmediyse karşılama modalını 3 adımda göster:
+   1) Dil seçimi  2) Framework seçimi  3) Tanıtım / Başlayalım
+   Dil seçilene dek 1. adım, framework seçilene dek 2. adımda CTA disabled. */
 function showWelcomeIfFirstVisit() {
   if (currentFramework) return;
   setTimeout(() => {
@@ -6231,11 +7590,12 @@ function showWelcomeIfFirstVisit() {
   }, 350);
 }
 
-/* Welcome modalı içindeki framework seçimi, geçici state, kullanıcı butona basana dek kaydedilmez */
+/* Welcome modalı içindeki seçimler — buton tıklanana dek kalıcılaştırılmaz */
 let pendingFramework = null;
+let pendingLang = null;
 
 function setWelcomeStep(n) {
-  /* 1 → framework seçimi paneli, 2 → hoşgeldin / nasıl kullanılır paneli */
+  /* 1 → dil, 2 → framework, 3 → karşılama / nasıl kullanılır */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
@@ -6245,10 +7605,43 @@ function setWelcomeStep(n) {
     d.classList.toggle("active", idx === n);
     d.classList.toggle("done", idx < n);
   });
-  const line = document.querySelector(".welcome-step-line");
-  if (line) line.classList.toggle("done", n >= 2);
+  /* İki çizgi var: 1→2 ve 2→3 */
+  document.querySelectorAll("[data-step-line]").forEach(line => {
+    const after = Number(line.dataset.stepLine); // 1 → 1.dot ile 2.dot arasındaki çizgi
+    line.classList.toggle("done", n > after);
+  });
+  /* Modalın hangi adımda olduğunu CSS'in görebilmesi için data-step attribute'u
+     (örn. 1. adımda yardım butonunun yazısı CSS ile gizleniyor — kullanıcı
+     henüz dil seçmediği için "Yardım/Help" iki dilde yer kaplamasın). */
+  const modal = document.getElementById("welcomeModal");
+  if (modal) modal.setAttribute("data-step", String(n));
 }
 
+/* 1. ADIM: Dil seçimi */
+document.querySelectorAll("[data-welcome-lang]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingLang = btn.dataset.welcomeLang;
+    window.pendingLang = pendingLang;
+    document.querySelectorAll("[data-welcome-lang]").forEach(b => {
+      b.classList.toggle("selected", b === btn);
+    });
+    const nextBtn = document.getElementById("welcomeLangNext");
+    nextBtn.disabled = false;
+    nextBtn.textContent = t("welcome.cta.next");
+  });
+});
+
+document.getElementById("welcomeLangNext").addEventListener("click", () => {
+  if (!pendingLang) return;
+  /* Seçilen dili anında uygula: bundan sonraki adımlar bu dilde gözüksün */
+  if (pendingLang !== currentLang) {
+    saveLang(pendingLang);
+    applyLang();
+  }
+  setWelcomeStep(2);
+});
+
+/* 2. ADIM: Framework seçimi */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -6264,22 +7657,84 @@ document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
 
 document.getElementById("welcomeNext").addEventListener("click", () => {
   if (!pendingFramework) return;
-  setWelcomeStep(2);
+  setWelcomeStep(3);
 });
 
-document.getElementById("welcomeBack").addEventListener("click", () => {
+document.getElementById("welcomeFwBack").addEventListener("click", () => {
   setWelcomeStep(1);
+});
+
+/* 3. ADIM: Karşılama */
+document.getElementById("welcomeBack").addEventListener("click", () => {
+  setWelcomeStep(2);
 });
 
 /* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
    helpModal DOM'da welcomeModal'dan önce, ikisi aynı z-index'te. Help'i welcome üstüne
    getirebilmek için z-index'i geçici olarak yükselt. Yardım modalını kapattığında welcome
-   modalı altta görünür kalır. */
+   modalı altta görünür kalır.
+   1. adımda (kullanıcı henüz dil seçmediyse) yardım modalı içinde anlık TR/EN switcher
+   gösterilir; sadece o açılış için yardım metnini değiştirir, currentLang'a dokunmaz. */
 document.getElementById("welcomeHelpBtn").addEventListener("click", () => {
   const helpEl = document.getElementById("helpModal");
   if (helpEl) helpEl.style.zIndex = "10001";
+  /* Welcome 1. adımda mı? */
+  const onLangStep = document.getElementById("welcomeModal")?.getAttribute("data-step") === "1";
+  setHelpLangSwitchVisible(onLangStep);
   openModal("helpModal");
 });
+
+/* Yardım modalındaki anlık dil değiştirici, görünürlük kontrolü.
+   Switcher görünürken aktif buton currentLang ile senkron olur. */
+function setHelpLangSwitchVisible(visible) {
+  const sw = document.getElementById("helpLangSwitch");
+  if (!sw) return;
+  sw.hidden = !visible;
+  if (visible) {
+    /* Aktif butonu currentLang ile senkronla */
+    sw.querySelectorAll("[data-help-lang]").forEach(b => {
+      b.classList.toggle("active", b.dataset.helpLang === currentLang);
+    });
+  }
+}
+
+/* Yardım metnini sadece bu modalda geçici olarak verilen dile çevir.
+   currentLang ve localStorage'a dokunmaz; modal kapanıp tekrar açıldığında
+   global dil neyse oraya geri döner (applyI18nToDom yeniden uygulayarak). */
+function applyHelpDisplayLang(lang) {
+  if (lang !== "tr" && lang !== "en") return;
+  const helpBody = document.getElementById("helpModalBody");
+  if (helpBody && HELP_HTML[lang]) {
+    helpBody.innerHTML = HELP_HTML[lang];
+  }
+  const helpTitle = document.getElementById("helpTitle");
+  if (helpTitle && UI_STRINGS["help.title"]) {
+    helpTitle.textContent = UI_STRINGS["help.title"][lang] || helpTitle.textContent;
+  }
+  /* Switcher butonlarındaki active state'i güncelle */
+  document.querySelectorAll("[data-help-lang]").forEach(b => {
+    b.classList.toggle("active", b.dataset.helpLang === lang);
+  });
+}
+
+document.querySelectorAll("[data-help-lang]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    applyHelpDisplayLang(btn.dataset.helpLang);
+  });
+});
+
+/* Yardım modalı her kapatıldığında switcher'i sıfırla:
+   bir sonraki açılış doğru bağlamda davransın. data-modal-close dinleyicisi
+   zaten var, ama oraya bağlama yerine modalın "hidden" değişimini izlemek
+   yerine, kapanma noktalarına özel olarak switcher'i gizliyoruz. */
+function closeHelpModal() {
+  const helpEl = document.getElementById("helpModal");
+  if (helpEl) helpEl.hidden = true;
+  setHelpLangSwitchVisible(false);
+  /* Eğer kullanıcı in-modal switcher ile dil değiştirmişse, currentLang'a göre
+     doğru içeriği geri yükle (sonraki açılış global dilde olsun). */
+  applyHelpDisplayLang(currentLang);
+}
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
   if (!pendingFramework) return;
@@ -6390,18 +7845,57 @@ document.querySelectorAll("[data-switch-fw]").forEach(btn => {
 /* İlk yüklemede (eğer framework varsa) hero pill'i doğru göster */
 applyFrameworkUI();
 
-/* ==================== SEVİYE GÖRÜNÜMÜ FİLTRESİ (MVP / Release / Her ikisi) ==================== */
-document.querySelectorAll("[data-level-view]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const v = btn.dataset.levelView;
-    if (v === levelView) return;
-    saveLevelView(v);
-    applyLevelView();
+/* ==================== HERO LEVEL/STATUS FİLTRESİ (3x3 = 9 kombinasyon) ==================== */
+/* Üç pill (MVP / Release / MVP+Release) + her birinin altında 3 opsiyonlu dropdown
+   (Tümü / Yapılacak / Yapılan). Pill'e tıklamak dropdown'u açar; menü item'ı
+   tıklandığında setView ile hem viewMode hem viewFilter atanır. */
+
+function closeAllLvMenus() {
+  document.querySelectorAll(".lv-menu").forEach(m => m.hidden = true);
+  document.querySelectorAll(".level-filter-pill").forEach(p => p.setAttribute("aria-expanded", "false"));
+}
+
+document.querySelectorAll(".lv-group").forEach(group => {
+  const pill = group.querySelector(".level-filter-pill");
+  const menu = group.querySelector(".lv-menu");
+  pill.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const wasOpen = !menu.hidden;
+    closeAllLvMenus();
+    if (!wasOpen) {
+      menu.hidden = false;
+      pill.setAttribute("aria-expanded", "true");
+    }
+  });
+  menu.querySelectorAll("button").forEach(opt => {
+    opt.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (opt.disabled) return;
+      const newMode = group.dataset.viewMode;
+      const newFilter = opt.dataset.viewFilter;
+      setView(newMode, newFilter);
+      closeAllLvMenus();
+    });
   });
 });
 
-/* İlk yüklemede mevcut seviye görünümünü uygula (localStorage'dan veya 'both' default) */
-applyLevelView();
+/* Dış tıklama menüyü kapatır */
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".lv-group")) closeAllLvMenus();
+});
+
+/* Esc menüyü kapatır (mevcut Esc handler'ından önce çalışsın diye capture) */
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (document.querySelector(".lv-menu:not([hidden])")) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeAllLvMenus();
+  }
+}, true);
+
+/* İlk yüklemede mevcut view'i uygula */
+applyView();
 
 /* ==================== UYGULAMA YÜKLE (PWA INSTALL) ==================== */
 let deferredInstallPrompt = null;
