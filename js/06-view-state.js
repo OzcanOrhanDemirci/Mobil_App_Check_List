@@ -1,10 +1,7 @@
-/* ==================== STATE ==================== */
-const STORAGE_KEY = "mobil_kontrol_state_v1";
-const NOTES_KEY = "mobil_kontrol_notes_v1";
-const COLLAPSE_KEY = "mobil_kontrol_collapse_v1";
-const FRAMEWORK_KEY = "mobil_kontrol_framework_v1";
-const LEVEL_VIEW_KEY = "mobil_kontrol_level_view_v1";       // viewMode (level group)
-const VIEW_FILTER_KEY = "mobil_kontrol_view_filter_v1";      // viewFilter (status sub-filter)
+/* ==================== STATE ====================
+   state, notes, collapsedCats, currentFramework, viewMode, viewFilter, lockState
+   hepsi aktif projenin .data alanından okunup yazılır (04-projects.js).
+   Aktif proje değişince bu değişkenler reloadActiveProjectAndRender ile yenilenir. */
 
 let state = loadState();
 let notes = loadNotes();
@@ -14,26 +11,21 @@ let viewMode = loadViewMode();      // "mvp" | "release" | "both"
 let viewFilter = loadViewFilter();  // "all" | "pending" | "done"
 
 function loadViewMode() {
-  try {
-    const v = localStorage.getItem(LEVEL_VIEW_KEY);
-    return (v === "mvp" || v === "release" || v === "both") ? v : "both";
-  } catch { return "both"; }
+  const v = getProjectField("viewMode");
+  return (v === "mvp" || v === "release" || v === "both") ? v : "both";
 }
 function loadViewFilter() {
-  try {
-    const v = localStorage.getItem(VIEW_FILTER_KEY);
-    return (v === "all" || v === "pending" || v === "done") ? v : "all";
-  } catch { return "all"; }
+  const v = getProjectField("viewFilter");
+  return (v === "all" || v === "pending" || v === "done") ? v : "all";
 }
 
-const LOCK_KEY = "mobil_kontrol_lock_v1";
-let lockState = (() => {
-  try { return localStorage.getItem(LOCK_KEY) === "1"; }
-  catch { return false; }
-})();
+let lockState = loadLockState();
+function loadLockState() {
+  return !!getProjectField("lockState");
+}
 function saveLockState(v) {
   lockState = !!v;
-  try { localStorage.setItem(LOCK_KEY, lockState ? "1" : "0"); } catch {}
+  setProjectField("lockState", lockState);
 }
 
 /* Kilit görsel/etkileşim durumunu uygular: body class, etkilenen butonların disabled,
@@ -42,7 +34,7 @@ function applyLock() {
   document.body.classList.toggle("locked", lockState);
 
   /* Kilitliyken devre dışı kalacak butonlar (state değiştiren tüm aksiyonlar) */
-  const lockedTargets = ["frameworkBtn", "resetBtn", "importBtn"];
+  const lockedTargets = ["projectFrameworkBtn", "resetBtn", "importBtn"];
   lockedTargets.forEach(id => {
     const b = document.getElementById(id);
     if (b) b.disabled = lockState;
@@ -63,12 +55,12 @@ function applyLock() {
 function saveViewMode(v) {
   if (v !== "mvp" && v !== "release" && v !== "both") return;
   viewMode = v;
-  try { localStorage.setItem(LEVEL_VIEW_KEY, v); } catch {}
+  setProjectField("viewMode", v);
 }
 function saveViewFilter(v) {
   if (v !== "all" && v !== "pending" && v !== "done") return;
   viewFilter = v;
-  try { localStorage.setItem(VIEW_FILTER_KEY, v); } catch {}
+  setProjectField("viewFilter", v);
 }
 
 /* Tek setView fonksiyonu: hem viewMode hem viewFilter'ı uygular,

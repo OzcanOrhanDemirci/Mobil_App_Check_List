@@ -186,8 +186,8 @@
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
   }
 
-  /* Hero framework seçici pill */
-  .hero-framework-pill {
+  /* Hero proje + framework birleşik pill (eskiden sadece framework idi) */
+  .hero-project-pill {
     appearance: none;
     border: 1px solid var(--border);
     background: var(--surface-3);
@@ -199,18 +199,33 @@
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: all 0.15s ease;
+    max-width: 100%;
   }
-  .hero-framework-pill:hover { background: var(--surface-2); border-color: var(--accent); }
-  .hero-framework-pill:disabled, .hero-framework-pill[disabled] {
+  .hero-project-pill:hover { background: var(--surface-2); border-color: var(--accent); }
+  .hero-project-pill:disabled, .hero-project-pill[disabled] {
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
     filter: grayscale(0.6);
   }
-  .hero-framework-pill .fw-pill-icon { font-size: 15px; line-height: 1; }
-  .hero-framework-pill .fw-pill-chevron {
+  .hero-project-pill .proj-pill-icon { font-size: 14px; line-height: 1; }
+  .hero-project-pill .proj-pill-name {
+    font-weight: 700;
+    color: var(--accent-2);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .hero-project-pill .proj-pill-sep {
+    color: var(--text-mute);
+    margin: 0 2px;
+    opacity: 0.6;
+  }
+  .hero-project-pill .fw-pill-icon { font-size: 15px; line-height: 1; }
+  .hero-project-pill .fw-pill-chevron {
     color: var(--text-mute);
     font-size: 11px;
     margin-left: 2px;

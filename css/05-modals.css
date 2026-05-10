@@ -1258,3 +1258,369 @@
     margin: 0 6px;
   }
 
+  /* ==================== ÇOKLU PROJE — WELCOME PROJE ADI ADIMI ==================== */
+  .welcome-projname-wrap {
+    margin: 18px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .welcome-projname-input {
+    appearance: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .welcome-projname-input::placeholder {
+    color: var(--text-mute);
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .welcome-projname-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .welcome-projname-error {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 4px;
+  }
+
+  /* ==================== ÇOKLU PROJE — PROJ + FW MODAL ==================== */
+  .modal-content.modal-projfw {
+    max-width: 720px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-content.modal-projfw .modal-head {
+    padding: 18px 24px 12px;
+  }
+  .modal-content.modal-projfw .modal-body {
+    padding: 18px 24px 24px;
+    overflow-y: auto;
+  }
+
+  /* Sekme şeridi */
+  .projfw-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .projfw-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--text-mute);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .projfw-tab:hover { color: var(--text); }
+  .projfw-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ==================== PROJE LİSTESİ + EKLEME FORMU ==================== */
+  .proj-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .proj-header-text { flex: 1; min-width: 0; }
+  .proj-list-title {
+    margin: 0 0 2px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .proj-list-sub {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--text-mute);
+    line-height: 1.4;
+  }
+  .proj-count {
+    flex-shrink: 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-mute);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .proj-add-row {
+    margin: 12px 0 6px;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+  }
+  .proj-add-btn {
+    width: 100%;
+  }
+  .proj-add-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 10px;
+  }
+  .proj-add-form-row {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    justify-content: end;
+  }
+  @media (max-width: 540px) {
+    .proj-add-form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .proj-add-form-row .btn { width: 100%; }
+  }
+  .proj-add-form input {
+    appearance: none;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+  .proj-add-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .proj-add-error {
+    grid-column: 1 / -1;
+    color: #ef4444;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 0 4px;
+  }
+
+  /* Yeni proje formundaki mini framework grid (welcome step 3'ün kompakt versiyonu) */
+  .proj-add-fw-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .proj-add-fw-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  @media (max-width: 540px) {
+    .proj-add-fw-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .proj-add-fw {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    min-width: 0;
+    text-align: left;
+  }
+  .proj-add-fw:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-add-fw.selected {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-add-fw-icon { font-size: 14px; flex-shrink: 0; line-height: 1; }
+  .proj-add-fw-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .proj-list {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .proj-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .proj-item:hover { border-color: var(--accent); }
+  .proj-item.active {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-item.renaming .proj-row,
+  .proj-item.renaming .proj-row-actions { display: none; }
+  .proj-item.renaming .proj-row-rename { display: grid; }
+
+  .proj-row {
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    padding: 6px 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    font: inherit;
+  }
+  .proj-row-icon { font-size: 16px; flex-shrink: 0; }
+  .proj-row-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .proj-item.active .proj-row-name { color: var(--accent-2); }
+  .proj-row-fw {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-mute);
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: 2px;
+  }
+  @media (max-width: 480px) {
+    .proj-row-fw { display: none; }
+  }
+  .proj-row-active-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(249, 115, 22, 0.14);
+    border: 1px solid rgba(249, 115, 22, 0.32);
+    flex-shrink: 0;
+  }
+
+  .proj-row-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .proj-action {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    padding: 6px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: all 0.15s ease;
+  }
+  .proj-action:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-action-delete:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+  }
+  .proj-action:disabled, .proj-action[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .proj-row-rename {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .proj-row-rename input {
+    appearance: none;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--accent);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+  .proj-row-rename input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .proj-rename-error {
+    grid-column: 1 / -1;
+    color: #ef4444;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  @media (max-width: 540px) {
+    .proj-row-rename {
+      grid-template-columns: 1fr;
+    }
+  }
+

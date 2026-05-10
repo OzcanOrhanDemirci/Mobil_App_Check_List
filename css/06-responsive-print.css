@@ -145,9 +145,12 @@
       justify-content: center;
       padding: 10px 12px;
     }
-    .hero-framework-pill {
+    .hero-project-pill {
       justify-content: center;
       padding: 10px 14px;
+    }
+    .hero-project-pill .proj-pill-name {
+      max-width: 120px;
     }
     .hero-controls-right {
       display: flex;
@@ -157,8 +160,9 @@
       flex: 0 0 auto;
       padding: 10px 12px;
     }
-    .hero-controls-right > .hero-framework-pill {
+    .hero-controls-right > .hero-project-pill {
       flex: 1 1 auto;
+      min-width: 0;
     }
 
     /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */

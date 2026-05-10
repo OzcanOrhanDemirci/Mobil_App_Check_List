@@ -1,14 +1,12 @@
 const VALID_FRAMEWORKS = ["flutter", "reactNative", "swift", "kotlin", "expo", "pwa"];
 function loadFramework() {
-  try {
-    const v = localStorage.getItem(FRAMEWORK_KEY);
-    return VALID_FRAMEWORKS.includes(v) ? v : null;
-  } catch { return null; }
+  const v = getProjectField("framework");
+  return VALID_FRAMEWORKS.includes(v) ? v : null;
 }
 function saveFramework(fw) {
   if (!VALID_FRAMEWORKS.includes(fw)) return;
   currentFramework = fw;
-  try { localStorage.setItem(FRAMEWORK_KEY, fw); } catch {}
+  setProjectField("framework", fw);
 }
 
 /* Bir feature'ın seçili framework'e göre mvp/release değerini döndürür.

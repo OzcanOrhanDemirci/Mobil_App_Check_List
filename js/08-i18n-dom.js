@@ -102,6 +102,8 @@ function applyLang() {
       welcomeNext.disabled = true;
     }
   }
+  /* Welcome 2. adım (proje adı) CTA'sı dil değişikliğine göre yenilensin */
+  if (typeof updateWelcomeProjNameCta === "function") updateWelcomeProjNameCta();
 }
 
 document.getElementById("langToggle").addEventListener("click", () => {

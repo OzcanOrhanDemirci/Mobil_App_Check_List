@@ -55,14 +55,16 @@ function updateProgress() {
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
-/* ==================== TAMAMLAMA KUTLAMALARI ==================== */
-const CELEBRATION_KEY = "mobil_kontrol_celebrations_v1";
-let celebrations = (() => {
-  try { return JSON.parse(localStorage.getItem(CELEBRATION_KEY) || "{}"); }
-  catch { return {}; }
-})();
+/* ==================== TAMAMLAMA KUTLAMALARI ====================
+   celebrations bayrağı (mvp/release/total) aktif projeye bağlıdır; her proje
+   kendi tamamlama kutlamasını ayrıca tetikler. */
+let celebrations = loadCelebrations();
+function loadCelebrations() {
+  const v = getProjectField("celebrations");
+  return (v && typeof v === "object") ? v : {};
+}
 function saveCelebrations() {
-  try { localStorage.setItem(CELEBRATION_KEY, JSON.stringify(celebrations)); } catch {}
+  setProjectField("celebrations", celebrations);
 }
 
 function showCelebration(emoji, title, message) {

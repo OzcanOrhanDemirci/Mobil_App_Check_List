@@ -1,38 +1,40 @@
+/* Aktif projeye bağlı state/notes/collapsed depolaması.
+   Tüm okuma/yazma 04-projects.js → getProjectField/setProjectField üzerinden
+   aktif projenin .data alanına gider. Aktif proje yoksa load* boş döner,
+   save* no-op olur (welcome akışı projeyi oluşturmadan kullanıcı işaret
+   yapamaz çünkü welcome modalı tüm UI'ı bloke eder). */
+
 function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+  const v = getProjectField("state");
+  return (v && typeof v === "object") ? v : {};
 }
 function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  setProjectField("state", state);
 }
 function loadNotes() {
-  try {
-    const raw = localStorage.getItem(NOTES_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+  const v = getProjectField("notes");
+  return (v && typeof v === "object") ? v : {};
 }
 function saveNotes() {
-  try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
+  setProjectField("notes", notes);
 }
 function loadCollapsed() {
-  try {
-    const raw = localStorage.getItem(COLLAPSE_KEY);
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch { return new Set(); }
+  const v = getProjectField("collapsed");
+  return new Set(Array.isArray(v) ? v : []);
 }
 function saveCollapsed() {
-  try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedCats])); } catch {}
+  setProjectField("collapsed", [...collapsedCats]);
 }
 
-/* İlk ziyarette tüm kategoriler varsayılan olarak kapalı */
+/* İlk ziyarette (her proje için bir kez) tüm kategoriler varsayılan olarak
+   kapalı olur. Bayrak proje data'sının içinde tutulur — bu sayede yeni
+   oluşturulan her proje de aynı temiz/kapalı durumla başlar. */
 function initDefaultCollapsed() {
-  const INIT_FLAG = "mobil_kontrol_collapse_init_v1";
-  if (!localStorage.getItem(INIT_FLAG)) {
+  const data = getActiveProjectData();
+  if (!data) return;
+  if (!data.collapseInit) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
-    try { localStorage.setItem(INIT_FLAG, "1"); } catch {}
+    setProjectField("collapseInit", true);
   }
 }
-

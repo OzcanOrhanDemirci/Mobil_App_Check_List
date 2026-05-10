@@ -79,7 +79,10 @@
           <span class="lang-sep" aria-hidden="true">/</span>
           <span class="lang-other">EN</span>
         </button>
-        <button type="button" class="hero-framework-pill" id="frameworkBtn" title="Yazılım çerçevesini değiştir" data-i18n-title="hero.frameworkBtn">
+        <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje ve framework — değiştirmek için tıkla" data-i18n-title="proj.pill.title">
+          <span class="proj-pill-icon" aria-hidden="true">📁</span>
+          <span class="proj-pill-name">Proje</span>
+          <span class="proj-pill-sep" aria-hidden="true">·</span>
           <span class="fw-pill-icon">🐦</span>
           <span class="fw-pill-label">Flutter</span>
           <span class="fw-pill-chevron" aria-hidden="true">▾</span>
@@ -455,13 +458,15 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Adım göstergesi (3 adım: Dil, Framework, Karşılama) -->
+    <!-- Adım göstergesi (4 adım: Dil, Proje Adı, Framework, Karşılama) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
       <span class="welcome-step-dot" data-step-dot="2">2</span>
       <span class="welcome-step-line" data-step-line="2"></span>
       <span class="welcome-step-dot" data-step-dot="3">3</span>
+      <span class="welcome-step-line" data-step-line="3"></span>
+      <span class="welcome-step-dot" data-step-dot="4">4</span>
     </div>
 
     <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
@@ -481,8 +486,22 @@
       <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
     </div>
 
-    <!-- 2. Adım: Framework seçimi -->
+    <!-- 2. Adım: Proje adı (yeni eklendi) -->
     <div class="welcome-pane" data-pane="2" hidden>
+      <p class="framework-pick-q" data-i18n="welcome.projNameQuestion">Bu listeyle hangi projenin kontrolünü yapacaksın?</p>
+      <p class="framework-pick-sub" data-i18n="welcome.projNameSub">Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.</p>
+      <div class="welcome-projname-wrap">
+        <input type="text" id="welcomeProjName" class="welcome-projname-input" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Proje adı" data-i18n-placeholder="welcome.projNamePlaceholder" data-i18n-aria-label="welcome.projNameAria" />
+        <div class="welcome-projname-error" id="welcomeProjNameError" role="alert" aria-live="polite" hidden></div>
+      </div>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeProjNameBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeProjNameNext" disabled data-i18n="welcome.cta.pickProjName">Devam etmek için proje adı yaz</button>
+      </div>
+    </div>
+
+    <!-- 3. Adım: Framework seçimi -->
+    <div class="welcome-pane" data-pane="3" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -523,8 +542,8 @@
       </div>
     </div>
 
-    <!-- 3. Adım: Hoşgeldin / Nasıl kullanılır -->
-    <div class="welcome-pane" data-pane="3" hidden>
+    <!-- 4. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="4" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">14 kategoride 53 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
@@ -550,48 +569,96 @@
   </div>
 </div>
 
-<!-- Framework değiştirme modalı (toolbar'dan açılır) -->
+<!-- Proje + Framework birleşik modalı (hero pill'den açılır, iki sekme) -->
 <div class="modal" id="frameworkModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
-  <div class="modal-content modal-framework" role="dialog" aria-modal="true" aria-labelledby="frameworkModalTitle">
+  <div class="modal-content modal-framework modal-projfw" role="dialog" aria-modal="true" aria-labelledby="frameworkModalTitle">
     <header class="modal-head">
-      <h2 id="frameworkModalTitle" data-i18n="fwModal.title">Framework Seç</h2>
+      <h2 id="frameworkModalTitle" data-i18n="proj.modal.title">Proje ve Framework</h2>
       <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
     </header>
+
+    <!-- Sekme şeridi -->
+    <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework">
+      <button type="button" class="projfw-tab active" role="tab" aria-selected="true" data-projfw-tab="project" data-i18n="proj.tab.project">Proje</button>
+      <button type="button" class="projfw-tab" role="tab" aria-selected="false" data-projfw-tab="framework" data-i18n="proj.tab.framework">Framework</button>
+    </div>
+
     <div class="modal-body">
-      <p class="framework-modal-sub" data-i18n="fwModal.sub">28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.</p>
-      <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
-        <button type="button" class="framework-option" data-switch-fw="flutter">
-          <span class="fw-emoji">🐦</span>
-          <span class="fw-title">Flutter</span>
-          <span class="fw-desc">Dart · Cross-platform</span>
-        </button>
-        <button type="button" class="framework-option" data-switch-fw="reactNative">
-          <span class="fw-emoji">⚛</span>
-          <span class="fw-title">React Native</span>
-          <span class="fw-desc">Bare CLI · JS / TS</span>
-        </button>
-        <button type="button" class="framework-option" data-switch-fw="swift">
-          <span class="fw-emoji">🍎</span>
-          <span class="fw-title">Swift</span>
-          <span class="fw-desc">SwiftUI · iOS native</span>
-        </button>
-        <button type="button" class="framework-option" data-switch-fw="kotlin">
-          <span class="fw-emoji">🤖</span>
-          <span class="fw-title">Kotlin</span>
-          <span class="fw-desc">Compose · Android native</span>
-        </button>
-        <button type="button" class="framework-option" data-switch-fw="expo">
-          <span class="fw-emoji">🚀</span>
-          <span class="fw-title">Expo</span>
-          <span class="fw-desc">Managed RN · EAS Build</span>
-        </button>
-        <button type="button" class="framework-option" data-switch-fw="pwa">
-          <span class="fw-emoji">🌐</span>
-          <span class="fw-title">PWA</span>
-          <span class="fw-desc">Web · Service Worker</span>
-        </button>
+
+      <!-- Sekme 1: Proje yöneticisi -->
+      <div class="projfw-pane projfw-pane-project" data-projfw-pane="project">
+        <div class="proj-header">
+          <div class="proj-header-text">
+            <p class="proj-list-title" data-i18n="proj.list.title">Projelerin</p>
+            <p class="proj-list-sub" data-i18n="proj.list.sub">Aktif olan vurgulu. Başka projeye geçmek için satıra tıkla; ad değiştirmek veya silmek için sağdaki butonları kullan.</p>
+          </div>
+          <span class="proj-count" id="projCount">0 / 20</span>
+        </div>
+
+        <!-- Yeni proje ekleme satırı (varsayılan: kapalı; "+ Yeni Proje" tıklanınca input açılır) -->
+        <div class="proj-add-row" id="projAddRow">
+          <button type="button" class="btn primary proj-add-btn" id="projAddBtn" title="Yeni proje oluştur" data-i18n-title="proj.add.title" data-i18n="proj.add.btn">+ Yeni Proje</button>
+          <div class="proj-add-form" id="projAddForm" hidden>
+            <input type="text" id="projAddInput" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Yeni proje adı" data-i18n-placeholder="proj.add.placeholder" data-i18n-aria-label="proj.add.placeholder" />
+            <div class="proj-add-fw-label" data-i18n="proj.add.fwHint">Hangi framework ile çalışacaksın?</div>
+            <div class="proj-add-fw-grid" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
+              <button type="button" class="proj-add-fw" data-add-fw="flutter"><span class="proj-add-fw-icon">🐦</span><span class="proj-add-fw-name">Flutter</span></button>
+              <button type="button" class="proj-add-fw" data-add-fw="reactNative"><span class="proj-add-fw-icon">⚛</span><span class="proj-add-fw-name">React Native</span></button>
+              <button type="button" class="proj-add-fw" data-add-fw="swift"><span class="proj-add-fw-icon">🍎</span><span class="proj-add-fw-name">Swift</span></button>
+              <button type="button" class="proj-add-fw" data-add-fw="kotlin"><span class="proj-add-fw-icon">🤖</span><span class="proj-add-fw-name">Kotlin</span></button>
+              <button type="button" class="proj-add-fw" data-add-fw="expo"><span class="proj-add-fw-icon">🚀</span><span class="proj-add-fw-name">Expo</span></button>
+              <button type="button" class="proj-add-fw" data-add-fw="pwa"><span class="proj-add-fw-icon">🌐</span><span class="proj-add-fw-name">PWA</span></button>
+            </div>
+            <div class="proj-add-form-row">
+              <button type="button" class="btn ghost proj-add-cancel" id="projAddCancel" data-i18n="proj.add.cancel">Vazgeç</button>
+              <button type="button" class="btn primary proj-add-create" id="projAddCreate" data-i18n="proj.add.create" disabled>Oluştur</button>
+            </div>
+            <div class="proj-add-error" id="projAddError" role="alert" aria-live="polite" hidden></div>
+          </div>
+        </div>
+
+        <!-- Proje listesi (JS doldurur) -->
+        <ul class="proj-list" id="projList" aria-label="Projeler"></ul>
       </div>
+
+      <!-- Sekme 2: Framework seçici (mevcut davranışa eşdeğer) -->
+      <div class="projfw-pane projfw-pane-framework" data-projfw-pane="framework" hidden>
+        <p class="framework-modal-sub" data-i18n="fwModal.sub">28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.</p>
+        <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
+          <button type="button" class="framework-option" data-switch-fw="flutter">
+            <span class="fw-emoji">🐦</span>
+            <span class="fw-title">Flutter</span>
+            <span class="fw-desc">Dart · Cross-platform</span>
+          </button>
+          <button type="button" class="framework-option" data-switch-fw="reactNative">
+            <span class="fw-emoji">⚛</span>
+            <span class="fw-title">React Native</span>
+            <span class="fw-desc">Bare CLI · JS / TS</span>
+          </button>
+          <button type="button" class="framework-option" data-switch-fw="swift">
+            <span class="fw-emoji">🍎</span>
+            <span class="fw-title">Swift</span>
+            <span class="fw-desc">SwiftUI · iOS native</span>
+          </button>
+          <button type="button" class="framework-option" data-switch-fw="kotlin">
+            <span class="fw-emoji">🤖</span>
+            <span class="fw-title">Kotlin</span>
+            <span class="fw-desc">Compose · Android native</span>
+          </button>
+          <button type="button" class="framework-option" data-switch-fw="expo">
+            <span class="fw-emoji">🚀</span>
+            <span class="fw-title">Expo</span>
+            <span class="fw-desc">Managed RN · EAS Build</span>
+          </button>
+          <button type="button" class="framework-option" data-switch-fw="pwa">
+            <span class="fw-emoji">🌐</span>
+            <span class="fw-title">PWA</span>
+            <span class="fw-desc">Web · Service Worker</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -696,6 +763,7 @@
 <script src="js/01-i18n-strings.js"></script>
 <script src="js/02-help-content.js"></script>
 <script src="js/03-data.js"></script>
+<script src="js/04-projects.js"></script>
 <script src="js/04-storage.js"></script>
 <script src="js/05-framework.js"></script>
 <script src="js/06-view-state.js"></script>

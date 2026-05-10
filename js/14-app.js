@@ -628,11 +628,10 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Framework henüz seçilmediyse karşılama modalını 3 adımda göster:
-   1) Dil seçimi  2) Framework seçimi  3) Tanıtım / Başlayalım
-   Dil seçilene dek 1. adım, framework seçilene dek 2. adımda CTA disabled. */
+/* Aktif proje + framework yoksa karşılama modalını 4 adımda göster:
+   1) Dil seçimi  2) Proje adı  3) Framework seçimi  4) Tanıtım / Başlayalım */
 function showWelcomeIfFirstVisit() {
-  if (currentFramework) return;
+  if (getActiveProjectId() && currentFramework) return;
   setTimeout(() => {
     setWelcomeStep(1);
     openModal("welcomeModal");
@@ -642,19 +641,19 @@ function showWelcomeIfFirstVisit() {
 /* Welcome modalı içindeki seçimler — buton tıklanana dek kalıcılaştırılmaz */
 let pendingFramework = null;
 let pendingLang = null;
+let pendingProjName = null;
 
 function setWelcomeStep(n) {
-  /* 1 → dil, 2 → framework, 3 → karşılama / nasıl kullanılır */
+  /* 1 → dil, 2 → proje adı, 3 → framework, 4 → karşılama */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
-  /* Adım göstergesini güncelle */
+  /* Adım göstergesini güncelle (4 nokta + 3 çizgi) */
   document.querySelectorAll("[data-step-dot]").forEach(d => {
     const idx = Number(d.dataset.stepDot);
     d.classList.toggle("active", idx === n);
     d.classList.toggle("done", idx < n);
   });
-  /* İki çizgi var: 1→2 ve 2→3 */
   document.querySelectorAll("[data-step-line]").forEach(line => {
     const after = Number(line.dataset.stepLine); // 1 → 1.dot ile 2.dot arasındaki çizgi
     line.classList.toggle("done", n > after);
@@ -664,6 +663,40 @@ function setWelcomeStep(n) {
      henüz dil seçmediği için "Yardım/Help" iki dilde yer kaplamasın). */
   const modal = document.getElementById("welcomeModal");
   if (modal) modal.setAttribute("data-step", String(n));
+  /* Proje adı adımına geçişte input'a otomatik focus + buton metnini ayarla */
+  if (n === 2) {
+    const input = document.getElementById("welcomeProjName");
+    if (input) {
+      setTimeout(() => input.focus(), 80);
+      updateWelcomeProjNameCta();
+    }
+  }
+}
+
+/* Proje adı input'u değiştiğinde "İleri" butonunun aktif/pasif durumunu güncelle.
+   Boş veya 60 karakterden uzun isim → disabled. Geçici olarak boş hata mesajı. */
+function updateWelcomeProjNameCta() {
+  const input = document.getElementById("welcomeProjName");
+  const cta   = document.getElementById("welcomeProjNameNext");
+  const errEl = document.getElementById("welcomeProjNameError");
+  if (!input || !cta) return;
+  const val = (input.value || "").trim();
+  let error = "";
+  if (!val) {
+    cta.disabled = true;
+    cta.textContent = t("welcome.cta.pickProjName");
+  } else if (val.length > 60) {
+    cta.disabled = true;
+    error = t("proj.error.tooLong");
+    cta.textContent = t("welcome.cta.next");
+  } else {
+    cta.disabled = false;
+    cta.textContent = t("welcome.cta.next");
+  }
+  if (errEl) {
+    if (error) { errEl.textContent = error; errEl.hidden = false; }
+    else { errEl.textContent = ""; errEl.hidden = true; }
+  }
 }
 
 /* 1. ADIM: Dil seçimi */
@@ -690,7 +723,34 @@ document.getElementById("welcomeLangNext").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 2. ADIM: Framework seçimi */
+/* 2. ADIM: Proje adı (yeni eklendi) */
+const welcomeProjNameInput = document.getElementById("welcomeProjName");
+if (welcomeProjNameInput) {
+  welcomeProjNameInput.addEventListener("input", () => {
+    pendingProjName = welcomeProjNameInput.value;
+    updateWelcomeProjNameCta();
+  });
+  welcomeProjNameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const cta = document.getElementById("welcomeProjNameNext");
+      if (cta && !cta.disabled) cta.click();
+    }
+  });
+}
+
+document.getElementById("welcomeProjNameNext").addEventListener("click", () => {
+  const val = (welcomeProjNameInput?.value || "").trim();
+  if (!val || val.length > 60) return;
+  pendingProjName = val;
+  setWelcomeStep(3);
+});
+
+document.getElementById("welcomeProjNameBack").addEventListener("click", () => {
+  setWelcomeStep(1);
+});
+
+/* 3. ADIM: Framework seçimi */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -706,16 +766,16 @@ document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
 
 document.getElementById("welcomeNext").addEventListener("click", () => {
   if (!pendingFramework) return;
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
 document.getElementById("welcomeFwBack").addEventListener("click", () => {
-  setWelcomeStep(1);
+  setWelcomeStep(2);
 });
 
-/* 3. ADIM: Karşılama */
+/* 4. ADIM: Karşılama */
 document.getElementById("welcomeBack").addEventListener("click", () => {
-  setWelcomeStep(2);
+  setWelcomeStep(3);
 });
 
 /* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
@@ -786,25 +846,42 @@ function closeHelpModal() {
 }
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
-  if (!pendingFramework) return;
+  if (!pendingFramework || !pendingProjName) return;
+  /* Önce projeyi oluştur ve aktif yap; saveFramework artık aktif projeye yazıyor */
+  const created = createProject(pendingProjName);
+  if (!created.ok) {
+    /* En olası hata: aynı isimde proje zaten var (genelde yeni kullanıcıda olmaz).
+       Limit hatası welcome akışında oluşamaz çünkü 0 proje var. */
+    let msg = t("proj.error.empty");
+    if (created.error === "duplicate") msg = t("proj.error.duplicate");
+    else if (created.error === "tooLong") msg = t("proj.error.tooLong");
+    showToast(msg, "warn", 2200);
+    return;
+  }
+  setActiveProjectId(created.project.id);
   saveFramework(pendingFramework);
   closeModal("welcomeModal");
-  applyFrameworkUI();
-  renderContent();
-  attachClickHandlers();
-  applyFilters();
-  updateProgress();
+  /* Yeni projenin tüm in-memory state'ini yükle ve UI'ı baştan render et */
+  reloadActiveProjectAndRender();
+  /* Pendingleri temizle ki ileride welcome tekrar açılırsa eski seçim kalmasın */
+  pendingProjName = null;
+  pendingFramework = null;
+  window.pendingFramework = null;
 });
 
-/* ==================== FRAMEWORK SEÇİCİ (TOOLBAR + SWITCH MODALI) ==================== */
+/* ==================== PROJE + FRAMEWORK PILL (HERO) ==================== */
 function applyFrameworkUI() {
-  /* Toolbar pill etiketini güncelle */
+  const proj = getActiveProject();
   const meta = currentFramework ? FRAMEWORK_META[currentFramework] : null;
-  const pillIcon = document.querySelector("#frameworkBtn .fw-pill-icon");
-  const pillLabel = document.querySelector("#frameworkBtn .fw-pill-label");
+  const pillIcon = document.querySelector("#projectFrameworkBtn .fw-pill-icon");
+  const pillLabel = document.querySelector("#projectFrameworkBtn .fw-pill-label");
+  const projName = document.querySelector("#projectFrameworkBtn .proj-pill-name");
   if (meta && pillIcon && pillLabel) {
     pillIcon.textContent = meta.icon;
     pillLabel.textContent = tx(meta.short);
+  }
+  if (projName) {
+    projName.textContent = proj ? proj.name : "—";
   }
   /* Switch modalında mevcut seçimi vurgula */
   document.querySelectorAll("[data-switch-fw]").forEach(b => {
@@ -812,10 +889,406 @@ function applyFrameworkUI() {
   });
 }
 
-document.getElementById("frameworkBtn").addEventListener("click", () => {
+document.getElementById("projectFrameworkBtn").addEventListener("click", () => {
   /* Mobil toolbar otomatik kapanması zaten setupMobileActionsToggle içinde halledilmiş */
   applyFrameworkUI();
+  /* Modalı her açılışta varsayılan olarak Proje sekmesinde aç ve listeyi yenile */
+  setProjFwTab("project");
+  renderProjectList();
+  resetProjAddForm();
   openModal("frameworkModal");
+});
+
+/* ==================== PROJE + FRAMEWORK MODAL — SEKME GEÇİŞİ ==================== */
+function setProjFwTab(tabName) {
+  /* tabName: "project" veya "framework" */
+  document.querySelectorAll(".projfw-tab").forEach(t => {
+    const isActive = t.dataset.projfwTab === tabName;
+    t.classList.toggle("active", isActive);
+    t.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+  document.querySelectorAll(".projfw-pane").forEach(p => {
+    p.hidden = p.dataset.projfwPane !== tabName;
+  });
+}
+
+document.querySelectorAll(".projfw-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    setProjFwTab(tab.dataset.projfwTab);
+    if (tab.dataset.projfwTab === "project") {
+      renderProjectList();
+    }
+  });
+});
+
+/* ==================== PROJE YÖNETİMİ ==================== */
+
+/* Proje listesini DOM'a basar. Aktif proje vurgulu; her satırda rename/sil
+   butonları. Satıra (boş alana) tıklamak o projeye geçer. Inline rename
+   modu açık satır .renaming class'ı alır; o satırda input + Kaydet/Vazgeç
+   gösterilir, normal görünüm gizlenir. */
+function renderProjectList() {
+  const listEl = document.getElementById("projList");
+  const countEl = document.getElementById("projCount");
+  if (!listEl) return;
+
+  const projects = listProjects();
+  const activeId = getActiveProjectId();
+
+  /* Üst sayaç */
+  if (countEl) countEl.textContent = t("proj.count", { n: projects.length });
+
+  /* Listeyi temizle ve yeniden oluştur. Inline rename state'ini koruma derdi
+     yok çünkü liste her açılışta sıfırdan render ediliyor (modal close/open). */
+  listEl.innerHTML = "";
+
+  /* Sıralama: aktif olan üstte, sonra updatedAt'e göre yeniye doğru */
+  const sorted = [...projects].sort((a, b) => {
+    if (a.id === activeId) return -1;
+    if (b.id === activeId) return 1;
+    return String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""));
+  });
+
+  sorted.forEach(p => {
+    const li = document.createElement("li");
+    li.className = "proj-item" + (p.id === activeId ? " active" : "");
+    li.dataset.projId = p.id;
+    /* Sol ikon: projenin framework'ünün emoji'si (yoksa 📁); isim yanında
+       parantez içinde framework adı. Bu sayede pop-up içinde de hangi proje
+       hangi framework belli olur (ana paneldeki pill'le tutarlı). */
+    const fwMeta = (p.data && p.data.framework) ? FRAMEWORK_META[p.data.framework] : null;
+    const fwIcon = fwMeta ? fwMeta.icon : "📁";
+    const fwName = fwMeta ? tx(fwMeta.short) : "—";
+    li.innerHTML = `
+      <button type="button" class="proj-row" data-proj-switch="${p.id}" title="${escapeHtml(p.name)} projesine geç">
+        <span class="proj-row-icon" aria-hidden="true"></span>
+        <span class="proj-row-name"></span>
+        <span class="proj-row-fw"></span>
+        <span class="proj-row-active-badge" hidden>${t("proj.active")}</span>
+      </button>
+      <div class="proj-row-actions">
+        <button type="button" class="proj-action proj-action-rename" data-proj-rename="${p.id}" title="${t('proj.rename.title')}" aria-label="${t('proj.rename.title')}">✎</button>
+        <button type="button" class="proj-action proj-action-delete" data-proj-delete="${p.id}" title="${t('proj.delete.title')}" aria-label="${t('proj.delete.title')}">🗑</button>
+      </div>
+      <div class="proj-row-rename" hidden>
+        <input type="text" class="proj-rename-input" maxlength="60" value="${escapeHtml(p.name)}" data-i18n-placeholder="proj.rename.placeholder" placeholder="${t('proj.rename.placeholder')}" />
+        <button type="button" class="btn primary proj-rename-save" data-proj-rename-save="${p.id}">${t("proj.rename.save")}</button>
+        <button type="button" class="btn ghost proj-rename-cancel" data-proj-rename-cancel="${p.id}">${t("proj.rename.cancel")}</button>
+        <div class="proj-rename-error" role="alert" aria-live="polite" hidden></div>
+      </div>
+    `;
+    /* İsmi + framework etiketini textContent ile ata (XSS güvenli) */
+    li.querySelector(".proj-row-icon").textContent = fwIcon;
+    li.querySelector(".proj-row-name").textContent = p.name;
+    li.querySelector(".proj-row-fw").textContent = "(" + fwName + ")";
+    if (p.id === activeId) {
+      li.querySelector(".proj-row-active-badge").hidden = false;
+    }
+    /* Son proje silinemez: sil butonunu görsel olarak disable et + tooltip */
+    if (projects.length <= 1) {
+      const delBtn = li.querySelector(".proj-action-delete");
+      if (delBtn) {
+        delBtn.disabled = true;
+        delBtn.title = t("proj.delete.lastOne");
+      }
+    }
+    listEl.appendChild(li);
+  });
+
+  updateProjAddButtonState();
+}
+
+function updateProjAddButtonState() {
+  const addBtn = document.getElementById("projAddBtn");
+  if (!addBtn) return;
+  const atLimit = projectsCount() >= 20;
+  addBtn.disabled = atLimit;
+  addBtn.title = atLimit ? t("proj.limit.toast") : t("proj.add.title");
+}
+
+/* "+ Yeni Proje" akışında seçilen framework — Oluştur'a basılana kadar geçici */
+let pendingNewProjFw = null;
+
+function resetProjAddForm() {
+  const form = document.getElementById("projAddForm");
+  const input = document.getElementById("projAddInput");
+  const err = document.getElementById("projAddError");
+  if (form) form.hidden = true;
+  if (input) input.value = "";
+  if (err) { err.textContent = ""; err.hidden = true; }
+  pendingNewProjFw = null;
+  document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.remove("selected"));
+  updateProjAddCreateState();
+}
+
+/* Oluştur butonu: hem isim hem framework girilmiş ise enable, aksi halde disable */
+function updateProjAddCreateState() {
+  const input = document.getElementById("projAddInput");
+  const createBtn = document.getElementById("projAddCreate");
+  if (!input || !createBtn) return;
+  const hasName = !!(input.value || "").trim();
+  createBtn.disabled = !(hasName && pendingNewProjFw);
+}
+
+function showProjAddError(msg) {
+  const err = document.getElementById("projAddError");
+  if (!err) return;
+  err.textContent = msg;
+  err.hidden = false;
+}
+
+/* "+ Yeni Proje" → form aç + input'a focus + form state'ini sıfırla */
+document.getElementById("projAddBtn").addEventListener("click", () => {
+  if (projectsCount() >= 20) {
+    showToast(t("proj.limit.toast"), "warn", 2400);
+    return;
+  }
+  const form = document.getElementById("projAddForm");
+  const input = document.getElementById("projAddInput");
+  if (form) form.hidden = false;
+  if (input) {
+    input.value = "";
+    setTimeout(() => input.focus(), 60);
+  }
+  /* Form'u her açılışta sıfırla: framework seçimi temizle, butonu disable yap */
+  pendingNewProjFw = null;
+  document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.remove("selected"));
+  const errEl = document.getElementById("projAddError");
+  if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
+  updateProjAddCreateState();
+});
+
+document.getElementById("projAddCancel").addEventListener("click", resetProjAddForm);
+
+/* Mini framework grid: tıklanan framework pendingNewProjFw'ye atanır,
+   sadece o buton .selected vurgulu, butonun durumu güncellenir */
+document.querySelectorAll(".proj-add-fw").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingNewProjFw = btn.dataset.addFw;
+    document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.toggle("selected", b === btn));
+    /* Hata mesajı varsa temizle (kullanıcı düzeltiyor) */
+    const errEl = document.getElementById("projAddError");
+    if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
+    updateProjAddCreateState();
+  });
+});
+
+/* Input değişiminde validasyon */
+document.getElementById("projAddInput").addEventListener("input", () => {
+  /* Yazmaya başlayınca varsa hatayı temizle */
+  const errEl = document.getElementById("projAddError");
+  if (errEl && !errEl.hidden) { errEl.textContent = ""; errEl.hidden = true; }
+  updateProjAddCreateState();
+});
+
+/* Enter / Escape kısayolları */
+document.getElementById("projAddInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const createBtn = document.getElementById("projAddCreate");
+    if (createBtn && !createBtn.disabled) createBtn.click();
+  } else if (e.key === "Escape") {
+    e.preventDefault();
+    resetProjAddForm();
+  }
+});
+
+/* Oluştur → önce onay modal'ı aç. Kabul edilirse projeyi oluştur, aktif yap, UI yenile. */
+document.getElementById("projAddCreate").addEventListener("click", () => {
+  const input = document.getElementById("projAddInput");
+  const name = (input?.value || "").trim();
+  if (!name) { showProjAddError(t("proj.error.empty")); return; }
+  if (name.length > 60) { showProjAddError(t("proj.error.tooLong")); return; }
+  if (!pendingNewProjFw) { showProjAddError(t("proj.error.fwMissing")); return; }
+  if (projectsCount() >= 20) { showProjAddError(t("proj.limit.toast")); return; }
+  if (projectExistsByName(name)) { showProjAddError(t("proj.error.duplicate")); return; }
+
+  const fwMeta = FRAMEWORK_META[pendingNewProjFw];
+  const fwDisplay = (fwMeta?.icon || "") + " " + fwLabel(pendingNewProjFw);
+  const currentProj = getActiveProject();
+  const html = `
+    <p class="fw-switch-intro">${t("proj.add.confirmIntro", { name: escapeHtml(name), fw: escapeHtml(fwDisplay) })}</p>
+    ${currentProj ? `<ul class="fw-switch-effects">
+      <li class="effect-keep"><span class="effect-icon">✓</span><span>${t("proj.add.confirmKept", { currentName: escapeHtml(currentProj.name) })}</span></li>
+    </ul>` : ""}
+  `;
+
+  /* Frameworks modal'ını önce kapat, üst üste binmesin (confirm onun yerine açılır) */
+  closeModal("frameworkModal");
+  /* Onay sonrası işin yapılması için seçimleri local'e kopyala — customConfirm
+     callback'i gecikmeli çalışıyor, bu arada kullanıcı modalı tekrar açabilir
+     ve pendingNewProjFw değişebilir. Defansif kopya. */
+  const finalName = name;
+  const finalFw = pendingNewProjFw;
+  customConfirm(
+    html,
+    () => {
+      const result = createProject(finalName, { framework: finalFw });
+      if (!result.ok) {
+        if (result.error === "duplicate")     showToast(t("proj.error.duplicate"), "warn", 2200);
+        else if (result.error === "limit")    showToast(t("proj.limit.toast"), "warn", 2400);
+        else if (result.error === "tooLong")  showToast(t("proj.error.tooLong"), "warn", 2200);
+        else                                  showToast(t("proj.error.empty"), "warn", 2200);
+        return;
+      }
+      /* Yeni projeyi otomatik aktif yap (kullanıcı confirmation'ı onayladı, doğal akış).
+         Eski projenin verisi projects[] içinde aynen kalır. */
+      setActiveProjectId(result.project.id);
+      reloadActiveProjectAndRender();
+      resetProjAddForm();
+      showToast(t("proj.created.toast", { name: result.project.name }), "success", 1800);
+    },
+    {
+      title: t("proj.add.confirmTitle"),
+      yesText: t("proj.add.confirmYes"),
+      cancelText: t("confirm.cancel"),
+      html: true,
+      wide: true
+    }
+  );
+});
+
+/* Liste içindeki tüm tıklamalar tek delegasyonla yönetilir (rename/delete/switch) */
+document.getElementById("projList").addEventListener("click", (e) => {
+  const target = e.target.closest("button, [data-proj-switch]");
+  if (!target) return;
+
+  /* Switch satırı (proje değiştir) — onaylı: customConfirm aç, kullanıcı
+     kabul ederse aktif projeyi değiştir ve tüm UI'ı yeniden render et. */
+  const switchId = target.getAttribute("data-proj-switch");
+  if (switchId !== null) {
+    /* Aktif satıra tıklamak no-op (zaten içindeyiz) */
+    if (switchId === getActiveProjectId()) {
+      closeModal("frameworkModal");
+      return;
+    }
+    const targetProj = findProjectById(switchId);
+    const currentProj = getActiveProject();
+    if (!targetProj) return;
+    const fromName = escapeHtml(currentProj?.name || "—");
+    const toName   = escapeHtml(targetProj.name);
+    const html = `
+      <p class="fw-switch-intro">${t("proj.switch.intro")}</p>
+      <ul class="fw-switch-effects">
+        <li class="effect-keep"><span class="effect-icon">✓</span><span>${t("proj.switch.effect.kept", { from: fromName })}</span></li>
+        <li class="effect-keep"><span class="effect-icon">→</span><span>${t("proj.switch.effect.target", { to: toName })}</span></li>
+      </ul>
+    `;
+    /* Frameworks modal'ını önce kapat, üst üste binmesin (confirm onun yerine açılır) */
+    closeModal("frameworkModal");
+    customConfirm(
+      html,
+      () => {
+        if (setActiveProjectId(switchId)) {
+          reloadActiveProjectAndRender();
+          showToast(t("proj.switch.toast", { name: targetProj.name }), "success", 1600);
+        }
+      },
+      { title: t("proj.switch.confirmTitle"), yesText: t("proj.switch.confirmYes"), cancelText: t("confirm.cancel"), html: true, wide: true }
+    );
+    return;
+  }
+
+  /* Rename modu aç */
+  const renameId = target.getAttribute("data-proj-rename");
+  if (renameId !== null) {
+    const li = target.closest(".proj-item");
+    if (!li) return;
+    li.classList.add("renaming");
+    const renameWrap = li.querySelector(".proj-row-rename");
+    if (renameWrap) {
+      renameWrap.hidden = false;
+      const inp = renameWrap.querySelector(".proj-rename-input");
+      if (inp) { setTimeout(() => { inp.focus(); inp.select(); }, 60); }
+    }
+    return;
+  }
+
+  /* Rename kaydet */
+  const renameSaveId = target.getAttribute("data-proj-rename-save");
+  if (renameSaveId !== null) {
+    const li = target.closest(".proj-item");
+    if (!li) return;
+    const inp = li.querySelector(".proj-rename-input");
+    const errEl = li.querySelector(".proj-rename-error");
+    const newName = (inp?.value || "").trim();
+    const r = renameProject(renameSaveId, newName);
+    if (!r.ok) {
+      let msg = t("proj.error.empty");
+      if (r.error === "tooLong") msg = t("proj.error.tooLong");
+      else if (r.error === "duplicate") msg = t("proj.error.duplicate");
+      if (errEl) { errEl.textContent = msg; errEl.hidden = false; }
+      return;
+    }
+    showToast(t("proj.renamed.toast"), "success", 1400);
+    /* Aktif projeyi rename ettiysek pill etiketini de güncellemeliyiz */
+    if (renameSaveId === getActiveProjectId()) applyFrameworkUI();
+    renderProjectList();
+    return;
+  }
+
+  /* Rename vazgeç */
+  const renameCancelId = target.getAttribute("data-proj-rename-cancel");
+  if (renameCancelId !== null) {
+    const li = target.closest(".proj-item");
+    if (!li) return;
+    li.classList.remove("renaming");
+    const renameWrap = li.querySelector(".proj-row-rename");
+    if (renameWrap) renameWrap.hidden = true;
+    const errEl = li.querySelector(".proj-rename-error");
+    if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
+    /* Input'u orijinal değerine geri çek */
+    const inp = li.querySelector(".proj-rename-input");
+    const proj = findProjectById(renameCancelId);
+    if (inp && proj) inp.value = proj.name;
+    return;
+  }
+
+  /* Sil */
+  const deleteId = target.getAttribute("data-proj-delete");
+  if (deleteId !== null) {
+    if (target.disabled) return;
+    if (projectsCount() <= 1) {
+      showToast(t("proj.delete.lastOne"), "warn", 2400);
+      return;
+    }
+    const proj = findProjectById(deleteId);
+    if (!proj) return;
+    const wasActive = deleteId === getActiveProjectId();
+    /* Onay (modal üstüne modal açabilmek için confirmModal'ın z-index'i yeterli) */
+    customConfirm(
+      t("proj.delete.confirmMsg", { name: escapeHtml(proj.name) }),
+      () => {
+        const r = deleteProject(deleteId);
+        if (!r.ok) {
+          if (r.error === "lastOne") showToast(t("proj.delete.lastOne"), "warn", 2400);
+          return;
+        }
+        showToast(t("proj.deleted.toast", { name: proj.name }), "info", 1600);
+        if (wasActive) {
+          /* Aktif silindi: deleteProject yeni aktif id'yi atadı; UI'ı yeniden yükle */
+          reloadActiveProjectAndRender();
+        }
+        renderProjectList();
+      },
+      { title: t("proj.delete.confirmTitle"), yesText: t("proj.delete.confirmYes"), cancelText: t("confirm.cancel"), html: true }
+    );
+    return;
+  }
+});
+
+/* Rename input içinde Enter/Escape kısayolları */
+document.getElementById("projList").addEventListener("keydown", (e) => {
+  if (!e.target.classList.contains("proj-rename-input")) return;
+  const li = e.target.closest(".proj-item");
+  if (!li) return;
+  if (e.key === "Enter") {
+    e.preventDefault();
+    li.querySelector(".proj-rename-save")?.click();
+  } else if (e.key === "Escape") {
+    e.preventDefault();
+    li.querySelector(".proj-rename-cancel")?.click();
+  }
 });
 
 document.querySelectorAll("[data-switch-fw]").forEach(btn => {
