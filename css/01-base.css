@@ -1,0 +1,85 @@
+  :root,
+  [data-theme="dark"] {
+    --bg: #0b0f17;
+    --surface: #11161f;
+    --surface-2: #161c27;
+    --surface-3: #1c2331;
+    --border: #232b3a;
+    --text: #e7ecf3;
+    --text-dim: #94a3b8;
+    --text-mute: #64748b;
+    --accent: #f97316;
+    --accent-2: #fb923c;
+
+    --mvp: #22c55e;
+    --mvp-bg: rgba(34, 197, 94, 0.08);
+    --mvp-border: rgba(34, 197, 94, 0.35);
+    --mvp-strong: rgba(34, 197, 94, 0.16);
+
+    --release: #3b82f6;
+    --release-bg: rgba(59, 130, 246, 0.08);
+    --release-border: rgba(59, 130, 246, 0.35);
+    --release-strong: rgba(59, 130, 246, 0.16);
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --radius: 14px;
+    --radius-sm: 8px;
+
+    --bg-grad-1: rgba(249, 115, 22, 0.12);
+    --bg-grad-2: rgba(59, 130, 246, 0.10);
+    --hero-grad: rgba(249, 115, 22, 0.08);
+    --toolbar-bg: rgba(11, 15, 23, 0.85);
+  }
+
+  [data-theme="light"] {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface-2: #f1f3f8;
+    --surface-3: #e6eaf2;
+    --border: #d8dde7;
+    --text: #0f172a;
+    --text-dim: #475569;
+    --text-mute: #64748b;
+    --accent: #ea580c;
+    --accent-2: #f97316;
+
+    --mvp: #15803d;
+    --mvp-bg: rgba(34, 197, 94, 0.10);
+    --mvp-border: rgba(22, 163, 74, 0.40);
+    --mvp-strong: rgba(34, 197, 94, 0.20);
+
+    --release: #1d4ed8;
+    --release-bg: rgba(59, 130, 246, 0.10);
+    --release-border: rgba(37, 99, 235, 0.40);
+    --release-strong: rgba(59, 130, 246, 0.20);
+
+    --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+    --bg-grad-1: rgba(249, 115, 22, 0.08);
+    --bg-grad-2: rgba(59, 130, 246, 0.06);
+    --hero-grad: rgba(249, 115, 22, 0.05);
+    --toolbar-bg: rgba(246, 247, 251, 0.85);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: radial-gradient(1200px 600px at 80% -10%, var(--bg-grad-1), transparent 60%),
+                radial-gradient(900px 500px at -10% 20%, var(--bg-grad-2), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.2s ease;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 96px;
+  }
+

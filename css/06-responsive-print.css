@@ -1,0 +1,462 @@
+  @media (max-width: 700px) {
+    .wrap { padding: 16px; }
+    header.hero { padding: 24px 18px; }
+
+    /* === Sabitlenmiş üst alanın kompakt mobil düzeni ===
+       Hedef: yaklaşık 95-105px sabit yükseklik. Eylem butonları ≡ düğmesinin
+       arkasına gizlenir, sadece arama + 3 mini ilerleme barı sabit görünür.
+       Kullanıcı ≡'e basınca tüm aksiyonlar açılır (yine sticky alan içinde). */
+
+    .sticky-bar {
+      margin: 12px 0 14px;
+      gap: 8px;
+    }
+
+    /* Mobilde sticky alanı tam opak yap; backdrop-filter blur sayfa
+       içeriğinin sticky alanın altından sızıp başlıkları/etiketleri
+       okunamaz hale getiriyordu. Solid surface-2 hem ayrımı korur
+       hem performansı iyileştirir. */
+    .sticky-bar > .toolbar,
+    .sticky-bar > .progress-card {
+      background: var(--surface-2);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    /* Toolbar: arama + ≡ düğmesi tek satırda */
+    .toolbar {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto;
+      gap: 8px;
+      padding: 8px;
+    }
+    .search { padding: 7px 12px; }
+    .search input { font-size: 14px; }
+
+    /* ≡ Eylem aç/kapa düğmesi */
+    .actions-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      flex-shrink: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .actions-toggle:hover { background: var(--surface-3); }
+    .actions-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .toolbar.actions-open .actions-toggle {
+      background: var(--accent);
+      color: #0b0f17;
+      border-color: var(--accent);
+    }
+    .toolbar.actions-open .actions-toggle .icon-menu { display: none; }
+    .toolbar.actions-open .actions-toggle .icon-close { display: inline-block; }
+
+    /* Aksiyon butonları: varsayılan gizli, ≡'e basınca alt satırda akıştır */
+    .actions {
+      display: none;
+      grid-column: 1 / -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 6px;
+      padding-top: 8px;
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+      animation: actionsSlideIn 0.18s ease;
+    }
+    .toolbar.actions-open .actions { display: flex; }
+
+    @keyframes actionsSlideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* action-group kutusunu mobilde yok say (display: contents); tüm butonlar
+       doğrudan .actions flex container'ına çocuk olur, satıra sığabildikleri
+       kadar yan yana dizilirler. role="group" ve aria-label DOM'da kalır. */
+    .action-group {
+      display: contents;
+    }
+    .action-group + .action-group::before { display: none; }
+    .action-group + .action-group { border-top: 0; }
+    .actions > .action-group > .btn {
+      flex: 0 1 auto;
+      min-width: 0;
+      font-size: 11.5px;
+      padding: 6px 9px;
+      white-space: nowrap;
+    }
+
+    /* === İlerleme kartı: 3 sütunlu kompakt hizalama === */
+    .progress-card {
+      padding: 9px 12px;
+    }
+    .progress-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px 12px;
+      align-items: start;
+    }
+    .progress-block { min-width: 0; }
+    .progress-label {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      margin-bottom: 5px;
+      line-height: 1.15;
+    }
+    .progress-label > span:first-child {
+      font-size: 9.5px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .progress-label .num {
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .progress-label .lbl-extra { display: none; }
+    .bar { height: 5px; }
+
+    /* === Hero kontrolleri: mobilde dikey istif === */
+    .hero-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .level-filters {
+      justify-content: stretch;
+    }
+    .level-filter-pill {
+      flex: 1 1 auto;
+      justify-content: center;
+      padding: 10px 12px;
+    }
+    .hero-framework-pill {
+      justify-content: center;
+      padding: 10px 14px;
+    }
+    .hero-controls-right {
+      display: flex;
+      gap: 8px;
+    }
+    .hero-controls-right > .hero-lang-pill {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+    }
+    .hero-controls-right > .hero-framework-pill {
+      flex: 1 1 auto;
+    }
+
+    /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */
+    footer .foot-title::before,
+    footer .foot-title::after {
+      display: none;
+    }
+    footer .foot-title {
+      font-size: 15px;
+      text-wrap: balance;
+      padding: 0 12px;
+      line-height: 1.35;
+    }
+
+    /* === Diğer mobil ayarlar (önceki davranışla aynı) === */
+    .cat-header { padding: 18px; flex-wrap: wrap; }
+    .cat-header .num { width: 100%; }
+    .cat-progress { margin-left: 0; text-align: left; }
+    .feature { padding: 16px 18px; }
+    .level { grid-template-columns: 24px auto 1fr; padding: 12px; gap: 8px; }
+    .level-tag { min-width: 72px; font-size: 9.5px; padding: 2px 7px; }
+  }
+
+  /* Yazdırma sayfası boyutu ve marjları */
+  @page {
+    margin: 1.6cm 1.4cm;
+  }
+
+  /* Print-only alt bilgi (sadece yazdırmada görünür) */
+  .print-footer {
+    display: none;
+  }
+
+  @media print {
+    /* Renklerin yazdırmada korunmasını zorla */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* Body'yi tablo gibi yap; print-footer her sayfada altta tekrarlansın */
+    html, body {
+      background: white !important;
+      color: #000 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body {
+      display: table !important;
+      width: 100% !important;
+    }
+    .wrap {
+      display: table-row-group !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* Alt bilgi: her sayfada altta tekrarlanır */
+    .print-footer {
+      display: table-footer-group !important;
+      text-align: center;
+      font-size: 9pt;
+      font-style: italic;
+      color: #374151 !important;
+      padding: 10px 12px 4px;
+      border-top: 1px solid #d1d5db;
+    }
+
+    /* Etkileşimli alanları gizle */
+    .sticky-bar,
+    .toolbar, .cat-nav, .actions, .progress-card,
+    .install-banner,
+    .feature-note-toggle, .feature-note,
+    .feature-ai-copy, .feature-ai-wrap,
+    .presentation-controls, .pres-context-bar,
+    .modal, .toast-container,
+    .cat-header .chevron {
+      display: none !important;
+    }
+
+    /* Yazdırmada sunum modu da olsa normal layout uygula */
+    body.presentation-mode {
+      overflow: visible !important;
+    }
+    body.presentation-mode section.category {
+      display: block !important;
+      padding: 0 !important;
+      min-height: auto !important;
+      animation: none !important;
+    }
+    body.presentation-mode .feature-head h3,
+    body.presentation-mode .feature-desc,
+    body.presentation-mode .level-text,
+    body.presentation-mode .cat-header .title h2,
+    body.presentation-mode .cat-header .title p {
+      font-size: revert !important;
+    }
+    body.presentation-mode header.hero,
+    body.presentation-mode .progress-card {
+      display: block !important;
+    }
+    /* Collapse durumunu yazdırmada açık göster */
+    .category.collapsed .feature-list {
+      display: block !important;
+    }
+    .cat-header {
+      cursor: default !important;
+    }
+
+    /* Tüm metinleri siyaha çevir */
+    h1, h2, h3, h4, p, span, strong, li, td, th,
+    .feature-desc, .feature-head h3,
+    .progress-label, .progress-label .num,
+    .cat-header .title h2, .cat-header .title p,
+    .cat-progress, .cat-progress .pct,
+    .level-text, footer, footer strong {
+      color: #000 !important;
+    }
+
+    /* Vurgu renkleri korunsun (turuncu) */
+    .eyebrow,
+    .cat-header .num {
+      color: #ea580c !important;
+    }
+
+    /* H1 içindeki gradient'i düz turuncuya çevir */
+    h1 em {
+      background: none !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      -webkit-text-fill-color: #ea580c !important;
+      color: #ea580c !important;
+    }
+
+    /* ID ve hint biraz koyu gri (siyah olmasa da okunaklı) */
+    .feature-head .id {
+      color: #4b5563 !important;
+    }
+    .level-text .hint {
+      color: #374151 !important;
+    }
+
+    /* Code etiketi okunaklı */
+    code {
+      color: #000 !important;
+      background: #f3f4f6 !important;
+      border: 1px solid #e5e7eb !important;
+    }
+
+    /* MVP rozeti yeşil */
+    .level.mvp .level-tag {
+      color: #15803d !important;
+      background: #ecfdf5 !important;
+      border-color: #86efac !important;
+    }
+    .level.mvp {
+      border-left: 3px solid #16a34a !important;
+    }
+
+    /* Release rozeti mavi */
+    .level.release .level-tag {
+      color: #1d4ed8 !important;
+      background: #eff6ff !important;
+      border-color: #93c5fd !important;
+    }
+    .level.release {
+      border-left: 3px solid #2563eb !important;
+    }
+
+    /* İşaretli kutular (renkleri korunsun) */
+    .check {
+      background: white !important;
+      border-color: #9ca3af !important;
+    }
+    .level.checked.mvp .check {
+      background: #16a34a !important;
+      border-color: #16a34a !important;
+    }
+    .level.checked.release .check {
+      background: #2563eb !important;
+      border-color: #2563eb !important;
+    }
+    .level.checked .check::after {
+      border-color: #fff !important;
+    }
+
+    /* İşaretli satırların hafif tonlu arka planı */
+    .level.checked.mvp {
+      background: #ecfdf5 !important;
+    }
+    .level.checked.release {
+      background: #eff6ff !important;
+    }
+
+    /* Konteyner stilleri */
+    header.hero {
+      background: white !important;
+      border: 1px solid #d1d5db !important;
+    }
+    header.hero::before {
+      display: none !important;
+    }
+
+    /* Sayfa bölünmesi kuralları (içerik mantıklı yerden bölünsün) */
+    section.category {
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+      border: 1px solid #d1d5db !important;
+      background: white !important;
+    }
+
+    /* Madde (feature) tek parça kalsın, ortadan bölünmesin */
+    .feature {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    /* Kategori başlığı sayfanın altına yalnız kalmasın */
+    .cat-header {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      background: #f9fafb !important;
+      border-bottom: 1px solid #d1d5db !important;
+    }
+
+    /* Feature başlık ve açıklaması seviye listesinden kopmasın */
+    .feature-head,
+    .feature-desc,
+    h2, h3 {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Tek bir seviye satırı (rozet) bölünmesin */
+    .level {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      background: white !important;
+      border: 1px solid #e5e7eb !important;
+    }
+
+    /* Hero (kapak) tek sayfada kalsın */
+    header.hero {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Hero kontrolleri (filtre pill'leri + framework seçici) yazdırmada gizlensin */
+    .hero-controls { display: none !important; }
+
+    /* Madde başlığı ve ID düzeni, yazdırmada kesilmeyi önler */
+    article.feature .feature-head {
+      display: block !important;
+      margin-bottom: 8px !important;
+      flex-wrap: wrap !important;
+    }
+    article.feature .feature-head .id {
+      display: inline !important;
+      margin-right: 6px !important;
+      color: #4b5563 !important;
+    }
+    article.feature .feature-head h3 {
+      display: inline !important;
+      flex: none !important;
+      width: auto !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      font-size: 13pt !important;
+      line-height: 1.4 !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      word-break: normal !important;
+      white-space: normal !important;
+      color: #000 !important;
+    }
+
+    /* Kategori başlığı da kesilmeye karşı korumalı */
+    .cat-header {
+      flex-wrap: wrap !important;
+    }
+    .cat-header .title {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+    }
+    .cat-header .title h2 {
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      min-width: 0 !important;
+    }
+
+    /* Feature padding'i biraz azaltarak kenar boşluğunu artır */
+    .feature {
+      padding: 14px 16px !important;
+    }
+  }

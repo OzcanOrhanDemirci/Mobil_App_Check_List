@@ -1,0 +1,446 @@
+  /* Header */
+  header.hero {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    background:
+      linear-gradient(180deg, var(--hero-grad) 0%, transparent 100%),
+      linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  /* Bir dropdown menüsü açıkken hero'nun overflow:hidden kuralını geçici olarak
+     gevşet ki menü altta kesilmesin. Modern tarayıcılarda :has() destekleniyor. */
+  header.hero:has(.lv-menu:not([hidden])) {
+    overflow: visible;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(600px 200px at 90% 0%, rgba(59, 130, 246, 0.18), transparent 60%);
+    pointer-events: none;
+    /* Hero overflow:visible olduğu zamanlarda (dropdown açıkken) gradient'in
+       köşelerden taşmaması için pseudo'ya da rounded corner ver. */
+    border-radius: inherit;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h1 em {
+    font-style: italic;
+    background: linear-gradient(120deg, #fb923c, #f97316 60%, #22c55e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Hazırlayan rozeti (hero içinde h1 altı), gizli linkedin easter egg.
+     Hover ve aktif durumda basılabilir hissi verir; kısa tıklamada
+     hiçbir şey olmaz, ~3 sn basılı tutmak ::after ile dolan progress
+     gradient'i tamamlandığında profili açar. */
+  .instructor {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+    padding: 6px 12px 6px 6px;
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px solid rgba(249, 115, 22, 0.22);
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+  .instructor:hover {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.14);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.20);
+  }
+  .instructor:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.18);
+  }
+  .instructor::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.42), rgba(34, 197, 94, 0.36));
+    pointer-events: none;
+    z-index: 0;
+    transition: width 0s linear;
+  }
+  .instructor.pressing::after {
+    width: 100%;
+    transition: width 3s linear;
+  }
+  .instructor > * {
+    position: relative;
+    z-index: 1;
+  }
+  .instructor.triggered {
+    border-color: var(--mvp);
+    background: var(--mvp-bg);
+    animation: instructorPulse 0.7s ease;
+  }
+  @keyframes instructorPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+    100% { box-shadow: 0 0 0 18px rgba(34, 197, 94, 0); }
+  }
+  .instructor-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #0b0f17;
+    background: var(--accent-2);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .instructor-name {
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+
+  /* Hero kontrolleri: seviye filtreleri + framework seçici (eski legend yerine).
+     Bu sabit alan; sık değişmeyen UI elemanları toolbar'la karışmasın diye burada. */
+  .hero-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .level-filters {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .level-filter-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .level-filter-pill:hover {
+    background: var(--surface-2);
+    border-color: var(--text-mute);
+    color: var(--text);
+  }
+  .level-filter-pill.active.mvp {
+    background: var(--mvp-bg);
+    border-color: var(--mvp-border);
+    color: var(--mvp);
+    box-shadow: 0 0 0 3px var(--mvp-strong);
+  }
+  .level-filter-pill.active.release {
+    background: var(--release-bg);
+    border-color: var(--release-border);
+    color: var(--release);
+    box-shadow: 0 0 0 3px var(--release-strong);
+  }
+  .level-filter-pill.active.both {
+    background: rgba(239, 68, 68, 0.10);
+    border-color: rgba(239, 68, 68, 0.55);
+    color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+    font-weight: 600;
+  }
+  [data-theme="light"] .level-filter-pill.active.both {
+    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(220, 38, 38, 0.55);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
+  }
+
+  /* Hero framework seçici pill */
+  .hero-framework-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .hero-framework-pill:hover { background: var(--surface-2); border-color: var(--accent); }
+  .hero-framework-pill:disabled, .hero-framework-pill[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.6);
+  }
+  .hero-framework-pill .fw-pill-icon { font-size: 15px; line-height: 1; }
+  .hero-framework-pill .fw-pill-chevron {
+    color: var(--text-mute);
+    font-size: 11px;
+    margin-left: 2px;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .dot.mvp { background: var(--mvp); box-shadow: 0 0 0 3px var(--mvp-strong); }
+  .dot.release { background: var(--release); box-shadow: 0 0 0 3px var(--release-strong); }
+
+  /* Kilit butonu: aktif (kilitli) durumda yeşil tonlu, normalde nötr.
+     Sağdaki ikon kilit aç/kapalı durumunu göstermek için JS tarafından güncellenir. */
+  #lockBtn .lock-icon { font-size: 14px; line-height: 1; }
+  #lockBtn.locked {
+    background: var(--mvp-bg);
+    border-color: var(--mvp-border);
+    color: var(--mvp);
+  }
+  #lockBtn.locked:hover {
+    background: var(--mvp-strong);
+    border-color: var(--mvp);
+  }
+
+  /* body.locked iken: işaretler dondurulur, framework/reset/import disabled,
+     export/print görsel olarak vurgulanır (kullanıcı doğal aksiyonu görsün) */
+  body.locked .level {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+  /* Vurgulu Yazdır + Dışa Aktar — kilitli iken altın çerçeve + ışıma */
+  body.locked #printBtn,
+  body.locked #exportBtn {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18), 0 4px 14px rgba(249, 115, 22, 0.18);
+    font-weight: 600;
+  }
+  body.locked #exportBtn {
+    background: var(--hero-grad);
+    color: var(--text);
+  }
+  /* Kilit aktif iken hero-controls'un üstünde ince bir bilgi şeridi (ipucu) */
+  body.locked .hero::after {
+    content: attr(data-locked-msg);
+    display: block;
+    text-align: center;
+    background: var(--mvp-bg);
+    border: 1px solid var(--mvp-border);
+    border-radius: 999px;
+    color: var(--mvp);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    margin-top: 14px;
+  }
+
+  /* Seviye görünümü filtreleri:
+     - "Sadece MVP" → tüm Release satırları gizli (işaretli/işaretsiz fark etmez)
+     - "Sadece Release" → tüm MVP satırları gizli
+     - İlerleme bloklarındaki üst summary barlar da daralır. */
+  body.view-mvp-only .progress-block[data-level="release"],
+  body.view-mvp-only .progress-block[data-level="total"] { display: none !important; }
+  body.view-release-only .progress-block[data-level="mvp"],
+  body.view-release-only .progress-block[data-level="total"] { display: none !important; }
+
+  body.view-mvp-only .level.release { display: none !important; }
+  body.view-release-only .level.mvp { display: none !important; }
+
+  /* viewFilter (status) kuralları — viewMode (level group) ile birleşince 9 kombinasyon:
+     - filter-pending  → tüm işaretli satırlar gizli (yalnızca yapılacaklar görünür)
+     - filter-done     → tüm işaretsiz satırlar gizli (yalnızca yapılanlar görünür)
+     - (filter yok)    → tüm satırlar (status'undan bağımsız) görünür
+
+     view-mvp-only / view-release-only zaten karşı seviyeyi gizliyor; bu kurallarla
+     birleşince örn. view-mvp-only + filter-pending = yalnızca işaretsiz MVP satırları. */
+  body.filter-pending .level.checked { display: none !important; }
+  body.filter-done .level:not(.checked) { display: none !important; }
+
+  /* Toolbar */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 18px 0 24px;
+    padding: 12px;
+    background: var(--toolbar-bg);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 14px;
+  }
+  .search input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    font-size: 14px;
+    padding: 4px 0;
+  }
+  .search svg { color: var(--text-mute); flex-shrink: 0; }
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    row-gap: 8px;
+  }
+  .action-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    position: relative;
+  }
+  .action-group:first-child { padding-left: 0; }
+  .action-group:last-child { padding-right: 0; }
+  .action-group + .action-group::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 22px;
+    background: var(--border);
+    opacity: 0.7;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface-3); border-color: #2c3445; }
+  .btn:disabled, .btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.6);
+  }
+  .btn.primary {
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #0b0f17;
+    border-color: transparent;
+    font-weight: 600;
+  }
+  .btn.primary:hover { filter: brightness(1.05); }
+  .btn.ghost { background: transparent; }
+  .btn.danger { color: #fca5a5; }
+  .btn.danger:hover { color: #fff; background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.35); }
+
+  /* Sabitlenmiş üst alan: toolbar + progress card birlikte sticky */
+  .sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 18px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sticky-bar > .toolbar {
+    position: static;
+    margin: 0;
+  }
+  .sticky-bar > .progress-card {
+    margin: 0;
+  }
+
+  /* Mobil eylem aç/kapa düğmesi, masaüstünde gizli, mobilde görünür */
+  .actions-toggle { display: none; }
+  .actions-toggle .icon-close { display: none; }
+
+  /* Progress */
+  .progress-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 22px;
+    background: var(--toolbar-bg);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    margin-bottom: 24px;
+  }
+  .progress-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px 22px;
+    align-items: center;
+  }
+  .progress-block { }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .progress-label .num { color: var(--text); font-weight: 600; font-size: 13px; letter-spacing: 0; }
+  .bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+  .bar > span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    border-radius: 999px;
+  }
+  .bar.total > span { background: linear-gradient(90deg, var(--mvp), var(--release)); }
+  .bar.mvp-bar > span { background: var(--mvp); }
+  .bar.release-bar > span { background: var(--release); }
+
