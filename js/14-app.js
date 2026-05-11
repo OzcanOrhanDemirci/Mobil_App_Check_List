@@ -160,11 +160,12 @@ function performReset(scope) {
     });
   }
 
-  /* Ayarlar: kategori collapse + tema + view + lock */
+  /* Ayarlar: kategori collapse + tema + anlatım dili + view + lock */
   if (scope.settings) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
     applyTheme("dark");
+    if (typeof applyStyle === "function") applyStyle("technical");
     saveViewMode("both");
     saveViewFilter("all");
     saveLockState(false);
@@ -707,8 +708,9 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Aktif proje + framework + backend yoksa karşılama modalını 5 adımda göster:
-   1) Dil seçimi  2) Proje adı  3) Framework seçimi  4) Backend seçimi  5) Tanıtım / Başlayalım */
+/* Aktif proje + framework + backend yoksa karşılama modalını 6 adımda göster:
+   1) Dil seçimi  2) Anlatım dili  3) Proje adı  4) Framework seçimi
+   5) Backend seçimi  6) Tanıtım / Başlayalım */
 function showWelcomeIfFirstVisit() {
   if (getActiveProjectId() && currentFramework && currentBackend) return;
   setTimeout(() => {
@@ -721,14 +723,16 @@ function showWelcomeIfFirstVisit() {
 let pendingFramework = null;
 let pendingBackend = null;
 let pendingLang = null;
+let pendingStyle = null;
 let pendingProjName = null;
 
 function setWelcomeStep(n) {
-  /* 1 → dil, 2 → proje adı, 3 → framework, 4 → backend, 5 → karşılama */
+  /* 1 → dil, 2 → anlatım dili, 3 → proje adı, 4 → framework,
+     5 → backend, 6 → karşılama */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
-  /* Adım göstergesini güncelle (4 nokta + 3 çizgi) */
+  /* Adım göstergesini güncelle (6 nokta + 5 çizgi) */
   document.querySelectorAll("[data-step-dot]").forEach(d => {
     const idx = Number(d.dataset.stepDot);
     d.classList.toggle("active", idx === n);
@@ -743,8 +747,9 @@ function setWelcomeStep(n) {
      henüz dil seçmediği için "Yardım/Help" iki dilde yer kaplamasın). */
   const modal = document.getElementById("welcomeModal");
   if (modal) modal.setAttribute("data-step", String(n));
-  /* Proje adı adımına geçişte input'a otomatik focus + buton metnini ayarla */
-  if (n === 2) {
+  /* Proje adı adımına geçişte (artık step 3) input'a otomatik focus +
+     buton metnini ayarla */
+  if (n === 3) {
     const input = document.getElementById("welcomeProjName");
     if (input) {
       setTimeout(() => input.focus(), 80);
@@ -803,7 +808,36 @@ document.getElementById("welcomeLangNext").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 2. ADIM: Proje adı (yeni eklendi) */
+/* 2. ADIM: Anlatım dili (Basit / Teknik) */
+document.querySelectorAll("[data-welcome-style]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingStyle = btn.dataset.welcomeStyle;
+    window.pendingStyle = pendingStyle;
+    document.querySelectorAll("[data-welcome-style]").forEach(b => {
+      b.classList.toggle("selected", b === btn);
+    });
+    const nextBtn = document.getElementById("welcomeStyleNext");
+    if (nextBtn) {
+      nextBtn.disabled = false;
+      nextBtn.textContent = t("welcome.cta.next");
+    }
+  });
+});
+
+document.getElementById("welcomeStyleNext").addEventListener("click", () => {
+  if (!pendingStyle) return;
+  /* Seçilen anlatım dilini anında uygula: kalan welcome adımları ve hero pill
+     bu stile göre gözüksün. (Listeyi render etmeye gerek yok; welcome modal
+     açıkken liste zaten başka renderContent'le güncelleniyor.) */
+  if (typeof applyStyle === "function") applyStyle(pendingStyle);
+  setWelcomeStep(3);
+});
+
+document.getElementById("welcomeStyleBack").addEventListener("click", () => {
+  setWelcomeStep(1);
+});
+
+/* 3. ADIM: Proje adı */
 const welcomeProjNameInput = document.getElementById("welcomeProjName");
 if (welcomeProjNameInput) {
   welcomeProjNameInput.addEventListener("input", () => {
@@ -823,14 +857,14 @@ document.getElementById("welcomeProjNameNext").addEventListener("click", () => {
   const val = (welcomeProjNameInput?.value || "").trim();
   if (!val || val.length > 60) return;
   pendingProjName = val;
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
 document.getElementById("welcomeProjNameBack").addEventListener("click", () => {
-  setWelcomeStep(1);
+  setWelcomeStep(2);
 });
 
-/* 3. ADIM: Framework seçimi */
+/* 4. ADIM: Framework seçimi */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -846,14 +880,14 @@ document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
 
 document.getElementById("welcomeNext").addEventListener("click", () => {
   if (!pendingFramework) return;
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
 document.getElementById("welcomeFwBack").addEventListener("click", () => {
-  setWelcomeStep(2);
+  setWelcomeStep(3);
 });
 
-/* 4. ADIM: Backend seçimi */
+/* 5. ADIM: Backend seçimi */
 document.querySelectorAll("[data-welcome-be]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingBackend = btn.dataset.welcomeBe;
@@ -871,16 +905,16 @@ document.querySelectorAll("[data-welcome-be]").forEach(btn => {
 
 document.getElementById("welcomeBeNext").addEventListener("click", () => {
   if (!pendingBackend) return;
-  setWelcomeStep(5);
+  setWelcomeStep(6);
 });
 
 document.getElementById("welcomeBeBack").addEventListener("click", () => {
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
-/* 5. ADIM: Karşılama */
+/* 6. ADIM: Karşılama */
 document.getElementById("welcomeBack").addEventListener("click", () => {
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
 /* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
@@ -957,6 +991,11 @@ function closeHelpModal() {
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
   if (!pendingFramework || !pendingProjName || !pendingBackend) return;
+  /* Anlatım dilini kalıcılaştır (kullanıcı 2. adımda zaten anında uygulanmıştı;
+     burada localStorage'a yazılması garanti altına alınıyor). */
+  if (pendingStyle && typeof applyStyle === "function") {
+    applyStyle(pendingStyle);
+  }
   /* Önce projeyi oluştur ve aktif yap; saveFramework/saveBackend artık aktif
      projeye yazıyor */
   const created = createProject(pendingProjName);
@@ -979,8 +1018,10 @@ document.getElementById("welcomeStart").addEventListener("click", () => {
   pendingProjName = null;
   pendingFramework = null;
   pendingBackend = null;
+  pendingStyle = null;
   window.pendingFramework = null;
   window.pendingBackend = null;
+  window.pendingStyle = null;
 });
 
 /* ==================== PROJE + FRAMEWORK PILL (HERO) ==================== */
@@ -2137,9 +2178,22 @@ document.getElementById("installBannerClose").addEventListener("click", () => {
   banner.hidden = false;
 })();
 
+/* Hero anlatım dili pill'i (üst kontroller arasında) — tıklanınca tüm madde
+   metinleri yeni stile göre yeniden render edilir, kullanıcıya küçük bir toast
+   bilgilendirmesi gösterilir. */
+const styleToggleBtn = document.getElementById("styleToggle");
+if (styleToggleBtn) {
+  styleToggleBtn.addEventListener("click", () => {
+    if (typeof toggleStyle === "function") toggleStyle();
+  });
+}
+
 /* ==================== INIT ==================== */
 /* İlk olarak DOM'a kaydedilmiş dile göre tüm i18n işaretli elementleri tercüme et */
 applyI18nToDom();
+
+/* Anlatım dilini DOM'a uygula (button label + data-explanation-style attr) */
+if (typeof applyStyle === "function") applyStyle(currentStyle);
 
 applyTheme(localStorage.getItem(THEME_KEY) || "dark");
 initDefaultCollapsed();

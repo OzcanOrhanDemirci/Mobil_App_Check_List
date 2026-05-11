@@ -673,6 +673,60 @@
     letter-spacing: 0.05em;
   }
 
+  /* Sol kolon: dil + anlatım stili pill'leri alt alta;
+     proje pill'i bunların sağında dikey ortalı kalır. */
+  .hero-pill-stack {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+  }
+
+  /* Hero anlatım dili pill'i (lang pill ile aynı görsel boyut, farklı ikon) */
+  .hero-style-pill {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    letter-spacing: 0.02em;
+  }
+  .hero-style-pill:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+  }
+  .hero-style-pill .style-icon { font-size: 13px; line-height: 1; }
+  .hero-style-pill .style-current {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .hero-style-pill .style-sep {
+    color: var(--text-mute);
+    margin: 0 1px;
+  }
+  .hero-style-pill .style-other {
+    color: var(--text-mute);
+    letter-spacing: 0.04em;
+  }
+  /* Stil bağlamlı renk: Basit modda yeşil-tonu, Teknik modda turuncu-tonu */
+  .hero-style-pill.style-simple .style-current { color: var(--mvp); }
+  .hero-style-pill.style-technical .style-current { color: var(--accent-2); }
+  /* Dar ekranda style pill'in ikinci seçeneğini gizle, sadece aktif olan kalsın */
+  @media (max-width: 560px) {
+    .hero-style-pill { padding: 5px 10px; font-size: 11.5px; }
+    .hero-style-pill .style-sep,
+    .hero-style-pill .style-other { display: none; }
+    .hero-lang-pill { padding: 7px 12px; font-size: 12.5px; }
+  }
+
   /* Tamamlama kutlama modalı */
   .modal-content.modal-celebration {
     max-width: 460px;

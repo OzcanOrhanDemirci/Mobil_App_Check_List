@@ -80,6 +80,16 @@ const DATA = [
         id: "2.5",
         title: { tr: "Splash Screen ve Uygulama İkonu", en: "Splash Screen and App Icon" },
         desc: { tr: "Markanın ilk izlenimi: açılış ekranı ve uygulama ikonu.", en: "The brand's first impression: launch screen and app icon." },
+        simple: {
+          mvp: {
+            tr: "Uygulama açılırken ilk gözüken ekranda artık <strong>varsayılan beyaz ekran ya da şablon logosu yok</strong>; senin tasarladığın bir <strong>açılış görseli</strong> gözüküyor. Cihazın ana ekranında uygulamanın <strong>kendi simgesi</strong> var.",
+            en: "When the app launches the first thing you see is no longer the <strong>default white screen or template logo</strong>; instead, it's a <strong>launch image you designed</strong>. The app's <strong>own icon</strong> sits on the device home screen."
+          },
+          release: {
+            tr: "Uygulama simgesi mağazalar için gereken <strong>tüm boyutlarda</strong> hazır (telefon, tablet ve mağaza listing'i için ayrı çözünürlükler). Simge mağaza arama sonuçlarında öne çıkacak güzellikte ve markanın kimliğini yansıtıyor.",
+            en: "The app icon is ready in <strong>every size</strong> the stores require (separate resolutions for phone, tablet and the store listing). The icon is striking enough to stand out in search results and reflects the brand identity."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Uygulama açılırken <strong>default Flutter/iOS/Android beyaz ekranı yerine kendi splash ekranı</strong> görünüyor (örn. <code>flutter_native_splash</code> paketi ile). Uygulama ikonu özel tasarlanmış. Default Flutter logosu KULLANILMIYOR.", en: "On launch the app shows <strong>its own splash screen instead of the default Flutter/iOS/Android white screen</strong> (e.g. via the <code>flutter_native_splash</code> package). The app icon is custom-designed. The default Flutter logo is NOT used." },
@@ -235,21 +245,51 @@ const DATA = [
         title: { tr: "Repo, Commit ve Push", en: "Repo, Commit and Push" },
         desc: { tr: "Projenin Git ile takip edilmesi ve GitHub'a yedeklenmesi.", en: "Tracking the project with Git and backing it up to GitHub." },
         mvp: { tr: "Proje GitHub'da bir repo'da. <code>git init</code>, <code>git add</code>, <code>git commit</code> ve <code>git push</code> akışı çalışıyor. Tüm takım üyeleri Settings → Collaborators ile davet edildi ve push yapabiliyor.", en: "The project lives in a GitHub repo. The <code>git init</code>, <code>git add</code>, <code>git commit</code>, <code>git push</code> flow works. All team members are invited via Settings → Collaborators and can push." },
-        release: { tr: "<strong>Anlamlı commit mesajları</strong> yazılıyor. \"asdf\", \"test\", \"fix\" gibi anlamsız mesajlar yok. Mesajlar ne yapıldığını söylüyor (örn. \"Karanlık mod butonu eklendi\"). Düzenli aralıklarla push yapılıyor, herkes son sürümle çalışıyor.", en: "<strong>Meaningful commit messages</strong> are written. No \"asdf\", \"test\", \"fix\" messages. Messages say what was done (e.g. \"Added dark mode button\"). Regular pushes; everyone works on the latest." }
+        release: { tr: "<strong>Anlamlı commit mesajları</strong> yazılıyor. \"asdf\", \"test\", \"fix\" gibi anlamsız mesajlar yok. Mesajlar ne yapıldığını söylüyor (örn. \"Karanlık mod butonu eklendi\"). Düzenli aralıklarla push yapılıyor, herkes son sürümle çalışıyor.", en: "<strong>Meaningful commit messages</strong> are written. No \"asdf\", \"test\", \"fix\" messages. Messages say what was done (e.g. \"Added dark mode button\"). Regular pushes; everyone works on the latest." },
+        simple: {
+          mvp: {
+            tr: "Projen <strong>GitHub'da bir kasada</strong> (\"repo\" deniyor) yedeklenmiş. Her gün veya birkaç saatte bir <strong>kaydetme</strong> (commit) ve <strong>yükleme</strong> (push) yapılıyor; bilgisayarın kaybolsa bile en son halini GitHub'dan geri indirebiliyorsun. Ekip varsa herkes davet edilmiş, herkes katkı sunabiliyor.",
+            en: "Your project is <strong>backed up in a vault on GitHub</strong> (it's called a \"repo\"). Every day or every few hours you <strong>save (commit)</strong> and <strong>upload (push)</strong> your work; even if your computer is lost, you can pull the latest copy back from GitHub. If there's a team, everyone has been invited and can contribute."
+          },
+          release: {
+            tr: "Her kayıtta (commit) ne yaptığını <strong>anlaşılır bir cümleyle</strong> yazıyorsun (örn. \"Karanlık mod butonu eklendi\"); \"asdf\", \"test\", \"deneme\" gibi mesajlar yok. Bu sayede ileride bir hata olduğunda hangi değişikliğin sebep olduğunu kolayca buluyorsun.",
+            en: "Each save (commit) carries a <strong>clear message in plain language</strong> (e.g. \"Added dark mode button\"); no \"asdf\", \"test\", \"trying things\" messages. That way, if something breaks later, you can easily find which change caused it."
+          }
+        }
       },
       {
         id: "4.2",
         title: { tr: "Branch ve Pull Request", en: "Branch and Pull Request" },
         desc: { tr: "Riskli değişiklikleri ana koddan ayrı yapmak ve birleştirmeden önce gözden geçirmek.", en: "Making risky changes off the main branch and reviewing before merging." },
         mvp: { tr: "Yeni özellik için <strong>kendi feature branch'inde</strong> çalışılıyor (<code>git checkout -b feature/karanlik-mod</code>). Direkt main branch'te kod YAZILMIYOR. Çakışma (merge conflict) çıkarsa panik yapılmıyor; işaretler manuel temizlenip commit ediliyor.", en: "New features are developed on <strong>their own feature branch</strong> (<code>git checkout -b feature/dark-mode</code>). Code is NOT written directly on main. If a merge conflict appears, no panic — markers are cleaned manually and committed." },
-        release: { tr: "Branch'ler <strong>Pull Request ile</strong> main'e birleştiriliyor. PR açılınca takımdan en az bir kişi gözden geçiriyor. Birleşmiş, işi biten boş branch'ler siliniyor (<code>git branch -d</code>). <strong>main branch protected</strong>, direkt push yasak.", en: "Branches are merged to main <strong>via Pull Requests</strong>. When a PR is opened, at least one teammate reviews it. Empty merged branches are deleted (<code>git branch -d</code>). The <strong>main branch is protected</strong>; direct push is forbidden." }
+        release: { tr: "Branch'ler <strong>Pull Request ile</strong> main'e birleştiriliyor. PR açılınca takımdan en az bir kişi gözden geçiriyor. Birleşmiş, işi biten boş branch'ler siliniyor (<code>git branch -d</code>). <strong>main branch protected</strong>, direkt push yasak.", en: "Branches are merged to main <strong>via Pull Requests</strong>. When a PR is opened, at least one teammate reviews it. Empty merged branches are deleted (<code>git branch -d</code>). The <strong>main branch is protected</strong>; direct push is forbidden." },
+        simple: {
+          mvp: {
+            tr: "Riskli veya büyük değişiklikler ana koddan <strong>ayrı bir kopyada</strong> (\"branch\" deniyor) yapılıyor; iş bitene kadar ana kod bozulmuyor. Aynı dosyayı iki kişi değiştirince <strong>çakışma</strong> olduğunda panik yapmadan hangi kısmın kalacağına karar veriliyor.",
+            en: "Risky or large changes are made on a <strong>separate copy</strong> of the code (it's called a \"branch\"); the main code stays intact until you're done. When two people edit the same file and a <strong>conflict</strong> appears, you calmly decide which version stays."
+          },
+          release: {
+            tr: "Her değişiklik ana koda eklenmeden önce <strong>takımdan en az bir kişi tarafından gözden geçiriliyor</strong> (\"Pull Request\" üzerinden). Doğrudan ana koda yazmak engellenmiş; böylece kazara bir hata herkesin koduna sızmıyor.",
+            en: "Every change is <strong>reviewed by at least one teammate</strong> before being merged into the main code (via a \"Pull Request\"). Writing directly to the main code is blocked, so an accidental bug doesn't leak into everyone's code."
+          }
+        }
       },
       {
         id: "4.3",
         title: { tr: ".gitignore ve API Anahtarı Güvenliği", en: ".gitignore and API Key Safety" },
         desc: { tr: "Hassas dosyaların ve şifrelerin GitHub'a sızmaması.", en: "Keeping sensitive files and secrets out of GitHub." },
         mvp: { tr: "<code>.gitignore</code> dosyası mevcut. <strong>API anahtarları kodda hardcoded DEĞİL</strong>; bir <code>.env</code> dosyasında ve <code>.env</code> .gitignore'da. <span class='hint'>Bu en kritik güvenlik kuralı. Açıkta kalan API anahtarı saniyeler içinde botlar tarafından çalınır ve kotanı bitirir.</span>", en: "A <code>.gitignore</code> exists. <strong>API keys are NOT hardcoded</strong>; they live in a <code>.env</code> file, and <code>.env</code> is in .gitignore. <span class='hint'>This is the most critical security rule. An exposed API key gets stolen by bots within seconds and burns through your quota.</span>" },
-        release: { tr: "<code>.env.example</code> şablonu repoda (gerçek değerler olmadan). Build, IDE, OS dosyaları (<code>build/</code>, <code>.vscode/</code>, <code>.DS_Store</code>) ignore edilmiş. Github'a yanlışlıkla anahtar pushlandıysa: anahtar derhal iptal edilip yenisi üretildi.", en: "An <code>.env.example</code> template lives in the repo (with no real values). Build, IDE, OS files (<code>build/</code>, <code>.vscode/</code>, <code>.DS_Store</code>) are ignored. If a key was accidentally pushed: it was immediately revoked and rotated." }
+        release: { tr: "<code>.env.example</code> şablonu repoda (gerçek değerler olmadan). Build, IDE, OS dosyaları (<code>build/</code>, <code>.vscode/</code>, <code>.DS_Store</code>) ignore edilmiş. Github'a yanlışlıkla anahtar pushlandıysa: anahtar derhal iptal edilip yenisi üretildi.", en: "An <code>.env.example</code> template lives in the repo (with no real values). Build, IDE, OS files (<code>build/</code>, <code>.vscode/</code>, <code>.DS_Store</code>) are ignored. If a key was accidentally pushed: it was immediately revoked and rotated." },
+        simple: {
+          mvp: {
+            tr: "GitHub'a yüklenmesini istemediğin <strong>gizli dosyalar</strong> ayrı bir listeye eklenmiş (bu listenin adı <code>.gitignore</code>); bu dosyalar yanlışlıkla yüklenmiyor. <strong>API anahtarları, parolalar</strong> kodun içine yazılmamış; ayrı bir gizli dosyada ve bu dosya da o listeye eklenmiş. <span class='hint'>Bu en kritik kural. Açıkta kalan bir anahtar saniyeler içinde kötü niyetli botlar tarafından bulunur.</span>",
+            en: "Files you don't want uploaded to GitHub are added to a <strong>secret-files list</strong> (called <code>.gitignore</code>); they don't accidentally upload. <strong>API keys and passwords</strong> are not written in the code; they live in a separate secret file, and that file is also on the list. <span class='hint'>This is the most critical rule. An exposed key gets discovered by malicious bots within seconds.</span>"
+          },
+          release: {
+            tr: "Repo'da <strong>örnek bir gizli dosya</strong> (gerçek değerler olmadan) bulunuyor; yeni bir takım üyesi katıldığında bu örnek üzerinden kendi değerlerini doldurabiliyor. Eğer bir gün yanlışlıkla bir anahtar GitHub'a yüklendiyse anahtar derhal iptal edilip yenisi üretiliyor.",
+            en: "The repo contains an <strong>example secret file</strong> (without real values); a new team member can fill in their own values from this template. If a key was ever accidentally pushed to GitHub, it was immediately revoked and rotated."
+          }
+        }
       },
       {
         id: "4.4",
@@ -277,6 +317,28 @@ const DATA = [
         id: "5.2",
         title: { tr: "API Anahtarı Güvenliği (.env)", en: "API Key Safety (.env)" },
         desc: { tr: "API anahtarlarının kodda görünür olmaması ve uygulamadan tersine mühendislikle çalınamaması.", en: "Keeping API keys out of code and unstealable from a reverse-engineered app." },
+        simple: {
+          mvp: {
+            tr: "Dış servislere bağlanmak için kullandığın <strong>anahtarlar (API key, secret token)</strong> kodun içine yazılmamış. Ayrı bir gizli dosyaya konmuş ve bu dosya kodla birlikte paylaşılmıyor (örneğin GitHub'a yüklenmiyor). <span class='hint'>Bu çok önemli. \"Küçük bir hobi projesi\" olsa bile anahtarın internete sızdığı an kötü niyetli botlar saniyeler içinde bulup hesabını sömürüyor.</span>",
+            en: "The <strong>keys (API key, secret token)</strong> you use to talk to external services aren't written into the code. They live in a separate secret file and that file isn't shared along with the code (it's never pushed to GitHub, for example). <span class='hint'>This is very important. Even for a 'tiny hobby project', if a key leaks online, malicious bots find it within seconds and drain your account.</span>"
+          },
+          release: {
+            tr: "Asıl gizli anahtarlar <strong>uygulamada hiç yok</strong>. Uygulama, anahtar gerektiren işleri kendi sunucusuna yaptırıyor; sunucu da anahtarı kullanıp ilgili servise istek atıyor. Bu sayede biri uygulamayı tersten çözmeye çalışsa bile anahtar elde edemiyor. Servisin yönetim panelinden ayrıca anahtara <strong>günlük kullanım sınırı</strong> ve yalnızca senin uygulamandan/sitenden geldiği zaman çalışmasını sağlayan <strong>kısıtlama</strong> koyulmuş.",
+            en: "The real secret keys <strong>are not in the app at all</strong>. The app asks its own server to do anything that needs a key; the server uses the key and calls the external service. That way, even if someone reverse-engineers the app they can't extract the key. In the service's dashboard, the key also has a <strong>daily usage limit</strong> and a <strong>restriction</strong> so it only works when the request comes from your app or website."
+          }
+        },
+        simpleBackend: {
+          noBackend: {
+            mvp: {
+              tr: "Dış servislere bağlanmak için kullandığın <strong>anahtarlar</strong> kodun içine yazılmamış; ayrı bir gizli dosyada ve bu dosya kodla paylaşılmıyor. <span class='hint'>Backend yok seçtiğin için 'release' adımı senin için sınırlıdır: gerçek gizli anahtarı uygulamada güvende tutmanın bir yolu yok. Aşağıdaki release notuna bak.</span>",
+              en: "The <strong>keys</strong> you use to call external services aren't written into the code; they live in a separate secret file and that file isn't shared with the code. <span class='hint'>Because you picked 'No backend', the 'release' step is limited for you: there's no way to keep a real secret key safe on the client. See the release note below.</span>"
+            },
+            release: {
+              tr: "<strong>Sunucu olmadan gizli bir anahtarı güvende tutmak mümkün değildir</strong>: istemcide ne saklarsan sakla, biri kodu çözüp bulabilir. İki gerçekçi yol var: (1) Yalnızca <strong>halka açık olması zaten kabul edilen anahtarları</strong> kullan (örn. Stripe'ın ödeme alma için verdiği 'publishable key', tarayıcı için verilen yapılandırma) ve servisin panelinden alan adı / paket adı kısıtlaması koy; (2) Gerçekten gizli kalması gereken bir özellik (örn. yapay zekâ) istiyorsan minik bir aracı sunucu (Cloudflare Workers, Vercel Edge gibi ücretsiz seçenekler) kur. İkinci yolu seçersen 'Backend yok' senaryosundan çıkarsın ama doğru olan budur.",
+              en: "<strong>Without a server it's not possible to keep a secret key safe</strong>: whatever you store in the client can be extracted by reverse-engineering. Two realistic options: (1) only use <strong>keys that are already meant to be public</strong> (e.g. Stripe's 'publishable key' for collecting payments, browser-side config) and restrict them by domain / package name in the service's dashboard; (2) if you really need a feature that requires a secret (e.g. AI), set up a tiny proxy server (free options like Cloudflare Workers, Vercel Edge). If you go with option 2 you're no longer in the 'No backend' scenario, but it's the right call."
+            }
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "API anahtarı <strong><code>.env</code> dosyasında</strong> saklanıyor, koda yazılmamış. <code>flutter_dotenv</code> veya tercihen <code>envied</code> (derleme-zamanı kod üretimi + obfuscation, daha güvenli) ile okunuyor. <code>.env</code>, .gitignore'da. <span class='hint'>Bu hayati öneme sahip. \"Alt tarafı küçük bir hobi projesi\" diye düşünme; botlar GitHub'ı saniyeler içinde tarıyor. Flutter asset'leri APK içine paketlenir ve binary'den çıkarılabilir; bu nedenle <code>flutter_dotenv</code> yalnızca PUBLIC config içindir, gerçek secret için release adımındaki backend proxy şarttır.</span>", en: "API keys live <strong>in a <code>.env</code> file</strong>, not in code. Read via <code>flutter_dotenv</code> or preferably <code>envied</code> (compile-time codegen + obfuscation, safer). <code>.env</code> is in .gitignore. <span class='hint'>Vital. Don't think \"it's just a hobby project\"; bots scan GitHub in seconds. Flutter assets are bundled into the APK and can be extracted from the binary, so <code>flutter_dotenv</code> is only for PUBLIC config; real secrets need the backend proxy from the release step.</span>" },
@@ -359,7 +421,17 @@ const DATA = [
         title: { tr: "Hata Yönetimi ve Empatik UX", en: "Error Handling and Empathetic UX" },
         desc: { tr: "API başarısız olduğunda uygulamanın çökmemesi ve kullanıcıya saygılı hata mesajları.", en: "Don't crash on API failure; show user-respectful error messages." },
         mvp: { tr: "API çağrıları <strong>try/catch içinde</strong>, uygulama çökmüyor. Hata olduğunda kullanıcıya <strong>\"Tekrar Dene\" butonu</strong> sunulan bir mesaj gösteriliyor. <strong>Timeout süresi</strong> var (10-15 saniye); sonsuza kadar yükleniyor göstergesi dönmüyor.", en: "API calls are wrapped in <strong>try/catch</strong>; the app doesn't crash. On error a message with a <strong>\"Try Again\" button</strong> is shown. There's a <strong>timeout</strong> (10-15 sec); the loading spinner doesn't spin forever." },
-        release: { tr: "Hata mesajları <strong>empatik</strong> ve çözüme yönlendiriyor (\"Sunucularda yoğunluk var, birkaç dakika sonra tekrar dene\" gibi). Ham hata kodu (\"Error 500\") kullanıcıya GÖSTERİLMİYOR. İstek atılmadan önce <strong>internet bağlantısı kontrol</strong> ediliyor.", en: "Error messages are <strong>empathetic</strong> and steer toward a solution (e.g. \"Servers are busy, please try again in a few minutes\"). Raw error codes (\"Error 500\") are NOT shown to the user. <strong>Internet connectivity is checked</strong> before sending requests." }
+        release: { tr: "Hata mesajları <strong>empatik</strong> ve çözüme yönlendiriyor (\"Sunucularda yoğunluk var, birkaç dakika sonra tekrar dene\" gibi). Ham hata kodu (\"Error 500\") kullanıcıya GÖSTERİLMİYOR. İstek atılmadan önce <strong>internet bağlantısı kontrol</strong> ediliyor.", en: "Error messages are <strong>empathetic</strong> and steer toward a solution (e.g. \"Servers are busy, please try again in a few minutes\"). Raw error codes (\"Error 500\") are NOT shown to the user. <strong>Internet connectivity is checked</strong> before sending requests." },
+        simple: {
+          mvp: {
+            tr: "Bir servise (API) bağlanırken hata olursa <strong>uygulama çökmüyor</strong>. Kullanıcıya kısa bir mesaj ve <strong>\"Tekrar Dene\" butonu</strong> gösteriliyor. Bağlantı çok uzun sürerse (örneğin 10-15 saniye) yükleniyor göstergesi sonsuza kadar dönmüyor; iptal edip kullanıcıya bilgi veriliyor.",
+            en: "If an error happens while talking to a service (API), the <strong>app doesn't crash</strong>. The user gets a short message and a <strong>\"Try Again\" button</strong>. If the connection takes too long (say 10-15 seconds), the loading indicator doesn't spin forever; the request is cancelled and the user is informed."
+          },
+          release: {
+            tr: "Hata mesajları <strong>insana yakın bir dilde</strong> yazılmış ve çözüme yönlendiriyor (örn. \"Sunucularımız yoğun, birkaç dakika sonra tekrar dener misin?\"). Teknik hata kodları (\"Error 500\" gibi) kullanıcıya gösterilmiyor. İstek göndermeden önce <strong>internet bağlantısı kontrol</strong> ediliyor; internet yoksa kullanıcıya bunu nazikçe söylüyor.",
+            en: "Error messages are written in a <strong>human, friendly tone</strong> and point toward a solution (e.g. \"Our servers are busy, could you try again in a few minutes?\"). Technical codes (like \"Error 500\") aren't shown to the user. <strong>Internet connectivity is checked</strong> before sending; if there's no connection the app tells the user gently."
+          }
+        }
       },
       {
         id: "5.4",
@@ -388,6 +460,16 @@ const DATA = [
         title: { tr: "Backend Bağlantısı ve Kimlik Doğrulama", en: "Backend Connection and Authentication" },
         desc: { tr: "Seçtiğin backend'in uygulamaya bağlanması ve kullanıcıların kayıt olup giriş yapabilmesi.", en: "Connecting the chosen backend to the app and letting users sign up and log in." },
         backendStep: true,
+        simple: {
+          mvp: {
+            tr: "Kullanıcılar uygulamana <strong>kayıt olup giriş yapabiliyor</strong>. En az bir giriş yöntemi çalışıyor (örneğin e-posta + şifre veya Google ile giriş). Giriş yapan kullanıcının kim olduğunu uygulama biliyor ve bu kullanıcıyı seçtiğin sunucu tarafında bir hesapla eşleştiriyor.",
+            en: "Users can <strong>sign up and log in</strong> to your app. At least one login method works (e.g. email + password or 'Sign in with Google'). The app knows who the logged-in user is and matches them with an account on the server."
+          },
+          release: {
+            tr: "<strong>E-posta doğrulama</strong>, <strong>şifre sıfırlama</strong> ve <strong>Google ile giriş</strong> akışları çalışıyor. iOS'ta yayın yapacaksan <strong>Apple ile giriş</strong> de eklenmiş olmalı (App Store şartı). Kullanıcı uygulamayı kapatıp tekrar açtığında otomatik giriş yapmış kalıyor (oturum hatırlanıyor); her seferinde tekrar parola girmiyor.",
+            en: "<strong>Email verification</strong>, <strong>password reset</strong> and <strong>Sign in with Google</strong> flows work. If you'll publish on iOS, <strong>Sign in with Apple</strong> must also be added (App Store requirement). When users reopen the app they stay signed in (the session is remembered); they don't have to enter the password again every time."
+          }
+        },
         backendVariants: {
           firebase: {
           flutter: {
@@ -488,6 +570,16 @@ const DATA = [
         title: { tr: "Bulut Veritabanı", en: "Cloud Database" },
         desc: { tr: "Kullanıcı verilerinin backend'in veritabanında saklanması.", en: "Storing user data in the backend's database." },
         backendStep: true,
+        simple: {
+          mvp: {
+            tr: "Kullanıcının verisi seçtiğin sunucunun <strong>veritabanında saklanıyor</strong>. Uygulamadan veri ekleyebiliyor, listeleyebiliyor, güncelleyebiliyor ve silebiliyorsun. Kullanıcı cihazı kapatıp tekrar açsa bile verisi yerinde duruyor.",
+            en: "User data is <strong>stored in your server's database</strong>. From the app you can add, list, update and delete data. The data stays in place even if the user closes the device and reopens the app."
+          },
+          release: {
+            tr: "Veriler <strong>anlık güncelleniyor</strong>: bir kullanıcı veri eklediğinde diğer kullanıcıların ekranı kendiliğinden yenileniyor (yenile butonuna basmaya gerek yok). <strong>İnternet olmadan da</strong> uygulama önceden indirilen veriyi gösteriyor; internet geri geldiğinde uygulamadaki yeni değişiklikler sunucuya otomatik aktarılıyor.",
+            en: "Data updates <strong>in real time</strong>: when one user adds data, others' screens refresh automatically (no need to press a refresh button). <strong>Without internet</strong> the app still shows previously downloaded data; when internet returns, the user's new changes are automatically synced to the server."
+          }
+        },
         backendVariants: {
           firebase: {
             _default: {
@@ -544,6 +636,16 @@ const DATA = [
         title: { tr: "Veritabanı Güvenlik Kuralları", en: "Database Security Rules" },
         desc: { tr: "Veritabanına kimin ne yapabileceğinin kuralları. Kritik güvenlik adımı.", en: "Rules for who can do what on the database. A critical security step." },
         backendStep: true,
+        simple: {
+          mvp: {
+            tr: "Veritabanın <strong>herkese açık değil</strong>: sadece giriş yapmış kullanıcılar veri okuyup yazabiliyor. Tanımadığın biri internet üzerinden veritabanına bağlanmaya çalışırsa engelleniyor. <span class='hint'>Bu adım kritik. Yapılmazsa veritabanın herkesçe okunabilir hale gelir.</span>",
+            en: "Your database is <strong>not open to the world</strong>: only signed-in users can read and write. A stranger trying to reach the database directly over the internet is blocked. <span class='hint'>This step is critical. Without it your database is readable by anyone.</span>"
+          },
+          release: {
+            tr: "Her kullanıcı yalnızca <strong>kendi verilerini</strong> görebiliyor ve değiştirebiliyor. Bir kullanıcının başka kullanıcının verisine erişme yolu yok. Kullanıcının yazdığı veriler de mantık kurallarına göre kontrol ediliyor (örn. boş bırakılmaması gereken bir alan boş gelirse reddediliyor).",
+            en: "Each user can only see and edit <strong>their own data</strong>. There's no way for one user to reach another's data. Data the user writes is also validated against simple rules (e.g. a required field gets rejected if left empty)."
+          }
+        },
         backendVariants: {
           firebase: {
             _default: {
@@ -600,6 +702,16 @@ const DATA = [
         title: { tr: "Dosya / Medya Yükleme", en: "File / Media Upload" },
         desc: { tr: "Resim ve dosyaların backend Storage'ına yüklenmesi. Sadece medya yüklemesi gereken uygulamalar için.", en: "Uploading images and files to the backend's Storage. Only relevant for apps that need media upload." },
         backendStep: true,
+        simple: {
+          mvp: {
+            tr: "Kullanıcı uygulamadan bir <strong>resim veya dosya yükleyebiliyor</strong>; yüklenen içerik sonra ekranda gözüküyor (örn. profil fotoğrafı). <span class='hint'>Uygulamanın medya yüklemesi yoksa bu maddeyi atlayabilirsin.</span>",
+            en: "The user can <strong>upload an image or file</strong> from the app and see it again later (e.g. a profile photo). <span class='hint'>Skip this item if your app doesn't need media uploads.</span>"
+          },
+          release: {
+            tr: "Dosya yüklemesi profesyonel kalitede: yükleme sırasında <strong>ilerleme çubuğu</strong> gözüküyor, hata varsa kullanıcıya anlaşılır mesajla bildiriliyor. Kullanıcı yalnızca <strong>kendi yüklediği dosyalara</strong> erişebiliyor; başkasının dosyasına ulaşamıyor. Hassas dosyalar için süreli paylaşım bağlantısı kullanılıyor (her gelene açık olmuyor).",
+            en: "File upload is polished: a <strong>progress bar</strong> is visible while uploading, and errors are shown to the user with a clear message. The user can only access <strong>files they uploaded themselves</strong>; they can't reach anyone else's files. For sensitive files, time-limited share links are used (not permanently open to anyone)."
+          }
+        },
         backendVariants: {
           firebase: {
           flutter: {
@@ -676,6 +788,13 @@ const DATA = [
         title: { tr: "Push Bildirim Altyapısı (Sunucu)", en: "Push Notification Backend (Server)" },
         desc: { tr: "Sunucudan kullanıcı cihazına push bildirim gönderme altyapısı.", en: "Backend infrastructure for sending push notifications from server to user device." },
         backendStep: true,
+        simple: {
+          mvp: { tr: "—", en: "—" },
+          release: {
+            tr: "Sunucunun, kullanıcının cihazına bildirim göndermesini sağlayan altyapı kurulu. <strong>Test bildirimi</strong> sunucudan tetiklendiğinde cihazda gözüküyor. Hangi kullanıcının hangi cihazda olduğu kayıtlı (cihaz değiştirenler için bağlantı güncelleniyor). Kötüye kullanım yapılmasını engellemek için bu işlem yalnızca giriş yapmış kullanıcılar için yapılıyor.",
+            en: "The infrastructure that lets your server send a notification to the user's device is set up. A <strong>test notification</strong> triggered from the server appears on the device. The link between user and device is recorded (and refreshed when they change phones). To prevent abuse, this only happens for signed-in users."
+          }
+        },
         backendVariants: {
           firebase: {
           flutter: {
@@ -752,6 +871,13 @@ const DATA = [
         title: { tr: "Sahte İstek Engelleme (App Attestation)", en: "Block Fake Requests (App Attestation)" },
         desc: { tr: "İsteğin gerçekten senin uygulamandan geldiğinden emin olma.", en: "Verifying the request really came from your app." },
         backendStep: true,
+        simple: {
+          mvp: { tr: "—", en: "—" },
+          release: {
+            tr: "Sunucun, kendisine gelen her isteğin <strong>gerçekten senin uygulamandan geldiğini</strong> kontrol ediyor; rastgele biri terminalden veya kötü niyetli bir programdan API'ne ulaşmaya çalıştığında reddediliyor. <span class='hint'>Önceki adım (giriş) 'bu kullanıcı kim?' sorusunu yanıtlar; bu adım 'bu istek hangi uygulamadan?' sorusunu yanıtlar. İkisi farklı koruma katmanlarıdır.</span>",
+            en: "Your server checks that every request <strong>really comes from your app</strong>; if a random person tries to reach your API from a terminal or a malicious program, the request is rejected. <span class='hint'>The previous item (login) answers 'who is the user?'; this item answers 'which app is this request coming from?'. They're separate layers of protection.</span>"
+          }
+        },
         backendVariants: {
           firebase: {
           flutter: {
@@ -835,6 +961,16 @@ const DATA = [
         id: "7.1",
         title: { tr: "Cihaza Kayıt (Tercih ve Veri Saklama)", en: "On-Device Storage (Preferences and Data)" },
         desc: { tr: "Kullanıcı tercihlerinin ve verilerin cihazda saklanması.", en: "Storing user preferences and data on the device." },
+        simple: {
+          mvp: {
+            tr: "Kullanıcının uygulama içindeki <strong>küçük tercihleri</strong> (örn. koyu tema açık mı, dil seçimi, ilk açılış mı) cihaza kaydediliyor. Uygulamayı kapatıp tekrar açtığında bu tercihler hatırlanıyor; her seferinde sıfırdan başlamıyor.",
+            en: "<strong>Small user preferences</strong> inside the app (e.g. is dark mode on, language choice, is this the first launch) are saved on the device. When the user closes and reopens the app, those preferences are remembered; nothing resets."
+          },
+          release: {
+            tr: "Daha büyük / yapısal veriler (örn. yerel not listesi, hesaplar) için cihazda bir <strong>küçük yerel veritabanı</strong> kullanılıyor. Hassas bilgiler (giriş token'ı, şifreler) açıkta tutulmuyor; cihazın <strong>güvenli alan</strong>ında (iOS'te Keychain, Android'de Keystore gibi) şifreli olarak saklanıyor. Böylece telefon kaybolsa veya başka uygulama erişmeye çalışsa veriler korunuyor.",
+            en: "For larger / structured data (e.g. a local notes list, accounts), a <strong>small local database</strong> is used on the device. Sensitive information (auth tokens, passwords) isn't left out in the open; it's stored encrypted in the device's <strong>secure area</strong> (Keychain on iOS, Keystore on Android, etc.). That way, if the phone is lost or another app tries to access it, the data is protected."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "<strong>Shared Preferences</strong> ile kullanıcı tercihleri kaydediliyor (örn. dark mode seçimi, ilk açılış flag'i, dil tercihi). Uygulama yeniden açıldığında bu tercihler hatırlanıyor.", en: "User preferences are saved with <strong>Shared Preferences</strong> (e.g. dark mode, first-launch flag, language). They are remembered on next launch." },
@@ -866,6 +1002,16 @@ const DATA = [
         id: "7.2",
         title: { tr: "Offline Kullanım ve Cache", en: "Offline Use and Cache" },
         desc: { tr: "İnternet olmadığında uygulamanın kullanılabilir kalması.", en: "Keeping the app usable without internet." },
+        simple: {
+          mvp: {
+            tr: "Telefon <strong>uçak modunda</strong> veya internet kesikken uygulama <strong>çökmüyor</strong>: en azından kullanıcıyı bilgilendiren bir uyarı gösteriyor. Önceden açılmış içerikler (resimler, son sohbet vb.) hâlâ ekranda gözüküyor.",
+            en: "When the phone is in <strong>airplane mode</strong> or there's no internet, the app <strong>doesn't crash</strong>: at minimum it shows a friendly warning. Content already loaded (images, the last chat, etc.) is still visible on screen."
+          },
+          release: {
+            tr: "Uygulama <strong>internet olmadan da kullanılabiliyor</strong>. Daha önce indirilen veriler okunmaya devam ediyor. Kullanıcı internet yokken yeni bir şey yazdıysa, internet geri geldiğinde bunlar sunucuya <strong>otomatik gönderiliyor</strong>; kullanıcı bir şey yapmak zorunda kalmıyor.",
+            en: "The app stays <strong>usable even without internet</strong>. Previously downloaded data can still be read. If the user wrote something while offline, those changes <strong>auto-sync</strong> to the server once internet returns; the user doesn't have to do anything manual."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Uygulama uçak modunda <strong>çökmüyor</strong>, en azından bir uyarı gösteriyor. Daha önce yüklenmiş içerik (resimler, son sohbet) cache'te tutuluyor.", en: "The app does <strong>not crash</strong> in airplane mode; at minimum it shows a warning. Previously loaded content (images, last chat) is kept in cache." },
@@ -897,6 +1043,28 @@ const DATA = [
         id: "7.3",
         title: { tr: "Bildirimler (Yerel ve Push)", en: "Notifications (Local and Push)" },
         desc: { tr: "Kullanıcıyı zamanında uyaran hatırlatma ve push bildirimleri.", en: "Reminders and push notifications that alert the user at the right moment." },
+        simple: {
+          mvp: {
+            tr: "Uygulama, kullanıcının cihazında <strong>zamanlanmış bildirim</strong> gösterebiliyor (\"Yarın saat 9'da hatırlat\" gibi). Bildirim izni anlamlı bir anda isteniyor (örneğin uygulamanın faydası gösterildikten sonra), açılır açılmaz değil. <span class='hint'>İzni hemen sormak kullanıcıyı kaçırır; sebebini anladıktan sonra çok daha kabul ediyor.</span>",
+            en: "The app can show a <strong>scheduled notification</strong> on the user's device (\"remind me at 9 tomorrow\" and the like). The notification permission is asked at a meaningful moment (e.g. after showing what the app does), not the instant the app opens. <span class='hint'>Asking immediately makes users say no; asking after they see the value gets a much higher yes.</span>"
+          },
+          release: {
+            tr: "Bildirim izni doğru zamanda isteniyor (açılır açılmaz değil). Hem <strong>cihaz üzerinde zamanlanmış bildirimler</strong> hem sunucudan gönderilen <strong>uzaktan bildirimler</strong> (push) çalışıyor (sunucu tarafı 6.5'te). Kullanıcı bildirime dokunduğunda uygulama doğru ekrana açılıyor — boş ana ekranda değil, bildirimin konusu olan yere gidiyor.",
+            en: "The permission is asked at the right time (not on first launch). Both <strong>on-device scheduled notifications</strong> and <strong>remote notifications</strong> (push, sent from the server) work (server side covered in 6.5). When the user taps a notification, the app opens to the right screen — not the blank home screen, but the screen the notification is about."
+          }
+        },
+        simpleBackend: {
+          noBackend: {
+            mvp: {
+              tr: "Uygulama, kullanıcının cihazında <strong>zamanlanmış bildirim</strong> gösterebiliyor (\"Yarın saat 9'da hatırlat\" gibi). Bildirim izni anlamlı bir anda isteniyor (açılır açılmaz değil).",
+              en: "The app can show a <strong>scheduled notification</strong> on the user's device (\"remind me at 9 tomorrow\" and the like). The notification permission is asked at a meaningful moment (not the instant the app opens)."
+            },
+            release: {
+              tr: "Bildirim izni doğru zamanda isteniyor. <strong>Yalnızca cihaz üzerinde zamanlanmış bildirimler</strong> çalışıyor (hatırlatmalar, konuma bağlı uyarılar vb.); bunlar sunucu olmadan da çalışır. <strong>Uzaktan bildirim (push)</strong> 'Backend yok' senaryosunda mümkün değildir çünkü bunun için bir sunucu gerekir. Push gönderebilmek istiyorsan küçük bir sunucu eklemen gerek (bu seni 'Backend yok' senaryosundan çıkarır). Bildirime tıklandığında doğru ekrana açılıyor.",
+              en: "The permission is asked at the right time. <strong>Only on-device scheduled notifications</strong> work (reminders, location-based alerts, etc.); these don't need a server. <strong>Remote notifications (push)</strong> aren't possible under 'No backend' because they require a server. If you want push, you need to add a small server (which moves you out of the 'No backend' scenario). Tapping a notification still opens the right screen."
+            }
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "<strong>Yerel bildirim</strong> çalışıyor (<code>flutter_local_notifications</code> paketi); örn. \"Yarın saat 9'da hatırlat\" tarzı zamanlanmış bildirim. Bildirim izni anlamlı bir noktada (uygulamanın değer önerisinden sonra) isteniyor; uygulama açılır açılmaz değil.", en: "<strong>Local notifications</strong> work (<code>flutter_local_notifications</code>); e.g. a scheduled \"remind me at 9 tomorrow\" notification. Permission is asked at a meaningful moment (after the value proposition is shown), not on first launch." },
@@ -1005,6 +1173,16 @@ const DATA = [
         id: "8.3",
         title: { tr: "Çökme ve Hata Takibi", en: "Crash and Error Tracking" },
         desc: { tr: "Kullanıcılarda oluşan çökmelerin senin haberin olmadan kaydedilmesi.", en: "Recording user crashes silently in the background." },
+        simple: {
+          mvp: {
+            tr: "Uygulamada bir hata olursa, hata mesajı en azından <strong>geliştirme ortamında</strong> (kod yazdığın ekranda) gözüküyor. Bu sayede sen test ederken bir şey çöktüğünde sebebini görebiliyorsun.",
+            en: "When an error happens in the app, the message at least appears in your <strong>development environment</strong> (the screen where you write code). That way, when something crashes during testing, you can see the reason."
+          },
+          release: {
+            tr: "Kullanıcılarda olan çökmeleri <strong>otomatik kaydeden bir araç</strong> entegre (örneğin Sentry, Firebase Crashlytics, Bugsnag gibi). Sen bir şey yapmadan hangi cihazda, hangi sürümde, hangi hatanın olduğu bir panoya düşüyor. Bu sayede kullanıcı sana bildirmese bile sen hatadan haberdar olup düzeltebiliyorsun.",
+            en: "A <strong>crash-tracking tool</strong> (e.g. Sentry, Firebase Crashlytics, Bugsnag) is integrated. Without you doing anything, every user crash shows up on a dashboard with the device, app version and error info. That way, even if the user never tells you, you find out and can fix it."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Hatalar konsola loglanıyor: <code>FlutterError.onError = (details) => debugPrint(...)</code> ve <code>PlatformDispatcher.instance.onError</code> handler'ı bağlı. <code>try/catch</code> kullanılan yerlerde hata <code>debugPrint</code> ile yazılıyor. Geliştirme sırasında hatalar IDE konsolundan görülüyor.", en: "Errors logged to console: <code>FlutterError.onError = (details) => debugPrint(...)</code> and <code>PlatformDispatcher.instance.onError</code> handler attached. <code>try/catch</code> sites use <code>debugPrint</code> for errors. Developer sees errors in the IDE console during development." },
@@ -1075,6 +1253,16 @@ const DATA = [
         id: "9.1",
         title: { tr: "HTTPS ve İzinler", en: "HTTPS and Permissions" },
         desc: { tr: "Tüm trafiğin şifreli olması ve sadece gerekli izinlerin istenmesi.", en: "All traffic encrypted; only the permissions you actually need are requested." },
+        simple: {
+          mvp: {
+            tr: "Uygulamanın internete olan tüm trafiği <strong>güvenli bir bağlantıdan</strong> geçiyor (HTTPS); şifresiz (HTTP) bağlantı kullanılmıyor. Bunun yanında uygulama yalnızca <strong>gerçekten ihtiyaç duyduğu izinleri</strong> istiyor (örn. kamera kullanmıyorsan kamera izni istemiyor).",
+            en: "All of the app's internet traffic goes over a <strong>secure connection</strong> (HTTPS); plain HTTP is never used. The app also only asks for permissions it <strong>actually needs</strong> (e.g. if you don't use the camera, no camera permission is requested)."
+          },
+          release: {
+            tr: "Her izin için kullanıcıya <strong>neden istediğini açıklayan kısa bir cümle</strong> gözüküyor (örn. \"Profil fotoğrafı yüklemek için kamera erişimi gerekiyor\"). Kullanıcı izni reddederse uygulama çökmeden alternatif bir yol sunuyor. İzinler <strong>tam o özelliği kullanmaya başladığında</strong> isteniyor; uygulamayı açar açmaz hepsini birden değil.",
+            en: "Each permission shows the user a short <strong>reason sentence</strong> (e.g. \"Camera access is needed to upload your profile photo\"). If the user denies the permission, the app handles it gracefully without crashing. Permissions are requested <strong>at the exact moment the feature is used</strong>, not all at once when the app launches."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Tüm API çağrıları <strong>HTTPS</strong> üzerinden, HTTP YOK. AndroidManifest.xml ve Info.plist içinde <strong>sadece kullandığın izinler</strong> var (kullanmadığın kamera, mikrofon, konum izinleri kaldırılmış).", en: "All API calls are over <strong>HTTPS</strong>; no HTTP. AndroidManifest.xml and Info.plist contain <strong>only the permissions you actually use</strong> (unused camera, microphone, location permissions are removed)." },
@@ -1113,6 +1301,13 @@ const DATA = [
         id: "9.3",
         title: { tr: "Privacy Manifest ve Required Reason API", en: "Privacy Manifest and Required Reason API" },
         desc: { tr: "Apple'ın 2024 zorunluluğu: gizlilik beyan dosyası ve kısıtlanmış API kullanımı için neden bildirimi.", en: "Apple's 2024 mandate: privacy declarations and reason codes for restricted APIs." },
+        simple: {
+          mvp: { tr: "—", en: "—" },
+          release: {
+            tr: "iOS yayını için Apple'ın 2024'ten beri istediği <strong>gizlilik beyan dosyası</strong> uygulamana eklenmiş. Bu dosyada uygulamanın hangi sistem özelliklerini neden kullandığı yazılı (ör. \"kullanıcı tercihlerini kaydetmek için yerel depolama kullanıyor\"). Apple kullanıcının verisinin nasıl işlendiğini bu dosyadan öğreniyor; <strong>dosya yoksa veya eksikse Apple App Store yüklemesi otomatik reddediliyor</strong>. Android için karşılığı Play Console'daki <strong>Data Safety formu</strong>'dur (11.3'te dolduruluyor); Android'e ayrı bir dosya GEREKMEZ.",
+            en: "For iOS release, Apple's <strong>privacy declaration file</strong> (mandatory since 2024) is added to your app. It states which system features the app uses and why (e.g. \"uses local storage to remember preferences\"). Apple learns from this file how user data is handled; <strong>if the file is missing or incomplete, the App Store submission is auto-rejected</strong>. The Android counterpart is the <strong>Data Safety form</strong> in Play Console (filled in feature 11.3); no separate file is required for Android."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "—", en: "—" },
@@ -1144,6 +1339,16 @@ const DATA = [
         id: "9.4",
         title: { tr: "Rate Limiting ve Abuse Koruması", en: "Rate Limiting and Abuse Protection" },
         desc: { tr: "AI / pahalı API çağrılarının kötüye kullanımına ve brute-force saldırılarına karşı koruma. Özellikle LLM kullanan uygulamalar için kritik (kotanın saniyeler içinde tükenebilmesi).", en: "Protection against abuse of AI / expensive API calls and brute-force attacks. Critical for apps using LLMs (quota can be drained in seconds)." },
+        simple: {
+          mvp: {
+            tr: "Uygulama, aynı butona <strong>saniyede onlarca kez basılmasını</strong> engelliyor. Bir istek giderken buton kısa süreliğine pasif oluyor; kullanıcı (veya yanlışlıkla bir parmak) pahalı bir servisi gereksiz tetiklemiyor. Giriş ekranında da art arda yanlış parola denemeleri için yerleşik bir koruma var (giriş servisi sağlıyor).",
+            en: "The app prevents the same button from being <strong>tapped dozens of times per second</strong>. While a request is in flight, the button is briefly disabled; the user (or an accidental thumb) can't keep triggering an expensive service. The login screen also has built-in protection against rapid wrong-password attempts (provided by the auth service)."
+          },
+          release: {
+            tr: "<strong>Sunucu tarafında</strong> her kullanıcı / her cihaz başına dakikada veya saatte yapılabilecek istek sayısına bir tavan koyulmuş; bu tavanı aşan istekler nazikçe reddediliyor. Pahalı dış servisler (yapay zekâ vb.) yalnızca sunucu üzerinden çağrılıyor; doğrudan istemciden değil. Servisin yönetim panelinde <strong>günlük bütçe alarmı</strong> kurulu — bir bot uygulamayı sömürmeye başlasa bile masraf erken görülüyor. <span class='hint'>2024-2026'ta yapay zekâ uygulamalarının en sık \"bir gecede yüzlerce dolar fatura\" hikayesi rate limit + bütçe alarmı eksikliğindendir. İki katman birden olmalı.</span>",
+            en: "<strong>Server-side</strong> per-user / per-device caps are enforced on requests per minute or per hour; requests over the cap are politely rejected. Expensive external services (AI, etc.) are only called via the server; never directly from the client. A <strong>daily budget alarm</strong> is configured in the service's dashboard — even if a bot starts abusing the app, the cost is caught early. <span class='hint'>The most common \"overnight $XXX bill\" story for AI apps in 2024-2026 comes from missing rate limits and budget alarms. Both layers are needed.</span>"
+          }
+        },
         mvp: { tr: "İstemci tarafında <strong>basit throttle / debounce</strong> uygulandı: kullanıcı saniyede birden çok kez AI tetikleyemez, butonlar request sırasında disabled. Auth tarafında seçili backend'in yerleşik <strong>rate limit'i</strong> ve <strong>e-posta enumeration koruması</strong> aktif (Firebase Authentication, Supabase Auth, Auth0 veya kendi backend'inde middleware; hangisi varsa).", en: "Client-side <strong>throttle / debounce</strong> is in place: the user can't fire AI calls many times per second, and buttons are disabled while a request is in flight. On auth, the chosen backend's built-in <strong>rate limiting</strong> and <strong>email enumeration protection</strong> are enabled (Firebase Authentication, Supabase Auth, Auth0, or your own backend middleware; whichever you have)." },
         release: { tr: "Sunucu tarafında <strong>per-user / per-IP rate limit</strong> uygulanmış: backend'inde (Supabase Edge Function / Cloud Functions / AWS Lambda / Convex action / kendi sunucundaki middleware / Cloudflare Workers / Vercel Edge gibi; hangisini kullanıyorsan) kullanıcı/IP başına dakika/saat başına maksimum istek tanımlı. Ücretli API'lere erişim her zaman backend proxy üzerinden (gerçek anahtar mobilde YOK; bkz 5.2 release). <strong>Cloudflare WAF</strong>, <strong>AWS WAF</strong>, <strong>Vercel Firewall</strong> veya benzeri bir koruma katmanı şüpheli pattern'leri (bot header'ları, anormal hız, şüpheli geo) engelliyor. Bütçe alarmları kurulu (OpenAI/Anthropic/Google AI dashboard'unda günlük limit aşımı uyarısı). Cihaz attestation (6.6) sahte istemcileri zaten engelliyor; bu madde maliyet/abuse boyutunu tamamlıyor. <span class='hint'>2024-2026'ta LLM uygulamalarının en sık \"sıfırdan binlerce dolar\" hikayesi: app store'da bir bot bulup yanıt başına maliyetli bir endpoint'i sömürmesi. Rate limit + budget alert iki katmanlı savunma.</span>", en: "Server-side <strong>per-user / per-IP rate limiting</strong> is enforced in your backend (Supabase Edge Function / Cloud Functions / AWS Lambda / Convex action / your own server middleware / Cloudflare Workers / Vercel Edge; whichever you use): max requests per user/IP per minute/hour. Paid APIs are always called via a backend proxy (the real key is NEVER on mobile; see 5.2 release). <strong>Cloudflare WAF</strong>, <strong>AWS WAF</strong>, <strong>Vercel Firewall</strong> or a similar protection layer blocks suspicious patterns (bot headers, abnormal velocity, suspicious geos). Budget alerts are configured (daily-limit-exceeded notifications in OpenAI/Anthropic/Google AI dashboards). Device attestation (6.6) already blocks fake clients; this item complements that with the cost/abuse dimension. <span class='hint'>The most common \"$0 to $10,000\" story for LLM apps in 2024-2026 is a bot in an app store finding a per-response paid endpoint and draining it. Rate limiting + budget alerts are the two-layer defense.</span>" }
       }
@@ -1205,6 +1410,16 @@ const DATA = [
         id: "11.1",
         title: { tr: "Uygulama İsmi, Paket Adı ve İmzalama", en: "App Name, Package Name and Signing" },
         desc: { tr: "Uygulamanın kimliği ve resmi yayın paketi.", en: "The app's identity and a properly published, signed package." },
+        simple: {
+          mvp: {
+            tr: "Uygulamanın artık <strong>kendi adı, kendi simgesi ve kendi içeriği</strong> var — başlangıçtaki şablon görüntüsünden tamamen çıkmış. Uygulamanın <strong>benzersiz bir kimliği</strong> (paket adı, örn. <code>com.takim.uygulama</code>) tanımlı; aynı isimde başka bir uygulamayla karışmıyor.",
+            en: "The app now has <strong>its own name, its own icon and its own content</strong> — entirely past the starter template look. It also has a <strong>unique identity</strong> (a package name, e.g. <code>com.team.app</code>) so it can't be confused with another app."
+          },
+          release: {
+            tr: "Uygulamanın <strong>resmi yayın için imzalanmış</strong> bir sürümü var. Mağaza (App Store / Play Store) bu imzayı, uygulamanın gerçekten senden geldiğini doğrulamak için kullanıyor. Android için bu imza anahtarı (keystore) güvenli bir yerde yedeklenmiş; <strong>kaybedilirse Play Store'a yeni sürüm yüklenemez</strong>. iOS için Apple Developer hesabı ($99/yıl) ve sertifika hazır.",
+            en: "A <strong>signed</strong> release build of the app exists. The store (App Store / Play Store) uses this signature to verify the app really comes from you. For Android, this signing key (keystore) is backed up securely; <strong>if lost, no new version can be uploaded to Play Store</strong>. For iOS, an Apple Developer account ($99/year) and the certificate are ready."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Default <strong>Flutter <code>flutter create</code> şablonu</strong> (counter app: <code>MyApp</code>/<code>MyHomePage</code>, \"You have pushed the button this many times\") yerine <strong>kendi uygulama ismi</strong> ve içeriği var. Paket adı (örn. <code>com.takim.uygulama</code>) anlamlı ve benzersiz. Uygulama ikonu özel tasarlanmış.", en: "Instead of the default <strong>Flutter <code>flutter create</code> template</strong> (counter app: <code>MyApp</code>/<code>MyHomePage</code>, \"You have pushed the button this many times\"), <strong>your own app name</strong> and content are in place. Package name (e.g. <code>com.team.app</code>) is meaningful and unique. The app icon is custom-designed." },
@@ -1407,6 +1622,16 @@ const DATA = [
         id: "13.1",
         title: { tr: "Analitik ve Özel Olaylar", en: "Analytics and Custom Events" },
         desc: { tr: "Kullanıcının uygulamayı nasıl kullandığını ölçme.", en: "Measuring how users use the app." },
+        simple: {
+          mvp: {
+            tr: "Uygulamana bir <strong>kullanım istatistiği aracı</strong> bağlı (örn. PostHog, Mixpanel, Amplitude veya Firebase Analytics gibi). Kullanıcı uygulamayı ilk açtığında ve uygulamada ne kadar zaman geçirdiğinde bir panoda görünüyor. <span class='hint'>Bu adım az emek isteyen ama çok faydalı bir adımdır. Sayılara bakmadan hangi özelliğin gerçekten kullanıldığını bilmek zor.</span>",
+            en: "A <strong>usage analytics tool</strong> is connected to your app (e.g. PostHog, Mixpanel, Amplitude, or Firebase Analytics). When users open the app and how long they spend in it show up on a dashboard. <span class='hint'>This step is low effort and high value. Without numbers, it's hard to know which features are actually used.</span>"
+          },
+          release: {
+            tr: "Uygulamana özel <strong>5-10 önemli olay</strong> tanımlı (örn. \"giriş başarılı oldu\", \"premium butona tıklandı\", \"ilk not oluşturuldu\"). Hangi ülkeden, hangi cihazdan kaç kullanıcının hangi adımda durduğu konsoldan izleniyor. <strong>Kişisel veriler</strong> (e-posta, ad-soyad gibi) bu olayların içinde gönderilmiyor; kullanıcı kimliği gizli bir kodla temsil ediliyor.",
+            en: "<strong>5-10 important events</strong> specific to your app are defined (e.g. \"login succeeded\", \"premium button clicked\", \"first note created\"). The console shows how many users from which countries and devices stop at which step. <strong>Personal data</strong> (email, full name, etc.) is never sent inside these events; the user identity is represented by a private opaque ID."
+          }
+        },
         mvp: { tr: "Bir <strong>analitik SDK</strong> entegre. Backend-bağımsız taşınabilir seçenekler: <strong>PostHog</strong> (open-source + self-host edilebilir, feature flags ve session replay aynı üründe), <strong>Mixpanel</strong>, <strong>Amplitude</strong>. Firebase kullanıyorsan <strong>Firebase Analytics</strong> (GA4) doğal seçim (ücretsiz, kurulumu tek satır). Otomatik olaylar (first_open / session_start) toplanıyor. <span class='hint'>Görece minimum efor / yüksek değer maddedir; custom event'ler ve funnel takibi release seviyesinde.</span>", en: "An <strong>analytics SDK</strong> is integrated. Backend-agnostic portable options: <strong>PostHog</strong> (open-source, self-hostable, feature flags + session replay in one product), <strong>Mixpanel</strong>, <strong>Amplitude</strong>. If you use Firebase, <strong>Firebase Analytics</strong> (GA4) is the natural pick (free, one-line setup). Automatic events (first_open / session_start) are being collected. <span class='hint'>High-value, low-effort MVP item; custom events and funnel tracking belong to the release tier.</span>" },
         release: { tr: "Seçili analitik SDK'sı (PostHog / Mixpanel / Amplitude / Firebase Analytics / Plausible / Datadog RUM) entegre. Otomatik olaylar ve <code>screen_view</code> (ekran takibi entegrasyonu yapıldıysa) toplanıyor; konsoldan hangi ülkeden kaç kullanıcı, hangi ekranlarda ne kadar vakit geçirdiği görünüyor. Uygulamaya özel <strong>5-10 custom event</strong> tanımlı (örn. <code>onboarding_completed</code>, <code>premium_clicked</code>). PII (kişisel veri) event payload'larında YOK; kullanıcı ID'leri hash'li / opaque.", en: "The chosen analytics SDK (PostHog / Mixpanel / Amplitude / Firebase Analytics / Plausible / Datadog RUM) is integrated. Automatic events and <code>screen_view</code> (with screen-tracking integration in place) are collected; you can see in the console how many users from which country and how long they spend on which screens. <strong>5-10 custom events</strong> specific to the app are defined (e.g. <code>onboarding_completed</code>, <code>premium_clicked</code>). No PII in event payloads; user IDs are hashed / opaque." }
       },

@@ -9,16 +9,41 @@ function saveFramework(fw) {
   setProjectField("framework", fw);
 }
 
-/* Bir feature'ın seçili framework + backend'e göre mvp/release değerini döndürür.
-   Çözüm önceliği (ilk eşleşen kazanır):
-     1. f.backendVariants[currentBackend][currentFramework][level]
-     2. f.backendVariants[currentBackend]._default[level]
-     3. f.variants[currentFramework][level]
-     4. f[level]
-   Bu sırayla seçili backend + framework kombinasyonu için en spesifik metin
-   önce dönmüş olur; eksikse evrensele kadar düşer. Sonuç {tr, en} objesi
-   olabilir; tx() ile çözülmesi gerekir. */
+/* Bir feature'ın seçili framework + backend + anlatım stiline göre mvp/release
+   değerini döndürür.
+
+   Stil = "simple" iken (yazılım dünyasına uzak kullanıcılar / AI ile uygulama
+   geliştirenler) madde seviyesinde tanımlı sade bir metin tercih edilir;
+   böylece her framework × backend kombinasyonu için ayrı simple metin yazmaya
+   gerek kalmaz (basit anlatım çoğunlukla framework/backend agnostic'tir).
+   Yine de backend'e özel sade metin gerekirse simpleBackend kullanılabilir
+   (örn. "Backend yok" için "bu maddeyi atla" mesajı).
+
+   Stil = "technical" iken eski davranış aynen sürer.
+
+   Çözüm önceliği:
+     A) Stil "simple" ise:
+        1. f.simpleBackend[currentBackend][level]   (backend-spesifik sade)
+        2. f.simple[level]                          (madde-seviyesi sade default)
+        (her ikisi de yoksa B'ye düşer — teknik fallback)
+     B) Normal (teknik) sıralama:
+        3. f.backendVariants[currentBackend][currentFramework][level]
+        4. f.backendVariants[currentBackend]._default[level]
+        5. f.variants[currentFramework][level]
+        6. f[level]
+   Sonuç {tr, en} objesi olabilir; tx() ile çözülmesi gerekir. */
 function resolveLevel(f, level) {
+  /* A) Basit modda önce madde-seviyesi sade metinleri dene */
+  if (typeof currentStyle !== "undefined" && currentStyle === "simple") {
+    if (f.simpleBackend && currentBackend && f.simpleBackend[currentBackend] && f.simpleBackend[currentBackend][level] !== undefined) {
+      return f.simpleBackend[currentBackend][level];
+    }
+    if (f.simple && f.simple[level] !== undefined) {
+      return f.simple[level];
+    }
+    /* Sade metin bulunamadı → teknik içeriğe düş (zaten anlaşılır) */
+  }
+  /* B) Mevcut teknik çözüm sıralaması */
   if (f.backendVariants && currentBackend && f.backendVariants[currentBackend]) {
     const node = f.backendVariants[currentBackend];
     if (currentFramework && node[currentFramework] && node[currentFramework][level] !== undefined) {

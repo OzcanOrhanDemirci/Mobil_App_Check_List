@@ -107,6 +107,40 @@ document.addEventListener("click", (e) => {
   }
 });
 
+/* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
+   STYLE_KEY ve currentStyle 01-i18n-strings.js'de tanımlı (tx() tarafından
+   doğrudan kullanılıyor). Burada uygulama mantığı: tema gibi global,
+   localStorage'da saklı; değişince listenin yeniden render edilmesi gerekir
+   çünkü her madde farklı metin gösterebilir. */
+function applyStyle(style) {
+  if (style !== "simple" && style !== "technical") style = "technical";
+  currentStyle = style;
+  try { localStorage.setItem(STYLE_KEY, style); } catch {}
+  document.documentElement.setAttribute("data-explanation-style", style);
+  /* Pill üzerindeki aktif/pasif vurgu */
+  const btn = document.getElementById("styleToggle");
+  if (btn) {
+    const cur = btn.querySelector(".style-current");
+    const oth = btn.querySelector(".style-other");
+    if (cur) cur.textContent = style === "simple" ? t("style.simple") : t("style.technical");
+    if (oth) oth.textContent = style === "simple" ? t("style.technical") : t("style.simple");
+    btn.setAttribute("aria-pressed", style === "simple" ? "true" : "false");
+    btn.classList.toggle("style-simple", style === "simple");
+    btn.classList.toggle("style-technical", style === "technical");
+  }
+}
+
+function toggleStyle() {
+  const next = currentStyle === "simple" ? "technical" : "simple";
+  applyStyle(next);
+  /* İçeriği yeniden render et — madde metinleri stil duyarlı */
+  if (typeof renderContent === "function") renderContent();
+  if (typeof attachClickHandlers === "function") attachClickHandlers();
+  if (typeof applyFilters === "function") applyFilters();
+  if (typeof updateProgress === "function") updateProgress();
+  showToast(next === "simple" ? t("style.toast.simple") : t("style.toast.technical"), "info", 1400);
+}
+
 /* ==================== TEMA ==================== */
 const THEME_KEY = "mobil_kontrol_theme_v1";
 function applyTheme(theme) {

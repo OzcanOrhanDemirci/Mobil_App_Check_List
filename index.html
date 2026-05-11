@@ -73,12 +73,20 @@
         </div>
       </div>
       <div class="hero-controls-right">
-        <button type="button" class="hero-lang-pill" id="langToggle" title="Dili değiştir / Switch language" data-i18n-title="btn.lang.title" aria-label="Dil değiştir" data-i18n-aria-label="btn.lang.aria">
-          <span class="lang-icon" aria-hidden="true">🌐</span>
-          <span class="lang-current">TR</span>
-          <span class="lang-sep" aria-hidden="true">/</span>
-          <span class="lang-other">EN</span>
-        </button>
+        <div class="hero-pill-stack">
+          <button type="button" class="hero-lang-pill" id="langToggle" title="Dili değiştir / Switch language" data-i18n-title="btn.lang.title" aria-label="Dil değiştir" data-i18n-aria-label="btn.lang.aria">
+            <span class="lang-icon" aria-hidden="true">🌐</span>
+            <span class="lang-current">TR</span>
+            <span class="lang-sep" aria-hidden="true">/</span>
+            <span class="lang-other">EN</span>
+          </button>
+          <button type="button" class="hero-style-pill style-technical" id="styleToggle" title="Anlatım dili: Basit / Teknik (yazılım dünyasına uzaksan Basit'i dene)" data-i18n-title="btn.style.title" aria-label="Anlatım dilini değiştir" data-i18n-aria-label="btn.style.aria" aria-pressed="false">
+            <span class="style-icon" aria-hidden="true">📖</span>
+            <span class="style-current">Teknik</span>
+            <span class="style-sep" aria-hidden="true">/</span>
+            <span class="style-other">Basit</span>
+          </button>
+        </div>
         <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje, framework ve backend (değiştirmek için tıkla)" data-i18n-title="proj.pill.title">
           <span class="proj-pill-rows">
             <span class="proj-pill-row proj-pill-project">
@@ -471,7 +479,7 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Adım göstergesi (5 adım: Dil, Proje Adı, Framework, Backend, Karşılama) -->
+    <!-- Adım göstergesi (6 adım: Dil, Anlatım Dili, Proje Adı, Framework, Backend, Karşılama) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
@@ -482,6 +490,8 @@
       <span class="welcome-step-dot" data-step-dot="4">4</span>
       <span class="welcome-step-line" data-step-line="4"></span>
       <span class="welcome-step-dot" data-step-dot="5">5</span>
+      <span class="welcome-step-line" data-step-line="5"></span>
+      <span class="welcome-step-dot" data-step-dot="6">6</span>
     </div>
 
     <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
@@ -501,8 +511,28 @@
       <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
     </div>
 
-    <!-- 2. Adım: Proje adı (yeni eklendi) -->
+    <!-- 2. Adım: Anlatım dili (Basit / Teknik) -->
     <div class="welcome-pane" data-pane="2" hidden>
+      <p class="framework-pick-q" data-i18n="welcome.styleQuestion">Anlatım dili: Basit mi, Teknik mi?</p>
+      <p class="framework-pick-sub" data-i18n-html="welcome.styleSub">Maddeleri nasıl okumak istersin? Yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan <strong>Basit</strong> en rahatı; paket adı, sürüm, fonksiyon gibi teknik detayları görmek istersen <strong>Teknik</strong> daha verimli. İstediğin zaman üstteki butondan değiştirebilirsin.</p>
+      <div class="framework-options framework-options--lang" role="group" aria-label="Anlatım dili seçimi" data-i18n-aria-label="welcome.styleAria">
+        <button type="button" class="framework-option" data-welcome-style="simple">
+          <span class="fw-title" data-i18n="welcome.style.simple.title">📖 Basit</span>
+          <span class="fw-desc" data-i18n="welcome.style.simple.desc">Net, gündelik dille açıklar. Paket adları yerine "şu işi yapan paket" der.</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-style="technical">
+          <span class="fw-title" data-i18n="welcome.style.technical.title">🛠️ Teknik</span>
+          <span class="fw-desc" data-i18n="welcome.style.technical.desc">Paket adları, sürüm numaraları, kod örnekleri ve fonksiyon isimleri tam haliyle.</span>
+        </button>
+      </div>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeStyleBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeStyleNext" disabled data-i18n="welcome.cta.pickStyle">Devam etmek için bir anlatım dili seç</button>
+      </div>
+    </div>
+
+    <!-- 3. Adım: Proje adı -->
+    <div class="welcome-pane" data-pane="3" hidden>
       <p class="framework-pick-q" data-i18n="welcome.projNameQuestion">Bu listeyle hangi projenin kontrolünü yapacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.projNameSub">Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.</p>
       <div class="welcome-projname-wrap">
@@ -515,8 +545,8 @@
       </div>
     </div>
 
-    <!-- 3. Adım: Framework seçimi -->
-    <div class="welcome-pane" data-pane="3" hidden>
+    <!-- 4. Adım: Framework seçimi -->
+    <div class="welcome-pane" data-pane="4" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -557,8 +587,8 @@
       </div>
     </div>
 
-    <!-- 4. Adım: Backend seçimi -->
-    <div class="welcome-pane" data-pane="4" hidden>
+    <!-- 5. Adım: Backend seçimi -->
+    <div class="welcome-pane" data-pane="5" hidden>
       <p class="framework-pick-q" data-i18n="welcome.beQuestion">Hangi backend ile çalışacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.beSub">Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.</p>
       <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
@@ -614,8 +644,8 @@
       </div>
     </div>
 
-    <!-- 5. Adım: Hoşgeldin / Nasıl kullanılır -->
-    <div class="welcome-pane" data-pane="5" hidden>
+    <!-- 6. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="6" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">14 kategoride 53 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">

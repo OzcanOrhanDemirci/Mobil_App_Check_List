@@ -7,11 +7,36 @@ let currentLang = (() => {
   } catch { return "tr"; }
 })();
 
-/* Bir {tr, en} objesinden geçerli dile uygun metni döndür. String ise olduğu gibi döndür. */
+/* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
+   Global tercih; localStorage'da tema gibi saklanır. Default "technical" —
+   eski kullanıcı içerikleri olduğu gibi görsün diye. Yeni kullanıcılar
+   welcome akışının 2. adımında seçer. */
+const STYLE_KEY = "mobil_kontrol_style_v1";
+let currentStyle = (() => {
+  try {
+    const v = localStorage.getItem(STYLE_KEY);
+    return (v === "simple" || v === "technical") ? v : "technical";
+  } catch { return "technical"; }
+})();
+
+/* Bir {tr, en} objesinden geçerli dile ve anlatım stiline uygun metni döndür.
+   Desteklenen değer biçimleri (geriye uyumlu):
+     1) "düz string"  → her dilde ve her stilde aynı
+     2) { tr: "...", en: "..." } → dile göre; her stilde aynı
+     3) { tr: "teknik TR", en: "technical EN",
+          simple: { tr: "basit TR", en: "simple EN" } }
+          → "simple" stilinde simple.{tr|en}, "technical" stilinde {tr|en}
+   "simple" bloğu eksikse otomatik olarak teknik içerikten doldurur — bu
+   sayede sadece teknik içerikli maddelere simple metin eklemek yeterli;
+   diğer maddeler ek iş gerektirmez. */
 function tx(obj) {
   if (obj == null) return "";
   if (typeof obj === "string") return obj;
   if (typeof obj === "object") {
+    if (currentStyle === "simple" && obj.simple && typeof obj.simple === "object") {
+      return obj.simple[currentLang] || obj.simple.tr || obj.simple.en
+          || obj[currentLang] || obj.tr || obj.en || "";
+    }
     return obj[currentLang] || obj.tr || obj.en || "";
   }
   return String(obj);
@@ -70,6 +95,8 @@ const UI_STRINGS = {
   "btn.theme.title": { tr: "Açık / Koyu tema", en: "Light / Dark theme" },
   "btn.lang.title": { tr: "Dili değiştir / Switch language", en: "Switch language / Dili değiştir" },
   "btn.lang.aria": { tr: "Dil değiştir", en: "Switch language" },
+  "btn.style.title": { tr: "Anlatım dili: Basit / Teknik. Yazılım dünyasına uzaksan Basit'i dene.", en: "Explanation style: Simple / Technical. If software jargon isn't your world, try Simple." },
+  "btn.style.aria": { tr: "Anlatım dilini değiştir", en: "Switch explanation style" },
   "btn.lock.title": { tr: "Listeyi kilitle (işaretler/framework değişemez)", en: "Lock the list (marks/framework cannot change)" },
   "btn.lock.unlockTitle": { tr: "Kilidi aç (işaretler düzenlenebilir hale gelir)", en: "Unlock (marks become editable again)" },
   "btn.export": { tr: "Dışa Aktar", en: "Export" },
@@ -336,6 +363,21 @@ const UI_STRINGS = {
   // levels
   "level.mvp": { tr: "MVP", en: "MVP" },
   "level.release": { tr: "Release", en: "Release" },
+
+  // ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
+  "style.simple":    { tr: "Basit",   en: "Simple" },
+  "style.technical": { tr: "Teknik",  en: "Technical" },
+  "style.toast.simple":    { tr: "Anlatım dili: Basit (sade ve gündelik). İstediğin zaman üstten Teknik'e dönebilirsin.", en: "Explanation style: Simple (plain, everyday wording). Switch to Technical any time from the top." },
+  "style.toast.technical": { tr: "Anlatım dili: Teknik (paket adları, sürümler, kod örnekleri). İstediğin zaman üstten Basit'e dönebilirsin.", en: "Explanation style: Technical (package names, versions, code snippets). Switch to Simple any time from the top." },
+  // welcome step 2 (style)
+  "welcome.styleQuestion": { tr: "Anlatım dili: Basit mi, Teknik mi?", en: "Explanation style: Simple or Technical?" },
+  "welcome.styleSub": { tr: "Maddeleri nasıl okumak istersin? Yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan <strong>Basit</strong> en rahatı; paket adı, sürüm, fonksiyon gibi teknik detayları görmek istersen <strong>Teknik</strong> daha verimli. İstediğin zaman üstteki butondan değiştirebilirsin.", en: "How do you want to read the items? If software jargon isn't your world or you're building apps with AI assistants, <strong>Simple</strong> is most comfortable; if you want to see package names, versions and function names, <strong>Technical</strong> is more efficient. You can switch from the top button any time." },
+  "welcome.styleAria": { tr: "Anlatım dili seçimi", en: "Explanation style selection" },
+  "welcome.cta.pickStyle": { tr: "Devam etmek için bir anlatım dili seç", en: "Pick an explanation style to continue" },
+  "welcome.style.simple.title": { tr: "📖 Basit", en: "📖 Simple" },
+  "welcome.style.simple.desc":  { tr: "Net, gündelik dille açıklar. Paket adları yerine \"şu işi yapan paket\" der.", en: "Plain, everyday wording. Says \"the package that does X\" instead of naming it." },
+  "welcome.style.technical.title": { tr: "🛠️ Teknik", en: "🛠️ Technical" },
+  "welcome.style.technical.desc":  { tr: "Paket adları, sürüm numaraları, kod örnekleri ve fonksiyon isimleri tam haliyle.", en: "Package names, version numbers, code snippets and function names in full." },
 
   // ==================== BACKEND SEÇİMİ ====================
   // welcome step 4 (backend)
