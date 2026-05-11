@@ -141,6 +141,19 @@ function toggleStyle() {
   showToast(next === "simple" ? t("style.toast.simple") : t("style.toast.technical"), "info", 1400);
 }
 
+/* ==================== KULLANIM BİÇİMİ (BUILD / REVIEW) ====================
+   MODE_KEY ve currentMode 01-i18n-strings.js'de tanımlı. Burada sadece
+   localStorage senkronizasyonu — kartların DOM'da çevrilmesi (flip) farklı bir
+   yerden tetikleniyor (renderdan sonra applyInitialCardMode, ya da toolbar
+   butonlarından flipFeatureCard). Bu fonksiyon DOM'a hiç dokunmaz; sadece
+   tercihi yazar ki sonraki render'larda doğru başlangıç durumu uygulansın. */
+function applyMode(mode) {
+  if (mode !== "build" && mode !== "review") mode = "build";
+  currentMode = mode;
+  try { localStorage.setItem(MODE_KEY, mode); } catch {}
+  document.documentElement.setAttribute("data-card-mode", mode);
+}
+
 /* ==================== TEMA ==================== */
 const THEME_KEY = "mobil_kontrol_theme_v1";
 function applyTheme(theme) {

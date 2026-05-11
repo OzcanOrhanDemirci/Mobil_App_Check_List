@@ -67,6 +67,185 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* ==================== KATEGORİ TAMAMLANDI (FULL) ====================
+     v.checked === v.total → section'a .completed class'ı atanır.
+     Vurgu: MVP yeşili (#22c55e) ve Release mavisi (#3b82f6) %50/50 RGB
+     birleşimi olan teal/turkuaz renk → tüm kategori (bg + metin + ✓ rozeti).
+     Anlam: hem MVP hem Release bitti — iki rengin matematiksel ortası bu
+     kategori için "ödül" rengi. (Açık tema için ayrı türetilmiş daha mat teal
+     #19678A; orijinal kombinasyonun light-mode ortası.) */
+  section.category.completed {
+    /* Dark mode teal border */
+    border-color: rgba(47, 164, 170, 0.35);
+    box-shadow: 0 0 0 1px rgba(47, 164, 170, 0.35) inset;
+  }
+  [data-theme="light"] section.category.completed {
+    border-color: rgba(25, 103, 138, 0.40);
+    box-shadow: 0 0 0 1px rgba(25, 103, 138, 0.40) inset;
+  }
+  section.category.completed .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(47, 164, 170, 0.16),
+        rgba(47, 164, 170, 0.03)
+      );
+    border-bottom-color: rgba(47, 164, 170, 0.35);
+  }
+  [data-theme="light"] section.category.completed .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(25, 103, 138, 0.12),
+        rgba(25, 103, 138, 0.02)
+      );
+    border-bottom-color: rgba(25, 103, 138, 0.40);
+  }
+  /* Metinler teal — dark mode #2FA4AA, light mode #19678A */
+  section.category.completed .cat-header .num,
+  section.category.completed .cat-header .title h2,
+  section.category.completed .cat-progress .pct,
+  section.category.completed [data-cat-num] {
+    color: #2FA4AA;
+  }
+  [data-theme="light"] section.category.completed .cat-header .num,
+  [data-theme="light"] section.category.completed .cat-header .title h2,
+  [data-theme="light"] section.category.completed .cat-progress .pct,
+  [data-theme="light"] section.category.completed [data-cat-num] {
+    color: #19678A;
+  }
+  /* Başlığın yanına teal ✓ rozeti — beyaz check, teal arka plan ve shadow */
+  section.category.completed .cat-header .title h2::after {
+    content: "✓";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-left: 10px;
+    background: #2FA4AA;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    vertical-align: middle;
+    line-height: 1;
+    box-shadow: 0 1px 4px rgba(47, 164, 170, 0.4);
+  }
+  [data-theme="light"] section.category.completed .cat-header .title h2::after {
+    background: #19678A;
+    box-shadow: 0 1px 4px rgba(25, 103, 138, 0.4);
+  }
+  section.category.completed .cat-header .title p {
+    color: var(--text);
+    opacity: 0.85;
+  }
+  section.category.completed [data-cat-num] {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+  }
+  /* Hover: teal tonundan çıkma */
+  section.category.completed .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(47, 164, 170, 0.22),
+        rgba(47, 164, 170, 0.06)
+      );
+  }
+  [data-theme="light"] section.category.completed .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(25, 103, 138, 0.18),
+        rgba(25, 103, 138, 0.04)
+      );
+  }
+
+  /* ----- VARYASYON: SADECE MVP TAMAMLANDI -----
+     Yeşil arka plan + yeşil metin (MVP rengi); tik YOK çünkü Release hâlâ
+     devam ediyor. "Çekirdek bitti, profesyonel kaliteye yükseltmek kalır"
+     hissi. */
+  section.category.completed-mvp {
+    border-color: var(--mvp-border);
+  }
+  section.category.completed-mvp .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(34, 197, 94, 0.16),
+        rgba(34, 197, 94, 0.03)
+      );
+    border-bottom-color: var(--mvp-border);
+  }
+  [data-theme="light"] section.category.completed-mvp .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(22, 163, 74, 0.12),
+        rgba(22, 163, 74, 0.02)
+      );
+  }
+  section.category.completed-mvp .cat-header .num,
+  section.category.completed-mvp .cat-header .title h2,
+  section.category.completed-mvp .cat-progress .pct,
+  section.category.completed-mvp [data-cat-num] {
+    color: var(--mvp);
+  }
+  section.category.completed-mvp .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(34, 197, 94, 0.22),
+        rgba(34, 197, 94, 0.06)
+      );
+  }
+  [data-theme="light"] section.category.completed-mvp .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(22, 163, 74, 0.18),
+        rgba(22, 163, 74, 0.04)
+      );
+  }
+
+  /* ----- VARYASYON: SADECE RELEASE TAMAMLANDI -----
+     Mavi arka plan + mavi metin (Release rengi); tik YOK çünkü MVP hâlâ
+     devam ediyor. (Genellikle nadir bir durum — kullanıcı Release maddeleri
+     işaretlerken MVP'leri henüz atlamış olabilir.) */
+  section.category.completed-release {
+    border-color: var(--release-border);
+  }
+  section.category.completed-release .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(59, 130, 246, 0.16),
+        rgba(59, 130, 246, 0.03)
+      );
+    border-bottom-color: var(--release-border);
+  }
+  [data-theme="light"] section.category.completed-release .cat-header {
+    background:
+      linear-gradient(180deg,
+        rgba(29, 78, 216, 0.12),
+        rgba(29, 78, 216, 0.02)
+      );
+  }
+  section.category.completed-release .cat-header .num,
+  section.category.completed-release .cat-header .title h2,
+  section.category.completed-release .cat-progress .pct,
+  section.category.completed-release [data-cat-num] {
+    color: var(--release);
+  }
+  section.category.completed-release .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(59, 130, 246, 0.22),
+        rgba(59, 130, 246, 0.06)
+      );
+  }
+  [data-theme="light"] section.category.completed-release .cat-header:hover {
+    background:
+      linear-gradient(180deg,
+        rgba(29, 78, 216, 0.18),
+        rgba(29, 78, 216, 0.04)
+      );
+  }
+
   .feature-list { padding: 6px 0; }
   .feature {
     position: relative;
@@ -82,21 +261,50 @@
      Ön yüzde mevcut tüm checklist UI'ı (checkbox dahil) korunur; arka yüzde
      sadece eğitsel "Nasıl Yapılır?" rehberi var — herhangi bir checkbox veya
      ilerleme kontrolü içermez. */
+  /* Statik durumlar CSS ile yönetilir; "aktif" (yüksekliği belirleyen) yüz
+     normal akışta, "pasif" yüz ise position:absolute olarak üst üste binmiş.
+     - Not flipped: front normal akışta → kart yüksekliği = front içeriği.
+       Back absolute → height hesabına dahil değil; checklist modu gereksiz
+       büyümez.
+     - Flipped: rol değişir → back normal akışta (yüksekliği o belirler),
+       front absolute. Kart, How-To içeriği kadar uzar.
+     Animasyon sırasında JS, inner'a geçici olarak explicit pixel yüksekliği
+     verir; transition height için tanımlı olduğundan rotate ile aynı sürede
+     uzar/küçülür. Transition bitince explicit height kaldırılır ve CSS'in
+     doğal akışına bırakılır — kartın görünür olup olmamasından (collapsed
+     kategori vb.) bağımsız olarak doğru yüksekliği alır. */
   .feature-inner {
-    display: grid;
-    grid-template-areas: "stack";
+    position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: transform;
+    transition:
+      transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+      height    0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform, height;
   }
   .feature-inner > .feature-front,
   .feature-inner > .feature-back {
-    grid-area: stack;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
+  /* DEFAULT: front normal akışta (height driver), back absolute (overlay) */
   .feature-inner > .feature-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     transform: rotateY(180deg);
+  }
+  /* FLIPPED: rol değişir — back normal akışta, front absolute. */
+  .feature.flipped .feature-inner > .feature-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  .feature.flipped .feature-inner > .feature-back {
+    position: relative;
+    /* transform: rotateY(180deg) zaten geçerli (yukarıdaki kuraldan); wrapper
+       180° dönünce back öne bakıyor. */
   }
   .feature.flipped .feature-inner {
     transform: rotateY(180deg);
@@ -175,20 +383,37 @@
     gap: 14px 14px;
     align-items: start;
   }
-  /* MVP ve Release satırları arasında ince ayraç (3. ve 4. hücreyi ayır). */
-  .howto-grid > *:nth-child(n+3) {
+  /* MVP ve Release satırları arasında ince ayraç. Border + padding-top SADECE
+     metin hücresine — chip'e padding-top eklemek chip'in sabit yüksekliğini
+     bozar, line-box border'ı taşar (RELEASE yazısı kapsülden taşıyordu).
+     Chip için aynı dikey kaymayı margin-top ile yapıyoruz: 14px padding +
+     1px border = 15px metin görsel başlangıcına denk gelir. */
+  .howto-grid > .howto-text:nth-child(n+3) {
     padding-top: 14px;
     border-top: 1px dashed var(--border);
   }
+  .howto-grid > .howto-tag:nth-child(n+3) {
+    margin-top: 15px;
+  }
   .howto-tag {
+    /* Chip yüksekliği sabit (24px, border dahil). Line-height = content area
+       (22px = 24 - 2*1px border) → text line box border'ı taşmaz, baseline
+       fontun doğal metriklerine göre content alanı içinde tam ortaya yerleşir.
+       Segoe UI gibi asimetrik ascent/descent oranlı fontlarda min-height + 5/5
+       padding + line-height:1 kombinasyonu yazıyı görsel olarak alta düşürüyordu.
+       Tek bir sabit yükseklik + uyumlu line-height bu sorunu temizler. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 5px 12px;
+    padding: 0 12px;
+    height: 24px;
+    line-height: 22px;
     border-radius: 999px;
-    line-height: 1.2;
     align-self: start;
     text-align: center;
     /* Tüm tag'ler aynı genişlikte (en geniş olana göre) — grid 'auto' kolonu
@@ -223,7 +448,11 @@
   }
   /* Numaralı adım listesi: 1, 2, 3 işaretleri CSS counter ile renkli circle
      içinde yeniden çizilir; yazardan gelen "1) " gibi inline işaretler
-     formatHowtoSteps tarafından ayrıştırılarak <ol> içine taşınmıştır. */
+     formatHowtoSteps tarafından ayrıştırılarak <ol> içine taşınmıştır.
+     Adımlar checkbox gibi tıklanabilir — data-step-key varken hover/cursor
+     etkileşimi açılır, .checked class'ında numara yerine ✓ gösterilir ve
+     metin gri/üstü çizili olur. Bu state state[stepKey] üzerinden kalıcı
+     ve seviye işaretiyle çift-yönlü senkronize. */
   .howto-steps {
     list-style: none;
     counter-reset: howtostep;
@@ -236,6 +465,8 @@
     padding: 4px 0 4px 36px;
     margin: 0 0 8px;
     line-height: 1.6;
+    border-radius: 6px;
+    transition: background 0.12s, color 0.12s;
   }
   .howto-steps > li:last-child { margin-bottom: 0; }
   .howto-steps > li::before {
@@ -245,7 +476,7 @@
     top: 4px;
     width: 26px;
     height: 26px;
-    line-height: 26px;
+    line-height: 24px;
     text-align: center;
     border-radius: 999px;
     background: var(--surface-2);
@@ -253,6 +484,47 @@
     font-size: 12px;
     font-weight: 700;
     border: 1px solid var(--border);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  /* Tıklanabilir adımlar: hover'da hafif arka plan + tüm li üzerinde cursor */
+  .howto-steps > li[data-step-key] {
+    cursor: pointer;
+    padding-right: 10px;
+  }
+  .howto-steps > li[data-step-key]:hover {
+    background: var(--surface-2);
+  }
+  .howto-steps > li[data-step-key]:hover::before {
+    border-color: var(--accent-2);
+  }
+  .howto-steps > li[data-step-key]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* ✓ tikli durum: numara yerine onay, MVP yeşil / Release mavi vurgusu;
+     metin gri ve üstü çizili (görsel "yapıldı" hissi). */
+  .howto-steps > li.checked::before {
+    content: "✓";
+    color: #fff;
+    font-size: 13px;
+    line-height: 24px;
+    border-color: transparent;
+  }
+  .howto-steps.howto-steps-mvp > li.checked::before {
+    background: var(--mvp);
+  }
+  .howto-steps.howto-steps-release > li.checked::before {
+    background: var(--release);
+  }
+  .howto-steps > li.checked {
+    color: var(--text-mute);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-mute);
+    text-decoration-thickness: 1px;
+  }
+  .howto-steps > li.checked strong,
+  .howto-steps > li.checked code {
+    color: var(--text-mute);
   }
   .howto-step-intro {
     margin: 0 0 12px;
@@ -309,11 +581,22 @@
      Notlar ve AI paneli zaten ön yüzde açık kaldığından flip animasyonu
      sırasında biraz uzun görünebilir — bu kabul edilebilir. */
 
-  /* Yazdırma çıktısında flip butonu ve arka yüz gözükmesin */
+  /* Yazdırma çıktısında flip butonu ve arka yüz gözükmesin.
+     Inner'a JS tarafından geçici explicit pixel height verilmiş olabilir; print'te
+     bu zorlamayı kaldır. Ayrıca .flipped state'inde CSS, front'u position:absolute
+     yapıyordu — bu da back display:none olunca front'un yüksekliği inner'a
+     yansımamasına yol açar. Print için front'u her zaman normal akışta tutarız. */
   @media print {
     .feature-flip-btn { display: none !important; }
-    .feature-inner { transform: none !important; transition: none !important; }
+    .feature-inner {
+      transform: none !important;
+      transition: none !important;
+      height: auto !important;
+    }
     .feature-inner > .feature-back { display: none !important; }
+    .feature.flipped .feature-inner > .feature-front {
+      position: static !important;
+    }
   }
   .feature-head {
     display: flex;
@@ -352,6 +635,8 @@
     gap: 8px;
   }
   .level {
+    /* position:relative — partial-fill badge'i için absolute child kabı */
+    position: relative;
     display: grid;
     grid-template-columns: 28px auto 1fr;
     gap: 12px;
@@ -367,8 +652,69 @@
   .level:hover { background: var(--surface-3); }
   .level.mvp { border-left: 3px solid var(--mvp); }
   .level.release { border-left: 3px solid var(--release); }
+
+  /* Step ilerlemesine göre kısmi dolum: Nasıl-Yapılır adımlarından bazıları
+     tikliyse ama hepsi değilse, level satırının solu %X kadar mvp/release
+     tonuyla dolu görünür. --step-progress inline style olarak verilir
+     (render veya JS dinamik). Hepsi tikli → .level.checked solid bg ile
+     bunu zaten geçer; hiç tikli yok → --step-progress yok, default bg. */
+  .level.mvp[style*="--step-progress"] {
+    background:
+      linear-gradient(to right,
+        var(--mvp-bg) var(--step-progress, 0%),
+        transparent var(--step-progress, 0%)
+      ),
+      var(--surface-2);
+    border-color: var(--mvp-border);
+  }
+  .level.release[style*="--step-progress"] {
+    background:
+      linear-gradient(to right,
+        var(--release-bg) var(--step-progress, 0%),
+        transparent var(--step-progress, 0%)
+      ),
+      var(--surface-2);
+    border-color: var(--release-border);
+  }
   .level.checked.mvp { background: var(--mvp-bg); border-color: var(--mvp-border); }
   .level.checked.release { background: var(--release-bg); border-color: var(--release-border); }
+
+  /* Yüzde rozeti: grid'in 4. sütununda yer alır (yalnız badge varken o sütun
+     üretilir, yoksa 3 sütun yapı korunur). Uzun level-text ile çakışmıyor —
+     grid otomatik olarak ona yer ayırıyor. */
+  .level:has(.level-progress-badge) {
+    grid-template-columns: 28px auto 1fr auto;
+  }
+  .level-progress-badge {
+    align-self: start;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    line-height: 1.3;
+    white-space: nowrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-top: 2px;
+  }
+  .level.mvp .level-progress-badge {
+    color: var(--mvp);
+    border-color: var(--mvp-border);
+    background: var(--mvp-bg);
+  }
+  .level.release .level-progress-badge {
+    color: var(--release);
+    border-color: var(--release-border);
+    background: var(--release-bg);
+  }
+  /* Mobilde de aynı sütun şablonu geçerli kalır; level grid'i zaten responsive
+     blokta `24px auto 1fr` olarak ezilmişti — burada 4. auto sütun çakışmaz. */
+  @media (max-width: 700px) {
+    .level:has(.level-progress-badge) {
+      grid-template-columns: 24px auto 1fr auto;
+    }
+  }
 
   .check {
     width: 22px; height: 22px;

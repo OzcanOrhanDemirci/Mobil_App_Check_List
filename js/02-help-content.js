@@ -4,7 +4,7 @@ const HELP_HTML = {
       <section>
         <h3>📋 Genel Bakış</h3>
         <p>Bu uygulama, kendi geliştirdiğin <strong>mobil uygulamanın</strong> hangi seviyede olduğunu görmen ve eksiklerini fark etmen için hazırlanmış pratik bir <strong>kontrol listesidir</strong>.</p>
-        <p>Liste <strong>14 kategoride toplam 53 özellikten</strong> oluşur (proje planlama, tasarım, kod düzeni, API, güvenlik, yayın hazırlığı vb.).</p>
+        <p>Liste <strong>14 kategoride toplam 55 özellikten</strong> oluşur (proje planlama, tasarım, kod düzeni, API, güvenlik, yayın hazırlığı vb.).</p>
         <p>Her özelliğin altında <strong>iki seviye</strong> vardır:</p>
         <ul>
           <li><strong style="color: var(--mvp);">🟢 MVP (yeşil)</strong>: Olmazsa olmaz, temel: uygulamanın <em>en azından çalışmasını</em> sağlayan minimum gereksinimler. Bu seviye tamamlanmadan uygulama yarım kalır.</li>
@@ -15,12 +15,13 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>altı adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>yedi adımda</strong> yardım eder:</p>
         <ul>
           <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
-          <li><strong>2. Adım: Anlatım Dili (Basit / Teknik).</strong> Maddeleri nasıl okumak istersin? <strong>📖 Basit</strong> modda metinler gündelik dilde, paket adı veya sürüm gibi teknik detaylar olmadan anlatılır; yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan bu en rahatı. <strong>🛠️ Teknik</strong> modda paket isimleri, sürüm numaraları, fonksiyon adları ve kod örnekleri tam haliyle gözükür; yazılımcılar için daha verimli. Bazı maddeler her iki modda da aynı kalır (planlama, SWOT, tasarım vs.); yalnızca teknik detay içeren maddelerin iki versiyonu vardır. Sonradan üstteki <strong>📖 Basit / Teknik</strong> butonu ile her zaman değiştirebilirsin.</li>
-          <li><strong>3. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
-          <li><strong>4. Adım: Framework Seçimi.</strong> Bu proje hangi yazılım dili / çerçevesi ile geliştirilecek? 6 seçenek arasından birini seç:
+          <li><strong>2. Adım: Kullanım Biçimi (Geliştirme / İnceleme).</strong> Uygulamayı iki farklı şekilde kullanabilirsin. <strong>❔ Geliştirme</strong> modunu seçersen, yeni bir uygulama geliştiriyorsundur ve her madde için "nasıl yapılır?" rehberini başlangıçta açık görmek istersindir; kartlar arka yüzü (How-To) açık halde başlar. <strong>📋 İnceleme</strong> modunu seçersen, mevcut uygulamanı kontrol ediyorsundur ve sade kontrol listesini görmek istersindir; kartlar ön yüzü (checklist) açık halde başlar. Tercih kalıcı; sayfayı yenilediğinde veya tekrar girdiğinde aynı modda açılırsın. İstediğin zaman toolbar'daki <strong>❔ Tümü Nasıl?</strong> veya <strong>📋 Tümü Liste</strong> butonlarıyla seansta toplu geçiş yapabilirsin (bu butonlar aynı zamanda tercihi de günceller).</li>
+          <li><strong>3. Adım: Anlatım Dili (Basit / Teknik).</strong> Maddeleri nasıl okumak istersin? <strong>📖 Basit</strong> modda metinler gündelik dilde, paket adı veya sürüm gibi teknik detaylar olmadan anlatılır; yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan bu en rahatı. <strong>🛠️ Teknik</strong> modda paket isimleri, sürüm numaraları, fonksiyon adları ve kod örnekleri tam haliyle gözükür; yazılımcılar için daha verimli. Bazı maddeler her iki modda da aynı kalır (planlama, SWOT, tasarım vb.); yalnızca teknik detay içeren maddelerin iki versiyonu vardır. Sonradan üstteki <strong>📖 Basit / Teknik</strong> butonu ile her zaman değiştirebilirsin.</li>
+          <li><strong>4. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
+          <li><strong>5. Adım: Framework Seçimi.</strong> Bu proje hangi yazılım dili / çerçevesi ile geliştirilecek? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
@@ -30,7 +31,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>5. Adım: Backend Seçimi.</strong> Uygulamanın sunucu tarafı hangisi olacak? Backend; kullanıcı kaydı, veritabanı, dosya yükleme gibi internetteki tüm işleri yapan tarafır. Listede backend'e bağlı maddeler seçtiğin değere göre özelleşir:
+          <li><strong>6. Adım: Backend Seçimi.</strong> Uygulamanın sunucu tarafı hangisi olacak? Backend; kullanıcı kaydı, veritabanı, dosya yükleme gibi internetteki tüm işleri yapan tarafır. Listede backend'e bağlı maddeler seçtiğin değere göre özelleşir:
             <ul>
               <li><strong>🚫 Backend yok</strong>: Uygulaman internete bağlanmıyor (sadece cihaz üstü). Tüm backend maddeleri listeden tamamen gizlenir. Bu seçenek diğerlerinin üstünde, daha büyük ve daha belirgin gösterilir.</li>
               <li><strong>🔥 Firebase</strong>: Google'ın kolay ve hızlı sunucu çözümü.</li>
@@ -43,7 +44,7 @@ const HELP_HTML = {
               <li><strong>💻 Yerel geliştirme</strong>: Bilgisayarında çalışan test sunucusu.</li>
             </ul>
           </li>
-          <li><strong>6. Adım: Hoş Geldin.</strong> Backend'i seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
+          <li><strong>7. Adım: Hoş Geldin.</strong> Backend'i seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
         <p>Seçtiğin framework + backend kombinasyonu, listedeki maddelerin nasıl gözükeceğini belirler (paket adları, build komutları, kurulum adımları farklılaşır). "Backend yok" seçersen backend kategorisindeki tüm maddeler listeden çıkar.</p>
       </section>
@@ -103,7 +104,13 @@ const HELP_HTML = {
           <li><strong style="color: var(--mvp);">MVP</strong>: sadece yeşil seviyenin yüzdesi.</li>
           <li><strong style="color: var(--release);">Release</strong>: sadece mavi seviyenin yüzdesi.</li>
         </ul>
-        <p>Her kategori başlığında da <strong>o kategoriye ait kendi yüzdesi</strong> gözükür (örn. "60%, 6 / 10").</p>
+        <p>Her kategori başlığında da <strong>o kategoriye ait kendi yüzdesi</strong> gözükür ve bu yüzde <strong>step (alt madde) duyarlı</strong>: bir maddenin sadece bazı Nasıl-Yapılır adımlarını tikledikten sonra bile kategori yüzdesi küçük adımlarla (yaklaşık %1-5) artar. "60%, 23 / 60" gibi granüler değerler görürsün; toplam alt madde sayısı kategoriye göre değişir.</p>
+        <p><strong>🎨 Kategori Tamamlanma Vurguları</strong>. Bir kategoride MVP veya Release seviyelerinin hepsi tikli olduğunda kategori başlığı görsel olarak değişir; "tamam" hissini güçlendirir:</p>
+        <ul>
+          <li><strong style="color: var(--mvp);">🟢 Sadece tüm MVP'ler bitti</strong>: kategori başlığı yumuşak yeşil arka plana geçer, başlık ve yüzde de yeşil olur. Release devam ettiği için tik yoktur.</li>
+          <li><strong style="color: var(--release);">🔵 Sadece tüm Release'ler bitti</strong>: kategori başlığı yumuşak mavi arka plana geçer, başlık ve yüzde de mavi olur. MVP devam ettiği için tik yoktur.</li>
+          <li><strong style="color: #2FA4AA;">🩵 Her şey bitti (MVP + Release)</strong>: hem arka plan hem metin hem ✓ rozeti <em>teal (turkuaz)</em> tonuna geçer; bu renk MVP yeşili ve Release mavisinin RGB ortasıdır, "her iki seviye birden tamamlandı" ödülünün rengidir. Başlığın yanına küçük ✓ rozeti eklenir ve "X / Y" sayacı <strong>"Tamamlandı"</strong> yazısına dönüşür.</li>
+        </ul>
         <p><strong>📦 Otomatik Kayıt:</strong> İşaretlemen <strong>tarayıcına anında kaydedilir</strong>. Uygulamayı kapatıp tekrar açtığında kaldığın yerden devam edersin. Tarayıcı verisini temizlemediğin (veya gizli sekme kullanmadığın) sürece kaybolmaz.</p>
         <p><strong>🎉 Kutlama:</strong> MVP'yi, Release'i veya tüm listeyi tamamladığında küçük bir kutlama ekranı gelir.</p>
       </section>
@@ -210,15 +217,36 @@ const HELP_HTML = {
 
       <section>
         <h3>❔ Nasıl Yapılır? (Kartın Arka Yüzü)</h3>
-        <p>Her madde kartının <strong>üst-sağ köşesinde küçük bir "Nasıl?" butonu</strong> vardır. Bu butona bastığında kart <strong>3 boyutlu olarak çevrilir</strong> ve sana o maddeyi nasıl tamamlayacağını adım adım anlatan bir rehber görünür. Geri dönmek için aynı butona ("← Geri") tekrar bas.</p>
-        <p><strong>Önemli ayrımlar:</strong></p>
+        <p>Her madde kartının <strong>üst-sağ köşesinde küçük bir "Nasıl?" butonu</strong> vardır. Bu butona bastığında kart <strong>3 boyutlu olarak çevrilir</strong> ve sana o maddeyi nasıl tamamlayacağını adım adım anlatan bir rehber görünür. Geri dönmek için aynı butona ("← Geri") tekrar bas. Kart çevrilirken aynı zamanda <strong>uzar / kısalır</strong>: ön yüzdeki checklist daha kısa, arka yüzdeki rehber daha uzundur; iki yüz de gereken kadar yer kaplar, kart asla boş alan yaratmaz.</p>
+
+        <p><strong>İki yüz, iki amaç:</strong></p>
         <ul>
-          <li><strong>Ön yüz = hedef.</strong> "Bu maddenin olması gereken durum nedir?" sorusunu yanıtlar. İşaretleme kutusu (checkbox) burada ve durumu sen sağladığında işaretleyerek tamamlandığını belirtirsin.</li>
-          <li><strong>Arka yüz = öğretim.</strong> "Bu duruma ulaşmak için ne yapmalıyım?" sorusunu yanıtlar. <strong>Hiçbir işaretleme kutusu yoktur</strong>: kartın arka yüzünü açıp okumak veya kapatmak <strong>maddeyi tamamlandı olarak işaretlemez</strong>; sadece eğitim amaçlıdır.</li>
+          <li><strong>Ön yüz = hedef.</strong> "Bu maddenin olması gereken durum nedir?" sorusunu yanıtlar. <strong>MVP ve Release seviye kutuları</strong> burada bulunur; uygulamanda o durumu sağladıkça işaretlersin.</li>
+          <li><strong>Arka yüz = adım adım rehber.</strong> "Bu duruma ulaşmak için ne yapmalıyım?" sorusunu yanıtlar. MVP ve Release her ikisi için ayrı ayrı numaralandırılmış adım listeleri vardır.</li>
         </ul>
+
+        <p><strong>✅ Tıklanabilir Adımlar.</strong> Arka yüzdeki numaralandırılmış adımlar (1, 2, 3 ...) <strong>tıklanabilir küçük checkbox'lar gibi davranır</strong>. Bir adımı bitirdiğinde üstündeki daireye tıkla; numara yerine ✓ tik gelir, metnin üstü çizilir ve daire MVP'de yeşil, Release'de mavi rengini alır. Klavyeyle de erişebilirsin: Tab ile odaklan, Enter veya Boşluk ile tikle.</p>
+
+        <p><strong>🔁 Çift Yönlü Senkronizasyon (MVP/Release ile adımlar).</strong> Adımlar ve ön yüzdeki seviye kutuları birbirine bağlıdır:</p>
+        <ul>
+          <li><strong>Ön yüzde MVP'yi tiklersen → arka yüzdeki tüm MVP adımları da otomatik tikli olur.</strong> Yani "MVP'yi bitti say" deyince tüm adım rehberi de bitmiş kabul edilir. Release için de aynı kural.</li>
+          <li><strong>Arka yüzde bir seviyenin tüm adımlarını tiklersen → ön yüzdeki ilgili seviye kutusu otomatik tikli olur.</strong> Adım adım bitirirken işin doğal akışıyla seviye tamamlanır.</li>
+          <li><strong>Tek bir adımı geri alırsan</strong> ilgili seviye otomatik temizlenir (çünkü artık "hepsi yapılmadı"). Ön yüzdeki seviyeyi geri alırsan adımlar da topluca temizlenir.</li>
+        </ul>
+
+        <p><strong>📊 Ön Yüzdeki Kısmi Dolum Görseli.</strong> Bir seviyenin bazı adımları tikli ama hepsi değilse, ön yüzdeki MVP veya Release satırı <strong>yükleme barı gibi yarı dolu</strong> görünür: solu MVP yeşili veya Release mavisiyle <em>tikleme oranı kadar</em> boyalı kalır, sağ köşede yüzdesi (örn. "40%") rozeti çıkar. Tüm adımlar bitince satır tamamen renge boyanır, rozet kaybolur, ✓ tik gelir. Hem görsel hem mantıksal ilerleme aynı anda akar.</p>
+
+        <p><strong>📁 Saklama ve sıfırlama.</strong> Adım işaretleri ön yüzdeki MVP/Release işaretleri ile aynı state'te saklanır; sayfayı yenilediğinde, projeyi tekrar açtığında veya cihazlar arasında JSON yedek aldığında korunur. <strong>Sıfırla → Seçimler</strong> bayrağı seçildiğinde adım işaretleri de seviye işaretleri ile birlikte temizlenir. Backend değiştirdiğinde backend'e bağlı maddelerin adım state'leri de kaldırılır.</p>
+
+        <p><strong>🔄 Toplu Mod Değiştirme.</strong> Toolbar'da <strong>❔ Tümü Nasıl?</strong> ve <strong>📋 Tümü Liste</strong> butonları vardır. Tek tıkla tüm kartları aynı anda arka yüze veya ön yüze çevirir; aynı zamanda kullanım biçimi tercihini (welcome akışında seçtiğin) günceller. Mod değişimi sırasında kart yükseklikleri yumuşak animasyonla küçülüp büyür; ön yüz modunda kartlar gereksiz yer kaplamaz.</p>
+
         <p>Rehber içeriği, ön yüzdeki gibi <strong>seçtiğin dile, anlatım diline (Basit / Teknik), framework'e ve backend'e göre</strong> otomatik özelleşir. Örneğin Flutter + Firebase ile çalışıyorsan Firebase Console adımlarını ve Flutter komutlarını görürsün; Supabase'e geçtiğinde aynı maddenin arkasında bu sefer Supabase Studio adımları gözükür.</p>
-        <p>Bir madde için ayrı bir rehber yazmaya gerek yoksa (örn. \"SWOT yap\" gibi öz açıklayıcı maddeler) arka yüzde \"bu madde için ayrı bir rehber yok\" mesajı çıkar; daha derin yardıma <strong>🤖 AI'a sor</strong> butonu kalır.</p>
-        <p><strong>Pratik kullanım:</strong> Bir maddeye baktın, ne yapacağını bilmiyorsun → "Nasıl?" butonuna bas → rehberi oku → "← Geri" ile dön → adımları uygula → checkbox'ı işaretle.</p>
+
+        <p>Bir madde için ayrı bir rehber yazmaya gerek yoksa (örn. "SWOT yap" gibi öz açıklayıcı maddeler) arka yüzde "bu madde için ayrı bir rehber yok" mesajı çıkar; daha derin yardıma <strong>🤖 AI'a sor</strong> butonu kalır.</p>
+
+        <p><strong>📲 Notlar ve AI iki yüzde de aktif.</strong> Madde kartının altındaki <strong>"+ Not ekle"</strong> ve <strong>"🤖 AI'a sor"</strong> butonları kart hangi yüzde olursa olsun (ön ya da arka) aynı yerde kalır ve aynı şekilde çalışır. Rehberi okurken aklına gelen bir notu hemen kaydedebilirsin.</p>
+
+        <p><strong>Pratik kullanım:</strong> Bir maddeye baktın, ne yapacağını bilmiyorsun → "Nasıl?" butonuna bas → rehberi oku → bitirdiğin adımları tikle → tüm adımları tiklediğinde seviye otomatik tikli olur, kartın ön yüzünde tamamlama hissi görsel olarak akar.</p>
       </section>
 
       <section>
@@ -317,15 +345,28 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🖨 Yazdırma ve PDF</h3>
-        <p><strong>"Yazdır"</strong> butonu veya <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac'te <kbd>⌘</kbd>+<kbd>P</kbd>) ile listeyi yazıcıya gönderebilir veya <strong>PDF olarak kaydedebilirsin</strong>.</p>
+        <h3>🖨 Yazdırma ve PDF (İki Çıktı Modu)</h3>
+        <p><strong>"Yazdır"</strong> butonuna basınca doğrudan yazıcı açılmaz; önce küçük bir <strong>seçim penceresi</strong> gelir. Burada projenden iki farklı tip PDF üretebilirsin:</p>
         <ul>
-          <li><strong>Üstte liste başlığı, altta hazırlayan bilgisi</strong> her sayfada otomatik tekrar eder.</li>
-          <li>Renkler (yeşil MVP, mavi Release) yazdırmada da korunur.</li>
-          <li>Madde (feature) içerikleri sayfa ortasından bölünmez; mantıklı yerden bölünür.</li>
-          <li>Kategori başlığı sayfanın altında yalnız kalmaz; yazdırma motoru bunu otomatik düzeltir.</li>
-          <li><strong>Notların, AI butonlarının, filtre butonlarının, sunum kontrollerinin yazdırma çıktısında gözükmez</strong>; sadece liste içeriği basılır (temiz çıktı).</li>
+          <li><strong>📋 Kontrol Listesi</strong>: kartların <em>ön yüzü</em> basılır. İşaretlediğin maddeler, MVP ve Release seviye satırları, ilerleme bilgisi, kategori başlıkları temiz biçimde sıralanır. Ekiple paylaşmak, arşivlemek veya tek bakışta nelerin tamamlandığını görmek için ideal. Bu mod mevcut yazdırma davranışıdır.</li>
+          <li><strong>❔ Nasıl Yapılır? Rehberi</strong>: kartların <em>arka yüzü</em> basılır. Her madde için MVP ve Release adım listeleri (1, 2, 3 ...) numaralı daireler ve renkli MVP / Release etiketleriyle çıkar. Yazılı, taşınabilir bir rehber gibidir; çevrimdışı okuma, kağıt üzerine not alma veya bir başkasına projeyi anlatma için kullanışlıdır.</li>
         </ul>
+        <p>Her iki çıktıda da:</p>
+        <ul>
+          <li><strong>Üstte sayfa başlığı, altta hazırlayan bilgisi</strong> tekrar eder.</li>
+          <li>Renkler (yeşil MVP, mavi Release) korunur.</li>
+          <li><strong>Madde içerikleri sayfa ortasından bölünmez</strong>; her madde bir bütün olarak kalır, gerekirse bir sonraki sayfaya alınır.</li>
+          <li>Kategori başlığı sayfanın altında yalnız kalmaz; başlık + ilk madde aynı sayfada tutulur.</li>
+          <li><strong>Notlar, AI butonları, filtre butonları, sunum kontrolleri yazdırılmaz</strong>; sadece liste içeriği veya rehber çıkar (temiz çıktı).</li>
+        </ul>
+        <p><strong>Nasıl Yapılır? modu</strong> ayrıca:</p>
+        <ul>
+          <li>Yazıyı bir miktar daha küçük tutar; sayfa başına daha çok madde sığar ve boşa giden yer azalır.</li>
+          <li>Her maddeyi belirgin bir <strong>kart</strong> olarak çizer (ince çerçeve + yuvarlatılmış köşe), aralarındaki ilişki net görünür.</li>
+          <li>Tiklediğin adımları PDF'te ✓ ve üstü çizili haliyle gösterir; "ne yaptın" raporu olarak da kullanılabilir.</li>
+          <li>Kategori ilerleme yüzdesi gösterilmez (rehber zaten kontrol listesi değil); başlık + ✓ tamamlanma rozeti (varsa) korunur.</li>
+        </ul>
+        <p><kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac'te <kbd>⌘</kbd>+<kbd>P</kbd>) doğrudan tarayıcının yazdır penceresini açar; o yol seçim modalını atlar ve mevcut görünümü yazdırır.</p>
       </section>
 
       <section>
@@ -374,7 +415,7 @@ const HELP_HTML = {
       <section>
         <h3>📋 Overview</h3>
         <p>This app is a practical <strong>checklist</strong> built to help you see how far along your <strong>own mobile app</strong> is and spot what's missing.</p>
-        <p>The list contains <strong>53 features across 14 categories</strong> (project planning, design, code structure, API, security, release prep, etc.).</p>
+        <p>The list contains <strong>55 features across 14 categories</strong> (project planning, design, code structure, API, security, release prep, etc.).</p>
         <p>Each feature has <strong>two levels</strong>:</p>
         <ul>
           <li><strong style="color: var(--mvp);">🟢 MVP (green)</strong>: Must-have, the foundation: minimum requirements that make the app <em>at least work</em>. Without it the app is incomplete.</li>
@@ -385,12 +426,13 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 First Run: Welcome Flow</h3>
-        <p>The first time you open the app a welcome dialog appears and guides you through <strong>six steps</strong>:</p>
+        <p>The first time you open the app a welcome dialog appears and guides you through <strong>seven steps</strong>:</p>
         <ul>
           <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong>, so you can read the help in either language (momentary, not saved).</em></li>
-          <li><strong>Step 2: Explanation style (Simple / Technical).</strong> How do you want to read the items? In <strong>📖 Simple</strong> mode, items are written in everyday language without package names, version numbers or other jargon; this is the most comfortable mode if software jargon isn't your world or you build apps with AI assistants. In <strong>🛠️ Technical</strong> mode, package names, version numbers, function names and code snippets are shown in full; that mode is more efficient for software people. Some items read the same in both modes (planning, SWOT, design, etc.); only items with real technical detail get two versions. You can switch any time via the <strong>📖 Simple / Technical</strong> button on top.</li>
-          <li><strong>Step 3: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
-          <li><strong>Step 4: Pick a framework.</strong> Which language / framework will this project use? Pick one of 6 options:
+          <li><strong>Step 2: Usage mode (Building / Reviewing).</strong> The app can be used in two ways. Pick <strong>❔ Building</strong> if you are building a new app and want to see the "how to" guide for each item from the start; cards open with the back face (How-To) visible. Pick <strong>📋 Reviewing</strong> if you are auditing an existing app and want the clean checklist; cards open with the front face (checklist) visible. The preference is persistent; reloading the page or returning later starts you in the same mode. You can switch any time via the toolbar buttons <strong>❔ Show All How-To</strong> and <strong>📋 Show All Checklist</strong> (these buttons also update the preference).</li>
+          <li><strong>Step 3: Explanation style (Simple / Technical).</strong> How do you want to read the items? In <strong>📖 Simple</strong> mode, items are written in everyday language without package names, version numbers or other jargon; this is the most comfortable mode if software jargon isn't your world or you build apps with AI assistants. In <strong>🛠️ Technical</strong> mode, package names, version numbers, function names and code snippets are shown in full; that mode is more efficient for software people. Some items read the same in both modes (planning, SWOT, design, etc.); only items with real technical detail get two versions. You can switch any time via the <strong>📖 Simple / Technical</strong> button on top.</li>
+          <li><strong>Step 4: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
+          <li><strong>Step 5: Pick a framework.</strong> Which language / framework will this project use? Pick one of 6 options:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google's framework that builds Android + iOS from one codebase (<em>Dart</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta's cross-platform framework written in JavaScript / TypeScript (bare CLI).</li>
@@ -400,7 +442,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web technologies (HTML/CSS/JS) installable on phones via "Add to Home Screen".</li>
             </ul>
           </li>
-          <li><strong>Step 5: Pick a backend.</strong> Which server side will your app use? The backend handles sign-up, database, file uploads and anything online. Backend-related items in the list adapt to your choice:
+          <li><strong>Step 6: Pick a backend.</strong> Which server side will your app use? The backend handles sign-up, database, file uploads and anything online. Backend-related items in the list adapt to your choice:
             <ul>
               <li><strong>🚫 No backend</strong>: Your app never connects to the internet (on-device only). All backend items are removed from the list. This option appears prominently above the others, larger and more visible.</li>
               <li><strong>🔥 Firebase</strong>: Google's quick and easy server solution.</li>
@@ -413,7 +455,7 @@ const HELP_HTML = {
               <li><strong>💻 Local dev backend</strong>: Test server running on your computer.</li>
             </ul>
           </li>
-          <li><strong>Step 6: Welcome.</strong> After picking the backend, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
+          <li><strong>Step 7: Welcome.</strong> After picking the backend, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
         </ul>
         <p>Your framework + backend combination drives how items appear (package names, build commands, install steps differ). Picking "No backend" removes every backend item from the list entirely.</p>
       </section>
@@ -473,7 +515,13 @@ const HELP_HTML = {
           <li><strong style="color: var(--mvp);">MVP</strong>: just the green level percentage.</li>
           <li><strong style="color: var(--release);">Release</strong>: just the blue level percentage.</li>
         </ul>
-        <p>Each category header shows <strong>its own percentage</strong> too (e.g. "60%, 6 / 10").</p>
+        <p>Each category header shows <strong>its own percentage</strong> too, and that percentage is <strong>step-aware</strong>: ticking even a few How-To steps inside an item nudges the category percentage by small amounts (roughly 1-5% per step). You will see granular values like "60%, 23 / 60"; the total sub-item count depends on the category.</p>
+        <p><strong>🎨 Category Completion Variations.</strong> When all MVP or all Release levels in a category are ticked, the category header changes visually to reinforce the "done" feeling:</p>
+        <ul>
+          <li><strong style="color: var(--mvp);">🟢 Only all MVPs done</strong>: the category header switches to a soft green background; title and percent also turn green. Since Release is still in progress, no tick is shown.</li>
+          <li><strong style="color: var(--release);">🔵 Only all Releases done</strong>: the category header switches to a soft blue background; title and percent also turn blue. Since MVP is still in progress, no tick is shown.</li>
+          <li><strong style="color: #2FA4AA;">🩵 Everything done (MVP + Release)</strong>: background, text and ✓ badge all shift to a <em>teal</em> tone; this color is the RGB midpoint of MVP green and Release blue, the "reward" color for having both levels complete. A small ✓ badge appears next to the title and the "X / Y" counter becomes <strong>"Completed"</strong>.</li>
+        </ul>
         <p><strong>📦 Auto-save:</strong> Marks are <strong>saved instantly to your browser</strong>. Closing and reopening the app picks up where you left off.</p>
         <p><strong>🎉 Celebrations:</strong> A small celebration appears when you complete MVP, Release, or the entire list.</p>
       </section>
@@ -580,15 +628,36 @@ const HELP_HTML = {
 
       <section>
         <h3>❔ How To? (Card Back-Face)</h3>
-        <p>Each item card has a small <strong>"How?" button in the top-right corner</strong>. Pressing it <strong>flips the card in 3D</strong> and reveals a step-by-step guide that teaches you how to complete that specific item. To return, press the same button again (now labeled "← Back").</p>
-        <p><strong>Important distinction:</strong></p>
+        <p>Each item card has a small <strong>"How?" button in the top-right corner</strong>. Pressing it <strong>flips the card in 3D</strong> and reveals a step-by-step guide that teaches you how to complete that specific item. To return, press the same button again (now labeled "← Back"). The card also <strong>grows and shrinks</strong> as it flips: the front checklist is shorter, the back guide is longer; each face uses only the space it needs, so the card never leaves empty whitespace.</p>
+
+        <p><strong>Two faces, two purposes:</strong></p>
         <ul>
-          <li><strong>Front face = goal.</strong> Answers "what is the state this item describes?". The completion checkbox lives here, and you tick it once you've reached that state.</li>
-          <li><strong>Back face = instruction.</strong> Answers "how do I reach that state?". <strong>There are no checkboxes on this side</strong>: opening, reading, or closing the back face <strong>does not mark the item as done</strong>; it is purely educational.</li>
+          <li><strong>Front face = goal.</strong> Answers "what is the state this item describes?". The <strong>MVP and Release level boxes</strong> live here; tick them when your app reaches that state.</li>
+          <li><strong>Back face = step-by-step guide.</strong> Answers "how do I reach that state?". MVP and Release each have their own numbered step list.</li>
         </ul>
-        <p>The guide content adapts the same way the front face does — to your chosen <strong>language, explanation style (Simple / Technical), framework and backend</strong>. For example, on Flutter + Firebase you'll see Firebase Console steps and Flutter commands; switch to Supabase and the same item's back face now shows Supabase Studio steps.</p>
+
+        <p><strong>✅ Clickable Steps.</strong> The numbered steps on the back face (1, 2, 3 ...) act like <strong>small clickable checkboxes</strong>. When you finish a step, click its circle: the number is replaced by a ✓ tick, the text is struck through, and the circle turns green (MVP) or blue (Release). Keyboard works too: Tab to focus, Enter or Space to toggle.</p>
+
+        <p><strong>🔁 Two-Way Sync (MVP/Release ↔ Steps).</strong> Steps and the front-face level boxes are tied together:</p>
+        <ul>
+          <li><strong>Ticking MVP on the front auto-ticks all MVP steps on the back.</strong> "Mark MVP done" applies to the step guide as well. Same for Release.</li>
+          <li><strong>Ticking every step of a level on the back auto-ticks that level on the front.</strong> Finishing items step-by-step naturally completes the level.</li>
+          <li><strong>Un-ticking a single step</strong> auto-unticks the level (since not everything is done anymore). Un-ticking the level on the front clears all its steps in one move.</li>
+        </ul>
+
+        <p><strong>📊 Partial Progress Fill on the Front.</strong> When a level has some steps ticked but not all, the front-face MVP or Release row shows a <strong>progress-bar style fill</strong>: the left portion is painted with the MVP green or Release blue tone <em>up to the tick ratio</em>, and a small percentage badge (e.g. "40%") appears in the top-right corner. Once all steps are done, the row turns fully colored, the badge disappears, and the ✓ tick appears. Visual progress and logical progress flow together.</p>
+
+        <p><strong>📁 Persistence and reset.</strong> Step ticks are stored alongside the MVP/Release marks; they survive reloads, project switches, and JSON backups. <strong>Reset → Selections</strong> clears step ticks together with level marks. When you switch backend, step states tied to backend-bound items are cleared too (no stale data).</p>
+
+        <p><strong>🔄 Bulk Mode Switching.</strong> The toolbar has <strong>❔ Show All How-To</strong> and <strong>📋 Show All Checklist</strong> buttons. One click flips every card to the back or front at once; it also updates the usage-mode preference (the one set in the welcome flow). The card heights animate smoothly during the switch; in front mode cards never take up extra space.</p>
+
+        <p>The guide content adapts the same way the front face does, to your chosen <strong>language, explanation style (Simple / Technical), framework and backend</strong>. For example, on Flutter + Firebase you'll see Firebase Console steps and Flutter commands; switch to Supabase and the same item's back face now shows Supabase Studio steps.</p>
+
         <p>For items that don't need a separate guide (e.g. self-explanatory items like "do a SWOT analysis"), the back face shows a "no separate how-to" note and the <strong>🤖 Ask AI</strong> button remains available for deeper help.</p>
-        <p><strong>Typical use:</strong> you look at an item, don't know what to do → press "How?" → read the guide → press "← Back" → follow the steps → tick the checkbox.</p>
+
+        <p><strong>📲 Notes and AI work on both sides.</strong> The <strong>"+ Add note"</strong> and <strong>"🤖 Ask AI"</strong> buttons under the card stay in the same place and behave the same way no matter which side is visible. You can capture a note the moment it crosses your mind while reading the guide.</p>
+
+        <p><strong>Typical use:</strong> you look at an item, don't know what to do → press "How?" → read the guide → tick steps as you finish them → once every step is ticked the level becomes done on the front, with the visual completion feedback flowing naturally.</p>
       </section>
 
       <section>
@@ -687,15 +756,28 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🖨 Print and PDF</h3>
-        <p>Use the <strong>"Print"</strong> button or <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac: <kbd>⌘</kbd>+<kbd>P</kbd>) to print, or <strong>save as PDF</strong>.</p>
+        <h3>🖨 Print and PDF (Two Export Modes)</h3>
+        <p>Clicking <strong>"Print"</strong> no longer opens the printer directly; instead, a small <strong>selection dialog</strong> appears. You can produce two different PDF flavors from the same project:</p>
         <ul>
-          <li><strong>List title at top, author info at bottom</strong> repeats on every page automatically.</li>
-          <li>Colors (green MVP, blue Release) are preserved when printing.</li>
-          <li>Items (features) are not split mid-content; pagination breaks at sensible points.</li>
-          <li>A category header never sits alone at the bottom of a page; the print engine handles it.</li>
-          <li><strong>Notes, AI buttons, filter buttons, presentation controls do NOT appear</strong> in the printout; only the list content is printed (clean output).</li>
+          <li><strong>📋 Checklist</strong>: prints the <em>front face</em> of the cards. Ticked items, MVP and Release level rows, progress info and category headers are laid out cleanly. Ideal for sharing with the team, archiving, or seeing at a glance what has been completed. This mode matches the prior print behavior.</li>
+          <li><strong>❔ How-To Guide</strong>: prints the <em>back face</em> of the cards. Each item shows the MVP and Release numbered step lists (1, 2, 3 ...) with their colored circles and MVP / Release labels. Acts like a written, portable guide for offline reading, hand-written notes, or walking someone else through the project.</li>
         </ul>
+        <p>Both outputs share these print niceties:</p>
+        <ul>
+          <li><strong>Page title at the top, author info at the bottom</strong> repeat on every page.</li>
+          <li>Colors (green MVP, blue Release) are preserved.</li>
+          <li><strong>Items are never split in the middle of a page</strong>; each item stays whole, moving to the next page if needed.</li>
+          <li>A category header never sits alone at the bottom of a page; header and first item stay together.</li>
+          <li><strong>Notes, AI buttons, filter buttons, presentation controls do NOT appear</strong> in the output; only the list content or guide is printed.</li>
+        </ul>
+        <p>The <strong>How-To Guide</strong> mode also:</p>
+        <ul>
+          <li>Uses slightly smaller type so more items fit per page and less space is wasted.</li>
+          <li>Draws each item as a distinct <strong>card</strong> (thin border with rounded corners), so the relationships between items read clearly.</li>
+          <li>Renders ticked steps as ✓ with strike-through in the PDF too; works as a "what you finished" log.</li>
+          <li>Hides the category percent column (a guide is not a checklist); the title and the ✓ completion badge (if any) stay.</li>
+        </ul>
+        <p><kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac: <kbd>⌘</kbd>+<kbd>P</kbd>) opens the browser's print dialog directly; that path bypasses the selection modal and prints whichever face is currently visible.</p>
       </section>
 
       <section>

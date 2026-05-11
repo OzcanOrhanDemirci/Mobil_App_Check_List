@@ -19,29 +19,38 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
 /* Tüm madde kartlarını arka yüze çevir / ön yüze döndür.
    Per-item flip butonuyla aynı görsel etki (.feature.flipped class);
    sadece çok sayıda madde için tek tıkla toplu çevirme sağlar. Hiçbir
-   completion state değiştirilmez, sadece view modu değişir. */
+   completion state değiştirilmez, sadece view modu değişir.
+
+   flipFeatureCard kullanır — böylece her kartta height animasyonu (uzayıp
+   küçülme) per-item flip ile birebir aynı şekilde çalışır. */
 function setAllCardsFlipped(flipped) {
   document.querySelectorAll(".feature").forEach(f => {
-    f.classList.toggle("flipped", flipped);
-    const btn = f.querySelector(".feature-flip-btn");
-    if (btn) btn.setAttribute("aria-pressed", flipped ? "true" : "false");
-    const front = f.querySelector(".feature-front");
-    const back  = f.querySelector(".feature-back");
-    if (front) front.setAttribute("aria-hidden", flipped ? "true" : "false");
-    if (back)  back.setAttribute("aria-hidden", flipped ? "false" : "true");
+    if (typeof flipFeatureCard === "function") {
+      flipFeatureCard(f, flipped);
+    } else {
+      /* Fallback: render.js henüz yüklenmediyse class toggle yeter */
+      f.classList.toggle("flipped", flipped);
+    }
   });
 }
 
+/* "❔ Tümü Nasıl?" — toolbar'dan tüm kartları arka yüze çevirir VE kullanım
+   biçimi tercihini "review"a yükseltir; böylece sonraki render'larda da
+   (filter/dil/style değişimi vb.) kartlar arka yüzde başlar. */
 const flipAllHowBtn = document.getElementById("flipAllHowBtn");
 if (flipAllHowBtn) {
   flipAllHowBtn.addEventListener("click", () => {
+    if (typeof applyMode === "function") applyMode("review");
     setAllCardsFlipped(true);
     showToast(t("flipAll.toastHow"), "info", 1400);
   });
 }
+/* "📋 Tümü Liste" — tüm kartları ön yüze döndürür VE kullanım biçimi tercihini
+   "build"e indirir; render sonrası applyInitialCardMode hiçbir şey yapmaz. */
 const flipAllChecklistBtn = document.getElementById("flipAllChecklistBtn");
 if (flipAllChecklistBtn) {
   flipAllChecklistBtn.addEventListener("click", () => {
+    if (typeof applyMode === "function") applyMode("build");
     setAllCardsFlipped(false);
     showToast(t("flipAll.toastChecklist"), "info", 1400);
   });
@@ -455,8 +464,40 @@ document.getElementById("helpBtn").addEventListener("click", () => {
   openModal("helpModal");
 });
 
-/* Print */
-document.getElementById("printBtn").addEventListener("click", () => window.print());
+/* Print — artık modal açıyor; kullanıcı kontrol listesi mi yoksa Nasıl Yapılır?
+   rehberi mi PDF'i istediğini seçer. window.print() seçim yapıldığında
+   tetiklenir. body'ye geçici class (print-howto) eklenerek CSS ilgili modu
+   uygulanır; print bittikten sonra class kaldırılır. */
+document.getElementById("printBtn").addEventListener("click", () => {
+  openModal("printOptionsModal");
+});
+
+/* Yazdırma modu seçenek butonları (modal içinde) */
+document.querySelectorAll("[data-print-mode]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const mode = btn.dataset.printMode;
+    closeModal("printOptionsModal");
+    /* Modal kapanma animasyonu/DOM güncellemesi sonrası print'i tetikle —
+       aynı tick'te yapmak bazı tarayıcılarda modal'ın yazdırma görüntüsünde
+       takılı kalmasına yol açıyor. */
+    if (mode === "howto") {
+      document.body.classList.add("print-howto");
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+        /* Print dialog kapandıktan sonra class'ı temizle. afterprint
+           event'i tüm tarayıcılarda güvenilir değil; setTimeout da ekle. */
+        const cleanup = () => {
+          document.body.classList.remove("print-howto");
+          window.removeEventListener("afterprint", cleanup);
+        };
+        window.addEventListener("afterprint", cleanup);
+        setTimeout(cleanup, 5000);
+      });
+    });
+  });
+});
 
 /* Export: state + notes birlikte */
 document.getElementById("exportBtn").addEventListener("click", () => {
@@ -739,9 +780,9 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Aktif proje + framework + backend yoksa karşılama modalını 6 adımda göster:
-   1) Dil seçimi  2) Anlatım dili  3) Proje adı  4) Framework seçimi
-   5) Backend seçimi  6) Tanıtım / Başlayalım */
+/* Aktif proje + framework + backend yoksa karşılama modalını 7 adımda göster:
+   1) Dil  2) Kullanım Biçimi  3) Anlatım Dili  4) Proje Adı
+   5) Framework  6) Backend  7) Tanıtım / Başlayalım */
 function showWelcomeIfFirstVisit() {
   if (getActiveProjectId() && currentFramework && currentBackend) return;
   setTimeout(() => {
@@ -754,16 +795,17 @@ function showWelcomeIfFirstVisit() {
 let pendingFramework = null;
 let pendingBackend = null;
 let pendingLang = null;
+let pendingMode = null;
 let pendingStyle = null;
 let pendingProjName = null;
 
 function setWelcomeStep(n) {
-  /* 1 → dil, 2 → anlatım dili, 3 → proje adı, 4 → framework,
-     5 → backend, 6 → karşılama */
+  /* 1 → dil, 2 → kullanım biçimi, 3 → anlatım dili, 4 → proje adı,
+     5 → framework, 6 → backend, 7 → karşılama */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
-  /* Adım göstergesini güncelle (6 nokta + 5 çizgi) */
+  /* Adım göstergesini güncelle (7 nokta + 6 çizgi) */
   document.querySelectorAll("[data-step-dot]").forEach(d => {
     const idx = Number(d.dataset.stepDot);
     d.classList.toggle("active", idx === n);
@@ -778,9 +820,9 @@ function setWelcomeStep(n) {
      henüz dil seçmediği için "Yardım/Help" iki dilde yer kaplamasın). */
   const modal = document.getElementById("welcomeModal");
   if (modal) modal.setAttribute("data-step", String(n));
-  /* Proje adı adımına geçişte (artık step 3) input'a otomatik focus +
+  /* Proje adı adımına geçişte (artık step 4) input'a otomatik focus +
      buton metnini ayarla */
-  if (n === 3) {
+  if (n === 4) {
     const input = document.getElementById("welcomeProjName");
     if (input) {
       setTimeout(() => input.focus(), 80);
@@ -839,7 +881,34 @@ document.getElementById("welcomeLangNext").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 2. ADIM: Anlatım dili (Basit / Teknik) */
+/* 2. ADIM: Kullanım Biçimi (Geliştirme / İnceleme).
+   Seçim welcomeStart'ta applyMode ile kalıcılaştırılır; o zamana kadar pendingMode
+   olarak tutulur. */
+document.querySelectorAll("[data-welcome-mode]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingMode = btn.dataset.welcomeMode;
+    window.pendingMode = pendingMode;
+    document.querySelectorAll("[data-welcome-mode]").forEach(b => {
+      b.classList.toggle("selected", b === btn);
+    });
+    const nextBtn = document.getElementById("welcomeModeNext");
+    if (nextBtn) {
+      nextBtn.disabled = false;
+      nextBtn.textContent = t("welcome.cta.next");
+    }
+  });
+});
+
+document.getElementById("welcomeModeNext").addEventListener("click", () => {
+  if (!pendingMode) return;
+  setWelcomeStep(3);
+});
+
+document.getElementById("welcomeModeBack").addEventListener("click", () => {
+  setWelcomeStep(1);
+});
+
+/* 3. ADIM: Anlatım dili (Basit / Teknik) */
 document.querySelectorAll("[data-welcome-style]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingStyle = btn.dataset.welcomeStyle;
@@ -861,14 +930,14 @@ document.getElementById("welcomeStyleNext").addEventListener("click", () => {
      bu stile göre gözüksün. (Listeyi render etmeye gerek yok; welcome modal
      açıkken liste zaten başka renderContent'le güncelleniyor.) */
   if (typeof applyStyle === "function") applyStyle(pendingStyle);
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
 document.getElementById("welcomeStyleBack").addEventListener("click", () => {
-  setWelcomeStep(1);
+  setWelcomeStep(2);
 });
 
-/* 3. ADIM: Proje adı */
+/* 4. ADIM: Proje adı */
 const welcomeProjNameInput = document.getElementById("welcomeProjName");
 if (welcomeProjNameInput) {
   welcomeProjNameInput.addEventListener("input", () => {
@@ -888,14 +957,14 @@ document.getElementById("welcomeProjNameNext").addEventListener("click", () => {
   const val = (welcomeProjNameInput?.value || "").trim();
   if (!val || val.length > 60) return;
   pendingProjName = val;
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
 document.getElementById("welcomeProjNameBack").addEventListener("click", () => {
-  setWelcomeStep(2);
+  setWelcomeStep(3);
 });
 
-/* 4. ADIM: Framework seçimi */
+/* 5. ADIM: Framework seçimi */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -911,14 +980,14 @@ document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
 
 document.getElementById("welcomeNext").addEventListener("click", () => {
   if (!pendingFramework) return;
-  setWelcomeStep(5);
+  setWelcomeStep(6);
 });
 
 document.getElementById("welcomeFwBack").addEventListener("click", () => {
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
-/* 5. ADIM: Backend seçimi */
+/* 6. ADIM: Backend seçimi */
 document.querySelectorAll("[data-welcome-be]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingBackend = btn.dataset.welcomeBe;
@@ -936,16 +1005,16 @@ document.querySelectorAll("[data-welcome-be]").forEach(btn => {
 
 document.getElementById("welcomeBeNext").addEventListener("click", () => {
   if (!pendingBackend) return;
-  setWelcomeStep(6);
+  setWelcomeStep(7);
 });
 
 document.getElementById("welcomeBeBack").addEventListener("click", () => {
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
-/* 6. ADIM: Karşılama */
+/* 7. ADIM: Karşılama */
 document.getElementById("welcomeBack").addEventListener("click", () => {
-  setWelcomeStep(5);
+  setWelcomeStep(6);
 });
 
 /* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
@@ -1022,10 +1091,17 @@ function closeHelpModal() {
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
   if (!pendingFramework || !pendingProjName || !pendingBackend) return;
-  /* Anlatım dilini kalıcılaştır (kullanıcı 2. adımda zaten anında uygulanmıştı;
+  /* Anlatım dilini kalıcılaştır (kullanıcı 3. adımda zaten anında uygulanmıştı;
      burada localStorage'a yazılması garanti altına alınıyor). */
   if (pendingStyle && typeof applyStyle === "function") {
     applyStyle(pendingStyle);
+  }
+  /* Kullanım biçimini kalıcılaştır. applyMode sadece localStorage'a yazar +
+     html'e data-card-mode atar; kartların DOM'da çevrilmesi reloadActive..
+     içindeki renderdan sonra attachClickHandlers'ın sonunda applyInitialCardMode
+     tarafından yapılır. */
+  if (pendingMode && typeof applyMode === "function") {
+    applyMode(pendingMode);
   }
   /* Önce projeyi oluştur ve aktif yap; saveFramework/saveBackend artık aktif
      projeye yazıyor */
@@ -1049,9 +1125,11 @@ document.getElementById("welcomeStart").addEventListener("click", () => {
   pendingProjName = null;
   pendingFramework = null;
   pendingBackend = null;
+  pendingMode = null;
   pendingStyle = null;
   window.pendingFramework = null;
   window.pendingBackend = null;
+  window.pendingMode = null;
   window.pendingStyle = null;
 });
 
@@ -1749,6 +1827,13 @@ function clearBackendMarks() {
       ["mvp", "release"].forEach(L => {
         const key = `${cat.id}.${f.id}.${L}`;
         if (state[key]) { delete state[key]; changed = true; }
+        /* Aynı seviyeye bağlı Nasıl-Yapılır adım state'lerini de temizle
+           (örn. "1.1.mvp.s0", "1.1.mvp.s1" ...). Backend değişimi seçimi
+           sıfırlıyorsa, aynı seçime bağlı adım ilerlemesi de kalmamalı. */
+        const prefix = `${key}.s`;
+        Object.keys(state).forEach(k => {
+          if (k.startsWith(prefix)) { delete state[k]; changed = true; }
+        });
       });
     });
   });
@@ -1932,17 +2017,50 @@ window.addEventListener("appinstalled", () => {
 const INSTALL_DISMISS_KEY = "mobil_kontrol_install_dismissed_v1";
 
 function showInstallBanner() {
-  /* Daha önce kapatılmışsa veya yüklenmişse gösterme */
+  /* Daha önce kapatılmışsa veya yüklenmişse gösterme; sadece floating buton güncellenir. */
   try {
-    if (localStorage.getItem(INSTALL_DISMISS_KEY)) return;
+    if (localStorage.getItem(INSTALL_DISMISS_KEY)) {
+      updateFloatingInstallVisibility();
+      return;
+    }
   } catch {}
   const banner = document.getElementById("installBanner");
   if (banner) banner.hidden = false;
+  updateFloatingInstallVisibility();
 }
 
 function hideInstallBanner() {
   const banner = document.getElementById("installBanner");
   if (banner) banner.hidden = true;
+  updateFloatingInstallVisibility();
+}
+
+/* Footer'daki küçük indirme ikonu butonu: banner kapatıldığında veya hiç
+   gözükmediğinde alternatif erişim noktası. Standalone modda veya install
+   tamamlandı bayrağı varsa gizlenir. Banner görünürken floating gizlenir. */
+function updateFloatingInstallVisibility() {
+  const floatingBtn = document.getElementById("installFloatingBtn");
+  if (!floatingBtn) return;
+
+  /* Standalone (yüklü + kendi penceresinde açık) → her ikisi de gizli */
+  if (isStandaloneMode()) {
+    floatingBtn.hidden = true;
+    return;
+  }
+
+  /* Önceden "installed" işaretliyse zaten yüklendi → gizle */
+  let dismiss = "";
+  try { dismiss = localStorage.getItem(INSTALL_DISMISS_KEY) || ""; } catch {}
+  if (dismiss === "installed") {
+    floatingBtn.hidden = true;
+    return;
+  }
+
+  /* Banner görünüyorsa floating gizli (alternatife gerek yok); banner gizliyse
+     floating görünür. */
+  const banner = document.getElementById("installBanner");
+  const bannerVisible = banner && !banner.hidden;
+  floatingBtn.hidden = bannerVisible;
 }
 
 function isStandaloneMode() {
@@ -2157,8 +2275,9 @@ function renderInstallInstructions() {
   container.innerHTML = html;
 }
 
-/* Banner üzerindeki "Yükle" butonu, tek tıkla install (destekleniyorsa) veya manuel talimat */
-document.getElementById("installBannerBtn").addEventListener("click", async () => {
+/* Banner "Yükle" ve footer floating buton ortak akış: native prompt
+   destekleniyorsa onu tetikle, değilse cihaza özel manuel talimat modali aç. */
+async function triggerInstallFlow() {
   if (deferredInstallPrompt) {
     try {
       deferredInstallPrompt.prompt();
@@ -2167,6 +2286,7 @@ document.getElementById("installBannerBtn").addEventListener("click", async () =
       if (choice && choice.outcome === "accepted") {
         hideInstallBanner();
         try { localStorage.setItem(INSTALL_DISMISS_KEY, "installed"); } catch {}
+        updateFloatingInstallVisibility();
         showToast(t("install.installing"), "success", 2800);
       } else {
         showToast(t("install.cancelled"), "info", 1800);
@@ -2181,32 +2301,50 @@ document.getElementById("installBannerBtn").addEventListener("click", async () =
      cihaza uygun manuel talimat modalını göster */
   renderInstallInstructions();
   openModal("installModal");
-});
+}
+
+document.getElementById("installBannerBtn").addEventListener("click", triggerInstallFlow);
+
+/* Footer'daki küçük indirme ikon butonu: aynı install akışını tetikler. */
+const installFloatingBtn = document.getElementById("installFloatingBtn");
+if (installFloatingBtn) {
+  installFloatingBtn.addEventListener("click", triggerInstallFlow);
+}
 
 /* Banner kapat butonu, bir daha gösterme bayrağı */
 document.getElementById("installBannerClose").addEventListener("click", () => {
-  hideInstallBanner();
   try { localStorage.setItem(INSTALL_DISMISS_KEY, "dismissed"); } catch {}
+  hideInstallBanner();
+  /* hideInstallBanner içinde updateFloatingInstallVisibility çağrılıyor;
+     dismissed olduğu için banner kapalı, floating görünür hale gelecek. */
 });
 
 /* Init: banner her durumda görünür (kullanıcı kapatmadıysa veya zaten yüklemediyse)
-   - Daha önce × ile kapatılmış → gizli
-   - Daha önce yüklenmiş veya standalone modda → gizli
-   - Diğer tüm durumlar → görünür (tıkladığında ortama göre davranır) */
+   - Daha önce × ile kapatılmış → gizli (footer floating buton görünür)
+   - Daha önce yüklenmiş veya standalone modda → her ikisi de gizli
+   - Diğer tüm durumlar → banner görünür (tıkladığında ortama göre davranır)
+   Sonunda updateFloatingInstallVisibility çağrılarak footer butonun
+   görünürlüğü banner durumuna göre senkronize edilir. */
 (function initInstallBanner() {
   const banner = document.getElementById("installBanner");
-  if (!banner) return;
+  if (!banner) {
+    updateFloatingInstallVisibility();
+    return;
+  }
   try {
     if (localStorage.getItem(INSTALL_DISMISS_KEY)) {
       banner.hidden = true;
+      updateFloatingInstallVisibility();
       return;
     }
   } catch {}
   if (isStandaloneMode()) {
     banner.hidden = true;
+    updateFloatingInstallVisibility();
     return;
   }
   banner.hidden = false;
+  updateFloatingInstallVisibility();
 })();
 
 /* Hero anlatım dili pill'i (üst kontroller arasında) — tıklanınca tüm madde
@@ -2225,6 +2363,11 @@ applyI18nToDom();
 
 /* Anlatım dilini DOM'a uygula (button label + data-explanation-style attr) */
 if (typeof applyStyle === "function") applyStyle(currentStyle);
+
+/* Kullanım biçimi tercihini DOM'a uygula (data-card-mode attr).
+   Kartların aslında çevrilmesi attachClickHandlers sonunda applyInitialCardMode
+   ile yapılır; burada sadece tercih html'e yansıtılır. */
+if (typeof applyMode === "function") applyMode(currentMode);
 
 applyTheme(localStorage.getItem(THEME_KEY) || "dark");
 initDefaultCollapsed();

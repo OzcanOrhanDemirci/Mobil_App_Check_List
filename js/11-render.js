@@ -10,8 +10,38 @@ function levelLabel(l) {
    içinde yazıyor. Bunu okurken çok daha rahat görünmesi için <ol> ve <li>
    öğelerine böl; numara işaretini (1), 2), …) CSS counter'ı kendisi yeniden
    üretir. Metin yapı dışında ise (örn. tek paragraf, numarasız), olduğu gibi
-   döndür. Eğer madde "—" placeholder ise yine olduğu gibi döner. */
-function formatHowtoSteps(html) {
+   döndür. Eğer madde "—" placeholder ise yine olduğu gibi döner.
+
+   keyPrefix: bir madde + seviye birleşimi (örn. "1.1.mvp"). Verilirse her
+   <li>'ye data-step-key="{prefix}.s{i}" eklenir ve state[stepKey] true ise
+   "checked" class'ı atanır. Bu sayede adımlar checklist mantığıyla
+   işaretlenebilir/kaydedilebilir hale gelir. keyPrefix yoksa düz görüntü. */
+/* Bir How-To metnindeki numaralanmış adım sayısını döndürür. formatHowtoSteps
+   ile aynı pattern'ı kullanır — DOM render etmeden önce miktarı bilmek için. */
+function countHowtoSteps(html) {
+  if (!html || typeof html !== "string") return 0;
+  if (!/\b1\)\s/.test(html)) return 0;
+  const parts = html.split(/\s*(\d+)\)\s+/);
+  if (parts.length < 3) return 0;
+  let count = 0;
+  for (let i = 1; i + 1 < parts.length; i += 2) {
+    if (parts[i + 1].trim()) count++;
+  }
+  return count;
+}
+
+/* Verilen seviye için işaretli adım sayısını döndürür. prefix = "1.1.mvp",
+   total = bu seviyenin toplam adım sayısı. */
+function countCheckedStepsByPrefix(prefix, total) {
+  if (!total || !state) return 0;
+  let n = 0;
+  for (let i = 0; i < total; i++) {
+    if (state[`${prefix}.s${i}`]) n++;
+  }
+  return n;
+}
+
+function formatHowtoSteps(html, keyPrefix) {
   if (!html || typeof html !== "string") return html;
   /* Numaralandırılmış adımı belirleyen pattern: önünde whitespace (veya başlangıç)
      olan bir sayı + ')'. İlk olarak (1) işaretinden önceki giriş (intro) varsa
@@ -26,9 +56,144 @@ function formatHowtoSteps(html) {
     items.push(parts[i + 1].trim());
   }
   if (items.length === 0) return html;
-  const ol = `<ol class="howto-steps">${items.map(s => `<li>${s}</li>`).join("")}</ol>`;
+  /* keyPrefix'in son segmenti seviye (mvp/release). Renk vurgusu için class. */
+  const level = keyPrefix ? keyPrefix.split(".").pop() : "";
+  const ol = `<ol class="howto-steps${level ? " howto-steps-" + level : ""}">${
+    items.map((s, i) => {
+      const stepKey = keyPrefix ? `${keyPrefix}.s${i}` : "";
+      const isChecked = stepKey && state && state[stepKey];
+      const classes = ["howto-step"];
+      if (isChecked) classes.push("checked");
+      const dataAttr = stepKey
+        ? ` data-step-key="${stepKey}" role="checkbox" aria-checked="${isChecked ? "true" : "false"}" tabindex="0"`
+        : "";
+      return `<li class="${classes.join(" ")}"${dataAttr}>${s}</li>`;
+    }).join("")
+  }</ol>`;
   return intro ? `<p class="howto-step-intro">${intro}</p>${ol}` : ol;
 }
+
+/* Kart flip + height animasyonu — tek kaynaktan yönetilir.
+   Sebep: feature-inner artık position:relative; front normal akışta, back
+   absolute. Bu sayede checklist modunda kart yalnızca front yüksekliği kadar
+   yer kaplar (eskiden grid stack max(front,back) kullanılıyordu, back çok daha
+   uzun olduğu için ön yüz boş alan bırakıyordu). Flip sırasında inner'a
+   explicit pixel yüksekliği veririz; CSS transition height için tanımlı
+   olduğundan rotate ile aynı süre boyunca büyür/küçülür. Flip-back tamamlanınca
+   explicit height kaldırılır — front normal akışıyla doğal genişlik/yükseklik
+   yönetimine geri döner (içerik değişimleri otomatik yansır).
+
+   willFlip:
+     - true  → flipped class eklenir, height back'in doğal yüksekliğine animasyon
+     - false → flipped class kaldırılır, height front'a animasyon, sonra temizlenir
+*/
+function flipFeatureCard(feature, willFlip, opts = {}) {
+  if (!feature) return;
+  const inner = feature.querySelector(".feature-inner");
+  const front = feature.querySelector(".feature-front");
+  const back  = feature.querySelector(".feature-back");
+  if (!inner || !front || !back) {
+    feature.classList.toggle("flipped", willFlip);
+    return;
+  }
+
+  const already = feature.classList.contains("flipped") === willFlip;
+
+  /* aria + aria-pressed senkronizasyonu (her durumda) */
+  const syncAria = () => {
+    front.setAttribute("aria-hidden", willFlip ? "true" : "false");
+    back.setAttribute("aria-hidden",  willFlip ? "false" : "true");
+    const btn = feature.querySelector(".feature-flip-btn");
+    if (btn) btn.setAttribute("aria-pressed", willFlip ? "true" : "false");
+  };
+
+  /* Önceki bir flip transition handler kalmışsa temizle (hızlı çift tıklama
+     veya renderdan hemen sonra instant senkronizasyon durumu). */
+  if (feature._flipTransitionEnd) {
+    inner.removeEventListener("transitionend", feature._flipTransitionEnd);
+    feature._flipTransitionEnd = null;
+  }
+
+  /* INSTANT mode — render sonrası "review" tercihini sessizce uygulamak için.
+     Sadece .flipped class'ını ekler/kaldırır; explicit height vermez. CSS,
+     flipped state için back'i position:relative yaparak yüksekliği doğal
+     olarak yönetiyor. Bu sayede kart başlangıçta collapsed bir kategori
+     içinde (display:none ancestor) bile doğru görünür — JS offsetHeight
+     ölçümü yok, ölçüm 0 olduğunda height:0 bug'ı yok. */
+  if (opts.instant) {
+    /* Eski animasyondan kalma explicit height varsa temizle */
+    inner.style.height = "";
+    feature.classList.toggle("flipped", willFlip);
+    syncAria();
+    return;
+  }
+
+  /* Animasyonlu yoldayız ve halihazırda hedef state'teysek: tekrar tetiklemeden
+     sadece aria senkronizasyonu. */
+  if (already) {
+    syncAria();
+    return;
+  }
+
+  /* Kart görünür değilse (collapsed kategori vb.) offsetHeight 0 döner ve
+     animasyon yapay olur — sadece class toggle yapıp çık; kart görünür hale
+     gelince CSS doğru yüksekliği zaten verir. */
+  const startH = inner.offsetHeight;
+  if (startH === 0) {
+    inner.style.height = "";
+    feature.classList.toggle("flipped", willFlip);
+    syncAria();
+    return;
+  }
+
+  const target  = willFlip ? back : front;
+  const targetH = target.offsetHeight;
+
+  /* Mevcut yüksekliğe sabitle (auto → px). */
+  inner.style.height = startH + "px";
+  /* Force reflow — bir sonraki style atamasının transition tetiklemesi için */
+  void inner.offsetHeight;
+
+  /* Class toggle ve aria güncellemeleri */
+  feature.classList.toggle("flipped", willFlip);
+  syncAria();
+
+  /* rAF içinde target height — height transition animasyonu başlatır */
+  requestAnimationFrame(() => {
+    inner.style.height = targetH + "px";
+  });
+
+  /* Transition bitince explicit height'i temizle — her iki yönde de CSS doğal
+     akışa dönsün (front'a indikse front relative drives height; back'e gittikse
+     back relative drives height). Bu sayede sonradan içerik değişimi (filter,
+     dil, vb.) doğal olarak yansır. */
+  const onEnd = (e) => {
+    if (e.target !== inner) return;
+    if (e.propertyName !== "height") return;
+    inner.removeEventListener("transitionend", onEnd);
+    feature._flipTransitionEnd = null;
+    inner.style.height = "";
+  };
+  feature._flipTransitionEnd = onEnd;
+  inner.addEventListener("transitionend", onEnd);
+}
+
+/* Dışa eriştirelim (14-app.js / setAllCardsFlipped tarafından kullanılır). */
+window.flipFeatureCard = flipFeatureCard;
+
+/* Renderdan sonra çağrılır — kullanıcı welcome akışında "review" seçtiyse veya
+   sonradan bu modu tercih ettiyse, tüm kartları sessizce arka yüze çevirir.
+   Animasyon yok (yeni renderda zaten DOM bomboş — animasyon yapay olur).
+   currentMode === "build" ise hiçbir şey yapmaz; kartlar default front yüzünde
+   kalır. */
+function applyInitialCardMode() {
+  if (typeof currentMode === "undefined") return;
+  if (currentMode !== "review") return;
+  document.querySelectorAll(".feature").forEach(f => {
+    flipFeatureCard(f, true, { instant: true });
+  });
+}
+window.applyInitialCardMode = applyInitialCardMode;
 
 function renderCategoryNav() {
   catNav.innerHTML = DATA.map(c =>
@@ -131,16 +296,45 @@ function renderContent() {
       const releaseVal = resolveLevelText(f, "release");
       const fTitle = tx(f.title);
       const fDesc = tx(f.desc);
+
+      /* How-to (back-face) içeriği — ön yüzdeki hedefin nasıl yapılacağını
+         anlatan eğitsel metin. Önce burada hesaplanıyor çünkü ön yüzdeki
+         level satırının kısmi-ilerleme barı, arka yüzdeki adım sayısına
+         bağlı. Resolver ön yüzle aynı; dil × stil × framework × backend
+         ekseni aynı şekilde uygulanır. Madde için how-to tanımlı değilse
+         düşük-öncelikli bir "rehber yok" mesajı gösterilir. */
+      const howtoMvpRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "mvp") : null;
+      const howtoRelRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "release") : null;
+      const howtoMvpText = howtoMvpRaw ? tx(howtoMvpRaw) : "";
+      const howtoRelText = howtoRelRaw ? tx(howtoRelRaw) : "";
+      const isPlaceholder = (s) => !s || (typeof s === "string" && s.trim() === "—");
+      const showHowtoMvp = !isPlaceholder(howtoMvpText);
+      const showHowtoRel = !isPlaceholder(howtoRelText);
+      const hasAnyHowto  = showHowtoMvp || showHowtoRel;
+
       const levels = ["mvp", "release"].map(L => {
         const value = L === "mvp" ? mvpVal : releaseVal;
         if (!value || value === "—") return "";
         const key = `${cat.id}.${f.id}.${L}`;
         const checked = state[key] ? "checked" : "";
+        /* Step progress: bu seviye için kaç adım var, kaçı işaretli?
+           Eğer hiç adım yoksa ya da hepsi/hiçbiri işaretliyse partial fill +
+           badge gösterilmez (full check zaten solid; sıfır da default). */
+        const stepText = L === "mvp" ? howtoMvpText : howtoRelText;
+        const stepTotal = (typeof countHowtoSteps === "function") ? countHowtoSteps(stepText) : 0;
+        const stepDone  = (stepTotal > 0) ? countCheckedStepsByPrefix(key, stepTotal) : 0;
+        const showPartial = stepTotal > 0 && stepDone > 0 && stepDone < stepTotal;
+        const pct = stepTotal > 0 ? Math.round((stepDone / stepTotal) * 100) : 0;
+        const styleAttr = showPartial ? ` style="--step-progress: ${pct}%;"` : "";
+        const badgeHtml = showPartial
+          ? `<span class="level-progress-badge" aria-label="${stepDone} / ${stepTotal}">${pct}%</span>`
+          : "";
         return `
-          <div class="level ${L} ${checked}" data-key="${key}">
+          <div class="level ${L} ${checked}" data-key="${key}"${styleAttr}>
             <span class="check"></span>
             <span class="level-tag">${levelLabel(L)}</span>
             <span class="level-text">${value}</span>
+            ${badgeHtml}
           </div>`;
       }).join("");
 
@@ -151,36 +345,24 @@ function renderContent() {
 
       const featAnchor = `feat-${cat.id}-${f.id.replace(/\./g, "-")}`;
 
-      /* How-to (back-face) içeriği — ön yüzdeki hedefin nasıl yapılacağını
-         anlatan eğitsel metin. Resolver ön yüzle aynı; dil × stil × framework
-         × backend ekseni aynı şekilde uygulanır. Madde için how-to tanımlı
-         değilse flip butonu ile düşük-öncelikli bir "rehber yok" mesajı
-         gösterilir. */
-      const howtoMvpRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "mvp") : null;
-      const howtoRelRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "release") : null;
-      const howtoMvpText = howtoMvpRaw ? tx(howtoMvpRaw) : "";
-      const howtoRelText = howtoRelRaw ? tx(howtoRelRaw) : "";
-      const isPlaceholder = (s) => !s || (typeof s === "string" && s.trim() === "—");
-      const showHowtoMvp = !isPlaceholder(howtoMvpText);
-      const showHowtoRel = !isPlaceholder(howtoRelText);
-      const hasAnyHowto  = showHowtoMvp || showHowtoRel;
-
       /* Howto'yu tek bir grid container'da iki satır olarak ver: ilk kolon
          label (MVP / Release), ikinci kolon adımlar. grid-template-columns
          "auto 1fr" olduğundan tüm label'lar en geniş etikete göre hizalanır;
          "Release" daha geniş olsa bile "MVP" satırının metni aynı konumdan
          başlar. */
+      const mvpStepKeyPrefix = `${cat.id}.${f.id}.mvp`;
+      const releaseStepKeyPrefix = `${cat.id}.${f.id}.release`;
       const howtoGridRows = [];
       if (showHowtoMvp) {
         howtoGridRows.push(
           `<span class="howto-tag mvp">${levelLabel("mvp")}</span>` +
-          `<div class="howto-text">${formatHowtoSteps(howtoMvpText)}</div>`
+          `<div class="howto-text">${formatHowtoSteps(howtoMvpText, mvpStepKeyPrefix)}</div>`
         );
       }
       if (showHowtoRel) {
         howtoGridRows.push(
           `<span class="howto-tag release">${levelLabel("release")}</span>` +
-          `<div class="howto-text">${formatHowtoSteps(howtoRelText)}</div>`
+          `<div class="howto-text">${formatHowtoSteps(howtoRelText, releaseStepKeyPrefix)}</div>`
         );
       }
       const howtoBody = hasAnyHowto
@@ -266,17 +448,145 @@ function renderContent() {
   }).join("");
 }
 
+/* Ön yüzdeki .level satırının "kısmi ilerleme" görsel state'ini günceller:
+   --step-progress CSS değişkeni (gradient fill için) + .level-progress-badge
+   yüzde rozeti. Çağrı: step toggle, level toggle veya setAllStepsChecked
+   sonrası. Adım yoksa veya tüm/hiç adım işaretliyse partial fill kaldırılır
+   (full check zaten solid bg verir). */
+function updateLevelProgressUI(levelKey) {
+  const safe = (typeof CSS !== "undefined" && CSS.escape) ? CSS.escape(levelKey) : levelKey;
+  const levelEl = document.querySelector(`.level[data-key="${safe}"]`);
+  if (!levelEl) return;
+  const steps = document.querySelectorAll(`.howto-step[data-step-key^="${safe}.s"]`);
+  const total = steps.length;
+  let badge = levelEl.querySelector(".level-progress-badge");
+
+  if (total === 0) {
+    /* Adım yok: progress yok */
+    levelEl.style.removeProperty("--step-progress");
+    if (badge) badge.remove();
+    return;
+  }
+
+  const done = Array.from(steps).filter(li => state[li.dataset.stepKey]).length;
+  const isPartial = done > 0 && done < total;
+
+  if (isPartial) {
+    const pct = Math.round((done / total) * 100);
+    levelEl.style.setProperty("--step-progress", `${pct}%`);
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "level-progress-badge";
+      levelEl.appendChild(badge);
+    }
+    badge.textContent = `${pct}%`;
+    badge.setAttribute("aria-label", `${done} / ${total}`);
+  } else {
+    /* 0 veya 100 → partial fill ve badge gizle */
+    levelEl.style.removeProperty("--step-progress");
+    if (badge) badge.remove();
+  }
+}
+
+/* Verilen seviye anahtarına (örn. "1.1.mvp") ait tüm Nasıl-Yapılır adımlarını
+   topluca işaretle/temizle. DOM hem ön (.level) hem arka (.howto-step) yüzdeki
+   görsel state'leri günceller; state objesi tek kaynak. */
+function setAllStepsChecked(levelKey, checked) {
+  /* CSS escape: rakamlı/noktalı keyler için attr selector güvenli kalsın */
+  const safe = (typeof CSS !== "undefined" && CSS.escape) ? CSS.escape(levelKey) : levelKey;
+  const steps = document.querySelectorAll(`.howto-step[data-step-key^="${safe}.s"]`);
+  steps.forEach(li => {
+    const k = li.dataset.stepKey;
+    if (!k) return;
+    if (checked) {
+      state[k] = true;
+      li.classList.add("checked");
+      li.setAttribute("aria-checked", "true");
+    } else {
+      delete state[k];
+      li.classList.remove("checked");
+      li.setAttribute("aria-checked", "false");
+    }
+  });
+}
+
+/* Bir adım toggle edildiğinde: o seviyedeki TÜM adımlar işaretliyse ön yüzdeki
+   .level otomatik tikli olsun; bir tane bile boşsa otomatik temizlensin. Sync
+   sadece adımlar varken çalışır (renderda en az 1 adım üretildiyse). */
+function syncLevelFromSteps(levelKey) {
+  const safe = (typeof CSS !== "undefined" && CSS.escape) ? CSS.escape(levelKey) : levelKey;
+  const steps = document.querySelectorAll(`.howto-step[data-step-key^="${safe}.s"]`);
+  if (steps.length === 0) return;
+  const allChecked = Array.from(steps).every(li => state[li.dataset.stepKey]);
+  const levelEl = document.querySelector(`.level[data-key="${safe}"]`);
+  if (allChecked) {
+    if (!state[levelKey]) {
+      state[levelKey] = true;
+      if (levelEl) levelEl.classList.add("checked");
+    }
+  } else {
+    if (state[levelKey]) {
+      delete state[levelKey];
+      if (levelEl) levelEl.classList.remove("checked");
+    }
+  }
+}
+
 function attachClickHandlers() {
-  /* Seviye işaretleme */
+  /* Seviye işaretleme: ön yüzdeki MVP / Release tıklaması.
+     Ek olarak arka yüzdeki tüm adımları senkronize eder — kullanıcı "MVP'yi
+     bitti say" deyince How-To rehberindeki adımlar da bitmiş kabul edilir.
+     Tersi (adımları işaretleyerek seviyenin otomatik tiklenmesi) syncLevel-
+     FromSteps tarafından yapılır. */
   document.querySelectorAll(".level").forEach(el => {
     el.addEventListener("click", () => {
       if (lockState) return; /* Kilit aktif: değişiklik yok */
       const key = el.dataset.key;
-      if (state[key]) { delete state[key]; el.classList.remove("checked"); }
-      else { state[key] = true; el.classList.add("checked"); }
+      const willCheck = !state[key];
+      if (willCheck) { state[key] = true; el.classList.add("checked"); }
+      else { delete state[key]; el.classList.remove("checked"); }
+      /* Arka yüz adımlarını seviyeyle senkronize tut */
+      setAllStepsChecked(key, willCheck);
+      /* Partial fill / badge'i sıfırla: artık ya full ya da boş */
+      updateLevelProgressUI(key);
       saveState();
       updateProgress();
       if (viewFilter !== "all" || viewMode !== "both") applyFilters();
+    });
+  });
+
+  /* Nasıl-Yapılır adımları: her bir <li> tıklanabilir checkbox. Toggle eder,
+     state'e kaydeder, varsa seviyeyi senkronize eder. Klavye için Enter/Space
+     de tetikleyici. */
+  document.querySelectorAll(".howto-step[data-step-key]").forEach(li => {
+    const toggle = () => {
+      if (lockState) return;
+      const key = li.dataset.stepKey;
+      if (!key) return;
+      const willCheck = !state[key];
+      if (willCheck) {
+        state[key] = true;
+        li.classList.add("checked");
+        li.setAttribute("aria-checked", "true");
+      } else {
+        delete state[key];
+        li.classList.remove("checked");
+        li.setAttribute("aria-checked", "false");
+      }
+      /* Seviye anahtarı = adım anahtarının son ".sN" parçası atılmış hâli */
+      const levelKey = key.replace(/\.s\d+$/, "");
+      syncLevelFromSteps(levelKey);
+      updateLevelProgressUI(levelKey);
+      saveState();
+      updateProgress();
+      if (viewFilter !== "all" || viewMode !== "both") applyFilters();
+    };
+    li.addEventListener("click", toggle);
+    li.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggle();
+      }
     });
   });
 
@@ -391,22 +701,15 @@ function attachClickHandlers() {
 
   /* How-to flip butonu — kartı 3D olarak çevirir. Per-item bağımsız; bir kartı
      çevirmek başka kartı etkilemez. Salt görsel bir geçiş; herhangi bir state
-     mutate etmez (özellikle: checkbox / ilerleme / not yazılmaz). */
+     mutate etmez (özellikle: checkbox / ilerleme / not yazılmaz). Yükseklik
+     animasyonu ve aria/aria-pressed senkronizasyonu flipFeatureCard içinde. */
   document.querySelectorAll("[data-flip-toggle]").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const feature = btn.closest(".feature");
       if (!feature) return;
       const willFlip = !feature.classList.contains("flipped");
-      feature.classList.toggle("flipped", willFlip);
-      btn.setAttribute("aria-pressed", willFlip ? "true" : "false");
-      /* Arka yüze geçildiğinde back panel'i ekran okuyucularına ve klavye
-         tab sırasına aç; ön yüzü görsel olarak gizlerken aria-hidden'la birlikte
-         kapat. */
-      const front = feature.querySelector(".feature-front");
-      const back  = feature.querySelector(".feature-back");
-      if (front) front.setAttribute("aria-hidden", willFlip ? "true" : "false");
-      if (back)  back.setAttribute("aria-hidden", willFlip ? "false" : "true");
+      flipFeatureCard(feature, willFlip);
     });
   });
 
@@ -422,6 +725,14 @@ function attachClickHandlers() {
       }
     });
   });
+
+  /* Renderdan sonra: kullanıcının "İnceleme" (review) modu tercihi varsa tüm
+     kartları sessizce arka yüze çevir. Bu attachClickHandlers her renderdan
+     hemen sonra çağrıldığı için, tüm yeniden-render'larda (dil/style/framework/
+     backend/filter değişimi vb.) tercih otomatik yeniden uygulanır. */
+  if (typeof applyInitialCardMode === "function") {
+    applyInitialCardMode();
+  }
 }
 
 

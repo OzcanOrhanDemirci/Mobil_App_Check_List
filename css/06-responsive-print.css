@@ -464,3 +464,301 @@
       padding: 14px 16px !important;
     }
   }
+
+  /* ==================== NASIL YAPILIR? PDF MODU ====================
+     printBtn → modal → "Nasıl Yapılır? Rehberi" seçildiğinde JS body'ye
+     .print-howto class'ını ekler ve window.print() tetikler. Bu blok sadece
+     bu modda devreye girer: ön yüz (kontrol listesi seviyeleri, checkbox vb.)
+     gizlenir, arka yüz (how-to rehberi) sayfa için yeniden biçimlendirilir.
+     "Normal" yazdırma (checklist) bundan etkilenmez — yukarıdaki @media print
+     bloğu olduğu gibi çalışmaya devam eder.
+
+     TASARIM HEDEFİ: sayfa başına çok madde sığsın, her madde belirgin bir
+     dikdörtgen kart (border + radius) olarak çıksın, sayfalar dolu görünsün,
+     "Hazırlayan" bilgisi tekrarlanmasın. Bu nedenle font ve aralıklar
+     kontrol-listesi yazdırmasına göre belirgin biçimde küçültüldü. */
+  @media print {
+    body.print-howto * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* Backface gizleme override: bu modda back'i göstereceğiz */
+    body.print-howto .feature-inner > .feature-back {
+      display: block !important;
+      position: static !important;
+      transform: none !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+    }
+    body.print-howto .feature-inner > .feature-front {
+      display: none !important;
+    }
+    body.print-howto .feature-inner {
+      transform: none !important;
+      transition: none !important;
+      height: auto !important;
+      display: block !important;
+    }
+
+    /* Flip butonu, AI sor / Not ekle, kategori ilerleme yüzdesi — hepsi gizli */
+    body.print-howto .feature-flip-btn,
+    body.print-howto .feature-actions,
+    body.print-howto .feature-note,
+    body.print-howto .levels,
+    body.print-howto .cat-progress,
+    body.print-howto .print-footer {
+      display: none !important;
+    }
+
+    /* Footer'da "HAZIRLAYAN · Özcan" pill + bir alttaki print-footer aynı
+       bilgiyi iki kez gösteriyordu (özellikle son sayfada). Print-footer'ı
+       gizledik; footer içindeki HAZIRLAYAN pill yeterli. */
+
+    /* ----- Hero (kapak) küçült ----- */
+    body.print-howto header.hero {
+      padding: 14px 18px !important;
+      margin: 0 0 12px !important;
+    }
+    body.print-howto header.hero h1 {
+      font-size: 18pt !important;
+      line-height: 1.15 !important;
+      margin: 6px 0 4px !important;
+    }
+    body.print-howto .eyebrow {
+      font-size: 8pt !important;
+      letter-spacing: 0.12em !important;
+    }
+    body.print-howto .instructor-pill {
+      font-size: 8.5pt !important;
+      padding: 5px 12px !important;
+    }
+    body.print-howto .hero-controls,
+    body.print-howto .progress-overall,
+    body.print-howto .progress-meta {
+      display: none !important;
+    }
+
+    /* ----- Kategori: dış kutu yok, başlık ince banner ----- */
+    body.print-howto section.category {
+      border: 0 !important;
+      background: transparent !important;
+      padding: 0 !important;
+      margin: 0 0 12px !important;
+      overflow: visible !important;
+    }
+    body.print-howto .cat-header {
+      background: #f9fafb !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 6px !important;
+      padding: 8px 12px !important;
+      margin: 0 0 8px !important;
+      gap: 10px !important;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    body.print-howto .cat-header .num {
+      font-size: 8.5pt !important;
+      width: auto !important;
+      letter-spacing: 0.14em !important;
+    }
+    body.print-howto .cat-header .title h2 {
+      font-size: 11.5pt !important;
+      line-height: 1.25 !important;
+      margin: 0 !important;
+    }
+    body.print-howto .cat-header .title p {
+      font-size: 8.5pt !important;
+      margin: 1px 0 0 !important;
+      line-height: 1.35 !important;
+    }
+    body.print-howto .feature-list {
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+    }
+
+    /* ----- Madde kartları: belirgin border + rounded, kompakt ----- */
+    body.print-howto .feature {
+      padding: 9px 12px !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 6px !important;
+      background: white !important;
+      margin: 0 !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    body.print-howto .feature:last-child {
+      border-bottom: 1px solid #d1d5db !important;
+    }
+
+    /* Madde başlığı kompakt */
+    body.print-howto .feature-back .feature-head {
+      margin-bottom: 6px !important;
+      display: block !important;
+    }
+    body.print-howto .feature-back .feature-head h3 {
+      color: #000 !important;
+      font-size: 11pt !important;
+      line-height: 1.3 !important;
+      display: inline !important;
+      margin: 0 !important;
+    }
+    body.print-howto .feature-back .feature-head .id {
+      color: #4b5563 !important;
+      font-size: 8pt !important;
+      margin-right: 5px !important;
+      display: inline !important;
+    }
+
+    /* How-To grid: sıkı yerleşim */
+    body.print-howto .howto-body {
+      margin-top: 2px !important;
+    }
+    body.print-howto .howto-grid {
+      display: grid !important;
+      grid-template-columns: 64px 1fr !important;
+      gap: 6px 10px !important;
+      margin-top: 2px !important;
+      align-items: start !important;
+    }
+    body.print-howto .howto-grid > .howto-text:nth-child(n+3) {
+      padding-top: 7px !important;
+      border-top: 1px solid #e5e7eb !important;
+    }
+    body.print-howto .howto-grid > .howto-tag:nth-child(n+3) {
+      margin-top: 8px !important;
+    }
+
+    /* MVP / Release chip'leri kompakt */
+    body.print-howto .howto-tag {
+      height: 18px !important;
+      line-height: 16px !important;
+      font-size: 8pt !important;
+      padding: 0 8px !important;
+      min-width: 56px !important;
+      align-self: start !important;
+      letter-spacing: 0.05em !important;
+    }
+    body.print-howto .howto-tag.mvp {
+      color: #15803d !important;
+      background: #ecfdf5 !important;
+      border: 1px solid #86efac !important;
+    }
+    body.print-howto .howto-tag.release {
+      color: #1d4ed8 !important;
+      background: #eff6ff !important;
+      border: 1px solid #93c5fd !important;
+    }
+
+    /* How-to metni ve adım listeleri ----- */
+    body.print-howto .howto-text {
+      font-size: 9pt !important;
+      line-height: 1.4 !important;
+      color: #000 !important;
+    }
+    body.print-howto .howto-text strong {
+      color: #000 !important;
+      font-weight: 600 !important;
+    }
+    body.print-howto .howto-text code {
+      color: #000 !important;
+      background: #f3f4f6 !important;
+      border: 1px solid #e5e7eb !important;
+      font-size: 8.5pt !important;
+      padding: 0 4px !important;
+    }
+    body.print-howto .howto-text .hint {
+      display: block !important;
+      margin-top: 6px !important;
+      padding: 5px 8px !important;
+      background: #f9fafb !important;
+      border-left: 2px solid #94a3b8 !important;
+      font-size: 8.5pt !important;
+      color: #475569 !important;
+      font-style: italic !important;
+      border-radius: 0 4px 4px 0 !important;
+    }
+    body.print-howto .howto-step-intro {
+      margin: 0 0 5px !important;
+      font-size: 9pt !important;
+      color: #374151 !important;
+      line-height: 1.4 !important;
+    }
+    body.print-howto .howto-steps {
+      list-style: none !important;
+      counter-reset: howtostep !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body.print-howto .howto-steps > li {
+      counter-increment: howtostep !important;
+      position: relative !important;
+      padding: 0 0 0 24px !important;
+      margin: 0 0 3px !important;
+      line-height: 1.4 !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    body.print-howto .howto-steps > li:last-child {
+      margin-bottom: 0 !important;
+    }
+    body.print-howto .howto-steps > li::before {
+      content: counter(howtostep) !important;
+      position: absolute !important;
+      left: 0 !important;
+      top: 1px !important;
+      width: 17px !important;
+      height: 17px !important;
+      line-height: 17px !important;
+      text-align: center !important;
+      border-radius: 999px !important;
+      background: #f3f4f6 !important;
+      color: #1d4ed8 !important;
+      font-size: 8pt !important;
+      font-weight: 700 !important;
+      border: 1px solid #d1d5db !important;
+    }
+    /* ✓ tikli adım: PDF'te "yapıldı" görünümü; MVP yeşil, Release mavi */
+    body.print-howto .howto-steps > li.checked::before {
+      content: "✓" !important;
+      color: #fff !important;
+      border-color: transparent !important;
+      font-size: 9pt !important;
+    }
+    body.print-howto .howto-steps.howto-steps-mvp > li.checked::before {
+      background: #16a34a !important;
+    }
+    body.print-howto .howto-steps.howto-steps-release > li.checked::before {
+      background: #2563eb !important;
+    }
+    body.print-howto .howto-steps > li.checked {
+      color: #6b7280 !important;
+      text-decoration: line-through !important;
+      text-decoration-color: #9ca3af !important;
+    }
+    body.print-howto .howto-steps > li.checked strong,
+    body.print-howto .howto-steps > li.checked code {
+      color: #6b7280 !important;
+    }
+
+    /* "Rehber yok" placeholder mesajı */
+    body.print-howto .howto-empty {
+      font-size: 8.5pt !important;
+      color: #6b7280 !important;
+      font-style: italic !important;
+      margin: 2px 0 0 !important;
+    }
+
+    /* Sayfanın aşağı bölünmesini optimize et: container kuralları gevşek
+       (kategoriler arası serbest), sadece feature içleri sıkı korumalı */
+    body.print-howto section.category {
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+    }
+  }

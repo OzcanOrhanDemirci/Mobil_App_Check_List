@@ -10,13 +10,28 @@ let currentLang = (() => {
 /* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
    Global tercih; localStorage'da tema gibi saklanır. Default "technical" —
    eski kullanıcı içerikleri olduğu gibi görsün diye. Yeni kullanıcılar
-   welcome akışının 2. adımında seçer. */
+   welcome akışının 3. adımında seçer. */
 const STYLE_KEY = "mobil_kontrol_style_v1";
 let currentStyle = (() => {
   try {
     const v = localStorage.getItem(STYLE_KEY);
     return (v === "simple" || v === "technical") ? v : "technical";
   } catch { return "technical"; }
+})();
+
+/* ==================== KULLANIM BİÇİMİ (GELİŞTİRME / İNCELEME) ====================
+   Global tercih; localStorage'da saklanır. Welcome akışının 2. adımında seçilir.
+   Default "build" — kart ön yüzü (checklist) ile başlar.
+   "review" seçilirse renderdan hemen sonra tüm kartlar sessizce arka yüze
+   (Nasıl Yapılır? rehberi) çevrilir. Kullanıcı toolbar'daki "❔ Tümü Nasıl?" /
+   "📋 Tümü Liste" butonlarıyla seans içinde modu değiştirebilir; bu butonlar
+   currentMode'u günceller ve seçim kalıcı olur. */
+const MODE_KEY = "mobil_kontrol_mode_v1";
+let currentMode = (() => {
+  try {
+    const v = localStorage.getItem(MODE_KEY);
+    return (v === "review") ? "review" : "build";
+  } catch { return "build"; }
 })();
 
 /* Bir {tr, en} objesinden geçerli dile ve anlatım stiline uygun metni döndür.
@@ -46,6 +61,16 @@ function tx(obj) {
 const UI_STRINGS = {
   // common
   "common.close": { tr: "Kapat", en: "Close" },
+  "common.cancel": { tr: "İptal", en: "Cancel" },
+
+  // yazdırma seçenekleri modalı (printBtn açar)
+  "print.modal.title": { tr: "Yazdırma Seçeneği", en: "Print Option" },
+  "print.modal.lead": { tr: "Hangi formatı çıktı almak istersin? Aynı projede farklı amaçlar için iki ayrı PDF üretebilirsin.", en: "Which format would you like to export? You can generate two different PDFs from the same project for different purposes." },
+  "print.modal.aria": { tr: "Yazdırma seçenekleri", en: "Print options" },
+  "print.opt.checklist.title": { tr: "Kontrol Listesi", en: "Checklist" },
+  "print.opt.checklist.desc": { tr: "İşaretlediğin maddeler, MVP ve Release seviyeleri, ilerleme bilgisi dahil. Ekipte paylaşmak veya arşivlemek için.", en: "Marked items, MVP and Release levels, progress included. For sharing with the team or archiving." },
+  "print.opt.howto.title": { tr: "Nasıl Yapılır? Rehberi", en: "How-To Guide" },
+  "print.opt.howto.desc": { tr: "Her madde için MVP ve Release adımları. Taşınabilir yazılı rehber; çevrimdışı okuma veya not alma için.", en: "MVP and Release steps for each item. Portable written guide; for offline reading or notes." },
 
   // hero
   "hero.eyebrow": { tr: "MVP · Release · Kalite Kontrol", en: "MVP · Release · Quality Check" },
@@ -64,6 +89,10 @@ const UI_STRINGS = {
   "install.bannerDesc": { tr: "Mobilde ana ekrana, masaüstünde başlat menüsüne kısayol olarak eklenir. İnternet olmadan da kullanabilirsin.", en: "Adds a shortcut to your home screen on mobile or start menu on desktop. Works offline." },
   "install.bannerBtn": { tr: "📲 Yükle", en: "📲 Install" },
   "install.bannerClose": { tr: "Bu bildirimi kapat", en: "Dismiss this notification" },
+  /* Footer'ın altındaki küçük indirme ikon butonu (üstteki yükle banner'ı
+     kapalıyken görünür); aria + title metinleri. */
+  "install.floatingAria": { tr: "Uygulamayı yükle", en: "Install app" },
+  "install.floatingTitle": { tr: "Uygulamayı cihazına yükle", en: "Install app on your device" },
 
   // search
   "search.placeholder": { tr: "Özellik ara, örn: 'API', 'dark mode', 'Firebase'…", en: "Search a feature, e.g. 'API', 'dark mode', 'Firebase'…" },
@@ -193,16 +222,44 @@ const UI_STRINGS = {
   "welcome.langSub": { tr: "Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.", en: "All texts will appear in your chosen language. You can change it any time from the 🌐 button on top. · Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin." },
   "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
   "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
+
+  // welcome — kullanım biçimi (2. adım: Geliştirme vs İnceleme)
+  "welcome.modeQuestion": { tr: "Neye odaklanmak istersin?", en: "What would you like to focus on?" },
+  "welcome.modeSub": { tr: "Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için \"nasıl yapılır?\" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.", en: "This app can be used in two ways: as a step-by-step checklist while building a new app; or as a \"how to\" guide for each item while auditing an app you already have. You can switch any time from the top buttons." },
+  "welcome.modeAria": { tr: "Kullanım biçimi seçimi", en: "Usage mode selection" },
+  /* NOT: i18n key adları (welcome.mode.build.*, welcome.mode.review.*) tarihsel
+     sebeplerle dahili mod adlarıyla aynı; ancak kullanıcıya gösterdikleri
+     ETİKETLER tam tersine eşlenir:
+       - welcome.mode.build.*  → "❔ Geliştirme" butonu (data-welcome-mode="review")
+       - welcome.mode.review.* → "📋 İnceleme" butonu (data-welcome-mode="build")
+     Sebep: kullanıcı niyeti ile kart görsel durumu farklı kavramlar — yeni
+     uygulama geliştirirken Nasıl Yapılır? rehberi, mevcut uygulamayı kontrol
+     ederken sade checklist daha kullanışlı. */
+  "welcome.mode.build.title": { tr: "❔ Geliştirme", en: "❔ Building" },
+  "welcome.mode.build.desc": { tr: "Yeni bir uygulama geliştiriyorum; her madde için \"nasıl yapılır?\" rehberini görmek istiyorum.", en: "I am building a new app; I want to see the \"how to\" guide for each item." },
+  "welcome.mode.review.title": { tr: "📋 İnceleme", en: "📋 Reviewing" },
+  "welcome.mode.review.desc": { tr: "Mevcut uygulamamı kontrol ediyorum; sade kontrol listesiyle adım adım işaretlemek istiyorum.", en: "I am auditing my existing app; I want a clean checklist to tick off step by step." },
+  "welcome.cta.pickMode": { tr: "Devam etmek için bir kullanım biçimi seç", en: "Pick a usage mode to continue" },
   "welcome.fwQuestion": { tr: "Hangi framework / dil ile çalışıyorsun?", en: "Which framework / language are you using?" },
   "welcome.fwSub": { tr: "Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.", en: "28 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 25 are universal. You can change it later from the top button." },
   "welcome.fwAria": { tr: "Framework seçimi", en: "Framework selection" },
   "welcome.cta.pickFw": { tr: "Devam etmek için framework seç", en: "Pick a framework to continue" },
   "welcome.cta.next": { tr: "İleri ›", en: "Next ›" },
   "welcome.lead": { tr: "Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.", en: "This web app is built to help you audit the quality of the mobile app you are developing." },
-  "welcome.body": { tr: "14 kategoride 53 özellik var. Her özelliğin <strong style=\"color: var(--mvp);\">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style=\"color: var(--release);\">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.", en: "53 features across 14 categories. Track progress by marking each feature's <strong style=\"color: var(--mvp);\">MVP (green, must-have)</strong> and <strong style=\"color: var(--release);\">Release (blue, store-ready professional quality)</strong> levels. Your marks are auto-saved in your browser." },
+  "welcome.body": { tr: "14 kategoride 55 özellik var. Her özelliğin <strong style=\"color: var(--mvp);\">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style=\"color: var(--release);\">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. Her maddenin arka yüzünde adım adım <strong>Nasıl Yapılır?</strong> rehberi var; adımları tek tek tikleyerek de ilerleyebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.", en: "55 features across 14 categories. Track progress by marking each feature's <strong style=\"color: var(--mvp);\">MVP (green, must-have)</strong> and <strong style=\"color: var(--release);\">Release (blue, store-ready professional quality)</strong> levels. Each item also has a step-by-step <strong>How-To</strong> guide on its back face; you can tick steps one by one as you go. Your marks are auto-saved in your browser." },
   "welcome.featuresList": {
-    tr: "<li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ↔ İngilizce çevir</li><li><strong>🎯 Seviye filtresi</strong>sadece MVP, sadece Release ya da hepsi</li><li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li><li><strong>🔒 Kilit</strong>liste salt-okunur, yanlışlıkla bozulmaz</li><li><strong>🔍 Arama</strong>başlık, açıklama ve içerikte anahtar kelime ara</li><li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li><li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li><li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihazına ekle, çevrimdışı çalışsın</li>",
-    en: "<li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>🌐 TR / EN</strong>switch the app between Turkish ↔ English instantly</li><li><strong>🎯 Level filter</strong>MVP only, Release only, or both</li><li><strong>🔄 Framework</strong>28 items adapt to your stack</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🔍 Search</strong>find a keyword in title, description and content</li><li><strong>🎨 Theme</strong>switch between light and dark mode</li><li><strong>📺 Presentation</strong>one-category fullscreen mode</li><li><strong>🖨 Print</strong>download as PDF, share</li><li><strong>💾 Backup</strong>JSON export / import</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
+    /* Mantıksal eşleştirme: her grid satırında (2 sütun) konu olarak ilgili
+       iki özellik yan yana. Sıralama:
+       1) Dil ve anlatım: TR/EN + Basit/Teknik
+       2) Yazılım yığını: Framework + Backend
+       3) Madde başına yardım: Nasıl Yapılır? + AI'a sor
+       4) Kişisel veri ve koruma: Notlar + Kilit
+       5) Listeyi daraltma: Filtre + Arama
+       6) Veri yönetimi: Çoklu proje + Yedek
+       7) Görsel mod: Tema + Sunum
+       8) Çıktı ve taşınabilirlik: Yazdır + PWA yükle */
+    tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>koyu ve açık mod</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
+    en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>28 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>dark and light mode</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
   },
   "welcome.tip": { tr: "İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.", en: "Whenever you need it, open the detailed guide via the <strong>? Help</strong> button on top. Press <kbd>?</kbd> for keyboard shortcuts." },
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
@@ -294,6 +351,9 @@ const UI_STRINGS = {
   "celebration.releaseMsg": { tr: "Yayınlanabilir profesyonel kaliteye ulaştın. Mağaza yüklemeden önce uygulamayı bir kez daha test etmeyi ve ekran görüntülerini hazırlamayı unutma.", en: "You reached release-ready professional quality. Don't forget to test the app once more and prepare screenshots before submitting to the store." },
   "celebration.mvpTitle": { tr: "MVP seviyesi tamamlandı!", en: "MVP level complete!" },
   "celebration.mvpMsg": { tr: "Uygulamanın temel iskeleti hazır. Şimdi profesyonel kaliteye yükseltmek için Release seviyesindeki maddelere geç.", en: "Your app's core skeleton is ready. Move on to Release-level items to elevate it to professional quality." },
+
+  // kategori başlığı: %100 olunca X/Y yerine bu yazı çıkar
+  "cat.completed": { tr: "Tamamlandı", en: "Completed" },
 
   "confirm.defaultTitle": { tr: "Emin misin?", en: "Are you sure?" },
   "confirm.defaultMsg": { tr: "Bu işlem geri alınamaz.", en: "This action cannot be undone." },

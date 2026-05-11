@@ -181,6 +181,21 @@
   <footer>
     <p class="foot-line foot-title" data-i18n="footer.title">Mobil Uygulama Kalite Kontrol Listesi</p>
     <p class="foot-line foot-instructor"><span class="foot-label" data-i18n="footer.preparedBy">Hazırlayan</span> Özcan Orhan Demirci</p>
+    <!-- Footer install butonu: üstteki turuncu yükle banner'ı kapalıyken
+         görünür (kullanıcı banner'ı X ile kapadıysa veya hiç gelmediyse
+         alternatif ulaşım yolu). Standalone modda veya zaten yüklendiyse gizli.
+         Sıralama: Hazırlayan → Yükle → Sürüm (alt alta, ortalı). -->
+    <button type="button" class="install-floating-btn" id="installFloatingBtn" hidden
+            aria-label="Uygulamayı yükle"
+            title="Uygulamayı cihazına yükle"
+            data-i18n-aria-label="install.floatingAria"
+            data-i18n-title="install.floatingTitle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
     <p class="foot-version" id="footVersion"><span>v1.0</span><span class="version-dot">·</span><span data-i18n="footer.date">Mayıs 2026</span></p>
   </footer>
 </div>
@@ -483,7 +498,7 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Adım göstergesi (6 adım: Dil, Anlatım Dili, Proje Adı, Framework, Backend, Karşılama) -->
+    <!-- Adım göstergesi (7 adım: Dil, Kullanım Biçimi, Anlatım Dili, Proje Adı, Framework, Backend, Karşılama) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
@@ -496,6 +511,8 @@
       <span class="welcome-step-dot" data-step-dot="5">5</span>
       <span class="welcome-step-line" data-step-line="5"></span>
       <span class="welcome-step-dot" data-step-dot="6">6</span>
+      <span class="welcome-step-line" data-step-line="6"></span>
+      <span class="welcome-step-dot" data-step-dot="7">7</span>
     </div>
 
     <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
@@ -515,8 +532,36 @@
       <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
     </div>
 
-    <!-- 2. Adım: Anlatım dili (Basit / Teknik) -->
+    <!-- 2. Adım: Kullanım Biçimi (Geliştirme / İnceleme).
+         Geliştirme = checklist odaklı (varsayılan). İnceleme = "Nasıl Yapılır?"
+         rehberi odaklı; uygulama açıldığında tüm kartlar arka yüzde başlar. -->
     <div class="welcome-pane" data-pane="2" hidden>
+      <p class="framework-pick-q" data-i18n="welcome.modeQuestion">Neye odaklanmak istersin?</p>
+      <p class="framework-pick-sub" data-i18n="welcome.modeSub">Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için "nasıl yapılır?" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.</p>
+      <div class="framework-options framework-options--lang" role="group" aria-label="Kullanım biçimi seçimi" data-i18n-aria-label="welcome.modeAria">
+        <!-- "Geliştirme" butonu → data-welcome-mode="review": yeni uygulama
+             geliştirirken her madde için Nasıl Yapılır? rehberi açılışta görünür.
+             "İnceleme" butonu → data-welcome-mode="build": mevcut uygulamayı
+             kontrol ederken sade checklist görünür. (Dahili mode adları "build"
+             ve "review" — kart görsel durumunu tanımlar, kullanıcı niyeti
+             değil. Kullanıcı niyeti UI etiketleriyle ifade edilir.) -->
+        <button type="button" class="framework-option" data-welcome-mode="review">
+          <span class="fw-title" data-i18n="welcome.mode.build.title">❔ Geliştirme</span>
+          <span class="fw-desc" data-i18n="welcome.mode.build.desc">Yeni bir uygulama geliştiriyorum; her madde için "nasıl yapılır?" rehberini görmek istiyorum.</span>
+        </button>
+        <button type="button" class="framework-option" data-welcome-mode="build">
+          <span class="fw-title" data-i18n="welcome.mode.review.title">📋 İnceleme</span>
+          <span class="fw-desc" data-i18n="welcome.mode.review.desc">Mevcut uygulamamı kontrol ediyorum; sade kontrol listesiyle adım adım işaretlemek istiyorum.</span>
+        </button>
+      </div>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeModeBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeModeNext" disabled data-i18n="welcome.cta.pickMode">Devam etmek için bir kullanım biçimi seç</button>
+      </div>
+    </div>
+
+    <!-- 3. Adım: Anlatım dili (Basit / Teknik) -->
+    <div class="welcome-pane" data-pane="3" hidden>
       <p class="framework-pick-q" data-i18n="welcome.styleQuestion">Anlatım dili: Basit mi, Teknik mi?</p>
       <p class="framework-pick-sub" data-i18n-html="welcome.styleSub">Maddeleri nasıl okumak istersin? Yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan <strong>Basit</strong> en rahatı; paket adı, sürüm, fonksiyon gibi teknik detayları görmek istersen <strong>Teknik</strong> daha verimli. İstediğin zaman üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options framework-options--lang" role="group" aria-label="Anlatım dili seçimi" data-i18n-aria-label="welcome.styleAria">
@@ -535,8 +580,8 @@
       </div>
     </div>
 
-    <!-- 3. Adım: Proje adı -->
-    <div class="welcome-pane" data-pane="3" hidden>
+    <!-- 4. Adım: Proje adı -->
+    <div class="welcome-pane" data-pane="4" hidden>
       <p class="framework-pick-q" data-i18n="welcome.projNameQuestion">Bu listeyle hangi projenin kontrolünü yapacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.projNameSub">Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.</p>
       <div class="welcome-projname-wrap">
@@ -549,8 +594,8 @@
       </div>
     </div>
 
-    <!-- 4. Adım: Framework seçimi -->
-    <div class="welcome-pane" data-pane="4" hidden>
+    <!-- 5. Adım: Framework seçimi -->
+    <div class="welcome-pane" data-pane="5" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -591,8 +636,8 @@
       </div>
     </div>
 
-    <!-- 5. Adım: Backend seçimi -->
-    <div class="welcome-pane" data-pane="5" hidden>
+    <!-- 6. Adım: Backend seçimi -->
+    <div class="welcome-pane" data-pane="6" hidden>
       <p class="framework-pick-q" data-i18n="welcome.beQuestion">Hangi backend ile çalışacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.beSub">Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.</p>
       <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
@@ -648,23 +693,27 @@
       </div>
     </div>
 
-    <!-- 6. Adım: Hoşgeldin / Nasıl kullanılır -->
-    <div class="welcome-pane" data-pane="6" hidden>
+    <!-- 7. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="7" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
-      <p data-i18n-html="welcome.body">14 kategoride 53 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
+      <p data-i18n-html="welcome.body">14 kategoride 55 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. Her maddenin arka yüzünde adım adım <strong>Nasıl Yapılır?</strong> rehberi var; adımları tek tek tikleyerek de ilerleyebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
-        <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
-        <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
-        <li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ↔ İngilizce çevir</li>
-        <li><strong>🎯 Seviye filtresi</strong>sadece MVP, sadece Release ya da hepsi</li>
+        <li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li>
+        <li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li>
         <li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li>
-        <li><strong>🔒 Kilit</strong>liste salt-okunur, yanlışlıkla bozulmaz</li>
-        <li><strong>🔍 Arama</strong>başlık, açıklama ve içerikte anahtar kelime ara</li>
-        <li><strong>🎨 Tema</strong>açık ve koyu mod arasında geçiş</li>
-        <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum modu</li>
-        <li><strong>🖨 Yazdır</strong>PDF olarak indir, paylaş</li>
-        <li><strong>💾 Yedek</strong>JSON dışa / içe aktarma</li>
-        <li><strong>📲 PWA yükle</strong>uygulama gibi cihazına ekle, çevrimdışı çalışsın</li>
+        <li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li>
+        <li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li>
+        <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
+        <li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li>
+        <li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li>
+        <li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li>
+        <li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li>
+        <li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li>
+        <li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li>
+        <li><strong>🎨 Tema</strong>koyu ve açık mod</li>
+        <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li>
+        <li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li>
+        <li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>
       </ul>
       <p class="welcome-tip" data-i18n-html="welcome.tip">İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.</p>
       <div class="welcome-actions">
@@ -965,6 +1014,33 @@
     <h3 id="celebrationTitle" data-i18n="celebration.defaultTitle">Tebrikler!</h3>
     <p id="celebrationMessage" data-i18n="celebration.defaultMsg">Bu seviyeyi tamamladın.</p>
     <button class="btn primary" data-modal-close data-i18n="celebration.continue">Devam Et</button>
+  </div>
+</div>
+
+<!-- Yazdırma seçenekleri modalı: kontrol listesi mi yoksa Nasıl Yapılır? rehberi mi? -->
+<div class="modal" id="printOptionsModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-print-options" role="dialog" aria-modal="true" aria-labelledby="printOptionsTitle">
+    <header class="modal-head">
+      <h2 id="printOptionsTitle" data-i18n="print.modal.title">Yazdırma Seçeneği</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+    </header>
+    <p class="print-options-lead" data-i18n="print.modal.lead">Hangi formatı çıktı almak istersin? Listede aynı projede farklı amaçlar için iki ayrı PDF üretebilirsin.</p>
+    <div class="print-options" role="group" aria-label="Yazdırma seçenekleri" data-i18n-aria-label="print.modal.aria">
+      <button type="button" class="print-option" data-print-mode="checklist">
+        <span class="po-icon" aria-hidden="true">📋</span>
+        <span class="po-title" data-i18n="print.opt.checklist.title">Kontrol Listesi</span>
+        <span class="po-desc" data-i18n="print.opt.checklist.desc">İşaretlediğin maddeler, MVP ve Release seviyeleri ile ilerleme dahil. Ekipte paylaşmak veya arşivlemek için.</span>
+      </button>
+      <button type="button" class="print-option" data-print-mode="howto">
+        <span class="po-icon" aria-hidden="true">❔</span>
+        <span class="po-title" data-i18n="print.opt.howto.title">Nasıl Yapılır? Rehberi</span>
+        <span class="po-desc" data-i18n="print.opt.howto.desc">Her madde için MVP ve Release adımları. Yazılı taşınabilir rehber; ofline okuma veya not alma için.</span>
+      </button>
+    </div>
+    <div class="print-options-actions">
+      <button class="btn ghost" data-modal-close data-i18n="common.cancel">İptal</button>
+    </div>
   </div>
 </div>
 
