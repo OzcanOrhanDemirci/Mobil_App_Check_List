@@ -50,8 +50,10 @@ function closeAllModals() {
 /* Onay modalı (window.confirm yerine).
    opts.title, opts.yesText, opts.cancelText (default İptal),
    opts.html (true ise message HTML olarak render edilir; default plain text),
-   opts.wide (true ise modal genişler — yoğun içerik için) */
+   opts.wide (true ise modal genişler — yoğun içerik için),
+   opts.onCancel (kullanıcı modal'ı iptal/X/backdrop ile kapatırsa çağrılır) */
 let confirmCallback = null;
+let confirmCancelCallback = null;
 function customConfirm(message, onConfirm, opts = {}) {
   document.getElementById("confirmTitle").textContent = opts.title || t("confirm.defaultTitle");
   const msgEl = document.getElementById("confirmMessage");
@@ -63,9 +65,12 @@ function customConfirm(message, onConfirm, opts = {}) {
   const modalContent = document.querySelector("#confirmModal .modal-content");
   if (modalContent) modalContent.classList.toggle("modal-confirm--wide", !!opts.wide);
   confirmCallback = onConfirm;
+  confirmCancelCallback = typeof opts.onCancel === "function" ? opts.onCancel : null;
   openModal("confirmModal");
 }
 document.getElementById("confirmYes").addEventListener("click", () => {
+  /* Onaylandı; close handler'ı cancel callback'i tetiklemesin diye önce temizle */
+  confirmCancelCallback = null;
   closeModal("confirmModal");
   if (typeof confirmCallback === "function") {
     const cb = confirmCallback;
@@ -84,6 +89,15 @@ document.addEventListener("click", (e) => {
       if (modal.id === "helpModal" && typeof setHelpLangSwitchVisible === "function") {
         setHelpLangSwitchVisible(false);
         if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
+      }
+      /* Confirm modalı iptal yoluyla kapandıysa cancel callback'i çalıştır.
+         (confirmYes button'unun click handler'ı kapatmadan önce
+         confirmCancelCallback'i null yapar; oradan gelmiyorsak hala dolu olabilir.) */
+      if (modal.id === "confirmModal") {
+        const cb = confirmCancelCallback;
+        confirmCancelCallback = null;
+        confirmCallback = null;
+        if (typeof cb === "function") cb();
       }
     }
   }

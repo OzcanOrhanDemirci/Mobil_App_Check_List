@@ -16,78 +16,110 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
   saveCollapsed();
 });
 
-/* Reset (2 aşamalı: scope seçimi → onay → uygula) */
+/* ==================== RESET UI'I — İKİ AYRI YERDE KULLANIM ====================
+   1) Toolbar Sıfırla butonu → resetScopeModal (sadece selections + notes)
+   2) Proje/FW modal'ın "Sıfırla" sekmesi → projfw-pane-reset (4 seçenek)
+   Aynı performReset fonksiyonuna scope objesi göndererek çalışırlar. */
+
+const RESET_INDEPENDENT_SCOPES = ["selections", "notes", "settings"];
+
+/* Bir reset-scope UI'ını (checkbox grubu + İleri butonu) bir araya bağlar.
+   `attr` her UI için farklı bir data-attribute adı (DOM çakışmasını önler).
+   `nextBtnId` o UI'ın "İleri" butonunun ID'si.
+   `onBeforeConfirm` opsiyonel — confirm açılmadan önce çağrılır (ör. modal kapatma). */
+function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
+  const cbs = document.querySelectorAll(`[${attr}]`);
+  const nextBtn = document.getElementById(nextBtnId);
+  if (!cbs.length || !nextBtn) return;
+
+  const sysCb = document.querySelector(`[${attr}="system"]`);
+  const independents = RESET_INDEPENDENT_SCOPES
+    .map(s => document.querySelector(`[${attr}="${s}"]`))
+    .filter(Boolean);
+
+  /* Tüm seçenekleri sıfırla (modal/sekme yeniden açılışında çağrılır) */
+  function resetUi() {
+    cbs.forEach(cb => { cb.checked = false; cb.disabled = false; });
+    nextBtn.disabled = true;
+  }
+
+  /* Checkbox değişimi: system ↔ diğerleri ilişkisini yönet, İleri butonunu güncelle */
+  cbs.forEach(cb => {
+    cb.addEventListener("change", () => {
+      if (sysCb && cb === sysCb) {
+        if (sysCb.checked) {
+          independents.forEach(o => { o.checked = false; o.disabled = true; });
+        } else {
+          independents.forEach(o => { o.disabled = false; });
+        }
+      } else if (cb.checked && sysCb && sysCb.checked) {
+        sysCb.checked = false;
+        independents.forEach(o => { o.disabled = false; });
+      }
+      const anyChecked = (sysCb && sysCb.checked) || independents.some(o => o.checked);
+      nextBtn.disabled = !anyChecked;
+    });
+  });
+
+  /* İleri butonu → scope topla → onay aç → performReset çağır */
+  nextBtn.addEventListener("click", () => {
+    const scope = {
+      selections: document.querySelector(`[${attr}="selections"]`)?.checked || false,
+      notes:      document.querySelector(`[${attr}="notes"]`)?.checked || false,
+      settings:   document.querySelector(`[${attr}="settings"]`)?.checked || false,
+      system:     document.querySelector(`[${attr}="system"]`)?.checked || false,
+    };
+
+    if (typeof onBeforeConfirm === "function") onBeforeConfirm();
+
+    let html, yesKey = "reset.yes";
+    if (scope.system) {
+      html = t("reset.confirm.system");
+      yesKey = "reset.yesSystem";
+    } else {
+      const parts = [];
+      if (scope.selections) parts.push(t("reset.confirm.part.selections"));
+      if (scope.notes)      parts.push(t("reset.confirm.part.notes"));
+      if (scope.settings)   parts.push(t("reset.confirm.part.settings"));
+      if (parts.length === 0) return;
+      html = `
+        <p class="fw-switch-intro">${t("reset.confirm.intro")}</p>
+        <ul class="fw-switch-effects">
+          ${parts.map(p => `<li class="effect-clear"><span class="effect-icon">⚠</span><span>${p}</span></li>`).join("")}
+        </ul>
+      `;
+    }
+
+    customConfirm(
+      html,
+      () => performReset(scope),
+      { title: t("reset.confirmTitle"), yesText: t(yesKey), cancelText: t("confirm.cancel"), html: true, wide: !scope.system }
+    );
+  });
+
+  return { resetUi };
+}
+
+/* UI #1: Toolbar Sıfırla → resetScopeModal (sadece selections + notes). */
+const toolbarResetUi = setupResetScopeUi(
+  "data-reset-scope",
+  "resetScopeNext",
+  () => closeModal("resetScopeModal")
+);
+
+/* Toolbar Sıfırla butonu — modalı her açılışta UI'ı sıfırla */
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (lockState) return;
-  /* Modalı her açılışta sıfırla: tüm checkbox'ları temizle, "İleri" disabled */
-  document.querySelectorAll("[data-reset-scope]").forEach(cb => {
-    cb.checked = false;
-    cb.disabled = false;
-  });
-  document.getElementById("resetScopeNext").disabled = true;
+  if (toolbarResetUi) toolbarResetUi.resetUi();
   openModal("resetScopeModal");
 });
 
-/* Scope seçim kuralları (4 seçenek: selections, notes, settings, system):
-   - "system" seçilirse diğer 3 otomatik kapanır + disable olur (zaten her şeyi kapsar)
-   - "system" işareti kaldırılırsa diğer 3 enable olur
-   - Diğer 3'ten biri seçilirken "system" varsa otomatik kapanır (defansif)
-   - "İleri" en az 1 seçim varsa enable olur */
-const RESET_INDEPENDENT_SCOPES = ["selections", "notes", "settings"];
-document.querySelectorAll("[data-reset-scope]").forEach(cb => {
-  cb.addEventListener("change", () => {
-    const others = RESET_INDEPENDENT_SCOPES.map(s => document.querySelector(`[data-reset-scope="${s}"]`));
-    const sys = document.querySelector('[data-reset-scope="system"]');
-    if (cb === sys) {
-      if (sys.checked) {
-        others.forEach(o => { o.checked = false; o.disabled = true; });
-      } else {
-        others.forEach(o => { o.disabled = false; });
-      }
-    } else if (cb.checked && sys.checked) {
-      sys.checked = false;
-      others.forEach(o => { o.disabled = false; });
-    }
-    const anyChecked = sys.checked || others.some(o => o.checked);
-    document.getElementById("resetScopeNext").disabled = !anyChecked;
-  });
-});
-
-/* "İleri" → 1. modalı kapat, customConfirm (2. adım) aç */
-document.getElementById("resetScopeNext").addEventListener("click", () => {
-  const scope = {
-    selections: document.querySelector('[data-reset-scope="selections"]').checked,
-    notes:      document.querySelector('[data-reset-scope="notes"]').checked,
-    settings:   document.querySelector('[data-reset-scope="settings"]').checked,
-    system:     document.querySelector('[data-reset-scope="system"]').checked,
-  };
-  closeModal("resetScopeModal");
-
-  /* Onay HTML'ini dinamik kur: "system" ise tek satır uyarı; diğer 1-3 kombinasyonu ise liste */
-  let html, yesKey = "reset.yes";
-  if (scope.system) {
-    html = t("reset.confirm.system");
-    yesKey = "reset.yesSystem";
-  } else {
-    const parts = [];
-    if (scope.selections) parts.push(t("reset.confirm.part.selections"));
-    if (scope.notes)      parts.push(t("reset.confirm.part.notes"));
-    if (scope.settings)   parts.push(t("reset.confirm.part.settings"));
-    if (parts.length === 0) return;
-    html = `
-      <p class="fw-switch-intro">${t("reset.confirm.intro")}</p>
-      <ul class="fw-switch-effects">
-        ${parts.map(p => `<li class="effect-clear"><span class="effect-icon">⚠</span><span>${p}</span></li>`).join("")}
-      </ul>
-    `;
-  }
-
-  customConfirm(
-    html,
-    () => performReset(scope),
-    { title: t("reset.confirmTitle"), yesText: t(yesKey), cancelText: t("confirm.cancel"), html: true, wide: !scope.system }
-  );
-});
+/* UI #2: Proje/FW modal "Sıfırla" sekmesi (4 seçenek: tüm modlar). */
+const projfwResetUi = setupResetScopeUi(
+  "data-full-reset-scope",
+  "projfwResetNext",
+  () => closeModal("frameworkModal")
+);
 
 /* Asıl sıfırlama mantığı, scope objesine göre */
 function performReset(scope) {
@@ -335,12 +367,59 @@ setupLongPressEasterEgg(
   () => t("easter.github")
 );
 
+/* ==================== YARDIM ACCORDION ====================
+   Yardım modal'ındaki HELP_HTML her dil değişiminde yeniden render edilir;
+   bu render'dan sonra her section'a `.help-section.collapsed` class'ı + h3'e
+   chevron eklenerek accordion davranışı kazandırılır. Click handler ile
+   "Tümünü Aç/Kapat" butonları aşağıda tek seferlik bağlanır. */
+function enhanceHelpAccordion() {
+  const sections = document.querySelectorAll("#helpModalBody > section");
+  sections.forEach(section => {
+    section.classList.add("help-section", "collapsed");
+    const h3 = section.querySelector(":scope > h3");
+    if (h3 && !h3.querySelector(".help-section-chevron")) {
+      const chevron = document.createElement("span");
+      chevron.className = "help-section-chevron";
+      chevron.setAttribute("aria-hidden", "true");
+      chevron.textContent = "▾";
+      h3.appendChild(chevron);
+    }
+  });
+}
+
+/* Tüm bölümleri kapatır (modal her yeniden açılışında temiz başlangıç için) */
+function collapseAllHelpSections() {
+  document.querySelectorAll("#helpModalBody > section.help-section")
+    .forEach(s => s.classList.add("collapsed"));
+}
+
+/* h3 tıklaması → section toggle. helpModalBody parent kalıcı olduğundan
+   innerHTML değişse bile delegated handler çalışmaya devam eder. */
+document.getElementById("helpModalBody")?.addEventListener("click", (e) => {
+  const h3 = e.target.closest("#helpModalBody > section.help-section > h3");
+  if (!h3) return;
+  h3.parentElement.classList.toggle("collapsed");
+});
+
+/* "Tümünü Aç" → tüm section'lardan collapsed class'ını kaldır */
+document.getElementById("helpExpandAll")?.addEventListener("click", () => {
+  document.querySelectorAll("#helpModalBody > section.help-section")
+    .forEach(s => s.classList.remove("collapsed"));
+});
+
+/* "Tümünü Kapat" → tüm section'lara collapsed class ekle */
+document.getElementById("helpCollapseAll")?.addEventListener("click", () => {
+  collapseAllHelpSections();
+});
+
 /* Yardım butonu (toolbar) — anlık dil switcher'ı göstermez (zaten dil seçilmiştir,
-   üst-sağdaki global 🌐 TR/EN butonu var). */
+   üst-sağdaki global 🌐 TR/EN butonu var). Modal her açılışta bölümler kapalı
+   başlasın (kullanıcı temiz bir TOC ile karşılaşsın). */
 document.getElementById("helpBtn").addEventListener("click", () => {
   if (typeof setHelpLangSwitchVisible === "function") setHelpLangSwitchVisible(false);
   /* Eğer önceki açılıştan in-modal switcher ile dil değişmiş kaldıysa global dile çek */
   if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
+  collapseAllHelpSections();
   openModal("helpModal");
 });
 
@@ -790,6 +869,8 @@ document.getElementById("welcomeHelpBtn").addEventListener("click", () => {
   /* Welcome 1. adımda mı? */
   const onLangStep = document.getElementById("welcomeModal")?.getAttribute("data-step") === "1";
   setHelpLangSwitchVisible(onLangStep);
+  /* Yardım modalı her açılışta tüm bölümler kapalı başlasın */
+  if (typeof collapseAllHelpSections === "function") collapseAllHelpSections();
   openModal("helpModal");
 });
 
@@ -815,6 +896,9 @@ function applyHelpDisplayLang(lang) {
   const helpBody = document.getElementById("helpModalBody");
   if (helpBody && HELP_HTML[lang]) {
     helpBody.innerHTML = HELP_HTML[lang];
+    /* innerHTML değişimi DOM elementlerini yeniden oluşturur; accordion'ı
+       yeniden kur (section.help-section.collapsed class'ı + chevron span). */
+    if (typeof enhanceHelpAccordion === "function") enhanceHelpAccordion();
   }
   const helpTitle = document.getElementById("helpTitle");
   if (helpTitle && UI_STRINGS["help.title"]) {
@@ -914,9 +998,13 @@ function setProjFwTab(tabName) {
 
 document.querySelectorAll(".projfw-tab").forEach(tab => {
   tab.addEventListener("click", () => {
-    setProjFwTab(tab.dataset.projfwTab);
-    if (tab.dataset.projfwTab === "project") {
+    const target = tab.dataset.projfwTab;
+    setProjFwTab(target);
+    if (target === "project") {
       renderProjectList();
+    } else if (target === "reset" && projfwResetUi) {
+      /* Sekmeye her geçişte seçimler sıfırlanır — kullanıcı temiz başlasın */
+      projfwResetUi.resetUi();
     }
   });
 });
@@ -1009,11 +1097,11 @@ function updateProjAddButtonState() {
 /* "+ Yeni Proje" akışında seçilen framework — Oluştur'a basılana kadar geçici */
 let pendingNewProjFw = null;
 
+/* Formu sıfırlar (input boşalt, framework seçimi temizle, hata gizle, butonu disable yap).
+   Modal'ın görünürlüğünü değiştirmez; o ayrıca yönetilir. */
 function resetProjAddForm() {
-  const form = document.getElementById("projAddForm");
   const input = document.getElementById("projAddInput");
   const err = document.getElementById("projAddError");
-  if (form) form.hidden = true;
   if (input) input.value = "";
   if (err) { err.textContent = ""; err.hidden = true; }
   pendingNewProjFw = null;
@@ -1037,28 +1125,26 @@ function showProjAddError(msg) {
   err.hidden = false;
 }
 
-/* "+ Yeni Proje" → form aç + input'a focus + form state'ini sıfırla */
+/* "+ Yeni Proje" → ayrı modal aç + state sıfırla + input'a focus.
+   Proje/Framework modal'ı arkada açık kalır; create iptal edilirse kullanıcı
+   geri o modal'a düşer (oradan zaten projeler listesini görmeye devam eder). */
 document.getElementById("projAddBtn").addEventListener("click", () => {
   if (projectsCount() >= 20) {
     showToast(t("proj.limit.toast"), "warn", 2400);
     return;
   }
-  const form = document.getElementById("projAddForm");
+  resetProjAddForm();
+  openModal("projCreateModal");
   const input = document.getElementById("projAddInput");
-  if (form) form.hidden = false;
-  if (input) {
-    input.value = "";
-    setTimeout(() => input.focus(), 60);
-  }
-  /* Form'u her açılışta sıfırla: framework seçimi temizle, butonu disable yap */
-  pendingNewProjFw = null;
-  document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.remove("selected"));
-  const errEl = document.getElementById("projAddError");
-  if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
-  updateProjAddCreateState();
+  if (input) setTimeout(() => input.focus(), 60);
 });
 
-document.getElementById("projAddCancel").addEventListener("click", resetProjAddForm);
+/* Vazgeç → modal'ı kapat ve state'i sıfırla. Kullanıcı arkadaki proje
+   yöneticisine geri döner. */
+document.getElementById("projAddCancel").addEventListener("click", () => {
+  closeModal("projCreateModal");
+  resetProjAddForm();
+});
 
 /* Mini framework grid: tıklanan framework pendingNewProjFw'ye atanır,
    sadece o buton .selected vurgulu, butonun durumu güncellenir */
@@ -1089,11 +1175,14 @@ document.getElementById("projAddInput").addEventListener("keydown", (e) => {
     if (createBtn && !createBtn.disabled) createBtn.click();
   } else if (e.key === "Escape") {
     e.preventDefault();
+    closeModal("projCreateModal");
     resetProjAddForm();
   }
 });
 
-/* Oluştur → önce onay modal'ı aç. Kabul edilirse projeyi oluştur, aktif yap, UI yenile. */
+/* Oluştur → önce onay modal'ı aç. Kabul edilirse projeyi oluştur, aktif yap,
+   UI yenile ve TÜM modal'ları kapat (ana ekrana dön). İptal edilirse
+   projCreateModal yeniden gösterilir; kullanıcı yazdıkları geri gelir. */
 document.getElementById("projAddCreate").addEventListener("click", () => {
   const input = document.getElementById("projAddInput");
   const name = (input?.value || "").trim();
@@ -1113,13 +1202,15 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
     </ul>` : ""}
   `;
 
-  /* Frameworks modal'ını önce kapat, üst üste binmesin (confirm onun yerine açılır) */
+  /* Hem projCreateModal hem frameworkModal'ı kapat; confirm tek başına önde dursun */
+  closeModal("projCreateModal");
   closeModal("frameworkModal");
   /* Onay sonrası işin yapılması için seçimleri local'e kopyala — customConfirm
      callback'i gecikmeli çalışıyor, bu arada kullanıcı modalı tekrar açabilir
      ve pendingNewProjFw değişebilir. Defansif kopya. */
   const finalName = name;
   const finalFw = pendingNewProjFw;
+
   customConfirm(
     html,
     () => {
@@ -1136,6 +1227,7 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
       setActiveProjectId(result.project.id);
       reloadActiveProjectAndRender();
       resetProjAddForm();
+      /* Tüm modal'lar zaten kapalı — kullanıcı doğrudan ana ekrana, yeni proje seçili */
       showToast(t("proj.created.toast", { name: result.project.name }), "success", 1800);
     },
     {
@@ -1143,7 +1235,16 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
       yesText: t("proj.add.confirmYes"),
       cancelText: t("confirm.cancel"),
       html: true,
-      wide: true
+      wide: true,
+      /* İptal/X/backdrop ile kapatılırsa kullanıcının yazdıkları kaybolmasın:
+         arkadaki frameworkModal ve önündeki projCreateModal yeniden açılsın,
+         focus input'a dönsün. State (input değeri + framework seçimi) sıfırlanmaz. */
+      onCancel: () => {
+        openModal("frameworkModal");
+        openModal("projCreateModal");
+        const inp = document.getElementById("projAddInput");
+        if (inp) setTimeout(() => inp.focus(), 60);
+      }
     }
   );
 });
@@ -1259,6 +1360,15 @@ document.getElementById("projList").addEventListener("click", (e) => {
     customConfirm(
       t("proj.delete.confirmMsg", { name: escapeHtml(proj.name) }),
       () => {
+        /* Aktif proje siliniyor + en az 3 proje var → kullanıcıya "hangisine
+           geçeyim" seçim modal'ı göster. Silme + geçiş tek seferde, seçim
+           modalında yapılır (orada ek onay alınmaz; bu noktada kullanıcı
+           silme onayını zaten verdi ve aktif projesi olmayacak). */
+        if (wasActive && projectsCount() >= 3) {
+          openProjPickNextModal(proj, deleteId);
+          return;
+        }
+        /* Tek aktif veya az proje durumu: mevcut otomatik geçiş davranışı sürer */
         const r = deleteProject(deleteId);
         if (!r.ok) {
           if (r.error === "lastOne") showToast(t("proj.delete.lastOne"), "warn", 2400);
@@ -1274,6 +1384,104 @@ document.getElementById("projList").addEventListener("click", (e) => {
       { title: t("proj.delete.confirmTitle"), yesText: t("proj.delete.confirmYes"), cancelText: t("confirm.cancel"), html: true }
     );
     return;
+  }
+});
+
+/* ==================== AKTİF PROJE SİLİNDİĞİNDE GEÇİŞ SEÇİM MODALI ==================== */
+
+/* Silme onayı verildikten sonra (aktif + 3+ proje koşulunda), kullanıcıya
+   "hangi projeye geçeyim" sorusunu soran modal. State şuralarda yaşar:
+   - pendingDeleteId: silinmek üzere olan projenin id'si
+   - pendingDeletedName: toast için ismini sakla
+   Seçim yapılana kadar silme henüz gerçekleşmez; seçim yapılınca delete +
+   setActive eş zamanlı çalışır (yarım kalmış aktif yok durumunu önler). */
+let pendingDeleteId = null;
+let pendingDeletedName = null;
+
+function openProjPickNextModal(deletedProj, deleteId) {
+  const listEl = document.getElementById("projPickList");
+  const subEl = document.getElementById("projPickSub");
+  if (!listEl) return;
+
+  pendingDeleteId = deleteId;
+  pendingDeletedName = deletedProj.name;
+
+  /* Alt yazı: hangi projenin silineceğini hatırlat */
+  if (subEl) subEl.innerHTML = t("proj.pickNext.sub", { name: escapeHtml(deletedProj.name) });
+
+  /* Listeyi doldur: silinen hariç tüm projeler; son güncellenen başta */
+  listEl.innerHTML = "";
+  const others = listProjects().filter(p => p.id !== deleteId);
+  others.sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
+  others.forEach(p => {
+    const li = document.createElement("li");
+    li.className = "proj-pick-item";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "proj-pick-btn";
+    btn.dataset.projPick = p.id;
+    const fwIcon = FRAMEWORK_META[p.data?.framework]?.icon || "";
+    btn.innerHTML = `
+      ${fwIcon ? `<span class="proj-pick-fw" aria-hidden="true">${escapeHtml(fwIcon)}</span>` : ""}
+      <span class="proj-pick-name">${escapeHtml(p.name)}</span>
+      <span class="proj-pick-arrow" aria-hidden="true">›</span>
+    `;
+    li.appendChild(btn);
+    listEl.appendChild(li);
+  });
+
+  /* Frameworks modal'ını kapat ki seçim modal'ı tek başına önde gelsin
+     (silme onayını verdik; kullanıcı X / backdrop ile bu modal'dan çıkarsa
+     aktif projesi olmayan tutarsız bir duruma düşmeyelim diye dikkat ediyoruz
+     — bu yüzden modal'ın yan kapatma yolu yine projeyi silmeden bırakır,
+     kullanıcı silme onayını bir daha verebilir.) */
+  closeModal("frameworkModal");
+  openModal("projPickNextModal");
+}
+
+/* Liste tıklaması → seçilen projeye geçiş + eski proje silme.
+   X / backdrop ile kapanış: state temizlenir, silme yapılmaz (kullanıcı
+   vazgeçti — confirmModal onayı verilmiş olsa da bu nokta hala "geri al"
+   sayılır çünkü silme henüz uygulanmadı). */
+document.getElementById("projPickList").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-proj-pick]");
+  if (!btn) return;
+  const targetId = btn.dataset.projPick;
+  if (!pendingDeleteId || !targetId) return;
+
+  const deletedName = pendingDeletedName;
+  const targetProj = findProjectById(targetId);
+
+  /* Sırayla: önce aktifi hedef'e taşı (deleteProject'in fallback'i çalışmasın),
+     sonra eskiyi sil. setActiveProjectId zaten saveProjectsToStorage çağırıyor. */
+  setActiveProjectId(targetId);
+  const r = deleteProject(pendingDeleteId);
+  if (!r.ok) {
+    showToast(t("proj.delete.lastOne"), "warn", 2400);
+    return;
+  }
+
+  pendingDeleteId = null;
+  pendingDeletedName = null;
+
+  reloadActiveProjectAndRender();
+  closeModal("projPickNextModal");
+  showToast(
+    t("proj.deletedAndSwitched.toast", { from: deletedName, to: targetProj?.name || "" }),
+    "success",
+    2200
+  );
+});
+
+/* Modal X / backdrop ile kapanırsa pending silme state'ini temizle.
+   (Silme yapılmaz; kullanıcı seçim yapmadan vazgeçti.) */
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-modal-close]")) {
+    const modal = e.target.closest(".modal");
+    if (modal && modal.id === "projPickNextModal") {
+      pendingDeleteId = null;
+      pendingDeletedName = null;
+    }
   }
 });
 

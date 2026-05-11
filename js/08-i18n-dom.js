@@ -37,10 +37,11 @@ function applyI18nToDom() {
     if (v && v !== key) el.setAttribute("data-locked-msg", v);
   });
 
-  /* Help modal içeriğini doldur */
+  /* Help modal içeriğini doldur ve accordion davranışını yeniden kur */
   const helpBody = document.getElementById("helpModalBody");
   if (helpBody && HELP_HTML[currentLang]) {
     helpBody.innerHTML = HELP_HTML[currentLang];
+    if (typeof enhanceHelpAccordion === "function") enhanceHelpAccordion();
   }
 
   /* html.lang attribute */

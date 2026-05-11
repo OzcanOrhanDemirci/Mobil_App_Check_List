@@ -79,7 +79,7 @@
           <span class="lang-sep" aria-hidden="true">/</span>
           <span class="lang-other">EN</span>
         </button>
-        <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje ve framework — değiştirmek için tıkla" data-i18n-title="proj.pill.title">
+        <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje ve framework; değiştirmek için tıkla" data-i18n-title="proj.pill.title">
           <span class="proj-pill-icon" aria-hidden="true">📁</span>
           <span class="proj-pill-name">Proje</span>
           <span class="proj-pill-sep" aria-hidden="true">·</span>
@@ -201,6 +201,10 @@
         <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
       </div>
     </header>
+    <div class="help-accordion-controls" role="group" aria-label="Bölüm açma/kapama" data-i18n-aria-label="help.accordion.aria">
+      <button type="button" class="btn ghost help-accordion-btn" id="helpExpandAll" data-i18n="help.accordion.expandAll" data-i18n-title="help.accordion.expandAllTitle" title="Tüm bölümleri aç">▾ Tümünü Aç</button>
+      <button type="button" class="btn ghost help-accordion-btn" id="helpCollapseAll" data-i18n="help.accordion.collapseAll" data-i18n-title="help.accordion.collapseAllTitle" title="Tüm bölümleri kapat">▸ Tümünü Kapat</button>
+    </div>
     <div class="modal-body" id="helpModalBody">
 
       <section>
@@ -219,7 +223,7 @@
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
         <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>üç adımda</strong> yardım eder:</p>
         <ul>
-          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir — yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
+          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
           <li><strong>2. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
@@ -579,9 +583,10 @@
     </header>
 
     <!-- Sekme şeridi -->
-    <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework">
+    <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework / Sıfırla">
       <button type="button" class="projfw-tab active" role="tab" aria-selected="true" data-projfw-tab="project" data-i18n="proj.tab.project">Proje</button>
       <button type="button" class="projfw-tab" role="tab" aria-selected="false" data-projfw-tab="framework" data-i18n="proj.tab.framework">Framework</button>
+      <button type="button" class="projfw-tab projfw-tab-reset" role="tab" aria-selected="false" data-projfw-tab="reset" data-i18n="proj.tab.reset">Sıfırla</button>
     </div>
 
     <div class="modal-body">
@@ -596,30 +601,55 @@
           <span class="proj-count" id="projCount">0 / 20</span>
         </div>
 
-        <!-- Yeni proje ekleme satırı (varsayılan: kapalı; "+ Yeni Proje" tıklanınca input açılır) -->
+        <!-- Yeni proje ekleme: "+ Yeni Proje" butonu ayrı bir modal (projCreateModal) açar -->
         <div class="proj-add-row" id="projAddRow">
           <button type="button" class="btn primary proj-add-btn" id="projAddBtn" title="Yeni proje oluştur" data-i18n-title="proj.add.title" data-i18n="proj.add.btn">+ Yeni Proje</button>
-          <div class="proj-add-form" id="projAddForm" hidden>
-            <input type="text" id="projAddInput" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Yeni proje adı" data-i18n-placeholder="proj.add.placeholder" data-i18n-aria-label="proj.add.placeholder" />
-            <div class="proj-add-fw-label" data-i18n="proj.add.fwHint">Hangi framework ile çalışacaksın?</div>
-            <div class="proj-add-fw-grid" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
-              <button type="button" class="proj-add-fw" data-add-fw="flutter"><span class="proj-add-fw-icon">🐦</span><span class="proj-add-fw-name">Flutter</span></button>
-              <button type="button" class="proj-add-fw" data-add-fw="reactNative"><span class="proj-add-fw-icon">⚛</span><span class="proj-add-fw-name">React Native</span></button>
-              <button type="button" class="proj-add-fw" data-add-fw="swift"><span class="proj-add-fw-icon">🍎</span><span class="proj-add-fw-name">Swift</span></button>
-              <button type="button" class="proj-add-fw" data-add-fw="kotlin"><span class="proj-add-fw-icon">🤖</span><span class="proj-add-fw-name">Kotlin</span></button>
-              <button type="button" class="proj-add-fw" data-add-fw="expo"><span class="proj-add-fw-icon">🚀</span><span class="proj-add-fw-name">Expo</span></button>
-              <button type="button" class="proj-add-fw" data-add-fw="pwa"><span class="proj-add-fw-icon">🌐</span><span class="proj-add-fw-name">PWA</span></button>
-            </div>
-            <div class="proj-add-form-row">
-              <button type="button" class="btn ghost proj-add-cancel" id="projAddCancel" data-i18n="proj.add.cancel">Vazgeç</button>
-              <button type="button" class="btn primary proj-add-create" id="projAddCreate" data-i18n="proj.add.create" disabled>Oluştur</button>
-            </div>
-            <div class="proj-add-error" id="projAddError" role="alert" aria-live="polite" hidden></div>
-          </div>
         </div>
 
         <!-- Proje listesi (JS doldurur) -->
         <ul class="proj-list" id="projList" aria-label="Projeler"></ul>
+      </div>
+
+      <!-- Sekme 3: Sıfırla (tam mod — proje içeriği + ayarlar + tüm sistem) -->
+      <div class="projfw-pane projfw-pane-reset" data-projfw-pane="reset" hidden>
+        <p class="reset-scope-sub" data-i18n="reset.scopeFullSub">Aktif projeyi, uygulama ayarlarını veya tüm sistemi sıfırlayabilirsin. Bir veya birden fazla seçenek seçebilirsin. "Tüm Sistem" seçilirse diğerleri otomatik iptal olur.</p>
+        <div class="reset-scope-options">
+          <label class="reset-scope-option" data-full-scope="selections">
+            <input type="checkbox" data-full-reset-scope="selections" />
+            <span class="reset-scope-icon" aria-hidden="true">📋</span>
+            <span class="reset-scope-text">
+              <span class="reset-scope-title" data-i18n="reset.scope.selections">Seçimler (MVP / Release)</span>
+              <span class="reset-scope-desc" data-i18n="reset.scope.selections.descActive">Aktif projenin MVP ve Release işaretleri silinir, ilerleme barları sıfırlanır.</span>
+            </span>
+          </label>
+          <label class="reset-scope-option" data-full-scope="notes">
+            <input type="checkbox" data-full-reset-scope="notes" />
+            <span class="reset-scope-icon" aria-hidden="true">📝</span>
+            <span class="reset-scope-text">
+              <span class="reset-scope-title" data-i18n="reset.scope.notes">Notlar</span>
+              <span class="reset-scope-desc" data-i18n="reset.scope.notes.descActive">Aktif projedeki her madde için yazdığın notlar silinir.</span>
+            </span>
+          </label>
+          <label class="reset-scope-option" data-full-scope="settings">
+            <input type="checkbox" data-full-reset-scope="settings" />
+            <span class="reset-scope-icon" aria-hidden="true">⚙️</span>
+            <span class="reset-scope-text">
+              <span class="reset-scope-title" data-i18n="reset.scope.settingsGlobal">Ayarlar (tüm projeler için)</span>
+              <span class="reset-scope-desc" data-i18n="reset.scope.settingsGlobal.desc">Tema (koyu), aktif projenin kategori açık/kapalı durumu, seviye filtreleri ve kilit varsayılana döner. Tema global olduğundan tüm projelerini etkiler.</span>
+            </span>
+          </label>
+          <label class="reset-scope-option danger" data-full-scope="system">
+            <input type="checkbox" data-full-reset-scope="system" />
+            <span class="reset-scope-icon" aria-hidden="true">⚠️</span>
+            <span class="reset-scope-text">
+              <span class="reset-scope-title" data-i18n="reset.scope.system">Tüm Sistem</span>
+              <span class="reset-scope-desc" data-i18n="reset.scope.system.desc">Her şey silinir: tüm projeler, işaretler, notlar, ayarlar, dil, framework. Uygulama ilk açılıştaki gibi başlar.</span>
+            </span>
+          </label>
+        </div>
+        <div class="reset-scope-actions">
+          <button type="button" class="btn primary" id="projfwResetNext" disabled data-i18n="reset.continue">İleri ›</button>
+        </div>
       </div>
 
       <!-- Sekme 2: Framework seçici (mevcut davranışa eşdeğer) -->
@@ -663,6 +693,52 @@
   </div>
 </div>
 
+<!-- Yeni proje oluşturma modalı (Proje/Framework modalındaki "+Yeni Proje" tetikler) -->
+<div class="modal" id="projCreateModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-proj-create" role="dialog" aria-modal="true" aria-labelledby="projCreateTitle">
+    <header class="modal-head">
+      <h2 id="projCreateTitle" data-i18n="proj.create.title">Yeni Proje Oluştur</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="proj-create-sub" data-i18n="proj.create.sub">Yeni projene bir isim ver ve hangi framework ile çalışacağını seç. Mevcut projendeki tüm veriler kayıtlı kalır.</p>
+      <div class="proj-add-form" id="projAddForm">
+        <input type="text" id="projAddInput" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Yeni proje adı" data-i18n-placeholder="proj.add.placeholder" data-i18n-aria-label="proj.add.placeholder" />
+        <div class="proj-add-fw-label" data-i18n="proj.add.fwHint">Hangi framework ile çalışacaksın?</div>
+        <div class="proj-add-fw-grid" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
+          <button type="button" class="proj-add-fw" data-add-fw="flutter"><span class="proj-add-fw-icon">🐦</span><span class="proj-add-fw-name">Flutter</span></button>
+          <button type="button" class="proj-add-fw" data-add-fw="reactNative"><span class="proj-add-fw-icon">⚛</span><span class="proj-add-fw-name">React Native</span></button>
+          <button type="button" class="proj-add-fw" data-add-fw="swift"><span class="proj-add-fw-icon">🍎</span><span class="proj-add-fw-name">Swift</span></button>
+          <button type="button" class="proj-add-fw" data-add-fw="kotlin"><span class="proj-add-fw-icon">🤖</span><span class="proj-add-fw-name">Kotlin</span></button>
+          <button type="button" class="proj-add-fw" data-add-fw="expo"><span class="proj-add-fw-icon">🚀</span><span class="proj-add-fw-name">Expo</span></button>
+          <button type="button" class="proj-add-fw" data-add-fw="pwa"><span class="proj-add-fw-icon">🌐</span><span class="proj-add-fw-name">PWA</span></button>
+        </div>
+        <div class="proj-add-error" id="projAddError" role="alert" aria-live="polite" hidden></div>
+        <div class="proj-add-form-row">
+          <button type="button" class="btn ghost proj-add-cancel" id="projAddCancel" data-i18n="proj.add.cancel">Vazgeç</button>
+          <button type="button" class="btn primary proj-add-create" id="projAddCreate" data-i18n="proj.add.create" disabled>Oluştur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Aktif proje silindiğinde "hangi projeye geçeyim" seçim modalı (sadece 3+ proje varken tetiklenir) -->
+<div class="modal" id="projPickNextModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-proj-pick" role="dialog" aria-modal="true" aria-labelledby="projPickTitle">
+    <header class="modal-head">
+      <h2 id="projPickTitle" data-i18n="proj.pickNext.title">Hangi projeye geçiş yapmak istersin?</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="proj-pick-sub" id="projPickSub"></p>
+      <ul class="proj-pick-list" id="projPickList" aria-label="Projeler"></ul>
+    </div>
+  </div>
+</div>
+
 <!-- Yükleme talimatı modalı -->
 <div class="modal" id="installModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
@@ -678,16 +754,16 @@
   </div>
 </div>
 
-<!-- Reset scope seçim modalı (2 aşamalı reset akışının 1. adımı) -->
+<!-- Reset scope seçim modalı (toolbar Sıfırla butonu açar — sadece aktif proje içeriği) -->
 <div class="modal" id="resetScopeModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-reset-scope" role="dialog" aria-modal="true" aria-labelledby="resetScopeTitle">
     <header class="modal-head">
-      <h2 id="resetScopeTitle" data-i18n="reset.scopeTitle">Neyi sıfırlamak istersin?</h2>
+      <h2 id="resetScopeTitle" data-i18n="reset.scopeProjectTitle">Bu projeyi sıfırla</h2>
       <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
     </header>
     <div class="modal-body">
-      <p class="reset-scope-sub" data-i18n="reset.scopeSub">Bir veya birden fazla seçenek seçebilirsin. "Tüm Sistem" seçilirse diğerleri otomatik iptal olur.</p>
+      <p class="reset-scope-sub" data-i18n="reset.scopeProjectSub">Aktif projenin içeriğini sıfırla. Diğer projelerine ve genel ayarlara dokunulmaz. Tüm sistem veya ayarlar için "Proje ve Framework → Sıfırla" sekmesini kullan.</p>
       <div class="reset-scope-options">
         <label class="reset-scope-option" data-scope="selections">
           <input type="checkbox" data-reset-scope="selections" />
@@ -703,22 +779,6 @@
           <span class="reset-scope-text">
             <span class="reset-scope-title" data-i18n="reset.scope.notes">Notlar</span>
             <span class="reset-scope-desc" data-i18n="reset.scope.notes.desc">Her madde için yazdığın notlar silinir.</span>
-          </span>
-        </label>
-        <label class="reset-scope-option" data-scope="settings">
-          <input type="checkbox" data-reset-scope="settings" />
-          <span class="reset-scope-icon" aria-hidden="true">⚙️</span>
-          <span class="reset-scope-text">
-            <span class="reset-scope-title" data-i18n="reset.scope.settings">Ayarlar</span>
-            <span class="reset-scope-desc" data-i18n="reset.scope.settings.desc">Kategori açık/kapalı durumu, tema, seviye filtreleri ve kilit varsayılana döner.</span>
-          </span>
-        </label>
-        <label class="reset-scope-option danger" data-scope="system">
-          <input type="checkbox" data-reset-scope="system" />
-          <span class="reset-scope-icon" aria-hidden="true">⚠️</span>
-          <span class="reset-scope-text">
-            <span class="reset-scope-title" data-i18n="reset.scope.system">Tüm Sistem</span>
-            <span class="reset-scope-desc" data-i18n="reset.scope.system.desc">Her şey silinir: işaretler, notlar, ayarlar, dil, framework. Uygulama ilk açılıştaki gibi başlar.</span>
           </span>
         </label>
       </div>

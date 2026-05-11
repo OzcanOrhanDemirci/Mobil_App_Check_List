@@ -1,4 +1,4 @@
-/* Help modalı içeriği — uzun, ayrı tanımlı */
+/* Help modalı içeriği, uzun olduğu için ayrı dosyada tanımlı */
 const HELP_HTML = {
   tr: `
       <section>
@@ -15,10 +15,11 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>üç adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>dört adımda</strong> yardım eder:</p>
         <ul>
-          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir — yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
-          <li><strong>2. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
+          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
+          <li><strong>2. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
+          <li><strong>3. Adım: Framework Seçimi.</strong> Bu proje hangi yazılım dili / çerçevesi ile geliştirilecek? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
@@ -28,9 +29,50 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>3. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
+          <li><strong>4. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
-        <p>Seçtiğin framework, listedeki <strong>28 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır.</p>
+        <p>Seçtiğin framework, listedeki <strong>28 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır; toplam <strong>53 madde</strong>.</p>
+      </section>
+
+      <section>
+        <h3>📁 Çoklu Proje Yönetimi (20 Projeye Kadar)</h3>
+        <p>Aynı uygulamada birden fazla projenin kontrol listesini tutabilirsin (örn. "ChefOl iOS", "Liman Takibi", "Final ödevi"). Her proje <strong>kendi verisini izole biçimde saklar</strong>; biri diğerini etkilemez. Aktif olduğun proje, sayfa başlığının sağındaki <strong>📁 proje pill'i</strong> ile gösterilir: "📁 ChefOl iOS · 🐦 Flutter" gibi.</p>
+
+        <p><strong>Her projede ayrı tutulan veriler:</strong></p>
+        <ul>
+          <li>Seçilen framework (her proje farklı bir framework ile çalışabilir)</li>
+          <li>MVP / Release işaretleri ve ilerleme barı</li>
+          <li>Madde notları</li>
+          <li>Kategori açık/kapalı durumu</li>
+          <li>Görünüm filtresi (MVP / Release / Tümü, Yapılan / Yapılacak)</li>
+          <li>Kilit durumu</li>
+          <li>Kutlama bayrakları (kutlamayı bir kez gördüğünü hatırlar)</li>
+        </ul>
+        <p><strong>Projeler arasında paylaşılan ayarlar:</strong> Tema (koyu/açık) ve dil (TR/EN) tüm projelerde ortaktır.</p>
+
+        <p><strong>Proje pill'ine tıklayınca "Proje ve Framework" modal'ı açılır ve üç sekmesi vardır:</strong></p>
+        <ul>
+          <li><strong>📁 Proje sekmesi</strong>:
+            <ul>
+              <li>Sağ üstte <strong>"n / 20 proje"</strong> sayacı.</li>
+              <li><strong>"+ Yeni Proje"</strong> butonu → ayrı bir modal açılır: proje adına yaz, 6 framework seçeneğinden birini seç, <strong>"Oluştur"</strong> butonuna bas. Onay penceresinde projenin oluşturulacağı + mevcut projenin verisinin kayıtlı kalacağı belirtilir. Onayla → yeni proje otomatik aktif yapılır, ana ekrana yeni listesiyle dönersin. İptal edersen yazdıkların korunur, baştan girmen gerekmez.</li>
+              <li><strong>Proje listesi</strong>: tüm projelerin satır satır. Her satırda framework ikonu, isim, sağda ✏ <strong>Düzenle</strong> ve 🗑 <strong>Sil</strong> butonları. Aktif olan satır turuncu vurguludur.</li>
+              <li><strong>Başka projeye geçiş</strong>: bir satıra tıkla → onay penceresi açılır (mevcut projenin verisinin kayıtlı kalacağı, hedef projeye geçileceği belirtilir) → onayla → uygulama yeni projeyi yükler ve ana ekrana döner. Aktif olan satıra tıklamak hiçbir şey yapmaz (zaten içindesin).</li>
+              <li><strong>Ad değiştirme</strong> (✏): satır rename moduna girer, yeni isim yaz → Kaydet. Aynı isimde başka proje varsa hata gösterir.</li>
+              <li><strong>Silme</strong> (🗑): onay alındıktan sonra proje ve tüm verisi (işaretler, notlar, ayarlar) kalıcı olarak silinir. <em>Son projeyi silemezsin</em>, çünkü her zaman en az 1 proje olmalı; silme butonu disabled olur.</li>
+            </ul>
+          </li>
+          <li><strong>🔄 Framework sekmesi</strong>: Aktif projenin framework'ünü değiştirir. Detayları aşağıdaki "Framework Değiştirme" bölümünde anlatılıyor.</li>
+        </ul>
+
+        <p><strong>🎯 Aktif projeyi silme: akıllı geçiş seçimi</strong>. Üzerinde çalıştığın aktif projeyi silmek istersen, silme onayından sonra:</p>
+        <ul>
+          <li><strong>3 veya daha fazla projen varsa</strong>: "Hangi projeye geçiş yapmak istersin?" başlıklı bir pencere açılır. Kalan projelerin listesini görürsün (son güncellenen başta). Bir satıra tıkladığında: eski proje silinir, seçtiğin proje aktif olur, ana ekrana onun listesiyle dönersin. Ek bir onaya gerek yok.</li>
+          <li><strong>2 projen varsa</strong>: kalan tek projeye otomatik geçilir, ayrıca soru sorulmaz.</li>
+        </ul>
+
+        <p><strong>💡 Pratik kullanım:</strong> Aynı uygulamayı bir hocaya, başka birine farklı bir frameworkle göstermek istiyorsan iki ayrı proje açabilirsin. Veya birden fazla bitirme/staj projesini tek bir tarayıcıda yönetebilirsin.</p>
+        <p><strong>⚠️ Yedek hakkında not:</strong> Aşağıdaki <strong>"Dışa Aktar"</strong> şu an aktif olan projenin işaret ve notlarını yedekler; diğer projeleri kapsamaz. Birden fazla projenin yedeğini almak için her birine geçip ayrı ayrı dışa aktar.</p>
       </section>
 
       <section>
@@ -54,10 +96,11 @@ const HELP_HTML = {
 
       <section>
         <h3>🌐 Dil Değiştirme (TR / EN)</h3>
-        <p>Sayfanın üst başlık alanında, framework butonunun yanında <strong>🌐 TR / EN</strong> butonu vardır. Tıkladığında uygulama anında <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında geçiş yapar.</p>
+        <p>Sayfanın üst başlık alanında, proje pill'inin solunda <strong>🌐 TR / EN</strong> butonu vardır. Tıkladığında uygulama anında <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında geçiş yapar.</p>
         <ul>
-          <li>Tüm metinler tercüme edilir: kategoriler, 46 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
+          <li>Tüm metinler tercüme edilir: kategoriler, 53 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
           <li>Hangi framework'ü seçtiysen, onun varyant metinleri de seçilen dilde gösterilir.</li>
+          <li><strong>Dil tüm projelerde ortaktır</strong> (tema gibi global ayar). Bir projede dili değiştirirsen tüm projelerde aynı dil olur.</li>
           <li>Tercihin <strong>tarayıcına kaydedilir</strong>; sonraki açılışta seçtiğin dil aktif gelir.</li>
           <li>İlk kez girişte karşılama akışı sana ilk önce <strong>dil seçtirir</strong>; o seçim hem ekranı hem sonraki framework adımının metnini belirler.</li>
         </ul>
@@ -83,13 +126,15 @@ const HELP_HTML = {
 
       <section>
         <h3>🔄 Framework Değiştirme</h3>
-        <p>Üstteki başlık alanında <strong>framework butonu</strong> (örn. "🐦 Flutter ▾") vardır. Tıkladığında küçük bir pencere açılır ve <strong>farklı bir frameworke</strong> geçebilirsin.</p>
+        <p>Aktif projenin framework'ünü dilediğin zaman değiştirebilirsin. Üst başlıktaki <strong>📁 proje pill</strong>'ine tıkla → açılan modalın <strong>"Framework" sekmesine</strong> geç → 6 seçenekten birine tıkla → onay penceresi gelir, "Geçiş yap" de.</p>
         <p>Geçiş yaptığında:</p>
         <ul>
           <li>İlgili 28 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
           <li><strong>İşaretlemelerin ve notların kaybolmaz</strong>: aynı kalır. Sadece anlatım dili / paket adları değişir.</li>
+          <li>Değişiklik sadece <strong>aktif projeye</strong> etki eder; diğer projelerin framework'ü değişmez.</li>
           <li>İstediğin zaman tekrar değiştirebilirsin.</li>
         </ul>
+        <p><em>💡 İpucu:</em> Aynı uygulamayı iki ayrı frameworkte denemek istiyorsan, framework değiştirmek yerine <strong>"+ Yeni Proje"</strong> ile aynı isimde ikinci bir proje açıp ona farklı framework seç. Böylece her ikisinde de işaretlerini ayrı tutarsın.</p>
       </section>
 
       <section>
@@ -216,24 +261,32 @@ const HELP_HTML = {
       <section>
         <h3>💾 Veri Yönetimi (Yedek Al / Geri Yükle / Sıfırla)</h3>
         <ul>
-          <li><strong>Dışa Aktar</strong>: tüm işaretler ve notlar tek bir <strong>JSON dosyası</strong> olarak bilgisayarına iner. Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur. <em>İlk işaret/not eklenmeden buton gri durur (yedeklenecek bir şey yok).</em></li>
-          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seç → <strong>tüm işaretler ve notlar geri yüklenir</strong>. Yeni cihazda devam etmek için kullanılır.</li>
-          <li><strong>Sıfırla</strong>: 2 aşamalı modal açar.
+          <li><strong>Dışa Aktar</strong>: <strong>aktif</strong> projenin işaretlerini ve notlarını tek bir <strong>JSON dosyası</strong> olarak bilgisayarına indirir (örn. <code>mobil-kontrol-2026-05-11.json</code>). Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur. <em>İlk işaret/not eklenmeden buton gri durur (yedeklenecek bir şey yok).</em> <em>Not: Birden fazla projen varsa, her birinin yedeğini ayrı ayrı almak için önce ilgili projeye geçmen gerekir.</em></li>
+          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seç → <strong>aktif projenin işaretleri ve notları yüklenir</strong>. Yeni cihazda devam etmek veya yedekten geri dönmek için kullanılır.</li>
+          <li><strong>Sıfırla:</strong> Sıfırlamanın iki ayrı giriş noktası vardır.
             <ul>
-              <li><strong>1. Aşama</strong> — Neyi sıfırlamak istediğini seç (4 seçenek):
+              <li><strong>① Toolbar'daki "Sıfırla" butonu</strong> (kısayol, sadece aktif proje içeriği için):
                 <ul>
-                  <li>📋 <strong>Seçimler</strong> (MVP / Release işaretleri ve ilerleme)</li>
-                  <li>📝 <strong>Notlar</strong> (her madde için yazdıklarını siler)</li>
-                  <li>⚙️ <strong>Ayarlar</strong> (kategori açık/kapalı, tema, filtreler, kilit varsayılana döner)</li>
-                  <li>⚠️ <strong>Tüm Sistem</strong> (her şey: işaretler, notlar, ayarlar, dil, framework — ilk açılışa döner, karşılama akışı tekrar gelir)</li>
+                  <li>📋 <strong>Seçimler</strong> (aktif projedeki MVP / Release işaretleri ve ilerleme)</li>
+                  <li>📝 <strong>Notlar</strong> (aktif projedeki her madde için yazdıklarını siler)</li>
                 </ul>
+                İkisi birden veya birini seçebilirsin. Diğer projelere ve ayarlara dokunulmaz. Projeni temizleyip baştan başlamak istediğinde en hızlı yoldur.
               </li>
-              <li>İlk üçünü serbestçe kombinleyebilirsin. "Tüm Sistem" seçilirse diğer üçü <em>otomatik kapanır + disabled</em> olur (zaten her şeyi kapsıyor).</li>
-              <li><strong>2. Aşama</strong> — onay metni ne sileceğini madde-madde gösterir. Onaylarsan sıfırlama uygulanır.</li>
+              <li><strong>② Proje pill → "Sıfırla" sekmesi</strong> (tam mod, dört seçenek):
+                <ul>
+                  <li>📋 <strong>Seçimler</strong> (aktif proje)</li>
+                  <li>📝 <strong>Notlar</strong> (aktif proje)</li>
+                  <li>⚙️ <strong>Ayarlar (tüm projeler için)</strong>: kategori açık/kapalı durumu, tema, seviye filtreleri ve kilit varsayılana döner.</li>
+                  <li>⚠️ <strong>Tüm Sistem</strong>: her şey silinir. Tüm projeler, işaretler, notlar, ayarlar, dil ve framework sıfırlanır. Uygulama ilk açılışa döner, karşılama akışı tekrar gelir.</li>
+                </ul>
+                Bu sekmede her seçeneği serbestçe kombinleyebilirsin. "Tüm Sistem" seçilirse diğerleri <em>otomatik kapanır ve disabled</em> olur (zaten her şeyi kapsıyor).
+              </li>
             </ul>
+            <strong>Onay aşaması:</strong> Hangi girişten gelirsen gel "İleri" tıklayınca onay penceresi açılır ve ne sileceğini madde-madde gösterir; onaylarsan sıfırlama uygulanır.
           </li>
         </ul>
-        <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>"Dışa Aktar" ile yedek almak</strong> iyi alışkanlıktır; tarayıcı verisi tarayıcı temizliğinde silinebilir.</p>
+        <p><strong>💡 Neden iki giriş?</strong> Toolbar butonu sadece proje içeriğiyle sınırlı tutuldu ki kazara "Tüm Sistem" veya genel ayarlar sıfırlanmasın. Tema, kilit gibi varsayılan ayarlara dönmek ya da tüm sistemi sıfırlamak gibi büyük işlemler bilinçli olarak Proje/Framework modalının altındaki Sıfırla sekmesine taşındı.</p>
+        <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>"Dışa Aktar" ile yedek almak</strong> iyi alışkanlıktır; tarayıcı verisi tarayıcı temizliğinde silinebilir. "Tüm Sistem" sıfırlaması geri alınamaz; kullanmadan önce mevcut projelerini yedeklemeyi düşün.</p>
       </section>
 
       <section>
@@ -287,7 +340,7 @@ const HELP_HTML = {
           <li><kbd>Esc</kbd><span>Açık modal / dropdown / sunum modundan çık</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Tarayıcı yazdır (PDF kaydet de mümkün)</span></li>
         </ul>
-        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) tetiklenmez — yazdığın metni bozmaz.</em></p>
+        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) tetiklenmez; yazdığın metni bozmaz.</em></p>
       </section>
   `,
   en: `
@@ -305,10 +358,11 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 First Run: Welcome Flow</h3>
-        <p>The first time you open the app a welcome dialog appears and helps you in <strong>three steps</strong>:</p>
+        <p>The first time you open the app a welcome dialog appears and guides you through <strong>four steps</strong>:</p>
         <ul>
-          <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong> — you can read the help in either language (momentary, not saved).</em></li>
-          <li><strong>Step 2: Pick a framework.</strong> Which language / framework are you using? Pick one of 6 options:
+          <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong>, so you can read the help in either language (momentary, not saved).</em></li>
+          <li><strong>Step 2: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
+          <li><strong>Step 3: Pick a framework.</strong> Which language / framework will this project use? Pick one of 6 options:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google's framework that builds Android + iOS from one codebase (<em>Dart</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta's cross-platform framework written in JavaScript / TypeScript (bare CLI).</li>
@@ -318,9 +372,50 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web technologies (HTML/CSS/JS) installable on phones via "Add to Home Screen".</li>
             </ul>
           </li>
-          <li><strong>Step 3: Welcome.</strong> After picking the framework, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
+          <li><strong>Step 4: Welcome.</strong> After picking the framework, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
         </ul>
-        <p>The framework you pick determines how <strong>28 items appear</strong> (package names, build commands, code samples differ). 25 items are common across all frameworks.</p>
+        <p>The framework you pick determines how <strong>28 items appear</strong> (package names, build commands, code samples differ). 25 items are common across all frameworks, for a total of <strong>53 items</strong>.</p>
+      </section>
+
+      <section>
+        <h3>📁 Multi-Project Management (Up to 20 Projects)</h3>
+        <p>You can track multiple projects' checklists in the same app (e.g. "ChefOl iOS", "Port Tracker", "Capstone project"). Each project keeps its <strong>own isolated data</strong>; one doesn't affect another. The active project is shown by the <strong>📁 project pill</strong> on the right of the page header: e.g. "📁 ChefOl iOS · 🐦 Flutter".</p>
+
+        <p><strong>Data stored per-project:</strong></p>
+        <ul>
+          <li>Chosen framework (each project can use a different framework)</li>
+          <li>MVP / Release marks and progress bars</li>
+          <li>Item notes</li>
+          <li>Category open/closed state</li>
+          <li>View filter (MVP / Release / All, Done / Pending)</li>
+          <li>Lock state</li>
+          <li>Celebration flags (so you only see each celebration once)</li>
+        </ul>
+        <p><strong>Settings shared across projects:</strong> Theme (dark/light) and language (TR/EN) are global; switching them in any project applies to all.</p>
+
+        <p><strong>Click the project pill to open the "Project and Framework" modal; it has three tabs:</strong></p>
+        <ul>
+          <li><strong>📁 Project tab</strong>:
+            <ul>
+              <li>The <strong>"n / 20 projects"</strong> counter at the top right.</li>
+              <li><strong>"+ New Project"</strong> button → opens a separate modal: type a name, pick one of the 6 frameworks, click <strong>"Create"</strong>. A confirmation explains that the new project will be created and that your current project's data stays saved. Confirm → the new project becomes active and you return to the main screen with its fresh list. If you cancel the confirmation, your inputs are preserved so you don't have to retype them.</li>
+              <li><strong>Project list</strong>: every project on its own row. Each row shows framework icon, name, and ✏ <strong>Rename</strong> / 🗑 <strong>Delete</strong> buttons on the right. The active row is highlighted in orange.</li>
+              <li><strong>Switch project</strong>: click a row → a confirmation appears (current project's data stays saved, target project will become active) → confirm → the app loads the new project and returns to the main screen. Clicking the active row does nothing (you're already there).</li>
+              <li><strong>Rename</strong> (✏): the row enters rename mode; type a new name → Save. An error is shown if another project has the same name.</li>
+              <li><strong>Delete</strong> (🗑): after confirmation, the project and all its data (marks, notes, settings) are permanently deleted. <em>You can't delete the last remaining project</em>, because at least one must remain; the delete button becomes disabled.</li>
+            </ul>
+          </li>
+          <li><strong>🔄 Framework tab</strong>: Changes the active project's framework. Details below in "Switch Framework".</li>
+        </ul>
+
+        <p><strong>🎯 Deleting the active project: smart switch picker.</strong> If you delete the project you're currently working on, after the deletion confirmation:</p>
+        <ul>
+          <li><strong>If you have 3 or more projects</strong>: a "Which project do you want to switch to?" dialog opens. You see the remaining projects (most recently updated first). Click one → the old project is deleted, the chosen one becomes active, and you return to the main screen with its list. No extra confirmation is needed.</li>
+          <li><strong>If you have 2 projects</strong>: the remaining one is automatically activated without asking.</li>
+        </ul>
+
+        <p><strong>💡 Practical use:</strong> If you want to show the same app to one instructor with Flutter and to another with React Native, open two separate projects. Or manage multiple capstone / internship projects in a single browser.</p>
+        <p><strong>⚠️ Note about backup:</strong> The <strong>"Export"</strong> button below backs up only the <strong>active project</strong>'s marks and notes; it does not include other projects. To back up multiple projects, switch into each and export separately.</p>
       </section>
 
       <section>
@@ -344,10 +439,11 @@ const HELP_HTML = {
 
       <section>
         <h3>🌐 Switch Language (TR / EN)</h3>
-        <p>In the page header, next to the framework button, there is a <strong>🌐 TR / EN</strong> button. Click it to switch instantly between <strong>Turkish</strong> and <strong>English</strong>.</p>
+        <p>In the page header, just left of the project pill, there is a <strong>🌐 TR / EN</strong> button. Click it to switch instantly between <strong>Turkish</strong> and <strong>English</strong>.</p>
         <ul>
-          <li>Every text is translated: categories, the 46 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
+          <li>Every text is translated: categories, the 53 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
           <li>Whichever framework you picked, its variant texts also appear in the chosen language.</li>
+          <li><strong>Language is global across all projects</strong> (like theme). Switching it in one project switches it everywhere.</li>
           <li>Your preference is <strong>saved in the browser</strong>; the chosen language is active on next open.</li>
           <li>On the very first run, the welcome flow first asks you to <strong>pick a language</strong>; that choice drives the UI as well as the framework step that follows.</li>
         </ul>
@@ -373,13 +469,15 @@ const HELP_HTML = {
 
       <section>
         <h3>🔄 Switch Framework</h3>
-        <p>The header has a <strong>framework button</strong> (e.g. "🐦 Flutter ▾"). Click it to switch to a <strong>different framework</strong>.</p>
+        <p>You can change the active project's framework any time. Click the <strong>📁 project pill</strong> in the header → switch to the <strong>"Framework" tab</strong> in the modal → click one of the 6 options → a confirmation appears, click "Switch".</p>
         <p>When you switch:</p>
         <ul>
           <li>The 28 framework-specific items <strong>change instantly</strong> (e.g. "<code>flutter build apk</code>" becomes "<code>eas build --platform android</code>").</li>
           <li><strong>Your marks and notes are NOT lost</strong>: they stay. Only wording / package names change.</li>
+          <li>The change affects only the <strong>active project</strong>; other projects' frameworks stay the same.</li>
           <li>You can switch back any time.</li>
         </ul>
+        <p><em>💡 Tip:</em> If you want to try the same app in two different frameworks, instead of switching, use <strong>"+ New Project"</strong> to create a second project (same or similar name) with a different framework. That way you keep separate marks in each.</p>
       </section>
 
       <section>
@@ -391,7 +489,7 @@ const HELP_HTML = {
           <li>The <strong>Framework</strong> switch button is disabled.</li>
           <li><strong>Reset</strong> and <strong>Import</strong> are disabled (so you can't accidentally lose data).</li>
           <li><strong>Print</strong> and <strong>Export</strong> are visually emphasized (the natural actions while locked: print / back up).</li>
-          <li><strong>Notes, search, filters, categories, theme, presentation, language switching</strong> still work — only data-mutating actions are blocked.</li>
+          <li><strong>Notes, search, filters, categories, theme, presentation, language switching</strong> still work; only data-mutating actions are blocked.</li>
         </ul>
         <p>A thin <strong>"🔒 List locked"</strong> banner appears below the hero so you don't forget the lock is active.</p>
         <p>The lock state is <strong>saved in your browser</strong>; closing and reopening the app keeps it locked. To edit again, press <strong>"Unlock"</strong> and confirm.</p>
@@ -421,9 +519,9 @@ const HELP_HTML = {
 
       <section>
         <h3>🧭 Smart Category Navigation</h3>
-        <p>The <strong>14 category chips</strong> at the top (e.g. "01. Project Idea and Planning") aren't simple scroll-to-anchor links — they perform <strong>smart navigation</strong>:</p>
+        <p>The <strong>14 category chips</strong> at the top (e.g. "01. Project Idea and Planning") aren't simple scroll-to-anchor links; they perform <strong>smart navigation</strong>:</p>
         <ul>
-          <li>Clicking a chip scrolls not to the category header but to <strong>"where you left off"</strong> — the next item that needs attention.</li>
+          <li>Clicking a chip scrolls not to the category header but to <strong>"where you left off"</strong>, namely the next item that needs attention.</li>
           <li>The target depends on the active filter:
             <ul>
               <li><strong>MVP filter active</strong> → first item with an unchecked MVP.</li>
@@ -436,7 +534,7 @@ const HELP_HTML = {
           <li><strong>Category collapsed?</strong> → it auto-expands, then smooth-scrolls to the target.</li>
           <li>The sticky toolbar height is accounted for; the target item lands just below the toolbar, not behind it.</li>
         </ul>
-        <p>So in a 30+ hour project, without searching, without opening collapsed categories — one chip click takes you to the <strong>next item to do</strong>.</p>
+        <p>So in a 30+ hour project, without searching and without opening collapsed categories, one chip click takes you to the <strong>next item to do</strong>.</p>
       </section>
 
       <section>
@@ -506,24 +604,32 @@ const HELP_HTML = {
       <section>
         <h3>💾 Data Management (Backup / Restore / Reset)</h3>
         <ul>
-          <li><strong>Export</strong>: downloads all marks and notes as a single <strong>JSON file</strong>. A safety net in case the browser is wiped or you want to migrate. <em>If there are no marks AND no notes yet, the button is greyed out (nothing to export).</em></li>
-          <li><strong>Import</strong>: pick a previously downloaded JSON file → <strong>marks and notes are restored</strong>. Used to continue on a new device.</li>
-          <li><strong>Reset</strong>: opens a 2-step modal.
+          <li><strong>Export</strong>: downloads the <strong>active</strong> project's marks and notes as a single <strong>JSON file</strong> (e.g. <code>mobil-kontrol-2026-05-11.json</code>). A safety net in case the browser is wiped or you want to migrate. <em>If there are no marks AND no notes yet, the button is greyed out (nothing to export).</em> <em>Note: With multiple projects, switch into each one and export separately to back up everything.</em></li>
+          <li><strong>Import</strong>: pick a previously downloaded JSON file → <strong>the active project's marks and notes are restored</strong>. Used to continue on a new device or restore from a backup.</li>
+          <li><strong>Reset:</strong> Reset has two separate entry points.
             <ul>
-              <li><strong>Step 1</strong> — pick what to reset (4 options):
+              <li><strong>① The toolbar "Reset" button</strong> (shortcut, scoped to the active project's contents only):
                 <ul>
-                  <li>📋 <strong>Selections</strong> (MVP / Release marks and progress)</li>
-                  <li>📝 <strong>Notes</strong> (deletes everything you've written per item)</li>
-                  <li>⚙️ <strong>Settings</strong> (category open/closed, theme, filters, lock revert to defaults)</li>
-                  <li>⚠️ <strong>Whole System</strong> (everything: marks, notes, settings, language, framework — back to first launch, welcome flow appears again)</li>
+                  <li>📋 <strong>Selections</strong> (the active project's MVP / Release marks and progress)</li>
+                  <li>📝 <strong>Notes</strong> (deletes the active project's notes per item)</li>
                 </ul>
+                Pick one or both. Other projects and global settings remain untouched. Use this for the everyday case of wiping a project and starting fresh.
               </li>
-              <li>The first three combine freely. Picking "Whole System" <em>auto-unchecks and disables</em> the other three (already covers everything).</li>
-              <li><strong>Step 2</strong> — the confirmation lists exactly what will be deleted. Confirm to apply the reset.</li>
+              <li><strong>② Project pill → "Reset" tab</strong> (full mode, four options):
+                <ul>
+                  <li>📋 <strong>Selections</strong> (active project)</li>
+                  <li>📝 <strong>Notes</strong> (active project)</li>
+                  <li>⚙️ <strong>Settings (for all projects)</strong>: category open/closed state, theme, level filters and lock revert to defaults.</li>
+                  <li>⚠️ <strong>Whole System</strong>: everything is wiped. All projects, marks, notes, settings, language and framework are reset. The app starts like first launch; the welcome flow appears again.</li>
+                </ul>
+                Combine options freely here. Picking "Whole System" <em>auto-unchecks and disables</em> the others (already covers everything).
+              </li>
             </ul>
+            <strong>Confirmation step:</strong> No matter which entry point you use, clicking "Next" opens a confirmation dialog that lists exactly what will be deleted; confirm to apply.
           </li>
         </ul>
-        <p><strong>💡 Tip:</strong> Get into the habit of <strong>exporting at major milestones</strong>; browser data can be wiped by browser cleanup.</p>
+        <p><strong>💡 Why two entry points?</strong> The toolbar button is intentionally scoped to project contents so you can't accidentally reset "Whole System" or global settings. Bigger actions like reverting theme and lock to defaults, or wiping the whole system, live deliberately inside the Project/Framework modal's Reset tab.</p>
+        <p><strong>💡 Tip:</strong> Get into the habit of <strong>exporting at major milestones</strong>; browser data can be wiped by browser cleanup. "Whole System" reset is irreversible; consider backing up your projects before using it.</p>
       </section>
 
       <section>
@@ -562,7 +668,7 @@ const HELP_HTML = {
           <li>If the banner is unsupported (e.g. iOS Safari, Firefox desktop), a <strong>device-specific step-by-step instructions modal</strong> opens. The modal auto-detects your platform (iOS Safari, Android Chrome, Samsung Internet, Firefox, Edge, macOS Safari, etc.) and shows the right menu path (e.g. "Share → Add to Home Screen" in Safari).</li>
           <li>If you dismiss the banner it won't return (your browser is flagged). You can still install manually from your browser menu.</li>
         </ul>
-        <p>After install: clicking the icon launches the app in <strong>its own window</strong> (not a browser tab) — no address bar, behaves like a real app.</p>
+        <p>After install: clicking the icon launches the app in <strong>its own window</strong> (not a browser tab), with no address bar, behaving like a real app.</p>
       </section>
 
       <section>
@@ -577,7 +683,7 @@ const HELP_HTML = {
           <li><kbd>Esc</kbd><span>Close open modal / dropdown / exit presentation</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Browser print (also Save as PDF)</span></li>
         </ul>
-        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) won't fire while typing inside an input/textarea — your text stays intact.</em></p>
+        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) won't fire while typing inside an input/textarea; your text stays intact.</em></p>
       </section>
   `
 };

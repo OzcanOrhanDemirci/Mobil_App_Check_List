@@ -145,6 +145,95 @@
     margin: 0 0 10px;
     font-weight: 700;
   }
+
+  /* ==================== YARDIM ACCORDION (açılır/kapanır bölümler) ====================
+     Yardım modal'ı section'lara bölünmüş; her section bağımsız açılıp kapanır.
+     Varsayılan: hepsi kapalı. Başlığa tıklama o section'ı toggle eder.
+     Modal başlığının altında "Tümünü Aç / Kapat" şerit kontrolleri vardır. */
+
+  /* Help modal'ında layout'u flex-column'a çevir ki header + controls sabit
+     kalsın, sadece body scroll olsun (iki sticky element çakışmasın). */
+  #helpModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #helpModal .modal-head,
+  #helpModal .help-accordion-controls {
+    flex-shrink: 0;
+    position: static;
+  }
+  #helpModal .modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .help-accordion-controls {
+    display: flex;
+    gap: 8px;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .help-accordion-btn {
+    font-size: 12.5px;
+    padding: 6px 12px;
+  }
+
+  /* Yardım section'ları accordion mantığında çalışır */
+  #helpModalBody section.help-section {
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+  }
+  #helpModalBody section.help-section:hover {
+    border-color: var(--accent);
+  }
+  /* Başlık (h3) tıklanabilir tetikleyici olur */
+  #helpModalBody section.help-section > h3 {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    user-select: none;
+  }
+  #helpModalBody section.help-section > h3:hover {
+    background: var(--surface-2);
+  }
+  /* Chevron, JS tarafında eklenir (.help-section-chevron) */
+  .help-section-chevron {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: var(--text-mute);
+    transition: transform 0.18s ease;
+  }
+  #helpModalBody section.help-section.collapsed .help-section-chevron {
+    transform: rotate(-90deg);
+  }
+  /* Collapsed iken h3 dışında her şey gizlenir */
+  #helpModalBody section.help-section.collapsed > *:not(h3) {
+    display: none;
+  }
+  /* Açıkken içerik için padding (h3 zaten kendi padding'ine sahip) */
+  #helpModalBody section.help-section > *:not(h3) {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  #helpModalBody section.help-section > *:not(h3):last-child {
+    padding-bottom: 12px;
+  }
   .modal-body p, .modal-body ul {
     font-size: 13.5px;
     color: var(--text-dim);
@@ -1382,12 +1471,89 @@
   .proj-add-btn {
     width: 100%;
   }
+
+  /* Yeni proje oluşturma modalı */
+  .modal-content.modal-proj-create {
+    max-width: 560px;
+  }
+  .proj-create-sub {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--text-mute);
+    line-height: 1.5;
+  }
+
+  /* Aktif proje silindiğinde "hangi projeye geçeyim" seçim modalı */
+  .modal-content.modal-proj-pick {
+    max-width: 520px;
+  }
+  .proj-pick-sub {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    color: var(--text-mute);
+    line-height: 1.5;
+  }
+  .proj-pick-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .proj-pick-item { margin: 0; }
+  .proj-pick-btn {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.05s ease;
+  }
+  .proj-pick-btn:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+  .proj-pick-btn:active {
+    transform: scale(0.99);
+  }
+  .proj-pick-fw {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .proj-pick-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .proj-pick-arrow {
+    flex-shrink: 0;
+    color: var(--text-mute);
+    font-size: 18px;
+    line-height: 1;
+  }
+  .proj-pick-btn:hover .proj-pick-arrow { color: var(--accent); }
+
   .proj-add-form {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
     align-items: stretch;
-    margin-top: 10px;
+    margin-top: 0;
   }
   .proj-add-form-row {
     display: grid;
