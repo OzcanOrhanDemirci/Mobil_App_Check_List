@@ -174,6 +174,16 @@ const DATA = [
         id: "3.2",
         title: { tr: "Modüler Klasör Yapısı", en: "Modular Folder Structure" },
         desc: { tr: "Tüm kodun tek bir dosyada değil, mantıklı klasörlere ayrılması.", en: "Code split into sensible folders, not one giant file." },
+        simple: {
+          mvp: {
+            tr: "Bütün kod <strong>tek bir dosyada toplanmamış</strong>: ekranlar, parçalar (komponentler), veri modelleri ayrı klasörlere bölünmüş. Tek bir dosya binlerce satırı bulmuyor. <span class='hint'>AI ile çalışıyorsan agent'a \"feature-first temiz bir klasör yapısı kur\" demen yeterli; gerisini o halleder.</span>",
+            en: "All the code <strong>isn't crammed into a single file</strong>: screens, parts (components) and data models live in separate folders. No single file balloons to thousands of lines. <span class='hint'>If you're using an AI agent, just ask for a \"feature-first clean folder layout\" and it'll handle the rest.</span>"
+          },
+          release: {
+            tr: "Her uygulama özelliği (giriş ekranı, ana sayfa vb.) <strong>kendi klasörüne</strong> sahip. Sunucuyla konuşan kod (API çağrıları) ekranların içine değil <strong>ayrı bir yere</strong> yazılmış; böylece aynı veriye birden çok yerden ulaşabiliyor ve düzeltmek istediğinde tek bir yerde değiştiriyorsun. Uygulama büyüdükçe karmaşıklaşmıyor: her yeni özelliği nereye ekleyeceğin belli.",
+            en: "Each app feature (login screen, home screen, etc.) lives in <strong>its own folder</strong>. The code that talks to the server (API calls) is written in a <strong>separate place</strong>, not inside screens; that way the same data can be reached from several places and fixes happen in one spot. As the app grows it doesn't turn into a tangle — there's a clear home for every new feature."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Her şey <code>main.dart</code> içinde DEĞİL. <strong>Ekranlar, widget'lar, modeller</strong> ayrı klasörlerde. Tek bir dosya binlerce satırı aşmıyor, mantıklı parçalara bölünmüş. <strong>Linter aktif</strong>: <code>analysis_options.yaml</code> ile <code>flutter_lints</code> veya daha katı <code>very_good_analysis</code> kuralları uygulanıyor. <span class='hint'>AI agent ile çalışırken bile temiz klasör yapısı isteyebilirsin. Agent'a \"feature-first yapıyla yaz\" demen yeterli.</span>", en: "Not everything in <code>main.dart</code>. <strong>Screens, widgets, models</strong> live in separate folders. No single file hits thousands of lines; split into sensible chunks. <strong>Linter is on</strong>: <code>analysis_options.yaml</code> applies <code>flutter_lints</code> or the stricter <code>very_good_analysis</code> rules. <span class='hint'>Even with AI agents you can request a clean folder structure. Just ask for \"feature-first layout\".</span>" },
@@ -205,6 +215,16 @@ const DATA = [
         id: "3.3",
         title: { tr: "APK / IPA Çıktısı Alma", en: "Producing APK / IPA Output" },
         desc: { tr: "Uygulamayı paylaşılabilir/yüklenebilir bir paket olarak üretmek.", en: "Producing the app as a shareable/installable package." },
+        simple: {
+          mvp: {
+            tr: "Uygulamayı arkadaşına gönderebileceğin bir <strong>kurulum dosyası</strong> halinde çıkarabiliyorsun (Android için APK, iOS için cihaza Xcode üzerinden yükleme). Telefonda açılıyor ve çalışıyor.",
+            en: "You can export the app as an <strong>installable file</strong> that you can send to a friend (an APK on Android; on iOS, install via Xcode onto a device). It opens and runs on the phone."
+          },
+          release: {
+            tr: "Mağazalara (App Store / Play Store) yüklenecek <strong>yayın kalitesinde bir paket</strong> üretiliyor. Bu paket küçültülmüş ve içeride okunmasın diye kapatılmış (kullanıcı uygulamayı tersine çözüp kaynak kodunu çıkaramıyor). İndirme boyutu makul (Android için 30-50 MB altı tercih edilir). Mağazaların istediği <strong>resmi imza</strong> da ekli.",
+            en: "A <strong>release-quality package</strong> ready for the stores (App Store / Play Store) is produced. It's minified and locked so the source can't be easily read (a user can't reverse-engineer the app and pull out the source). Download size is reasonable (under 30-50 MB preferred on Android). The <strong>official signature</strong> the stores require is attached."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "<code>flutter build apk</code> komutu ile <strong>APK alınabiliyor</strong> ve cihaza yüklenip çalışıyor. Arkadaşlarına test için APK gönderebiliyorsun. <span class='hint'>Play Store hedefliyorsan <code>flutter build appbundle</code> (AAB) gerekir; APK direkt yan yükleme (sideload) için.</span>", en: "Running <code>flutter build apk</code> produces an <strong>APK</strong> that installs and runs on devices. You can send the APK to friends for testing. <span class='hint'>For the Play Store you'll need <code>flutter build appbundle</code> (AAB); APK is for sideloading.</span>" },
@@ -1142,6 +1162,16 @@ const DATA = [
         id: "8.2",
         title: { tr: "Performans ve Akıcılık", en: "Performance and Smoothness" },
         desc: { tr: "Uygulamanın takılmadan çalışması, 60 fps'in korunması.", en: "Keeping the app running smoothly at 60 fps." },
+        simple: {
+          mvp: {
+            tr: "Uygulama <strong>takılmadan, akıcı</strong> çalışıyor: ekran geçişleri ve listeyi aşağı-yukarı kaydırma kekemeleme yapmıyor. <strong>Açılış süresi makul</strong> (3 saniyenin altı). Resim çıkmadan önce ekran donmuyor.",
+            en: "The app runs <strong>smoothly without stuttering</strong>: screen transitions and scrolling lists up and down don't hiccup. <strong>Launch time is reasonable</strong> (under 3 seconds). The screen doesn't freeze while images load."
+          },
+          release: {
+            tr: "Performans <strong>düşük ucu bir cihazda da</strong> kontrol edildi (yeni amiral telefon değil, ortalama veya eski bir cihazda). Uzun listelerde kaydırma akıcı; ağır işler ekranı kilitlemiyor. Animasyonlar yumuşak, görsel <strong>yanıp sönme veya zıplama yok</strong>. Bir kullanıcı uygulamayı dakikalarca açık tutsa bile yavaşlamıyor ve telefon ısınmıyor (bellek ve pil tüketimi makul).",
+            en: "Performance is also verified on a <strong>low-end device</strong> (not just a brand-new flagship — an average or older phone). Scrolling long lists is smooth; heavy work doesn't lock the screen. Animations are gentle, with <strong>no flicker or jumpiness</strong>. If a user keeps the app open for many minutes, it doesn't slow down and the phone doesn't overheat (memory and battery usage are reasonable)."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "Ekran <strong>geçişleri ve scroll</strong> takılmadan 60 fps (ProMotion / yüksek hızlı ekranlarda 120 fps) çalışıyor. Uygulama açılışı çok yavaş değil (3 saniye altı). Resimler ekranda görünmeden önce cihazı kilitlemiyor. <span class='hint'>Impeller renderer iOS'ta Flutter 3.10'dan, Android'de (API 29+ Vulkan destekli cihazlarda) Flutter 3.27'den beri default; eski Skia renderer'ın yerini aldı; shader jank ciddi şekilde azaldı.</span>", en: "<strong>Screen transitions and scrolling</strong> run smoothly at 60 fps (120 fps on ProMotion / high-refresh displays). App launch isn't too slow (under 3 seconds). Images don't freeze the device before they appear. <span class='hint'>The <strong>Impeller</strong> renderer is default on iOS since Flutter 3.10 and on Android (API 29+ Vulkan-capable devices) since Flutter 3.27, replacing legacy Skia; shader jank is dramatically reduced.</span>" },
@@ -1214,6 +1244,16 @@ const DATA = [
         id: "8.4",
         title: { tr: "Otomatik Test (Unit + UI/Widget)", en: "Automated Tests (Unit + UI/Widget)" },
         desc: { tr: "Kodun yanlışlıkla bozulmasını engelleyen otomatik test altyapısı.", en: "Automated test infrastructure that prevents code from breaking accidentally." },
+        simple: {
+          mvp: {
+            tr: "Projedeki en önemli iş mantığı için <strong>en az bir otomatik test</strong> yazılmış. Bu test, kodu yanlışlıkla bozduğunda anında uyarı veriyor; uygulamayı her seferinde elle açıp denemek zorunda kalmıyorsun.",
+            en: "<strong>At least one automated test</strong> is written for the most important piece of business logic in the project. The test warns you the moment you accidentally break the code; you don't have to open the app and try things by hand every time."
+          },
+          release: {
+            tr: "Önemli akışlar için (örn. giriş → ana eylem) <strong>otomatik testler</strong> yazılmış. Bir geliştirici yanlışlıkla bir özelliği bozduğunda testler bunu yakalıyor ve değişiklik ana koda eklenmiyor. Testler her PR (Pull Request) açıldığında otomatik çalışıyor (kurulum 14.2'de); yeşil değilse kod birleştirilmiyor.",
+            en: "<strong>Automated tests</strong> are written for important flows (e.g. login → main action). When a developer accidentally breaks a feature, the tests catch it and the change isn't merged. Tests run automatically on every Pull Request (set-up in 14.2); if they're not green, the code can't be merged."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "En az 1 unit test yazılmış (<code>test/</code> klasörü altında, <code>flutter test</code> komutu çalışıyor). Test, projenin temel iş mantığından bir parçayı doğruluyor.", en: "At least 1 unit test is written (under the <code>test/</code> folder; <code>flutter test</code> runs successfully). The test verifies a piece of the project's core business logic." },
@@ -1365,7 +1405,17 @@ const DATA = [
         title: { tr: "Renk Kontrastı ve Okunabilirlik", en: "Color Contrast and Readability" },
         desc: { tr: "Tüm yazıların okunabilir olması, renk seçimlerinin gözü yormaması.", en: "All text readable; colors don't strain the eyes." },
         mvp: { tr: "Beyaz üstüne açık gri yazı yok. Tüm metinler <strong>arka plandan net ayırt ediliyor</strong>. Önemli bilgi sadece renge bağlı değil (örn. hata sadece kırmızı yazıyla değil, ünlem işaretiyle de gösteriliyor).", en: "No light gray on white text. All text <strong>stands out from the background</strong>. Important info doesn't rely on color alone (e.g. an error is marked not just by red text but also an exclamation icon)." },
-        release: { tr: "Yazı-arka plan kontrast oranı en az <strong>4.5:1 (WCAG AA standardı)</strong>. <strong>Screen reader</strong> (TalkBack/VoiceOver) için tüm icon button'larda anlamlı label var. Renk körü kullanıcılar düşünülmüş.", en: "Text-to-background contrast ratio is at least <strong>4.5:1 (WCAG AA)</strong>. All icon buttons have meaningful labels for <strong>screen readers</strong> (TalkBack/VoiceOver). Color-blind users are taken into account." }
+        release: { tr: "Yazı-arka plan kontrast oranı en az <strong>4.5:1 (WCAG AA standardı)</strong>. <strong>Screen reader</strong> (TalkBack/VoiceOver) için tüm icon button'larda anlamlı label var. Renk körü kullanıcılar düşünülmüş.", en: "Text-to-background contrast ratio is at least <strong>4.5:1 (WCAG AA)</strong>. All icon buttons have meaningful labels for <strong>screen readers</strong> (TalkBack/VoiceOver). Color-blind users are taken into account." },
+        simple: {
+          mvp: {
+            tr: "Yazılar arka plandan <strong>net ayırt edilebiliyor</strong>: beyaz üstüne soluk gri gibi okunması zor seçimler yok. Önemli bilgiyi sadece renkten değil (örn. \"hata\" sadece kırmızıyla değil, bir uyarı ikonuyla da belli ediliyor); renk körü olan biri de doğru anlıyor.",
+            en: "Text is <strong>clearly distinguishable</strong> from the background: no hard-to-read choices like pale gray on white. Important info isn't conveyed by color alone (e.g. an \"error\" is shown not just in red but also with a warning icon), so a color-blind user gets the same message."
+          },
+          release: {
+            tr: "Yazı ile arka plan arasındaki kontrast resmi <strong>erişilebilirlik standartlarını</strong> karşılıyor (yani gözü yormadan okunabiliyor). Görmeyenler için telefonun kendi <strong>ekran okuyucusunu</strong> (iOS'ta VoiceOver, Android'de TalkBack) açan kullanıcı uygulamayı dolaşırken her butonun, her ikonun ne işe yaradığını sesli olarak öğreniyor — boş veya \"button\" gibi anlamsız bir okumayla karşılaşmıyor.",
+            en: "The contrast between text and background meets the official <strong>accessibility standard</strong> (i.e. it can be read without straining the eyes). For users with vision impairments, when they turn on their phone's <strong>screen reader</strong> (VoiceOver on iOS, TalkBack on Android) and walk through the app, every button and icon is announced aloud with what it does — they never hear silence or a meaningless \"button\"."
+          }
+        }
       },
       {
         id: "10.2",
@@ -1513,6 +1563,16 @@ const DATA = [
         id: "11.4",
         title: { tr: "Versiyon ve Bağımlılık Yönetimi", en: "Version and Dependency Management" },
         desc: { tr: "Tüm takım ve CI'ın aynı sürümlerle çalışması; 'bende çalışıyor' sorununu önleme.", en: "Whole team and CI on identical versions; eliminating the 'works on my machine' problem." },
+        simple: {
+          mvp: {
+            tr: "Projenin kullandığı <strong>hazır bileşenler</strong> (3. taraf paketler) ve bunların sürümleri bir dosyada yazılı. Yeni biri projeyi indirip yüklediğinde aynı sürümleri otomatik alıyor; herkes aynı kurulumla çalışıyor. <span class='hint'>\"Bende çalışıyor sende neden çalışmıyor?\" probleminin önüne geçer.</span>",
+            en: "The <strong>off-the-shelf pieces</strong> the project uses (third-party packages) and their versions are recorded in a file. When someone new clones the project and installs, they get the exact same versions automatically; everyone runs the same setup. <span class='hint'>This prevents the classic \"works on my machine, not on yours\" issue.</span>"
+          },
+          release: {
+            tr: "Yazılım dünyası hızlı değişir; uygulamanın kullandığı bileşenlerin <strong>güvenlik açığı taraması</strong> düzenli olarak yapılıyor (bir bileşende açık varsa otomatik uyarı geliyor). Önemli güncellemeler düzenli aralıklarla projeye alınıyor, yıllık unutulmuyor. Sadece bir geliştirici değil, <strong>herkes ve sürekli entegrasyon (CI) sunucusu</strong> aynı sürümleri kullanıyor; \"bende çalışıyor sende çalışmıyor\" probleminin önü tamamen kapatılmış.",
+            en: "Software moves fast; the components your app uses are <strong>scanned for security vulnerabilities</strong> regularly (you get an automatic alert if one of them is vulnerable). Important updates are picked up on a regular cadence, not forgotten for a year. Not just a single developer but <strong>everyone — and the continuous-integration (CI) server</strong> — uses identical versions, fully closing the \"works for me, doesn't work for you\" gap."
+          }
+        },
         variants: {
           flutter: {
             mvp: { tr: "<code>pubspec.lock</code> dosyası <strong>commit edilmiş</strong> (.gitignore'da DEĞİL). Tüm takım <code>flutter --version</code> ile aynı majör Flutter sürümünü kullanıyor. README'de gerekli Flutter sürümü yazılı.", en: "<code>pubspec.lock</code> is <strong>committed</strong> (NOT in .gitignore). The whole team uses the same major Flutter version per <code>flutter --version</code>. The required Flutter version is documented in the README." },
