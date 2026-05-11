@@ -16,6 +16,37 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
   saveCollapsed();
 });
 
+/* Tüm madde kartlarını arka yüze çevir / ön yüze döndür.
+   Per-item flip butonuyla aynı görsel etki (.feature.flipped class);
+   sadece çok sayıda madde için tek tıkla toplu çevirme sağlar. Hiçbir
+   completion state değiştirilmez, sadece view modu değişir. */
+function setAllCardsFlipped(flipped) {
+  document.querySelectorAll(".feature").forEach(f => {
+    f.classList.toggle("flipped", flipped);
+    const btn = f.querySelector(".feature-flip-btn");
+    if (btn) btn.setAttribute("aria-pressed", flipped ? "true" : "false");
+    const front = f.querySelector(".feature-front");
+    const back  = f.querySelector(".feature-back");
+    if (front) front.setAttribute("aria-hidden", flipped ? "true" : "false");
+    if (back)  back.setAttribute("aria-hidden", flipped ? "false" : "true");
+  });
+}
+
+const flipAllHowBtn = document.getElementById("flipAllHowBtn");
+if (flipAllHowBtn) {
+  flipAllHowBtn.addEventListener("click", () => {
+    setAllCardsFlipped(true);
+    showToast(t("flipAll.toastHow"), "info", 1400);
+  });
+}
+const flipAllChecklistBtn = document.getElementById("flipAllChecklistBtn");
+if (flipAllChecklistBtn) {
+  flipAllChecklistBtn.addEventListener("click", () => {
+    setAllCardsFlipped(false);
+    showToast(t("flipAll.toastChecklist"), "info", 1400);
+  });
+}
+
 /* ==================== RESET UI'I — İKİ AYRI YERDE KULLANIM ====================
    1) Toolbar Sıfırla butonu → resetScopeModal (sadece selections + notes)
    2) Proje/FW modal'ın "Sıfırla" sekmesi → projfw-pane-reset (4 seçenek)

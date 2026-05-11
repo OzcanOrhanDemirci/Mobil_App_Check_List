@@ -5,6 +5,31 @@ function levelLabel(l) {
   return { mvp: t("level.mvp"), release: t("level.release") }[l];
 }
 
+/* Howto metinlerini görsel listeye dönüştür.
+   Yazarlar adımları "1) Şunu yap. 2) Sonra şunu yap. 3) ..." gibi düz metin
+   içinde yazıyor. Bunu okurken çok daha rahat görünmesi için <ol> ve <li>
+   öğelerine böl; numara işaretini (1), 2), …) CSS counter'ı kendisi yeniden
+   üretir. Metin yapı dışında ise (örn. tek paragraf, numarasız), olduğu gibi
+   döndür. Eğer madde "—" placeholder ise yine olduğu gibi döner. */
+function formatHowtoSteps(html) {
+  if (!html || typeof html !== "string") return html;
+  /* Numaralandırılmış adımı belirleyen pattern: önünde whitespace (veya başlangıç)
+     olan bir sayı + ')'. İlk olarak (1) işaretinden önceki giriş (intro) varsa
+     yakala, sonra sırayla 2), 3), … parçalarını çıkar. */
+  if (!/\b1\)\s/.test(html)) return html;
+  const parts = html.split(/\s*(\d+)\)\s+/);
+  /* parts: [intro_or_empty, "1", step1, "2", step2, ...] */
+  if (parts.length < 3) return html;
+  const intro = parts[0].trim();
+  const items = [];
+  for (let i = 1; i + 1 < parts.length; i += 2) {
+    items.push(parts[i + 1].trim());
+  }
+  if (items.length === 0) return html;
+  const ol = `<ol class="howto-steps">${items.map(s => `<li>${s}</li>`).join("")}</ol>`;
+  return intro ? `<p class="howto-step-intro">${intro}</p>${ol}` : ol;
+}
+
 function renderCategoryNav() {
   catNav.innerHTML = DATA.map(c =>
     `<a href="#cat-${c.id}" data-cat-nav="${c.id}">${c.id}. ${tx(c.title)}</a>`
@@ -140,19 +165,26 @@ function renderContent() {
       const showHowtoRel = !isPlaceholder(howtoRelText);
       const hasAnyHowto  = showHowtoMvp || showHowtoRel;
 
-      const howtoBlocks = ["mvp", "release"].map(L => {
-        const txt = L === "mvp" ? howtoMvpText : howtoRelText;
-        const show = L === "mvp" ? showHowtoMvp : showHowtoRel;
-        if (!show) return "";
-        return `
-          <div class="howto-block">
-            <span class="howto-tag ${L}">${levelLabel(L)}</span>
-            <div class="howto-text">${txt}</div>
-          </div>`;
-      }).join("");
-
+      /* Howto'yu tek bir grid container'da iki satır olarak ver: ilk kolon
+         label (MVP / Release), ikinci kolon adımlar. grid-template-columns
+         "auto 1fr" olduğundan tüm label'lar en geniş etikete göre hizalanır;
+         "Release" daha geniş olsa bile "MVP" satırının metni aynı konumdan
+         başlar. */
+      const howtoGridRows = [];
+      if (showHowtoMvp) {
+        howtoGridRows.push(
+          `<span class="howto-tag mvp">${levelLabel("mvp")}</span>` +
+          `<div class="howto-text">${formatHowtoSteps(howtoMvpText)}</div>`
+        );
+      }
+      if (showHowtoRel) {
+        howtoGridRows.push(
+          `<span class="howto-tag release">${levelLabel("release")}</span>` +
+          `<div class="howto-text">${formatHowtoSteps(howtoRelText)}</div>`
+        );
+      }
       const howtoBody = hasAnyHowto
-        ? `<p class="howto-intro" data-i18n-html="howto.intro">${t("howto.intro")}</p>${howtoBlocks}`
+        ? `<div class="howto-grid">${howtoGridRows.join("")}</div>`
         : `<p class="howto-empty" data-i18n="howto.empty">${t("howto.empty")}</p>`;
 
       return `
@@ -171,31 +203,6 @@ function renderContent() {
               </div>
               <p class="feature-desc">${fDesc}</p>
               <div class="levels">${levels}</div>
-              <button type="button" class="feature-note-toggle" data-note-toggle="${noteId}">
-                <span class="note-icon">${hasNote ? "📝" : "+"}</span>
-                <span class="note-label">${noteLabel}</span>
-              </button>
-              <span class="feature-ai-wrap">
-                <button type="button" class="feature-ai-copy" data-ai-toggle title="${t("ai.askTitle")}">
-                  <span class="ai-icon">🤖</span>
-                  <span class="ai-label">${t("ai.ask")}</span>
-                </button>
-                <span class="feature-ai-options">
-                  <button type="button" class="feature-ai-option ai-tr" data-ai-format="tr" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.trTitle")}">${t("ai.tr")}</button>
-                  <button type="button" class="feature-ai-option ai-json" data-ai-format="json" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.jsonTitle")}">${t("ai.json")}</button>
-                </span>
-              </span>
-              <div class="feature-note">
-                <textarea data-note-input="${noteId}" placeholder="${t("note.placeholder")}">${escapeHtml(noteValue)}</textarea>
-                <div class="note-meta">
-                  <span>${t("note.autoSave")}</span>
-                  <button type="button" class="note-clear" data-note-clear="${noteId}">${t("note.clear")}</button>
-                </div>
-              </div>
-              <div class="feature-note-display" aria-hidden="true">
-                <span class="note-display-icon" aria-hidden="true">📝</span>
-                <span class="note-display-text">${escapeHtml(noteValue)}</span>
-              </div>
             </div>
             <div class="feature-back" aria-hidden="true">
               <div class="feature-head">
@@ -204,6 +211,33 @@ function renderContent() {
               </div>
               <div class="howto-body">${howtoBody}</div>
             </div>
+          </div>
+          <div class="feature-actions">
+            <button type="button" class="feature-note-toggle" data-note-toggle="${noteId}">
+              <span class="note-icon">${hasNote ? "📝" : "+"}</span>
+              <span class="note-label">${noteLabel}</span>
+            </button>
+            <span class="feature-ai-wrap">
+              <button type="button" class="feature-ai-copy" data-ai-toggle title="${t("ai.askTitle")}">
+                <span class="ai-icon">🤖</span>
+                <span class="ai-label">${t("ai.ask")}</span>
+              </button>
+              <span class="feature-ai-options">
+                <button type="button" class="feature-ai-option ai-tr" data-ai-format="tr" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.trTitle")}">${t("ai.tr")}</button>
+                <button type="button" class="feature-ai-option ai-json" data-ai-format="json" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.jsonTitle")}">${t("ai.json")}</button>
+              </span>
+            </span>
+          </div>
+          <div class="feature-note">
+            <textarea data-note-input="${noteId}" placeholder="${t("note.placeholder")}">${escapeHtml(noteValue)}</textarea>
+            <div class="note-meta">
+              <span>${t("note.autoSave")}</span>
+              <button type="button" class="note-clear" data-note-clear="${noteId}">${t("note.clear")}</button>
+            </div>
+          </div>
+          <div class="feature-note-display" aria-hidden="true">
+            <span class="note-display-icon" aria-hidden="true">📝</span>
+            <span class="note-display-text">${escapeHtml(noteValue)}</span>
           </div>
         </article>`;
     }).join("");

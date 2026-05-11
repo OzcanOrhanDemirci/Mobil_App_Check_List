@@ -159,21 +159,6 @@
   .howto-body {
     margin-top: 4px;
   }
-  .howto-intro {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.55;
-    margin: 0 0 14px;
-    padding: 10px 12px;
-    background: var(--surface-2);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-  }
-  .howto-intro em {
-    color: var(--text-mute);
-    font-size: 12px;
-    display: inline;
-  }
   .howto-empty {
     font-size: 13px;
     color: var(--text-mute);
@@ -181,14 +166,18 @@
     margin: 8px 0 0;
     font-style: italic;
   }
-  .howto-block {
+  /* Tek grid: hem MVP hem Release satırı aynı kolon yapısını paylaşır.
+     "auto 1fr" sayesinde label kolonu en geniş etikete (Release) göre
+     belirlenir; her iki satırın metni aynı x koordinatından başlar. */
+  .howto-grid {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 10px 12px;
+    gap: 14px 14px;
     align-items: start;
-    padding: 12px 0;
   }
-  .howto-block + .howto-block {
+  /* MVP ve Release satırları arasında ince ayraç (3. ve 4. hücreyi ayır). */
+  .howto-grid > *:nth-child(n+3) {
+    padding-top: 14px;
     border-top: 1px dashed var(--border);
   }
   .howto-tag {
@@ -197,10 +186,15 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 999px;
     line-height: 1.2;
     align-self: start;
+    text-align: center;
+    /* Tüm tag'ler aynı genişlikte (en geniş olana göre) — grid 'auto' kolonu
+       bunu zaten sağlar. min-width ekstra garanti: kısa "MVP" ile uzun "Release"
+       arasında label dikine yığılınca yine eşit yer kaplar. */
+    min-width: 64px;
   }
   .howto-tag.mvp {
     background: var(--mvp-bg);
@@ -216,6 +210,7 @@
     font-size: 14px;
     color: var(--text);
     line-height: 1.6;
+    min-width: 0;
   }
   .howto-text strong { color: var(--accent-2); font-weight: 600; }
   .howto-text code {
@@ -226,6 +221,46 @@
     border-radius: 4px;
     color: var(--accent-2);
   }
+  /* Numaralı adım listesi: 1, 2, 3 işaretleri CSS counter ile renkli circle
+     içinde yeniden çizilir; yazardan gelen "1) " gibi inline işaretler
+     formatHowtoSteps tarafından ayrıştırılarak <ol> içine taşınmıştır. */
+  .howto-steps {
+    list-style: none;
+    counter-reset: howtostep;
+    margin: 0;
+    padding: 0;
+  }
+  .howto-steps > li {
+    counter-increment: howtostep;
+    position: relative;
+    padding: 4px 0 4px 36px;
+    margin: 0 0 8px;
+    line-height: 1.6;
+  }
+  .howto-steps > li:last-child { margin-bottom: 0; }
+  .howto-steps > li::before {
+    content: counter(howtostep);
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--accent-2);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+  }
+  .howto-step-intro {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  /* İç içe listeler (varsa) — yazarın <ul>/<ol> kullandığı yerler */
   .howto-text ol, .howto-text ul {
     margin: 6px 0;
     padding-left: 22px;
@@ -235,10 +270,38 @@
   }
   .howto-text .hint {
     display: block;
-    margin-top: 8px;
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: var(--surface-2);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
     font-size: 12.5px;
     color: var(--text-mute);
     font-style: italic;
+  }
+
+  /* Feature kart aksiyonları (Not + AI) — feature-inner DIŞINDA; bu sayede
+     hem ön yüz (kontrol listesi) hem arka yüz (Nasıl?) modunda aynı şekilde
+     görünür ve kullanılabilir. Flip 3D animasyonu sadece feature-inner'a
+     uygulandığından bu container ona dahil değildir. */
+  .feature-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    align-items: center;
+  }
+  /* feature-actions zaten kendi padding-top'unu veriyor; içerideki buton ve
+     wrap'lerin eski margin-top değerlerini sıfırla (yoksa çift boşluk olur) */
+  .feature-actions .feature-note-toggle,
+  .feature-actions .feature-ai-wrap {
+    margin-top: 0;
+  }
+  /* Dar ekranda butonlar genişlesin ama satıra sığsın */
+  @media (max-width: 540px) {
+    .feature-actions { gap: 6px 8px; }
   }
 
   /* Kart çevirme animasyonu sırasında ön yüzdeki açık not paneli / AI paneli
