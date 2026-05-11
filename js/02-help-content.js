@@ -209,6 +209,19 @@ const HELP_HTML = {
       </section>
 
       <section>
+        <h3>❔ Nasıl Yapılır? (Kartın Arka Yüzü)</h3>
+        <p>Her madde kartının <strong>üst-sağ köşesinde küçük bir "Nasıl?" butonu</strong> vardır. Bu butona bastığında kart <strong>3 boyutlu olarak çevrilir</strong> ve sana o maddeyi nasıl tamamlayacağını adım adım anlatan bir rehber görünür. Geri dönmek için aynı butona ("← Geri") tekrar bas.</p>
+        <p><strong>Önemli ayrımlar:</strong></p>
+        <ul>
+          <li><strong>Ön yüz = hedef.</strong> "Bu maddenin olması gereken durum nedir?" sorusunu yanıtlar. İşaretleme kutusu (checkbox) burada ve durumu sen sağladığında işaretleyerek tamamlandığını belirtirsin.</li>
+          <li><strong>Arka yüz = öğretim.</strong> "Bu duruma ulaşmak için ne yapmalıyım?" sorusunu yanıtlar. <strong>Hiçbir işaretleme kutusu yoktur</strong>: kartın arka yüzünü açıp okumak veya kapatmak <strong>maddeyi tamamlandı olarak işaretlemez</strong>; sadece eğitim amaçlıdır.</li>
+        </ul>
+        <p>Rehber içeriği, ön yüzdeki gibi <strong>seçtiğin dile, anlatım diline (Basit / Teknik), framework'e ve backend'e göre</strong> otomatik özelleşir. Örneğin Flutter + Firebase ile çalışıyorsan Firebase Console adımlarını ve Flutter komutlarını görürsün; Supabase'e geçtiğinde aynı maddenin arkasında bu sefer Supabase Studio adımları gözükür.</p>
+        <p>Bir madde için ayrı bir rehber yazmaya gerek yoksa (örn. \"SWOT yap\" gibi öz açıklayıcı maddeler) arka yüzde \"bu madde için ayrı bir rehber yok\" mesajı çıkar; daha derin yardıma <strong>🤖 AI'a sor</strong> butonu kalır.</p>
+        <p><strong>Pratik kullanım:</strong> Bir maddeye baktın, ne yapacağını bilmiyorsun → "Nasıl?" butonuna bas → rehberi oku → "← Geri" ile dön → adımları uygula → checkbox'ı işaretle.</p>
+      </section>
+
+      <section>
         <h3>📝 Madde Notları</h3>
         <p>Her maddenin altında <strong>"+ Not ekle"</strong> butonu vardır. Tıklayınca bir yazı alanı açılır.</p>
         <ul>
@@ -563,6 +576,19 @@ const HELP_HTML = {
           <li>The sticky toolbar height is accounted for; the target item lands just below the toolbar, not behind it.</li>
         </ul>
         <p>So in a 30+ hour project, without searching and without opening collapsed categories, one chip click takes you to the <strong>next item to do</strong>.</p>
+      </section>
+
+      <section>
+        <h3>❔ How To? (Card Back-Face)</h3>
+        <p>Each item card has a small <strong>"How?" button in the top-right corner</strong>. Pressing it <strong>flips the card in 3D</strong> and reveals a step-by-step guide that teaches you how to complete that specific item. To return, press the same button again (now labeled "← Back").</p>
+        <p><strong>Important distinction:</strong></p>
+        <ul>
+          <li><strong>Front face = goal.</strong> Answers "what is the state this item describes?". The completion checkbox lives here, and you tick it once you've reached that state.</li>
+          <li><strong>Back face = instruction.</strong> Answers "how do I reach that state?". <strong>There are no checkboxes on this side</strong>: opening, reading, or closing the back face <strong>does not mark the item as done</strong>; it is purely educational.</li>
+        </ul>
+        <p>The guide content adapts the same way the front face does — to your chosen <strong>language, explanation style (Simple / Technical), framework and backend</strong>. For example, on Flutter + Firebase you'll see Firebase Console steps and Flutter commands; switch to Supabase and the same item's back face now shows Supabase Studio steps.</p>
+        <p>For items that don't need a separate guide (e.g. self-explanatory items like "do a SWOT analysis"), the back face shows a "no separate how-to" note and the <strong>🤖 Ask AI</strong> button remains available for deeper help.</p>
+        <p><strong>Typical use:</strong> you look at an item, don't know what to do → press "How?" → read the guide → press "← Back" → follow the steps → tick the checkbox.</p>
       </section>
 
       <section>

@@ -64,6 +64,21 @@ function resolveLevelText(f, level) {
   return tx(resolveLevel(f, level));
 }
 
+/* Her madde için "Nasıl Yapılır?" (back-face) içeriğini çözer.
+   f.howto, ön yüzdeki feature ile aynı shape'i taşır (mvp / release /
+   variants / backendVariants / simple / simpleBackend). Bu sayede
+   resolveLevel'i doğrudan f.howto üzerinde çağırmak yeterli; aynı dil
+   × stil × framework × backend mantığı ön yüzdeki gibi çalışır.
+   How-to tanımlı değilse null döner; UI tarafı bunu hidden olarak ele alır. */
+function resolveHowto(f, level) {
+  if (!f || !f.howto) return null;
+  return resolveLevel(f.howto, level);
+}
+function resolveHowtoText(f, level) {
+  const v = resolveHowto(f, level);
+  return v ? tx(v) : "";
+}
+
 const FRAMEWORK_META = {
   flutter:     { label: "Flutter",          short: "Flutter",      icon: "🐦", aiName: "Flutter / Dart" },
   reactNative: { label: "React Native",     short: "React Native", icon: "⚛",  aiName: "React Native (bare / CLI) / TypeScript" },

@@ -125,38 +125,85 @@ function renderContent() {
       const noteLabel = hasNote ? t("note.mine") : t("note.add");
 
       const featAnchor = `feat-${cat.id}-${f.id.replace(/\./g, "-")}`;
+
+      /* How-to (back-face) içeriği — ön yüzdeki hedefin nasıl yapılacağını
+         anlatan eğitsel metin. Resolver ön yüzle aynı; dil × stil × framework
+         × backend ekseni aynı şekilde uygulanır. Madde için how-to tanımlı
+         değilse flip butonu ile düşük-öncelikli bir "rehber yok" mesajı
+         gösterilir. */
+      const howtoMvpRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "mvp") : null;
+      const howtoRelRaw = (typeof resolveHowto === "function") ? resolveHowto(f, "release") : null;
+      const howtoMvpText = howtoMvpRaw ? tx(howtoMvpRaw) : "";
+      const howtoRelText = howtoRelRaw ? tx(howtoRelRaw) : "";
+      const isPlaceholder = (s) => !s || (typeof s === "string" && s.trim() === "—");
+      const showHowtoMvp = !isPlaceholder(howtoMvpText);
+      const showHowtoRel = !isPlaceholder(howtoRelText);
+      const hasAnyHowto  = showHowtoMvp || showHowtoRel;
+
+      const howtoBlocks = ["mvp", "release"].map(L => {
+        const txt = L === "mvp" ? howtoMvpText : howtoRelText;
+        const show = L === "mvp" ? showHowtoMvp : showHowtoRel;
+        if (!show) return "";
+        return `
+          <div class="howto-block">
+            <span class="howto-tag ${L}">${levelLabel(L)}</span>
+            <div class="howto-text">${txt}</div>
+          </div>`;
+      }).join("");
+
+      const howtoBody = hasAnyHowto
+        ? `<p class="howto-intro" data-i18n-html="howto.intro">${t("howto.intro")}</p>${howtoBlocks}`
+        : `<p class="howto-empty" data-i18n="howto.empty">${t("howto.empty")}</p>`;
+
       return `
         <article class="feature${hasNote ? " has-note" : ""}" id="${featAnchor}" data-search="${(fTitle + " " + fDesc + " " + (mvpVal||"") + " " + (releaseVal||"")).toLowerCase().replace(/<[^>]+>/g, "")}" data-note-id="${noteId}">
-          <div class="feature-head">
-            <span class="id">#${f.id}</span>
-            <h3>${fTitle}</h3>
-          </div>
-          <p class="feature-desc">${fDesc}</p>
-          <div class="levels">${levels}</div>
-          <button type="button" class="feature-note-toggle" data-note-toggle="${noteId}">
-            <span class="note-icon">${hasNote ? "📝" : "+"}</span>
-            <span class="note-label">${noteLabel}</span>
+          <button type="button" class="feature-flip-btn" data-flip-toggle title="${t("howto.flipTitle")}" aria-label="${t("howto.flipAria")}" aria-pressed="false">
+            <span class="flip-icon flip-face-front" aria-hidden="true">❔</span>
+            <span class="flip-icon flip-face-back" aria-hidden="true">←</span>
+            <span class="flip-label flip-face-front">${t("howto.button")}</span>
+            <span class="flip-label flip-face-back">${t("howto.back")}</span>
           </button>
-          <span class="feature-ai-wrap">
-            <button type="button" class="feature-ai-copy" data-ai-toggle title="${t("ai.askTitle")}">
-              <span class="ai-icon">🤖</span>
-              <span class="ai-label">${t("ai.ask")}</span>
-            </button>
-            <span class="feature-ai-options">
-              <button type="button" class="feature-ai-option ai-tr" data-ai-format="tr" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.trTitle")}">${t("ai.tr")}</button>
-              <button type="button" class="feature-ai-option ai-json" data-ai-format="json" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.jsonTitle")}">${t("ai.json")}</button>
-            </span>
-          </span>
-          <div class="feature-note">
-            <textarea data-note-input="${noteId}" placeholder="${t("note.placeholder")}">${escapeHtml(noteValue)}</textarea>
-            <div class="note-meta">
-              <span>${t("note.autoSave")}</span>
-              <button type="button" class="note-clear" data-note-clear="${noteId}">${t("note.clear")}</button>
+          <div class="feature-inner">
+            <div class="feature-front">
+              <div class="feature-head">
+                <span class="id">#${f.id}</span>
+                <h3>${fTitle}</h3>
+              </div>
+              <p class="feature-desc">${fDesc}</p>
+              <div class="levels">${levels}</div>
+              <button type="button" class="feature-note-toggle" data-note-toggle="${noteId}">
+                <span class="note-icon">${hasNote ? "📝" : "+"}</span>
+                <span class="note-label">${noteLabel}</span>
+              </button>
+              <span class="feature-ai-wrap">
+                <button type="button" class="feature-ai-copy" data-ai-toggle title="${t("ai.askTitle")}">
+                  <span class="ai-icon">🤖</span>
+                  <span class="ai-label">${t("ai.ask")}</span>
+                </button>
+                <span class="feature-ai-options">
+                  <button type="button" class="feature-ai-option ai-tr" data-ai-format="tr" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.trTitle")}">${t("ai.tr")}</button>
+                  <button type="button" class="feature-ai-option ai-json" data-ai-format="json" data-ai-cat="${cat.id}" data-ai-feat="${f.id}" title="${t("ai.jsonTitle")}">${t("ai.json")}</button>
+                </span>
+              </span>
+              <div class="feature-note">
+                <textarea data-note-input="${noteId}" placeholder="${t("note.placeholder")}">${escapeHtml(noteValue)}</textarea>
+                <div class="note-meta">
+                  <span>${t("note.autoSave")}</span>
+                  <button type="button" class="note-clear" data-note-clear="${noteId}">${t("note.clear")}</button>
+                </div>
+              </div>
+              <div class="feature-note-display" aria-hidden="true">
+                <span class="note-display-icon" aria-hidden="true">📝</span>
+                <span class="note-display-text">${escapeHtml(noteValue)}</span>
+              </div>
             </div>
-          </div>
-          <div class="feature-note-display" aria-hidden="true">
-            <span class="note-display-icon" aria-hidden="true">📝</span>
-            <span class="note-display-text">${escapeHtml(noteValue)}</span>
+            <div class="feature-back" aria-hidden="true">
+              <div class="feature-head">
+                <span class="id">#${f.id}</span>
+                <h3>${fTitle}</h3>
+              </div>
+              <div class="howto-body">${howtoBody}</div>
+            </div>
           </div>
         </article>`;
     }).join("");
@@ -305,6 +352,27 @@ function attachClickHandlers() {
       } else {
         showToast(t("ai.copyFail"), "warn", 1800);
       }
+    });
+  });
+
+  /* How-to flip butonu — kartı 3D olarak çevirir. Per-item bağımsız; bir kartı
+     çevirmek başka kartı etkilemez. Salt görsel bir geçiş; herhangi bir state
+     mutate etmez (özellikle: checkbox / ilerleme / not yazılmaz). */
+  document.querySelectorAll("[data-flip-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const feature = btn.closest(".feature");
+      if (!feature) return;
+      const willFlip = !feature.classList.contains("flipped");
+      feature.classList.toggle("flipped", willFlip);
+      btn.setAttribute("aria-pressed", willFlip ? "true" : "false");
+      /* Arka yüze geçildiğinde back panel'i ekran okuyucularına ve klavye
+         tab sırasına aç; ön yüzü görsel olarak gizlerken aria-hidden'la birlikte
+         kapat. */
+      const front = feature.querySelector(".feature-front");
+      const back  = feature.querySelector(".feature-back");
+      if (front) front.setAttribute("aria-hidden", willFlip ? "true" : "false");
+      if (back)  back.setAttribute("aria-hidden", willFlip ? "false" : "true");
     });
   });
 

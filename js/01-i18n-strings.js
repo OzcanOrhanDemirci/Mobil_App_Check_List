@@ -364,6 +364,14 @@ const UI_STRINGS = {
   "level.mvp": { tr: "MVP", en: "MVP" },
   "level.release": { tr: "Release", en: "Release" },
 
+  // ==================== HOW-TO GUIDE (KART ARKA YÜZÜ) ====================
+  "howto.button":     { tr: "Nasıl?", en: "How?" },
+  "howto.back":       { tr: "Geri",   en: "Back" },
+  "howto.flipTitle":  { tr: "Bu maddeyi nasıl tamamlayacağını öğren", en: "Learn how to complete this item" },
+  "howto.flipAria":   { tr: "Nasıl yapılır rehberini aç/kapat", en: "Toggle how-to guide" },
+  "howto.intro":      { tr: "Aşağıdaki adımları takip et — ön yüzdeki hedefe ulaşmanı sağlar. <em>Bu sayfada işaretleme kutusu yoktur; tamamlandığında üst-sağ köşedeki butonla kartı geri çevirip ön yüzde işaretle.</em>", en: "Follow the steps below to reach the goal on the front. <em>There are no checkboxes on this side; once you're done, flip the card back via the top-right button and check it off on the front.</em>" },
+  "howto.empty":      { tr: "Bu madde için ayrı bir nasıl-yapılır rehberi yok; ön yüzdeki açıklama yeterince yönlendirici. AI'a sor butonu ile de daha derin yardım alabilirsin.", en: "There is no separate how-to guide for this item; the front-face description is self-explanatory. You can also use the Ask AI button for deeper help." },
+
   // ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
   "style.simple":    { tr: "Basit",   en: "Simple" },
   "style.technical": { tr: "Teknik",  en: "Technical" },

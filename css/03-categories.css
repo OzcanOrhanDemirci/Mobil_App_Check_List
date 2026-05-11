@@ -69,10 +69,189 @@
 
   .feature-list { padding: 6px 0; }
   .feature {
+    position: relative;
     border-bottom: 1px solid var(--border);
     padding: 20px 26px;
+    /* 3D flip için perspective */
+    perspective: 1800px;
   }
   .feature:last-child { border-bottom: 0; }
+
+  /* ==================== HOW-TO FLIP (kart arka yüzü) ====================
+     Üst-sağ köşedeki "Nasıl?" butonuna basıldığında kart 3D olarak çevrilir.
+     Ön yüzde mevcut tüm checklist UI'ı (checkbox dahil) korunur; arka yüzde
+     sadece eğitsel "Nasıl Yapılır?" rehberi var — herhangi bir checkbox veya
+     ilerleme kontrolü içermez. */
+  .feature-inner {
+    display: grid;
+    grid-template-areas: "stack";
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+  }
+  .feature-inner > .feature-front,
+  .feature-inner > .feature-back {
+    grid-area: stack;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .feature-inner > .feature-back {
+    transform: rotateY(180deg);
+  }
+  .feature.flipped .feature-inner {
+    transform: rotateY(180deg);
+  }
+
+  /* Flip butonu — kartın üst-sağında, küçük ve ikon-tabanlı.
+     position: absolute olduğundan 3D dönüş ona uygulanmaz; her zaman önde
+     ve erişilebilir kalır. */
+  .feature-flip-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    z-index: 5;
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    color: var(--text-dim);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 1;
+    transition: all 0.15s ease;
+    letter-spacing: 0.02em;
+  }
+  .feature-flip-btn:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .feature-flip-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .feature-flip-btn .flip-icon { font-size: 13px; line-height: 1; }
+  /* Ön yüzdeyken sadece "Nasıl?" göster; arka yüzdeyken sadece "Geri" */
+  .feature .flip-face-back { display: none; }
+  .feature.flipped .flip-face-front { display: none; }
+  .feature.flipped .flip-face-back { display: inline-flex; }
+  .feature.flipped .feature-flip-btn {
+    background: var(--hero-grad);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* Arka yüz içeriği — eğitsel; checkbox YOK, completion control YOK */
+  .feature-back {
+    /* Front'un yapısına benzer aralıklar */
+  }
+  .feature-back .feature-head {
+    margin-bottom: 12px;
+  }
+  .feature-back .feature-head h3 {
+    color: var(--accent-2);
+  }
+  .howto-body {
+    margin-top: 4px;
+  }
+  .howto-intro {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.55;
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+  .howto-intro em {
+    color: var(--text-mute);
+    font-size: 12px;
+    display: inline;
+  }
+  .howto-empty {
+    font-size: 13px;
+    color: var(--text-mute);
+    line-height: 1.55;
+    margin: 8px 0 0;
+    font-style: italic;
+  }
+  .howto-block {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 12px;
+    align-items: start;
+    padding: 12px 0;
+  }
+  .howto-block + .howto-block {
+    border-top: 1px dashed var(--border);
+  }
+  .howto-tag {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1.2;
+    align-self: start;
+  }
+  .howto-tag.mvp {
+    background: var(--mvp-bg);
+    color: var(--mvp);
+    border: 1px solid var(--mvp-border);
+  }
+  .howto-tag.release {
+    background: var(--release-bg);
+    color: var(--release);
+    border: 1px solid var(--release-border);
+  }
+  .howto-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .howto-text strong { color: var(--accent-2); font-weight: 600; }
+  .howto-text code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    padding: 1px 6px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    color: var(--accent-2);
+  }
+  .howto-text ol, .howto-text ul {
+    margin: 6px 0;
+    padding-left: 22px;
+  }
+  .howto-text li {
+    margin: 4px 0;
+  }
+  .howto-text .hint {
+    display: block;
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--text-mute);
+    font-style: italic;
+  }
+
+  /* Kart çevirme animasyonu sırasında ön yüzdeki açık not paneli / AI paneli
+     birlikte dönmesin sorun çıkarmaz çünkü grid-area:stack içinde aynı düzlemde.
+     Notlar ve AI paneli zaten ön yüzde açık kaldığından flip animasyonu
+     sırasında biraz uzun görünebilir — bu kabul edilebilir. */
+
+  /* Yazdırma çıktısında flip butonu ve arka yüz gözükmesin */
+  @media print {
+    .feature-flip-btn { display: none !important; }
+    .feature-inner { transform: none !important; transition: none !important; }
+    .feature-inner > .feature-back { display: none !important; }
+  }
   .feature-head {
     display: flex;
     align-items: baseline;
