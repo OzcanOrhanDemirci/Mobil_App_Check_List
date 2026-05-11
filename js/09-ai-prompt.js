@@ -17,7 +17,17 @@ function buildAIPromptTR(cat, f) {
   const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
     ? FRAMEWORK_META[currentFramework].aiName
     : "Flutter / Dart";
-  const installExample = tx(INSTALL_EXAMPLES[currentFramework]) || tx(INSTALL_EXAMPLES.flutter);
+  /* Backend bilgilerini bağlamı belirleyici biçimde derle. f.backendStep ise
+     install örneği backend SDK'sından üretilir (örn. firebase + flutter →
+     "flutterfire configure && flutter pub add firebase_*"); aksi halde framework
+     için genel paket install örneği (eski davranış). */
+  const beMeta = (currentBackend && BACKEND_META[currentBackend]) ? BACKEND_META[currentBackend] : null;
+  const beName = beMeta ? beMeta.aiName : null;
+  const isBackendStep = !!f.backendStep;
+  const beInstallNode = (isBackendStep && currentBackend && BACKEND_INSTALL_EXAMPLES[currentBackend])
+    ? BACKEND_INSTALL_EXAMPLES[currentBackend][currentFramework]
+    : null;
+  const installExample = tx(beInstallNode) || tx(INSTALL_EXAMPLES[currentFramework]) || tx(INSTALL_EXAMPLES.flutter);
   const isPwa = currentFramework === "pwa";
 
   let p = "";
@@ -85,6 +95,7 @@ function buildAIPromptTR(cat, f) {
                           : "Android + iOS";
     p += `## 📦 Project Information\n\n`;
     p += `- **Framework:** ${fwName}.\n`;
+    if (beName) p += `- **Backend:** ${beName}.\n`;
     p += `- **IDE:** AI-assisted IDE (Antigravity / Cursor / VS Code Copilot / Xcode 16 Predictive Code Completion).\n`;
     p += `- **Target Platform:** ${targetPlatform}.\n`;
     p += `- **Response Language:** **English**.\n`;
@@ -163,6 +174,7 @@ function buildAIPromptTR(cat, f) {
                         : "Android + iOS";
   p += `## 📦 Proje Bilgileri\n\n`;
   p += `- **Framework:** ${fwName}.\n`;
+  if (beName) p += `- **Backend:** ${beName}.\n`;
   p += `- **IDE:** Yapay zekâ destekli IDE (Antigravity / Cursor / VS Code Copilot / Xcode 16 Predictive Code Completion).\n`;
   p += `- **Hedef Platform:** ${targetPlatform}.\n`;
   p += `- **Cevap Dili:** **Türkçe**.\n`;
@@ -190,8 +202,17 @@ function buildAIPromptJSON(cat, f) {
   const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
     ? FRAMEWORK_META[currentFramework].aiName
     : "Flutter / Dart";
-  const installExample = tx(INSTALL_EXAMPLES[currentFramework]) || tx(INSTALL_EXAMPLES.flutter);
+  /* Backend-aware install command + setup assumption; backendStep değilse eski
+     framework-only davranış. */
+  const beMeta = (currentBackend && BACKEND_META[currentBackend]) ? BACKEND_META[currentBackend] : null;
+  const beName = beMeta ? beMeta.aiName : null;
+  const isBackendStep = !!f.backendStep;
+  const beInstallNode = (isBackendStep && currentBackend && BACKEND_INSTALL_EXAMPLES[currentBackend])
+    ? BACKEND_INSTALL_EXAMPLES[currentBackend][currentFramework]
+    : null;
+  const installExample = tx(beInstallNode) || tx(INSTALL_EXAMPLES[currentFramework]) || tx(INSTALL_EXAMPLES.flutter);
   const setupAssumption = SETUP_ASSUMPTIONS[currentFramework] || SETUP_ASSUMPTIONS.flutter;
+  const backendAssumption = (currentBackend && BACKEND_SETUP_ASSUMPTIONS[currentBackend]) ? BACKEND_SETUP_ASSUMPTIONS[currentBackend] : null;
   const isEn = currentLang === "en";
   const isPwa = currentFramework === "pwa";
   const responseLanguage = isEn ? "English" : "Turkish";
@@ -233,13 +254,13 @@ function buildAIPromptJSON(cat, f) {
     },
     project_context: {
       framework: fwName,
+      backend: beName || "Not selected (treat as framework-agnostic)",
       ide: "AI-assisted IDE (Antigravity / Cursor / VS Code with Copilot / Xcode 16 Predictive Code Completion)",
       target_platforms: currentFramework === "swift" ? ["iOS"]
                        : currentFramework === "kotlin" ? ["Android"]
                        : currentFramework === "pwa" ? ["Web (mobile + desktop browsers)", "Installable PWA", "Optionally store-packaged via TWA / PWABuilder"]
                        : ["Android", "iOS"],
-      developer_level: "beginner",
-      backend_options: ["Firebase", "Supabase", "Convex", "Appwrite", "Custom REST/GraphQL API", "CloudKit (iOS-native)", "None / fully on-device"]
+      developer_level: "beginner"
     },
     quality_checklist_item: item,
     expected_response_structure: [
@@ -285,6 +306,9 @@ function buildAIPromptJSON(cat, f) {
       "Provide working code that the developer can copy and run immediately",
       `Avoid unnecessary jargon; if a technical term must be used, give a brief ${responseLanguage} explanation in parentheses`,
       setupAssumption,
+      /* Backend tabanlı maddelerde backend SDK varsayımını da ilet; backend
+         olmayan maddelerde bunu eklemek konuyu dağıtır, atla. */
+      ...(isBackendStep && backendAssumption ? [backendAssumption] : []),
       "Keep total response focused, quality over length",
       `Do not output the JSON back; respond as a structured ${responseLanguage} guide`
     ],

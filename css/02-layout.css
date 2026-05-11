@@ -186,22 +186,29 @@
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
   }
 
-  /* Hero proje + framework birleşik pill (eskiden sadece framework idi) */
+  /* Hero proje + framework + backend kompakt card pill.
+     İçerik: 3 satır (proje / framework / backend) sol kolonda alt alta,
+     chevron sağ tarafta dikey ortalı.
+     Yatayda az yer kaplar (eski tek satır pill yerine küçük dikdörtgen kart). */
   .hero-project-pill {
     appearance: none;
     border: 1px solid var(--border);
     background: var(--surface-3);
     color: var(--text);
-    padding: 8px 14px;
-    border-radius: 999px;
+    padding: 8px 12px;
+    border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
+    flex-direction: row;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     transition: all 0.15s ease;
     max-width: 100%;
+    min-width: 140px;
+    text-align: left;
+    line-height: 1.2;
   }
   .hero-project-pill:hover { background: var(--surface-2); border-color: var(--accent); }
   .hero-project-pill:disabled, .hero-project-pill[disabled] {
@@ -210,25 +217,66 @@
     pointer-events: none;
     filter: grayscale(0.6);
   }
-  .hero-project-pill .proj-pill-icon { font-size: 14px; line-height: 1; }
+  /* Sol kolon: 3 satır alt alta */
+  .hero-project-pill .proj-pill-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
+  /* Her satır: ikon + etiket yatay */
+  .hero-project-pill .proj-pill-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  /* Üst satır: proje adı vurgulu */
+  .hero-project-pill .proj-pill-project { font-size: 13px; }
+  .hero-project-pill .proj-pill-icon { font-size: 14px; line-height: 1; flex-shrink: 0; }
   .hero-project-pill .proj-pill-name {
     font-weight: 700;
     color: var(--accent-2);
-    max-width: 180px;
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
-  .hero-project-pill .proj-pill-sep {
-    color: var(--text-mute);
-    margin: 0 2px;
-    opacity: 0.6;
+  /* Alt satırlar: framework + backend daha küçük, daha sönük */
+  .hero-project-pill .proj-pill-framework,
+  .hero-project-pill .proj-pill-backend {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-weight: 500;
   }
-  .hero-project-pill .fw-pill-icon { font-size: 15px; line-height: 1; }
+  .hero-project-pill .fw-pill-icon,
+  .hero-project-pill .be-pill-icon { font-size: 13px; line-height: 1; flex-shrink: 0; }
+  .hero-project-pill .fw-pill-label,
+  .hero-project-pill .be-pill-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  /* Sağ kolon: chevron, dikey ortalı */
   .hero-project-pill .fw-pill-chevron {
     color: var(--text-mute);
-    font-size: 11px;
-    margin-left: 2px;
+    font-size: 12px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  /* Mobilde extra daraltma: proje adı taşmasın */
+  @media (max-width: 560px) {
+    .hero-project-pill { min-width: 120px; padding: 6px 10px; }
+    .hero-project-pill .proj-pill-name { max-width: 130px; }
+  }
+  @media (max-width: 380px) {
+    .hero-project-pill { min-width: 110px; }
+    .hero-project-pill .proj-pill-project { font-size: 12px; }
+    .hero-project-pill .proj-pill-framework,
+    .hero-project-pill .proj-pill-backend { font-size: 11px; }
   }
 
   .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }

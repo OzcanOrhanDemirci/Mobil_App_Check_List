@@ -15,7 +15,7 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>dört adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>beş adımda</strong> yardım eder:</p>
         <ul>
           <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
           <li><strong>2. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
@@ -29,9 +29,22 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>4. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
+          <li><strong>4. Adım: Backend Seçimi.</strong> Uygulamanın sunucu tarafı hangisi olacak? Backend; kullanıcı kaydı, veritabanı, dosya yükleme gibi internetteki tüm işleri yapan tarafır. Listede backend'e bağlı maddeler seçtiğin değere göre özelleşir:
+            <ul>
+              <li><strong>🚫 Backend yok</strong>: Uygulaman internete bağlanmıyor (sadece cihaz üstü). Tüm backend maddeleri listeden tamamen gizlenir. Bu seçenek diğerlerinin üstünde, daha büyük ve daha belirgin gösterilir.</li>
+              <li><strong>🔥 Firebase</strong>: Google'ın kolay ve hızlı sunucu çözümü.</li>
+              <li><strong>🟢 Supabase</strong>: Açık kaynak, güçlü sunucu çözümü.</li>
+              <li><strong>🟣 Appwrite</strong>: Açık kaynak, esnek sunucu çözümü.</li>
+              <li><strong>📦 PocketBase</strong>: Hızlı kurulan, sade sunucu çözümü.</li>
+              <li><strong>☁️ AWS Amplify</strong>: Amazon'un kurumsal sunucu çözümü.</li>
+              <li><strong>⚡ Convex</strong>: Modern, TypeScript odaklı sunucu çözümü.</li>
+              <li><strong>🛠️ Kendi sunucum</strong>: Kendi geliştirdiğin özel sunucu.</li>
+              <li><strong>💻 Yerel geliştirme</strong>: Bilgisayarında çalışan test sunucusu.</li>
+            </ul>
+          </li>
+          <li><strong>5. Adım: Hoş Geldin.</strong> Backend'i seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
-        <p>Seçtiğin framework, listedeki <strong>28 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır; toplam <strong>53 madde</strong>.</p>
+        <p>Seçtiğin framework + backend kombinasyonu, listedeki maddelerin nasıl gözükeceğini belirler (paket adları, build komutları, kurulum adımları farklılaşır). "Backend yok" seçersen backend kategorisindeki tüm maddeler listeden çıkar.</p>
       </section>
 
       <section>
@@ -358,7 +371,7 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 First Run: Welcome Flow</h3>
-        <p>The first time you open the app a welcome dialog appears and guides you through <strong>four steps</strong>:</p>
+        <p>The first time you open the app a welcome dialog appears and guides you through <strong>five steps</strong>:</p>
         <ul>
           <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong>, so you can read the help in either language (momentary, not saved).</em></li>
           <li><strong>Step 2: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
@@ -372,9 +385,22 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web technologies (HTML/CSS/JS) installable on phones via "Add to Home Screen".</li>
             </ul>
           </li>
-          <li><strong>Step 4: Welcome.</strong> After picking the framework, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
+          <li><strong>Step 4: Pick a backend.</strong> Which server side will your app use? The backend handles sign-up, database, file uploads and anything online. Backend-related items in the list adapt to your choice:
+            <ul>
+              <li><strong>🚫 No backend</strong>: Your app never connects to the internet (on-device only). All backend items are removed from the list. This option appears prominently above the others, larger and more visible.</li>
+              <li><strong>🔥 Firebase</strong>: Google's quick and easy server solution.</li>
+              <li><strong>🟢 Supabase</strong>: Open-source, powerful server solution.</li>
+              <li><strong>🟣 Appwrite</strong>: Open-source, flexible server solution.</li>
+              <li><strong>📦 PocketBase</strong>: Quick-to-set-up, lightweight server solution.</li>
+              <li><strong>☁️ AWS Amplify</strong>: Amazon's enterprise server solution.</li>
+              <li><strong>⚡ Convex</strong>: A modern, TypeScript-first server solution.</li>
+              <li><strong>🛠️ Self-hosted server</strong>: A custom server you build yourself.</li>
+              <li><strong>💻 Local dev backend</strong>: Test server running on your computer.</li>
+            </ul>
+          </li>
+          <li><strong>Step 5: Welcome.</strong> After picking the backend, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
         </ul>
-        <p>The framework you pick determines how <strong>28 items appear</strong> (package names, build commands, code samples differ). 25 items are common across all frameworks, for a total of <strong>53 items</strong>.</p>
+        <p>Your framework + backend combination drives how items appear (package names, build commands, install steps differ). Picking "No backend" removes every backend item from the list entirely.</p>
       </section>
 
       <section>

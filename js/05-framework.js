@@ -9,10 +9,25 @@ function saveFramework(fw) {
   setProjectField("framework", fw);
 }
 
-/* Bir feature'ın seçili framework'e göre mvp/release değerini döndürür.
-   Eğer feature'da variants yoksa, evrenseldir; doğrudan f[level] döner.
-   Sonuç {tr, en} objesi olabilir; tx() ile çözülmesi gerekir. */
+/* Bir feature'ın seçili framework + backend'e göre mvp/release değerini döndürür.
+   Çözüm önceliği (ilk eşleşen kazanır):
+     1. f.backendVariants[currentBackend][currentFramework][level]
+     2. f.backendVariants[currentBackend]._default[level]
+     3. f.variants[currentFramework][level]
+     4. f[level]
+   Bu sırayla seçili backend + framework kombinasyonu için en spesifik metin
+   önce dönmüş olur; eksikse evrensele kadar düşer. Sonuç {tr, en} objesi
+   olabilir; tx() ile çözülmesi gerekir. */
 function resolveLevel(f, level) {
+  if (f.backendVariants && currentBackend && f.backendVariants[currentBackend]) {
+    const node = f.backendVariants[currentBackend];
+    if (currentFramework && node[currentFramework] && node[currentFramework][level] !== undefined) {
+      return node[currentFramework][level];
+    }
+    if (node._default && node._default[level] !== undefined) {
+      return node._default[level];
+    }
+  }
   if (f.variants && currentFramework && f.variants[currentFramework]) {
     return f.variants[currentFramework][level];
   }

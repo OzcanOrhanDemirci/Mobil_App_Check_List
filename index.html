@@ -79,12 +79,21 @@
           <span class="lang-sep" aria-hidden="true">/</span>
           <span class="lang-other">EN</span>
         </button>
-        <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje ve framework; değiştirmek için tıkla" data-i18n-title="proj.pill.title">
-          <span class="proj-pill-icon" aria-hidden="true">📁</span>
-          <span class="proj-pill-name">Proje</span>
-          <span class="proj-pill-sep" aria-hidden="true">·</span>
-          <span class="fw-pill-icon">🐦</span>
-          <span class="fw-pill-label">Flutter</span>
+        <button type="button" class="hero-project-pill" id="projectFrameworkBtn" title="Aktif proje, framework ve backend (değiştirmek için tıkla)" data-i18n-title="proj.pill.title">
+          <span class="proj-pill-rows">
+            <span class="proj-pill-row proj-pill-project">
+              <span class="proj-pill-icon" aria-hidden="true">📁</span>
+              <span class="proj-pill-name">Proje</span>
+            </span>
+            <span class="proj-pill-row proj-pill-framework">
+              <span class="fw-pill-icon">🐦</span>
+              <span class="fw-pill-label">Flutter</span>
+            </span>
+            <span class="proj-pill-row proj-pill-backend">
+              <span class="be-pill-icon">🔥</span>
+              <span class="be-pill-label">Firebase</span>
+            </span>
+          </span>
           <span class="fw-pill-chevron" aria-hidden="true">▾</span>
         </button>
       </div>
@@ -462,7 +471,7 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Adım göstergesi (4 adım: Dil, Proje Adı, Framework, Karşılama) -->
+    <!-- Adım göstergesi (5 adım: Dil, Proje Adı, Framework, Backend, Karşılama) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
@@ -471,6 +480,8 @@
       <span class="welcome-step-dot" data-step-dot="3">3</span>
       <span class="welcome-step-line" data-step-line="3"></span>
       <span class="welcome-step-dot" data-step-dot="4">4</span>
+      <span class="welcome-step-line" data-step-line="4"></span>
+      <span class="welcome-step-dot" data-step-dot="5">5</span>
     </div>
 
     <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
@@ -546,8 +557,65 @@
       </div>
     </div>
 
-    <!-- 4. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <!-- 4. Adım: Backend seçimi -->
     <div class="welcome-pane" data-pane="4" hidden>
+      <p class="framework-pick-q" data-i18n="welcome.beQuestion">Hangi backend ile çalışacaksın?</p>
+      <p class="framework-pick-sub" data-i18n="welcome.beSub">Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.</p>
+      <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
+        <button type="button" class="backend-option backend-option--none" data-welcome-be="noBackend">
+          <span class="be-emoji">🚫</span>
+          <span class="be-title" data-i18n="be.opt.noBackend.title">Backend yok</span>
+          <span class="be-desc" data-i18n="be.opt.noBackend.desc">Sunucuya bağlanmayan uygulamalar için. Backend maddeleri listeden çıkar.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="firebase">
+          <span class="be-emoji">🔥</span>
+          <span class="be-title" data-i18n="be.opt.firebase.title">Firebase</span>
+          <span class="be-desc" data-i18n="be.opt.firebase.desc">Google'ın kolay ve hızlı sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="supabase">
+          <span class="be-emoji">🟢</span>
+          <span class="be-title" data-i18n="be.opt.supabase.title">Supabase</span>
+          <span class="be-desc" data-i18n="be.opt.supabase.desc">Açık kaynak, güçlü sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="appwrite">
+          <span class="be-emoji">🟣</span>
+          <span class="be-title" data-i18n="be.opt.appwrite.title">Appwrite</span>
+          <span class="be-desc" data-i18n="be.opt.appwrite.desc">Açık kaynak, esnek sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="pocketbase">
+          <span class="be-emoji">📦</span>
+          <span class="be-title" data-i18n="be.opt.pocketbase.title">PocketBase</span>
+          <span class="be-desc" data-i18n="be.opt.pocketbase.desc">Hızlı kurulan, sade sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="amplify">
+          <span class="be-emoji">☁️</span>
+          <span class="be-title" data-i18n="be.opt.amplify.title">AWS Amplify</span>
+          <span class="be-desc" data-i18n="be.opt.amplify.desc">Amazon'un kurumsal sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="convex">
+          <span class="be-emoji">⚡</span>
+          <span class="be-title" data-i18n="be.opt.convex.title">Convex</span>
+          <span class="be-desc" data-i18n="be.opt.convex.desc">Modern, TypeScript odaklı sunucu çözümü.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="custom">
+          <span class="be-emoji">🛠️</span>
+          <span class="be-title" data-i18n="be.opt.custom.title">Kendi sunucum</span>
+          <span class="be-desc" data-i18n="be.opt.custom.desc">Kendi geliştirdiğin özel sunucu.</span>
+        </button>
+        <button type="button" class="backend-option" data-welcome-be="localhost">
+          <span class="be-emoji">💻</span>
+          <span class="be-title" data-i18n="be.opt.localhost.title">Yerel geliştirme</span>
+          <span class="be-desc" data-i18n="be.opt.localhost.desc">Bilgisayarında çalışan test sunucusu.</span>
+        </button>
+      </div>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeBeBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeBeNext" disabled data-i18n="welcome.cta.pickBe">Devam etmek için backend seç</button>
+      </div>
+    </div>
+
+    <!-- 5. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <div class="welcome-pane" data-pane="5" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">14 kategoride 53 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
@@ -583,9 +651,10 @@
     </header>
 
     <!-- Sekme şeridi -->
-    <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework / Sıfırla">
+    <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework / Backend / Sıfırla">
       <button type="button" class="projfw-tab active" role="tab" aria-selected="true" data-projfw-tab="project" data-i18n="proj.tab.project">Proje</button>
       <button type="button" class="projfw-tab" role="tab" aria-selected="false" data-projfw-tab="framework" data-i18n="proj.tab.framework">Framework</button>
+      <button type="button" class="projfw-tab" role="tab" aria-selected="false" data-projfw-tab="backend" data-i18n="proj.tab.backend">Backend</button>
       <button type="button" class="projfw-tab projfw-tab-reset" role="tab" aria-selected="false" data-projfw-tab="reset" data-i18n="proj.tab.reset">Sıfırla</button>
     </div>
 
@@ -689,6 +758,58 @@
         </div>
       </div>
 
+      <!-- Sekme: Backend seçici (Framework sekmesi ile aynı pattern) -->
+      <div class="projfw-pane projfw-pane-backend" data-projfw-pane="backend" hidden>
+        <p class="framework-modal-sub" data-i18n="beModal.sub">Backend kategorisindeki maddeler seçtiğin backend'e göre değişir. 'Backend yok' seçersen backend'le ilgili tüm maddeler listeden kaldırılır. İşaretlemelerin ve notların korunur.</p>
+        <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
+          <button type="button" class="backend-option backend-option--none" data-switch-be="noBackend">
+            <span class="be-emoji">🚫</span>
+            <span class="be-title" data-i18n="be.opt.noBackend.title">Backend yok</span>
+            <span class="be-desc" data-i18n="be.opt.noBackend.desc">Sunucuya bağlanmayan uygulamalar için. Backend maddeleri listeden çıkar.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="firebase">
+            <span class="be-emoji">🔥</span>
+            <span class="be-title" data-i18n="be.opt.firebase.title">Firebase</span>
+            <span class="be-desc" data-i18n="be.opt.firebase.desc">Google'ın kolay ve hızlı sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="supabase">
+            <span class="be-emoji">🟢</span>
+            <span class="be-title" data-i18n="be.opt.supabase.title">Supabase</span>
+            <span class="be-desc" data-i18n="be.opt.supabase.desc">Açık kaynak, güçlü sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="appwrite">
+            <span class="be-emoji">🟣</span>
+            <span class="be-title" data-i18n="be.opt.appwrite.title">Appwrite</span>
+            <span class="be-desc" data-i18n="be.opt.appwrite.desc">Açık kaynak, esnek sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="pocketbase">
+            <span class="be-emoji">📦</span>
+            <span class="be-title" data-i18n="be.opt.pocketbase.title">PocketBase</span>
+            <span class="be-desc" data-i18n="be.opt.pocketbase.desc">Hızlı kurulan, sade sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="amplify">
+            <span class="be-emoji">☁️</span>
+            <span class="be-title" data-i18n="be.opt.amplify.title">AWS Amplify</span>
+            <span class="be-desc" data-i18n="be.opt.amplify.desc">Amazon'un kurumsal sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="convex">
+            <span class="be-emoji">⚡</span>
+            <span class="be-title" data-i18n="be.opt.convex.title">Convex</span>
+            <span class="be-desc" data-i18n="be.opt.convex.desc">Modern, TypeScript odaklı sunucu çözümü.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="custom">
+            <span class="be-emoji">🛠️</span>
+            <span class="be-title" data-i18n="be.opt.custom.title">Kendi sunucum</span>
+            <span class="be-desc" data-i18n="be.opt.custom.desc">Kendi geliştirdiğin özel sunucu.</span>
+          </button>
+          <button type="button" class="backend-option" data-switch-be="localhost">
+            <span class="be-emoji">💻</span>
+            <span class="be-title" data-i18n="be.opt.localhost.title">Yerel geliştirme</span>
+            <span class="be-desc" data-i18n="be.opt.localhost.desc">Bilgisayarında çalışan test sunucusu.</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -713,6 +834,18 @@
           <button type="button" class="proj-add-fw" data-add-fw="kotlin"><span class="proj-add-fw-icon">🤖</span><span class="proj-add-fw-name">Kotlin</span></button>
           <button type="button" class="proj-add-fw" data-add-fw="expo"><span class="proj-add-fw-icon">🚀</span><span class="proj-add-fw-name">Expo</span></button>
           <button type="button" class="proj-add-fw" data-add-fw="pwa"><span class="proj-add-fw-icon">🌐</span><span class="proj-add-fw-name">PWA</span></button>
+        </div>
+        <div class="proj-add-fw-label" data-i18n="proj.add.beHint">Hangi backend ile çalışacaksın?</div>
+        <div class="proj-add-be-grid" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
+          <button type="button" class="proj-add-be proj-add-be--none" data-add-be="noBackend"><span class="proj-add-be-icon">🚫</span><span class="proj-add-be-name" data-i18n="be.opt.noBackend.title">Backend yok</span></button>
+          <button type="button" class="proj-add-be" data-add-be="firebase"><span class="proj-add-be-icon">🔥</span><span class="proj-add-be-name">Firebase</span></button>
+          <button type="button" class="proj-add-be" data-add-be="supabase"><span class="proj-add-be-icon">🟢</span><span class="proj-add-be-name">Supabase</span></button>
+          <button type="button" class="proj-add-be" data-add-be="appwrite"><span class="proj-add-be-icon">🟣</span><span class="proj-add-be-name">Appwrite</span></button>
+          <button type="button" class="proj-add-be" data-add-be="pocketbase"><span class="proj-add-be-icon">📦</span><span class="proj-add-be-name">PocketBase</span></button>
+          <button type="button" class="proj-add-be" data-add-be="amplify"><span class="proj-add-be-icon">☁️</span><span class="proj-add-be-name">AWS Amplify</span></button>
+          <button type="button" class="proj-add-be" data-add-be="convex"><span class="proj-add-be-icon">⚡</span><span class="proj-add-be-name">Convex</span></button>
+          <button type="button" class="proj-add-be" data-add-be="custom"><span class="proj-add-be-icon">🛠️</span><span class="proj-add-be-name" data-i18n="be.opt.custom.title">Kendi sunucum</span></button>
+          <button type="button" class="proj-add-be" data-add-be="localhost"><span class="proj-add-be-icon">💻</span><span class="proj-add-be-name" data-i18n="be.opt.localhost.title">Yerel geliştirme</span></button>
         </div>
         <div class="proj-add-error" id="projAddError" role="alert" aria-live="polite" hidden></div>
         <div class="proj-add-form-row">
@@ -826,6 +959,7 @@
 <script src="js/04-projects.js"></script>
 <script src="js/04-storage.js"></script>
 <script src="js/05-framework.js"></script>
+<script src="js/05-backend.js"></script>
 <script src="js/06-view-state.js"></script>
 <script src="js/07-ui-helpers.js"></script>
 <script src="js/08-i18n-dom.js"></script>

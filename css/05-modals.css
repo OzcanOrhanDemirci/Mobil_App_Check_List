@@ -1790,3 +1790,172 @@
     }
   }
 
+  /* ==================== BACKEND SEÇİMİ (welcome step 4 + projfw modal sekmesi) ====================
+     Framework grid'i ile aynı 2-kolon kart düzeni, ancak "Backend yok" seçeneği
+     prominently first-row-full-width gösterilir; kullanıcı internet gerektirmeyen
+     bir uygulama için bunu kolayca seçebilsin. */
+  .backend-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* "Backend yok" kartı: ilk satırda tam genişlik + büyük tipografi + ayırt edici stil */
+  .backend-options > .backend-option--none {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(249, 115, 22, 0.05));
+    border: 2px dashed var(--border);
+    text-align: left;
+  }
+  .backend-options > .backend-option--none:hover {
+    border-color: var(--mvp);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.10), rgba(249, 115, 22, 0.08));
+  }
+  .backend-options > .backend-option--none.selected {
+    border-color: var(--mvp);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.20), rgba(34, 197, 94, 0.08));
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+  }
+  .backend-options > .backend-option--none .be-emoji {
+    font-size: 30px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .backend-options > .backend-option--none .be-title {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+  }
+  .backend-options > .backend-option--none .be-desc {
+    font-size: 12px;
+    margin-left: 0;
+  }
+  .backend-options > .backend-option--none .be-title,
+  .backend-options > .backend-option--none .be-desc {
+    text-align: left;
+  }
+
+  /* Normal backend kartları (framework-option stiliyle paralel) */
+  .backend-option {
+    appearance: none;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+  .backend-option:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .backend-option.selected {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .backend-option .be-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .backend-option .be-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .backend-option .be-desc {
+    font-size: 11.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+  }
+
+  /* Mobil: tek sütun düzeni; "Backend yok" zaten full-width olduğu için
+     görsel olarak en üstte ve büyük durmaya devam eder. */
+  @media (max-width: 480px) {
+    .backend-options { grid-template-columns: 1fr; }
+    .backend-options > .backend-option--none {
+      padding: 16px 14px;
+    }
+    .backend-options > .backend-option--none .be-emoji {
+      font-size: 26px;
+    }
+    .backend-options > .backend-option--none .be-title {
+      font-size: 15px;
+    }
+  }
+
+  /* ==================== PROJE OLUŞTUR MODALI — MINI BACKEND GRID ====================
+     Framework mini grid'i ile aynı pattern; noBackend için full-width + yeşil
+     aksanlı vurgu. */
+  .proj-add-be-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .proj-add-be-grid > .proj-add-be--none {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(249, 115, 22, 0.06));
+    border: 1.5px dashed var(--border);
+    justify-content: center;
+    padding: 10px 12px;
+  }
+  .proj-add-be-grid > .proj-add-be--none:hover {
+    border-color: var(--mvp);
+  }
+  .proj-add-be-grid > .proj-add-be--none.selected {
+    border-color: var(--mvp);
+    background: rgba(34, 197, 94, 0.16);
+    color: var(--mvp);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.20);
+  }
+  @media (max-width: 540px) {
+    .proj-add-be-grid { grid-template-columns: repeat(2, 1fr); }
+    .proj-add-be-grid > .proj-add-be--none { grid-column: 1 / -1; }
+  }
+  .proj-add-be {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    min-width: 0;
+    text-align: left;
+  }
+  .proj-add-be:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-add-be.selected {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-add-be-icon { font-size: 14px; flex-shrink: 0; line-height: 1; }
+  .proj-add-be-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+

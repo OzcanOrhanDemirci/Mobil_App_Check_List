@@ -707,10 +707,10 @@ document.addEventListener("keydown", (e) => {
 })();
 
 /* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Aktif proje + framework yoksa karşılama modalını 4 adımda göster:
-   1) Dil seçimi  2) Proje adı  3) Framework seçimi  4) Tanıtım / Başlayalım */
+/* Aktif proje + framework + backend yoksa karşılama modalını 5 adımda göster:
+   1) Dil seçimi  2) Proje adı  3) Framework seçimi  4) Backend seçimi  5) Tanıtım / Başlayalım */
 function showWelcomeIfFirstVisit() {
-  if (getActiveProjectId() && currentFramework) return;
+  if (getActiveProjectId() && currentFramework && currentBackend) return;
   setTimeout(() => {
     setWelcomeStep(1);
     openModal("welcomeModal");
@@ -719,11 +719,12 @@ function showWelcomeIfFirstVisit() {
 
 /* Welcome modalı içindeki seçimler — buton tıklanana dek kalıcılaştırılmaz */
 let pendingFramework = null;
+let pendingBackend = null;
 let pendingLang = null;
 let pendingProjName = null;
 
 function setWelcomeStep(n) {
-  /* 1 → dil, 2 → proje adı, 3 → framework, 4 → karşılama */
+  /* 1 → dil, 2 → proje adı, 3 → framework, 4 → backend, 5 → karşılama */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
@@ -852,9 +853,34 @@ document.getElementById("welcomeFwBack").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 4. ADIM: Karşılama */
-document.getElementById("welcomeBack").addEventListener("click", () => {
+/* 4. ADIM: Backend seçimi */
+document.querySelectorAll("[data-welcome-be]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingBackend = btn.dataset.welcomeBe;
+    window.pendingBackend = pendingBackend;
+    document.querySelectorAll("[data-welcome-be]").forEach(b => {
+      b.classList.toggle("selected", b === btn);
+    });
+    const nextBtn = document.getElementById("welcomeBeNext");
+    if (nextBtn) {
+      nextBtn.disabled = false;
+      nextBtn.textContent = t("welcome.cta.next");
+    }
+  });
+});
+
+document.getElementById("welcomeBeNext").addEventListener("click", () => {
+  if (!pendingBackend) return;
+  setWelcomeStep(5);
+});
+
+document.getElementById("welcomeBeBack").addEventListener("click", () => {
   setWelcomeStep(3);
+});
+
+/* 5. ADIM: Karşılama */
+document.getElementById("welcomeBack").addEventListener("click", () => {
+  setWelcomeStep(4);
 });
 
 /* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
@@ -930,8 +956,9 @@ function closeHelpModal() {
 }
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
-  if (!pendingFramework || !pendingProjName) return;
-  /* Önce projeyi oluştur ve aktif yap; saveFramework artık aktif projeye yazıyor */
+  if (!pendingFramework || !pendingProjName || !pendingBackend) return;
+  /* Önce projeyi oluştur ve aktif yap; saveFramework/saveBackend artık aktif
+     projeye yazıyor */
   const created = createProject(pendingProjName);
   if (!created.ok) {
     /* En olası hata: aynı isimde proje zaten var (genelde yeni kullanıcıda olmaz).
@@ -944,13 +971,16 @@ document.getElementById("welcomeStart").addEventListener("click", () => {
   }
   setActiveProjectId(created.project.id);
   saveFramework(pendingFramework);
+  saveBackend(pendingBackend);
   closeModal("welcomeModal");
   /* Yeni projenin tüm in-memory state'ini yükle ve UI'ı baştan render et */
   reloadActiveProjectAndRender();
   /* Pendingleri temizle ki ileride welcome tekrar açılırsa eski seçim kalmasın */
   pendingProjName = null;
   pendingFramework = null;
+  pendingBackend = null;
   window.pendingFramework = null;
+  window.pendingBackend = null;
 });
 
 /* ==================== PROJE + FRAMEWORK PILL (HERO) ==================== */
@@ -970,6 +1000,29 @@ function applyFrameworkUI() {
   /* Switch modalında mevcut seçimi vurgula */
   document.querySelectorAll("[data-switch-fw]").forEach(b => {
     b.classList.toggle("selected", b.dataset.switchFw === currentFramework);
+  });
+  /* Backend leg'i de her FW update'inde tazele (proje değişiminde framework ve
+     backend birlikte güncelleniyor; iki ayrı uygulamayı tek yerde topla) */
+  applyBackendUI();
+}
+
+/* Hero pill'in backend satırını ve backend sekmesi seçim vurgusunu uygular. */
+function applyBackendUI() {
+  const beMeta = currentBackend ? BACKEND_META[currentBackend] : null;
+  const beIcon = document.querySelector("#projectFrameworkBtn .be-pill-icon");
+  const beLabel = document.querySelector("#projectFrameworkBtn .be-pill-label");
+  const beRow = document.querySelector("#projectFrameworkBtn .proj-pill-backend");
+  if (beMeta && beIcon && beLabel) {
+    beIcon.textContent = beMeta.icon;
+    beLabel.textContent = tx(beMeta.short);
+  }
+  /* Backend satırını yalnızca backend seçilmişse göster (welcome akışı sırasında
+     pill arka planda kalır; backend henüz seçilmemiş olabilir) */
+  const showBackendRow = !!currentBackend;
+  if (beRow) beRow.hidden = !showBackendRow;
+  /* projfw modal Backend sekmesinde aktif kart seçimini vurgula */
+  document.querySelectorAll("[data-switch-be]").forEach(b => {
+    b.classList.toggle("selected", b.dataset.switchBe === currentBackend);
   });
 }
 
@@ -1002,6 +1055,12 @@ document.querySelectorAll(".projfw-tab").forEach(tab => {
     setProjFwTab(target);
     if (target === "project") {
       renderProjectList();
+    } else if (target === "backend") {
+      /* Aktif backend kartını vurgula */
+      applyBackendUI();
+    } else if (target === "framework") {
+      /* Aktif framework kartını vurgula (applyFrameworkUI bunu yapıyor) */
+      applyFrameworkUI();
     } else if (target === "reset" && projfwResetUi) {
       /* Sekmeye her geçişte seçimler sıfırlanır — kullanıcı temiz başlasın */
       projfwResetUi.resetUi();
@@ -1042,11 +1101,16 @@ function renderProjectList() {
     li.className = "proj-item" + (p.id === activeId ? " active" : "");
     li.dataset.projId = p.id;
     /* Sol ikon: projenin framework'ünün emoji'si (yoksa 📁); isim yanında
-       parantez içinde framework adı. Bu sayede pop-up içinde de hangi proje
-       hangi framework belli olur (ana paneldeki pill'le tutarlı). */
+       parantez içinde framework + backend adı. Ana paneldeki pill'le tutarlı. */
     const fwMeta = (p.data && p.data.framework) ? FRAMEWORK_META[p.data.framework] : null;
     const fwIcon = fwMeta ? fwMeta.icon : "📁";
     const fwName = fwMeta ? tx(fwMeta.short) : "—";
+    const beMeta = (p.data && p.data.backend) ? BACKEND_META[p.data.backend] : null;
+    const beShortName = beMeta ? tx(beMeta.short) : "";
+    const beIcon = beMeta ? beMeta.icon : "";
+    /* Görüntü: "(Flutter · 🔥 Firebase)" şeklinde — beIcon yoksa veya backend yoksa
+       sadece "(Flutter)". noBackend için emoji 🚫 ile gözükür. */
+    const stackLabel = beMeta ? `${fwName} · ${beIcon} ${beShortName}` : fwName;
     li.innerHTML = `
       <button type="button" class="proj-row" data-proj-switch="${p.id}" title="${escapeHtml(p.name)} projesine geç">
         <span class="proj-row-icon" aria-hidden="true"></span>
@@ -1068,7 +1132,7 @@ function renderProjectList() {
     /* İsmi + framework etiketini textContent ile ata (XSS güvenli) */
     li.querySelector(".proj-row-icon").textContent = fwIcon;
     li.querySelector(".proj-row-name").textContent = p.name;
-    li.querySelector(".proj-row-fw").textContent = "(" + fwName + ")";
+    li.querySelector(".proj-row-fw").textContent = "(" + stackLabel + ")";
     if (p.id === activeId) {
       li.querySelector(".proj-row-active-badge").hidden = false;
     }
@@ -1094,28 +1158,33 @@ function updateProjAddButtonState() {
   addBtn.title = atLimit ? t("proj.limit.toast") : t("proj.add.title");
 }
 
-/* "+ Yeni Proje" akışında seçilen framework — Oluştur'a basılana kadar geçici */
+/* "+ Yeni Proje" akışında seçilen framework + backend — Oluştur'a basılana
+   kadar geçici. Üçü de gerekli: ad + framework + backend. */
 let pendingNewProjFw = null;
+let pendingNewProjBe = null;
 
-/* Formu sıfırlar (input boşalt, framework seçimi temizle, hata gizle, butonu disable yap).
-   Modal'ın görünürlüğünü değiştirmez; o ayrıca yönetilir. */
+/* Formu sıfırlar (input boşalt, framework + backend seçimi temizle, hata gizle,
+   butonu disable yap). Modal'ın görünürlüğünü değiştirmez; o ayrıca yönetilir. */
 function resetProjAddForm() {
   const input = document.getElementById("projAddInput");
   const err = document.getElementById("projAddError");
   if (input) input.value = "";
   if (err) { err.textContent = ""; err.hidden = true; }
   pendingNewProjFw = null;
+  pendingNewProjBe = null;
   document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.remove("selected"));
+  document.querySelectorAll(".proj-add-be").forEach(b => b.classList.remove("selected"));
   updateProjAddCreateState();
 }
 
-/* Oluştur butonu: hem isim hem framework girilmiş ise enable, aksi halde disable */
+/* Oluştur butonu: ad + framework + backend hepsi girilmişse enable, aksi
+   halde disable. Backend "noBackend" da geçerli bir seçim sayılır. */
 function updateProjAddCreateState() {
   const input = document.getElementById("projAddInput");
   const createBtn = document.getElementById("projAddCreate");
   if (!input || !createBtn) return;
   const hasName = !!(input.value || "").trim();
-  createBtn.disabled = !(hasName && pendingNewProjFw);
+  createBtn.disabled = !(hasName && pendingNewProjFw && pendingNewProjBe);
 }
 
 function showProjAddError(msg) {
@@ -1159,6 +1228,19 @@ document.querySelectorAll(".proj-add-fw").forEach(btn => {
   });
 });
 
+/* Mini backend grid: aynı pattern — tıklanan backend pendingNewProjBe'ye atanır.
+   noBackend dahil her geçerli backend seçilebilir; updateProjAddCreateState
+   her ikisini de zorunlu görüyor (boş değil + framework + backend). */
+document.querySelectorAll(".proj-add-be").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingNewProjBe = btn.dataset.addBe;
+    document.querySelectorAll(".proj-add-be").forEach(b => b.classList.toggle("selected", b === btn));
+    const errEl = document.getElementById("projAddError");
+    if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
+    updateProjAddCreateState();
+  });
+});
+
 /* Input değişiminde validasyon */
 document.getElementById("projAddInput").addEventListener("input", () => {
   /* Yazmaya başlayınca varsa hatayı temizle */
@@ -1189,14 +1271,17 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
   if (!name) { showProjAddError(t("proj.error.empty")); return; }
   if (name.length > 60) { showProjAddError(t("proj.error.tooLong")); return; }
   if (!pendingNewProjFw) { showProjAddError(t("proj.error.fwMissing")); return; }
+  if (!pendingNewProjBe) { showProjAddError(t("proj.error.beMissing")); return; }
   if (projectsCount() >= 20) { showProjAddError(t("proj.limit.toast")); return; }
   if (projectExistsByName(name)) { showProjAddError(t("proj.error.duplicate")); return; }
 
   const fwMeta = FRAMEWORK_META[pendingNewProjFw];
   const fwDisplay = (fwMeta?.icon || "") + " " + fwLabel(pendingNewProjFw);
+  const beMeta = BACKEND_META[pendingNewProjBe];
+  const beDisplay = (beMeta?.icon || "") + " " + backendLabel(pendingNewProjBe);
   const currentProj = getActiveProject();
   const html = `
-    <p class="fw-switch-intro">${t("proj.add.confirmIntro", { name: escapeHtml(name), fw: escapeHtml(fwDisplay) })}</p>
+    <p class="fw-switch-intro">${t("proj.add.confirmIntroFull", { name: escapeHtml(name), fw: escapeHtml(fwDisplay), be: escapeHtml(beDisplay) })}</p>
     ${currentProj ? `<ul class="fw-switch-effects">
       <li class="effect-keep"><span class="effect-icon">✓</span><span>${t("proj.add.confirmKept", { currentName: escapeHtml(currentProj.name) })}</span></li>
     </ul>` : ""}
@@ -1207,14 +1292,15 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
   closeModal("frameworkModal");
   /* Onay sonrası işin yapılması için seçimleri local'e kopyala — customConfirm
      callback'i gecikmeli çalışıyor, bu arada kullanıcı modalı tekrar açabilir
-     ve pendingNewProjFw değişebilir. Defansif kopya. */
+     ve pendingNewProj* değişebilir. Defansif kopya. */
   const finalName = name;
   const finalFw = pendingNewProjFw;
+  const finalBe = pendingNewProjBe;
 
   customConfirm(
     html,
     () => {
-      const result = createProject(finalName, { framework: finalFw });
+      const result = createProject(finalName, { framework: finalFw, backend: finalBe });
       if (!result.ok) {
         if (result.error === "duplicate")     showToast(t("proj.error.duplicate"), "warn", 2200);
         else if (result.error === "limit")    showToast(t("proj.limit.toast"), "warn", 2400);
@@ -1568,6 +1654,134 @@ document.querySelectorAll("[data-switch-fw]").forEach(btn => {
       html,
       () => performSwitch(true),
       { title: t("fwModal.confirmTitle"), yesText: t("fwModal.confirmYes"), cancelText: t("fwModal.confirmCancel"), html: true, wide: true }
+    );
+  });
+});
+
+/* ==================== BACKEND DEĞİŞTİRME (modal Backend sekmesi) ====================
+   Framework switch'i ile aynı davranış: bir backend kartına tıklayınca aktif
+   backend ile farklıysa, mevcut backend işaretleri varsa onay popup'ı aç ve
+   onaylanırsa backend kategorisindeki işaretleri sıfırla. Backend "noBackend"
+   olduğunda kategori tamamen gizleneceği için tüm backend işaretleri yok sayılır
+   (saveState'de kalsalar bile render edilmez); ama UI'da "sıfırlanır" mesajı
+   doğru olur çünkü kullanıcı listede gerçekten o işaretleri görmeyecek.
+
+   Backend kategorisi şu an cat 06 ("Backend"). Bu blok cat ID'sini sabitlemek
+   yerine `backendStep: true` etiketli tüm feature'ları tarar — gelecekte başka
+   kategorilere backend maddeleri eklenirse de doğru çalışır. */
+function clearBackendMarks() {
+  let changed = false;
+  DATA.forEach(cat => {
+    cat.features.forEach(f => {
+      if (!f.backendStep) return;
+      ["mvp", "release"].forEach(L => {
+        const key = `${cat.id}.${f.id}.${L}`;
+        if (state[key]) { delete state[key]; changed = true; }
+      });
+    });
+  });
+  if (changed) saveState();
+}
+
+document.querySelectorAll("[data-switch-be]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const be = btn.dataset.switchBe;
+    if (be === currentBackend) {
+      closeModal("frameworkModal");
+      return;
+    }
+
+    /* Geçişi gerçekleştiren ortak fonksiyon: clearBackendMarks varsa backend
+       kategorisi işaretlerini siler, kutlama bayraklarını sıfırlar, sonra
+       UI'ı baştan render eder (backend maddeleri gözükür/gizlenir). */
+    const performSwitch = (clearMarks) => {
+      if (clearMarks) {
+        clearBackendMarks();
+        celebrations = {};
+        saveCelebrations();
+      }
+      saveBackend(be);
+      applyBackendUI();
+      renderContent();
+      attachClickHandlers();
+      applyFilters();
+      updateProgress();
+      closeModal("frameworkModal");
+      /* Bilgilendirme toast'u, üç farklı senaryo:
+         - noBackend → "backend yok, maddeler gizlendi"
+         - eskiden noBackend, yenisi gerçek backend → "maddeler tekrar görünür"
+         - normal switch → tek satırlık "X seçildi" (clearMarks varsa "sıfırlandı")
+       */
+      const goingToNone = be === "noBackend";
+      const comingFromNone = currentBackend === "noBackend" && be !== "noBackend";
+      let msg;
+      if (goingToNone) {
+        msg = t("beSwitch.toastHidden");
+      } else if (comingFromNone) {
+        msg = t("beSwitch.toastShown", { name: backendLabel(be) });
+      } else if (clearMarks) {
+        msg = t("beSwitch.toastReset", { name: backendLabel(be) });
+      } else {
+        msg = t("beSwitch.toast", { name: backendLabel(be) });
+      }
+      showToast(msg, "success", clearMarks ? 1800 : 1400);
+    };
+
+    /* Backend kategorisindeki herhangi bir işaret varsa onay iste — switch
+       yapılırsa o işaretler sıfırlanır. Yoksa doğrudan geç. */
+    const hasBackendMarks = DATA.some(cat =>
+      cat.features.some(f =>
+        f.backendStep && (state[`${cat.id}.${f.id}.mvp`] || state[`${cat.id}.${f.id}.release`])
+      )
+    );
+
+    if (!hasBackendMarks) {
+      performSwitch(false);
+      return;
+    }
+
+    /* Onay popup'ı için önce projfw modalını kapat (üst üste binmesin) */
+    closeModal("frameworkModal");
+    const currentMeta = (currentBackend && BACKEND_META[currentBackend]) || { icon: "?", label: currentBackend || "—" };
+    const newMeta = BACKEND_META[be];
+    /* "noBackend" tarafına geçişte özel etki listesi: maddeler gizlenir */
+    const goingToNone = be === "noBackend";
+    const comingFromNone = currentBackend === "noBackend";
+    const extraEffectKey = goingToNone ? "beModal.effect.itemsHidden"
+                          : comingFromNone ? "beModal.effect.itemsShown"
+                          : null;
+    const extraEffectHtml = extraEffectKey
+      ? `<li class="effect-clear"><span class="effect-icon">⚠</span><span>${t(extraEffectKey)}</span></li>`
+      : "";
+    const html = `
+      <div class="fw-switch-confirm">
+        <p class="fw-switch-intro">${t("beModal.intro")}</p>
+        <div class="fw-switch-row">
+          <div class="fw-switch-card from">
+            <div class="fw-switch-tag">${t("beModal.tagFrom")}</div>
+            <div class="fw-switch-emoji">${currentMeta.icon}</div>
+            <div class="fw-switch-name">${tx(currentMeta.label)}</div>
+          </div>
+          <div class="fw-switch-arrow" aria-hidden="true">→</div>
+          <div class="fw-switch-card to">
+            <div class="fw-switch-tag">${t("beModal.tagTo")}</div>
+            <div class="fw-switch-emoji">${newMeta.icon}</div>
+            <div class="fw-switch-name">${tx(newMeta.label)}</div>
+          </div>
+        </div>
+        <ul class="fw-switch-effects">
+          <li class="effect-clear"><span class="effect-icon">⚠</span><span>${t("beModal.effect.marksReset")}</span></li>
+          <li class="effect-clear"><span class="effect-icon">⚠</span><span>${t("beModal.effect.barsRecalc")}</span></li>
+          ${extraEffectHtml}
+          <li class="effect-keep"><span class="effect-icon">✓</span><span>${t("beModal.effect.notesKept")}</span></li>
+          <li class="effect-keep"><span class="effect-icon">✓</span><span>${t("beModal.effect.catsKept")}</span></li>
+        </ul>
+      </div>
+    `;
+    customConfirm(
+      html,
+      () => performSwitch(true),
+      { title: t("beModal.confirmTitle"), yesText: t("beModal.confirmYes"), cancelText: t("beModal.confirmCancel"), html: true, wide: true }
     );
   });
 });

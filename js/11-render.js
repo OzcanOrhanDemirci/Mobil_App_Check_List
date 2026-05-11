@@ -24,15 +24,16 @@ function findCategoryTargetFeature(catId) {
   const isMvpExists = (f) => exists(mvpVal(f));
   const isReleaseExists = (f) => exists(releaseVal(f));
 
-  /* Aday: framework filtresinden geçen + mevcut viewMode'a uygun seviyesi olan */
+  /* Aday: framework + backend filtresinden geçen + mevcut viewMode'a uygun seviyesi olan */
   const candidates = cat.features.filter(f => {
     if (f.variants && !currentFramework) return false;
+    if (isHiddenByBackend(f)) return false;
     if (viewMode === "mvp") return isMvpExists(f);
     if (viewMode === "release") return isReleaseExists(f);
     return isMvpExists(f) || isReleaseExists(f); // both
   });
   if (candidates.length === 0) {
-    return cat.features.find(f => !(f.variants && !currentFramework)) || null;
+    return cat.features.find(f => !(f.variants && !currentFramework) && !isHiddenByBackend(f)) || null;
   }
 
   const isIncomplete = (f) => {
@@ -97,6 +98,10 @@ function renderContent() {
     const features = cat.features.map(f => {
       /* Framework henüz seçilmediyse framework'e özel maddeler gözükmez. */
       if (f.variants && !currentFramework) return "";
+      /* Backend "noBackend" seçildiyse (veya henüz seçilmediyse) backend'e
+         bağlı maddeler tamamen gizlenir — kullanıcının "internet yok / sunucu
+         yok" senaryosunda yapılacak listesi temiz görünür. */
+      if (isHiddenByBackend(f)) return "";
       const mvpVal = resolveLevelText(f, "mvp");
       const releaseVal = resolveLevelText(f, "release");
       const fTitle = tx(f.title);

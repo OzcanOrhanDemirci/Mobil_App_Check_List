@@ -7,6 +7,7 @@ let state = loadState();
 let notes = loadNotes();
 let collapsedCats = loadCollapsed();
 let currentFramework = loadFramework();
+let currentBackend = loadBackend();  // "firebase" | "supabase" | ... | "noBackend" | null
 let viewMode = loadViewMode();      // "mvp" | "release" | "both"
 let viewFilter = loadViewFilter();  // "all" | "pending" | "done"
 

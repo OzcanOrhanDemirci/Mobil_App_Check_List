@@ -16,6 +16,7 @@
            updatedAt: "2026-05-10T...",
            data: {
              framework: "flutter" | null,
+             backend: "firebase" | "supabase" | "noBackend" | ... | null,
              state: { ...checkbox işaretleri... },
              notes: { ...madde notları... },
              collapsed: ["cat-01", ...],
@@ -60,6 +61,7 @@ function nowIso() { return new Date().toISOString(); }
 function emptyProjectData() {
   return {
     framework:    null,
+    backend:      null,
     state:        {},
     notes:        {},
     collapsed:    [],
@@ -109,6 +111,19 @@ function migrateLegacyIfNeeded() {
       projectsStore.activeId = projectsStore.projects[0]?.id || null;
       saveProjectsToStorage();
     }
+    /* v2 → v2.1 forward-compat: backend alanı eklenmeden önce oluşmuş projeler
+       bu alanı taşımıyor. Eski davranış Firebase odaklıydı, bu yüzden eksik
+       backend alanını "firebase" olarak doldur — kullanıcı listede aynı
+       maddeleri görmeye devam etsin. Daha sonra istediği zaman değiştirebilir. */
+    let migrated = false;
+    projectsStore.projects.forEach(p => {
+      if (!p.data) return;
+      if (!Object.prototype.hasOwnProperty.call(p.data, "backend")) {
+        p.data.backend = p.data.framework ? "firebase" : null;
+        migrated = true;
+      }
+    });
+    if (migrated) saveProjectsToStorage();
     return;
   }
 
@@ -131,6 +146,9 @@ function migrateLegacyIfNeeded() {
     const v = localStorage.getItem(LEGACY_KEYS.framework);
     if (v === "flutter" || v === "reactNative" || v === "swift" || v === "kotlin" || v === "expo" || v === "pwa") {
       legacyData.framework = v;
+      /* v1'de backend seçimi yoktu; mevcut tek backend Firebase'ti. Geri
+         uyumluluk için Firebase varsay. */
+      legacyData.backend = "firebase";
       hasLegacy = true;
     }
   } catch {}
@@ -253,6 +271,9 @@ function createProject(name, initialData) {
     if (initialData.framework && VALID_FRAMEWORKS.indexOf(initialData.framework) !== -1) {
       data.framework = initialData.framework;
     }
+    if (initialData.backend && VALID_BACKENDS.indexOf(initialData.backend) !== -1) {
+      data.backend = initialData.backend;
+    }
   }
   const proj = {
     id,
@@ -325,6 +346,7 @@ function reloadActiveProjectAndRender() {
   notes            = loadNotes();
   collapsedCats    = loadCollapsed();
   currentFramework = loadFramework();
+  currentBackend   = loadBackend();
   viewMode         = loadViewMode();
   viewFilter       = loadViewFilter();
   lockState        = loadLockState();
@@ -336,6 +358,7 @@ function reloadActiveProjectAndRender() {
   /* UI'ı yeniden render: framework metinleri, içerik, click handler'lar,
      ilerleme barları, görünürlük (filter), kilit görünümü */
   if (typeof applyFrameworkUI === "function")     applyFrameworkUI();
+  if (typeof applyBackendUI === "function")       applyBackendUI();
   if (typeof updateProjectPill === "function")     updateProjectPill();
   if (typeof renderContent === "function")         renderContent();
   if (typeof attachClickHandlers === "function")   attachClickHandlers();

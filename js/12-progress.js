@@ -7,6 +7,11 @@ function countLevels() {
   DATA.forEach(cat => {
     perCat[cat.id] = { total: 0, checked: 0 };
     cat.features.forEach(f => {
+      /* Backend "noBackend" iken backend'e bağlı maddeler ilerleme barlarına
+         da girmesin — kullanıcı görünmeyen maddelere göre hesaplanan bir oran
+         görmemeli. Aynı kural framework'ü seçilmemiş projeler için de geçerli. */
+      if (f.variants && !currentFramework) return;
+      if (typeof isHiddenByBackend === "function" && isHiddenByBackend(f)) return;
       ["mvp", "release"].forEach(L => {
         const v = resolveLevelText(f, L);
         if (!v || v === "—") return;

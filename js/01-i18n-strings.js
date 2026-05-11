@@ -182,8 +182,8 @@ const UI_STRINGS = {
   "welcome.cta.pickProjName": { tr: "Devam etmek için proje adı yaz", en: "Type a project name to continue" },
 
   // project pill (hero) + project modal
-  "proj.pill.title": { tr: "Aktif proje ve framework — değiştirmek için tıkla", en: "Active project and framework — click to switch" },
-  "proj.modal.title": { tr: "Proje ve Framework", en: "Project and Framework" },
+  "proj.pill.title": { tr: "Aktif proje, framework ve backend (değiştirmek için tıkla)", en: "Active project, framework and backend (click to switch)" },
+  "proj.modal.title": { tr: "Proje, Framework ve Backend", en: "Project, Framework and Backend" },
   "proj.tab.project": { tr: "Proje", en: "Project" },
   "proj.tab.framework": { tr: "Framework", en: "Framework" },
   "proj.tab.reset": { tr: "Sıfırla", en: "Reset" },
@@ -243,7 +243,7 @@ const UI_STRINGS = {
   "fwModal.effect.marksReset": { tr: "Tüm <strong>MVP</strong> ve <strong>Release</strong> işaretleri sıfırlanır", en: "All <strong>MVP</strong> and <strong>Release</strong> marks will be reset" },
   "fwModal.effect.barsZero": { tr: "İlerleme barları <strong>%0</strong>'a döner", en: "Progress bars return to <strong>0%</strong>" },
   "fwModal.effect.notesKept": { tr: "<strong>Notların</strong> olduğu gibi korunur", en: "<strong>Your notes</strong> are kept as they are" },
-  "fwModal.effect.catsKept": { tr: "<strong>Kategori durumu</strong> (açık/kapalı) korunur", en: "<strong>Category state</strong> (open/closed) is preserved" },
+  "fwModal.effect.catsKept": { tr: "<strong>Sistem ayarların</strong> korunur", en: "Your <strong>system settings</strong> are preserved" },
 
   // install modal
   "installModal.title": { tr: "📲 Uygulama Olarak Yükle", en: "📲 Install as App" },
@@ -336,6 +336,67 @@ const UI_STRINGS = {
   // levels
   "level.mvp": { tr: "MVP", en: "MVP" },
   "level.release": { tr: "Release", en: "Release" },
+
+  // ==================== BACKEND SEÇİMİ ====================
+  // welcome step 4 (backend)
+  "welcome.beQuestion": { tr: "Hangi backend ile çalışacaksın?", en: "Which backend will you use?" },
+  "welcome.beSub": { tr: "Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.", en: "The backend is the server side of your app (sign-up, database, file upload). The backend category in this list adapts to your choice. If your app never connects to the internet, pick 'No backend' to remove all backend items from the list." },
+  "welcome.beAria": { tr: "Backend seçimi", en: "Backend selection" },
+  "welcome.cta.pickBe": { tr: "Devam etmek için backend seç", en: "Pick a backend to continue" },
+  // welcome help label for backend step
+  "welcome.beHint.noBackend": { tr: "İnternete bağlanmayan bir uygulama. Hiçbir backend adımı listede görünmez.", en: "An app that never goes online. No backend items appear in the list." },
+
+  // hero pill: backend leg
+  "be.pill.title": { tr: "Aktif backend — değiştirmek için tıkla", en: "Active backend — click to change" },
+
+  // backend modal tab (in projfwModal)
+  "proj.tab.backend": { tr: "Backend", en: "Backend" },
+  "beModal.sub": { tr: "Backend kategorisindeki maddeler seçtiğin backend'e göre değişir. 'Backend yok' seçersen backend'le ilgili tüm maddeler listeden kaldırılır. İşaretlemelerin ve notların korunur.", en: "Items in the backend category adapt to your choice. Picking 'No backend' removes every backend-related item from the list. Your marks and notes are preserved." },
+
+  // backend switch confirm popup
+  "beModal.confirmTitle": { tr: "Backend değiştirilsin mi?", en: "Switch backend?" },
+  "beModal.confirmYes": { tr: "Geçiş yap", en: "Switch" },
+  "beModal.confirmCancel": { tr: "Vazgeç", en: "Cancel" },
+  "beModal.intro": { tr: "Çalıştığın backend seçimini değiştirmek üzeresin.", en: "You are about to change your backend selection." },
+  "beModal.tagFrom": { tr: "Mevcut", en: "Current" },
+  "beModal.tagTo": { tr: "Yeni", en: "New" },
+  "beModal.effect.marksReset": { tr: "Backend kategorisindeki <strong>MVP</strong> ve <strong>Release</strong> işaretleri sıfırlanır", en: "<strong>MVP</strong> and <strong>Release</strong> marks in the backend category will be reset" },
+  "beModal.effect.barsRecalc": { tr: "İlerleme barları yeniden hesaplanır", en: "Progress bars are recalculated" },
+  "beModal.effect.notesKept": { tr: "<strong>Notların</strong> olduğu gibi korunur", en: "<strong>Your notes</strong> are kept as they are" },
+  "beModal.effect.catsKept": { tr: "<strong>Sistem ayarların</strong> korunur", en: "Your <strong>system settings</strong> are preserved" },
+  "beModal.effect.itemsHidden": { tr: "Backend ile ilgili tüm maddeler listeden <strong>gizlenir</strong>", en: "All backend-related items are <strong>hidden</strong> from the list" },
+  "beModal.effect.itemsShown": { tr: "Backend ile ilgili maddeler tekrar listede <strong>görünür</strong> hale gelir", en: "Backend-related items are <strong>shown</strong> again" },
+
+  // backend switch toasts
+  "beSwitch.toast": { tr: "{name} seçildi", en: "{name} selected" },
+  "beSwitch.toastReset": { tr: "{name} seçildi, backend işaretleri sıfırlandı", en: "{name} selected, backend marks reset" },
+  "beSwitch.toastHidden": { tr: "Backend yok seçildi, backend maddeleri gizlendi", en: "No backend selected, backend items hidden" },
+  "beSwitch.toastShown": { tr: "{name} seçildi, backend maddeleri tekrar görünür", en: "{name} selected, backend items visible again" },
+
+  // project add (new project wizard) - backend grid
+  "proj.add.beHint": { tr: "Hangi backend ile çalışacaksın?", en: "Which backend will you use?" },
+  "proj.error.beMissing": { tr: "Backend seçilmedi", en: "Backend not selected" },
+  "proj.add.confirmIntroFull": { tr: "<strong>{name}</strong> adlı proje <strong>{fw}</strong> framework ve <strong>{be}</strong> backend ile oluşturulacak.", en: "<strong>{name}</strong> will be created with <strong>{fw}</strong> framework and <strong>{be}</strong> backend." },
+
+  // backend option short blurbs (welcome + modals)
+  "be.opt.noBackend.title":   { tr: "Backend yok",      en: "No backend" },
+  "be.opt.noBackend.desc":    { tr: "Sunucuya bağlanmayan uygulamalar için. Backend maddeleri listeden çıkar.", en: "For apps that don't connect to a server. Backend items are removed from the list." },
+  "be.opt.firebase.title":    { tr: "Firebase",         en: "Firebase" },
+  "be.opt.firebase.desc":     { tr: "Google'ın kolay ve hızlı sunucu çözümü.", en: "Google's quick and easy server solution." },
+  "be.opt.supabase.title":    { tr: "Supabase",         en: "Supabase" },
+  "be.opt.supabase.desc":     { tr: "Açık kaynak, güçlü sunucu çözümü.", en: "Open-source, powerful server solution." },
+  "be.opt.appwrite.title":    { tr: "Appwrite",         en: "Appwrite" },
+  "be.opt.appwrite.desc":     { tr: "Açık kaynak, esnek sunucu çözümü.", en: "Open-source, flexible server solution." },
+  "be.opt.pocketbase.title":  { tr: "PocketBase",       en: "PocketBase" },
+  "be.opt.pocketbase.desc":   { tr: "Hızlı kurulan, sade sunucu çözümü.", en: "Quick-to-set-up, lightweight server solution." },
+  "be.opt.amplify.title":     { tr: "AWS Amplify",      en: "AWS Amplify" },
+  "be.opt.amplify.desc":      { tr: "Amazon'un kurumsal sunucu çözümü.", en: "Amazon's enterprise server solution." },
+  "be.opt.convex.title":      { tr: "Convex",           en: "Convex" },
+  "be.opt.convex.desc":       { tr: "Modern, TypeScript odaklı sunucu çözümü.", en: "A modern, TypeScript-first server solution." },
+  "be.opt.custom.title":      { tr: "Kendi sunucum",    en: "Self-hosted server" },
+  "be.opt.custom.desc":       { tr: "Kendi geliştirdiğin özel sunucu.", en: "A custom server you build yourself." },
+  "be.opt.localhost.title":   { tr: "Yerel geliştirme", en: "Local dev backend" },
+  "be.opt.localhost.desc":    { tr: "Bilgisayarında çalışan test sunucusu.", en: "Test server running on your computer." },
 };
 
 function t(key, vars) {
