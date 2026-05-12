@@ -1,6 +1,6 @@
 const CACHE_NAME = 'mobil-kontrol-v3';
 
-self.addEventListener('install', (e) => {
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 

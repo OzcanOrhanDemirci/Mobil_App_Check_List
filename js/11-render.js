@@ -592,7 +592,7 @@ function attachClickHandlers() {
 
   /* Kategori başlığı tıklayınca collapse / expand */
   document.querySelectorAll(".cat-header").forEach(h => {
-    h.addEventListener("click", (e) => {
+    h.addEventListener("click", () => {
       const catId = h.dataset.catToggle;
       if (!catId) return;
       const cat = document.getElementById(catId);
@@ -716,7 +716,6 @@ function attachClickHandlers() {
   /* Notu temizle butonu */
   document.querySelectorAll("[data-note-clear]").forEach(btn => {
     btn.addEventListener("click", () => {
-      const id = btn.dataset.noteClear;
       const feature = btn.closest(".feature");
       const ta = feature.querySelector("textarea");
       if (ta) {

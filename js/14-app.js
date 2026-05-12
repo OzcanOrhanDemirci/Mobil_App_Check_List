@@ -1269,11 +1269,11 @@ function renderProjectList() {
         <span class="proj-row-active-badge" hidden>${t("proj.active")}</span>
       </button>
       <div class="proj-row-actions">
-        <button type="button" class="proj-action proj-action-rename" data-proj-rename="${p.id}" title="${t('proj.rename.title')}" aria-label="${t('proj.rename.title')}">✎</button>
-        <button type="button" class="proj-action proj-action-delete" data-proj-delete="${p.id}" title="${t('proj.delete.title')}" aria-label="${t('proj.delete.title')}">🗑</button>
+        <button type="button" class="proj-action proj-action-rename" data-proj-rename="${p.id}" title="${t("proj.rename.title")}" aria-label="${t("proj.rename.title")}">✎</button>
+        <button type="button" class="proj-action proj-action-delete" data-proj-delete="${p.id}" title="${t("proj.delete.title")}" aria-label="${t("proj.delete.title")}">🗑</button>
       </div>
       <div class="proj-row-rename" hidden>
-        <input type="text" class="proj-rename-input" maxlength="60" value="${escapeHtml(p.name)}" data-i18n-placeholder="proj.rename.placeholder" placeholder="${t('proj.rename.placeholder')}" />
+        <input type="text" class="proj-rename-input" maxlength="60" value="${escapeHtml(p.name)}" data-i18n-placeholder="proj.rename.placeholder" placeholder="${t("proj.rename.placeholder")}" />
         <button type="button" class="btn primary proj-rename-save" data-proj-rename-save="${p.id}">${t("proj.rename.save")}</button>
         <button type="button" class="btn ghost proj-rename-cancel" data-proj-rename-cancel="${p.id}">${t("proj.rename.cancel")}</button>
         <div class="proj-rename-error" role="alert" aria-live="polite" hidden></div>
@@ -2262,7 +2262,7 @@ function renderInstallInstructions() {
   const platform = detectPlatform();
   const data = getInstallSteps(platform);
   const container = document.getElementById("installInstructions");
-  let html = `
+  const html = `
     <div class="install-platform-card">
       <h3 class="install-platform-title"><span class="platform-emoji">${data.emoji}</span>${data.title}</h3>
       <ol class="install-steps">

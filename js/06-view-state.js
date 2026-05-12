@@ -1,3 +1,10 @@
+/* eslint prefer-const: "off" --
+   Every `let` declared in this file is reassigned cross-file: state, notes,
+   collapsedCats, currentFramework, currentBackend in js/04-projects.js#reloadActive
+   and js/14-app.js (import flow), plus framework/backend assignments in
+   js/05-framework.js and js/05-backend.js. ESLint per-file analysis cannot
+   see those reassignments. */
+
 /* ==================== STATE ====================
    state, notes, collapsedCats, currentFramework, viewMode, viewFilter, lockState
    hepsi aktif projenin .data alanından okunup yazılır (04-projects.js).

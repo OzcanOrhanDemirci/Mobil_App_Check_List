@@ -1,3 +1,9 @@
+/* eslint prefer-const: "off" --
+   The `let` axis variables below (currentLang, currentStyle, currentMode) are
+   reassigned cross-file: currentLang in js/08-i18n-dom.js#saveLang, currentStyle
+   and currentMode in js/07-ui-helpers.js. ESLint lints each file in isolation
+   and cannot see those reassignments, so `prefer-const` is a false positive here. */
+
 /* ==================== I18N (DİL DEĞİŞTİRME) ==================== */
 const LANG_KEY = "mobil_kontrol_lang_v1";
 let currentLang = (() => {

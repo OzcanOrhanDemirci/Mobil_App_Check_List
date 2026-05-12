@@ -142,6 +142,7 @@ function updateProgress() {
 /* ==================== TAMAMLAMA KUTLAMALARI ====================
    celebrations bayrağı (mvp/release/total) aktif projeye bağlıdır; her proje
    kendi tamamlama kutlamasını ayrıca tetikler. */
+// eslint-disable-next-line prefer-const -- reassigned cross-file in js/04-projects.js#reloadActive and js/14-app.js (reset flows)
 let celebrations = loadCelebrations();
 function loadCelebrations() {
   const v = getProjectField("celebrations");
