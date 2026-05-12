@@ -10,7 +10,7 @@
     "lint:fix": "eslint js/ tests/ sw.js --fix",
     "format": "prettier --write \"**/*.{js,css,html,md,json,yml}\"",
     "format:check": "prettier --check \"**/*.{js,css,html,md,json,yml}\"",
-    "test": "node --test \"tests/*.test.js\"",
+    "test": "node scripts/run-tests.mjs",
     "serve": "python -m http.server 8000"
   },
   "keywords": [
