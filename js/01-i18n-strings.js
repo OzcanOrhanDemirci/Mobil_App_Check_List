@@ -40,16 +40,31 @@ let currentMode = (() => {
   } catch { return "build"; }
 })();
 
-/* Bir {tr, en} objesinden geçerli dile ve anlatım stiline uygun metni döndür.
-   Desteklenen değer biçimleri (geriye uyumlu):
-     1) "düz string"  → her dilde ve her stilde aynı
-     2) { tr: "...", en: "..." } → dile göre; her stilde aynı
-     3) { tr: "teknik TR", en: "technical EN",
-          simple: { tr: "basit TR", en: "simple EN" } }
-          → "simple" stilinde simple.{tr|en}, "technical" stilinde {tr|en}
-   "simple" bloğu eksikse otomatik olarak teknik içerikten doldurur — bu
-   sayede sadece teknik içerikli maddelere simple metin eklemek yeterli;
-   diğer maddeler ek iş gerektirmez. */
+/**
+ * Translate an i18n value to a plain string using current language and explanation style.
+ *
+ * Accepted input shapes (backward compatible):
+ *   1. Plain string           : returned as-is regardless of language/style.
+ *   2. { tr, en }             : language-aware, style-agnostic.
+ *   3. { tr, en, simple: { tr, en } }
+ *                             : when `currentStyle === "simple"`, prefer the `simple`
+ *                               block; otherwise fall back to the top-level tr/en.
+ *                               Missing simple entries cascade to the technical text,
+ *                               so authors only need a `simple` block for items where
+ *                               the technical wording is too jargon-heavy.
+ *
+ * Always returns a string. null/undefined yields "". Numbers and other primitives
+ * are coerced via String().
+ *
+ * @param {*} obj - Plain string, { tr, en } object, or extended { simple } object.
+ * @returns {string} Resolved text for the active language and style.
+ *
+ * @example
+ *   tx("hello");                          // "hello"
+ *   tx({ tr: "selam", en: "hello" });     // "selam" if currentLang === "tr"
+ *   tx({ tr: "X", en: "Y", simple: { tr: "kolay X" } });
+ *     // "kolay X" when currentStyle === "simple" and currentLang === "tr"
+ */
 function tx(obj) {
   if (obj == null) return "";
   if (typeof obj === "string") return obj;
@@ -68,6 +83,9 @@ const UI_STRINGS = {
   // common
   "common.close": { tr: "Kapat", en: "Close" },
   "common.cancel": { tr: "İptal", en: "Cancel" },
+
+  // erişilebilirlik (a11y) primitifleri
+  "a11y.skipToContent": { tr: "İçeriğe geç", en: "Skip to content" },
 
   // yazdırma seçenekleri modalı (printBtn açar)
   "print.modal.title": { tr: "Yazdırma Seçeneği", en: "Print Option" },

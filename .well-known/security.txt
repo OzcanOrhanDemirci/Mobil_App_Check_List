@@ -1,0 +1,8 @@
+# Security policy for Mobil Uygulama Kalite Kontrol Listesi
+# RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:ozcanorhandem@gmail.com
+Expires: 2027-05-12T00:00:00.000Z
+Preferred-Languages: tr, en
+Policy: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/blob/main/.github/SECURITY.md
+Canonical: https://ozcanorhandemirci.github.io/Mobil_App_Check_List/.well-known/security.txt

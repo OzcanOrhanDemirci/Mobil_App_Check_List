@@ -9,6 +9,7 @@ before you submit your mobile app to the App Store / Play Store.**
 _Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/badge/demo-live-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![PWA](https://img.shields.io/badge/PWA-installable-orange)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![Build](https://img.shields.io/badge/build-zero%20config-blueviolet)](#architectural-decisions)
@@ -54,6 +55,7 @@ _Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework
 - [Architectural decisions](#architectural-decisions)
 - [User data and privacy](#user-data-and-privacy)
 - [Performance](#performance)
+- [Frequently asked questions](#frequently-asked-questions)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -151,15 +153,15 @@ This app fills that gap:
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/01-welcome.svg">
-        <img src="assets/screenshots/01-welcome.svg" alt="Welcome screen: short intro on first run" width="100%" />
+      <a href="assets/screenshots/01-welcome.png">
+        <img src="assets/screenshots/01-welcome.png" alt="Welcome screen: short intro on first run" width="100%" />
       </a>
       <br />
       <sub><strong>1. Welcome</strong>: the intro modal shown on first run.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/02-checklist.svg">
-        <img src="assets/screenshots/02-checklist.svg" alt="Main checklist: 14 categories, 55 items, MVP and Release filters" width="100%" />
+      <a href="assets/screenshots/02-checklist.png">
+        <img src="assets/screenshots/02-checklist.png" alt="Main checklist: 14 categories, 55 items, MVP and Release filters" width="100%" />
       </a>
       <br />
       <sub><strong>2. Main checklist</strong>: 14 categories, 55 items with MVP and Release filters.</sub>
@@ -167,15 +169,15 @@ This app fills that gap:
   </tr>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/03-card-flip.svg">
-        <img src="assets/screenshots/03-card-flip.svg" alt="Flipped card: step-by-step how-to guide" width="100%" />
+      <a href="assets/screenshots/03-card-flip.png">
+        <img src="assets/screenshots/03-card-flip.png" alt="Flipped card: step-by-step how-to guide" width="100%" />
       </a>
       <br />
       <sub><strong>3. Card details</strong>: flipped card showing the step-by-step how-to guide.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/04-help.svg">
-        <img src="assets/screenshots/04-help.svg" alt="Help modal: short usage guide" width="100%" />
+      <a href="assets/screenshots/04-help.png">
+        <img src="assets/screenshots/04-help.png" alt="Help modal: short usage guide" width="100%" />
       </a>
       <br />
       <sub><strong>4. Help</strong>: short usage guide and frequently asked questions.</sub>
@@ -645,6 +647,28 @@ The same content is shown with **different wording** depending on the user's cho
 | Runtime dependency              | -        | Zero                    |
 
 > Most of the asset payload comes from `js/03-data.js`, the four-axis multi-variant content library; the application logic (`14-app.js`) alone is under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+
+---
+
+## Frequently asked questions
+
+**Is this checklist enough to QA my entire mobile app?**
+No. It does not replace real QA. It closes the common gaps that cause store rejections or basic quality issues; it is meant to be used alongside your real test process. Crash testing, user testing, and performance profiling are out of scope.
+
+**Can I manage multiple projects at the same time?**
+Yes. Up to 20 separate projects from the project picker in the toolbar. Each carries its own framework, backend, language, and explanation-style preference. Marks and notes never cross over.
+
+**How does cross-device sync work?**
+There is no automatic sync (no server, no account). Use "Export" from the toolbar to download a JSON file and "Import" on the other device to restore. One-way, manual, fast.
+
+**How does the AI prompt feature work?**
+Based on your selected framework, backend, language, style, and unchecked items, the app builds a single prompt and copies it to the clipboard. You paste it into ChatGPT, Claude, Gemini, or any assistant of your choice. The app sends nothing to any AI service; everything stays local.
+
+**My framework or backend is not in the list.**
+`CONTRIBUTING.md` describes how to add a new framework or backend; pull requests are welcome. As a workaround, pick the closest match: most items are written framework-agnostically and fall back to `_default` behaviour.
+
+**I found a bug or have a feature idea.**
+Open a GitHub issue using the "🐞 Bug report" or "💡 Feature request" template. For security vulnerabilities use the private channel documented in `SECURITY.md`.
 
 ---
 

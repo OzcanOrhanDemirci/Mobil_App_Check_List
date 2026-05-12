@@ -9,29 +9,33 @@ function saveFramework(fw) {
   setProjectField("framework", fw);
 }
 
-/* Bir feature'ın seçili framework + backend + anlatım stiline göre mvp/release
-   değerini döndürür.
-
-   Stil = "simple" iken (yazılım dünyasına uzak kullanıcılar / AI ile uygulama
-   geliştirenler) madde seviyesinde tanımlı sade bir metin tercih edilir;
-   böylece her framework × backend kombinasyonu için ayrı simple metin yazmaya
-   gerek kalmaz (basit anlatım çoğunlukla framework/backend agnostic'tir).
-   Yine de backend'e özel sade metin gerekirse simpleBackend kullanılabilir
-   (örn. "Backend yok" için "bu maddeyi atla" mesajı).
-
-   Stil = "technical" iken eski davranış aynen sürer.
-
-   Çözüm önceliği:
-     A) Stil "simple" ise:
-        1. f.simpleBackend[currentBackend][level]   (backend-spesifik sade)
-        2. f.simple[level]                          (madde-seviyesi sade default)
-        (her ikisi de yoksa B'ye düşer — teknik fallback)
-     B) Normal (teknik) sıralama:
-        3. f.backendVariants[currentBackend][currentFramework][level]
-        4. f.backendVariants[currentBackend]._default[level]
-        5. f.variants[currentFramework][level]
-        6. f[level]
-   Sonuç {tr, en} objesi olabilir; tx() ile çözülmesi gerekir. */
+/**
+ * Resolve the right content block for a feature given the active four axes:
+ * language × explanation style × framework × backend.
+ *
+ * The function returns a raw value (string or { tr, en } object) suitable for
+ * passing to `tx()`. It does NOT translate to a plain string itself; use
+ * `resolveLevelText()` when you need a final string.
+ *
+ * Resolution order:
+ *   A. When `currentStyle === "simple"`:
+ *      1. `f.simpleBackend[currentBackend][level]`  (backend-specific simple text)
+ *      2. `f.simple[level]`                         (item-level default simple text)
+ *      (if neither exists, fall through to the technical chain below)
+ *   B. Technical chain:
+ *      3. `f.backendVariants[currentBackend][currentFramework][level]`
+ *      4. `f.backendVariants[currentBackend]._default[level]`
+ *      5. `f.variants[currentFramework][level]`
+ *      6. `f[level]`
+ *
+ * The cascade is intentional: simple authoring stays cheap (one entry per item
+ * works for most cases), and technical content can override per framework or
+ * per backend without losing the default.
+ *
+ * @param {object} f - Feature object from `DATA[].features[]`.
+ * @param {"mvp"|"release"} level - Which tier to resolve.
+ * @returns {string | { tr?: string, en?: string } | undefined} Raw resolved value.
+ */
 function resolveLevel(f, level) {
   /* A) Basit modda önce madde-seviyesi sade metinleri dene */
   if (typeof currentStyle !== "undefined" && currentStyle === "simple") {
@@ -59,21 +63,43 @@ function resolveLevel(f, level) {
   return f[level];
 }
 
-/* resolveLevel sonucunu mevcut dile göre düz metne dönüştürür. */
+/**
+ * Resolve `f` to a translated plain string for the current language and style.
+ * Convenience wrapper around `tx(resolveLevel(f, level))`.
+ *
+ * @param {object} f - Feature object.
+ * @param {"mvp"|"release"} level - Tier.
+ * @returns {string} Translated text, or "" if nothing resolves.
+ */
 function resolveLevelText(f, level) {
   return tx(resolveLevel(f, level));
 }
 
-/* Her madde için "Nasıl Yapılır?" (back-face) içeriğini çözer.
-   f.howto, ön yüzdeki feature ile aynı shape'i taşır (mvp / release /
-   variants / backendVariants / simple / simpleBackend). Bu sayede
-   resolveLevel'i doğrudan f.howto üzerinde çağırmak yeterli; aynı dil
-   × stil × framework × backend mantığı ön yüzdeki gibi çalışır.
-   How-to tanımlı değilse null döner; UI tarafı bunu hidden olarak ele alır. */
+/**
+ * Resolve the back-face ("Nasıl Yapılır?" / "How-To") content for a feature.
+ *
+ * `f.howto` carries the same shape as the front-face feature object
+ * (mvp / release / variants / backendVariants / simple / simpleBackend), so
+ * `resolveLevel()` is reused on it and the four-axis logic stays identical to
+ * the front side. Returns null when the feature has no how-to defined; the UI
+ * treats null as "hide the back-face section".
+ *
+ * @param {object} f - Feature object.
+ * @param {"mvp"|"release"} level - Tier.
+ * @returns {string | { tr?: string, en?: string } | null}
+ */
 function resolveHowto(f, level) {
   if (!f || !f.howto) return null;
   return resolveLevel(f.howto, level);
 }
+
+/**
+ * Translated counterpart of `resolveHowto`. Returns "" when no how-to exists.
+ *
+ * @param {object} f - Feature object.
+ * @param {"mvp"|"release"} level - Tier.
+ * @returns {string}
+ */
 function resolveHowtoText(f, level) {
   const v = resolveHowto(f, level);
   return v ? tx(v) : "";

@@ -787,3 +787,41 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* ==================== ERISILEBILIRLIK PRIMITIFLERI ====================
+     skip-link: klavye veya ekran okuyucu kullanicilari menuleri atlayip ana
+     icerige gecebilsin. Gorsel olarak ekran disinda durur, sadece odaklaninca
+     gorunur hale gelir. WCAG 2.4.1 Bypass Blocks gereksinimini karsilar. */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    z-index: 9999;
+    padding: 10px 16px;
+    background: var(--accent, #f97316);
+    color: #0b0f17;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: top 0.18s ease;
+  }
+  .skip-link:focus {
+    top: 8px;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  /* noscript fallback: JS kapaliysa gorunen banner. Bilingual cunku
+     uygulamanin dil degistirme mantigi JS olmadan calismaz. */
+  .noscript-banner {
+    margin: 16px auto;
+    max-width: 720px;
+    padding: 18px 22px;
+    background: #fef3c7;
+    color: #78350f;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.55;
+  }

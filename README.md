@@ -9,6 +9,7 @@
 _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
 [![Canlı demo](https://img.shields.io/badge/demo-canl%C4%B1-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![PWA](https://img.shields.io/badge/PWA-kurulabilir-orange)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![Build](https://img.shields.io/badge/build-zero%20config-blueviolet)](#mimari-kararlar)
@@ -54,6 +55,7 @@ _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-ba
 - [Mimari kararlar](#mimari-kararlar)
 - [Kullanıcı verisi ve gizlilik](#kullanıcı-verisi-ve-gizlilik)
 - [Performans](#performans)
+- [Sıkça sorulanlar](#sıkça-sorulanlar)
 - [Yol haritası](#yol-haritası)
 - [Katkıda bulunma](#katkıda-bulunma)
 - [Lisans](#lisans)
@@ -151,15 +153,15 @@ Bu uygulama o boşluğu doldurur:
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/01-welcome.svg">
-        <img src="assets/screenshots/01-welcome.svg" alt="Karşılama ekranı: ilk açılışta kısa tanıtım" width="100%" />
+      <a href="assets/screenshots/01-welcome.png">
+        <img src="assets/screenshots/01-welcome.png" alt="Karşılama ekranı: ilk açılışta kısa tanıtım" width="100%" />
       </a>
       <br />
       <sub><strong>1. Karşılama</strong>: ilk açılışta gösterilen tanıtım modali.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/02-checklist.svg">
-        <img src="assets/screenshots/02-checklist.svg" alt="Ana liste: 14 kategori, 55 madde, MVP ve Release filtreleri" width="100%" />
+      <a href="assets/screenshots/02-checklist.png">
+        <img src="assets/screenshots/02-checklist.png" alt="Ana liste: 14 kategori, 55 madde, MVP ve Release filtreleri" width="100%" />
       </a>
       <br />
       <sub><strong>2. Ana liste</strong>: 14 kategori, MVP ve Release filtreleriyle 55 madde.</sub>
@@ -167,15 +169,15 @@ Bu uygulama o boşluğu doldurur:
   </tr>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/03-card-flip.svg">
-        <img src="assets/screenshots/03-card-flip.svg" alt="Kart çevirildiğinde adım adım rehber" width="100%" />
+      <a href="assets/screenshots/03-card-flip.png">
+        <img src="assets/screenshots/03-card-flip.png" alt="Kart çevirildiğinde adım adım rehber" width="100%" />
       </a>
       <br />
       <sub><strong>3. Kart detayı</strong>: ters yüze çevrildiğinde adım adım nasıl yapılır rehberi.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/04-help.svg">
-        <img src="assets/screenshots/04-help.svg" alt="Yardım modali: kısa kullanım kılavuzu" width="100%" />
+      <a href="assets/screenshots/04-help.png">
+        <img src="assets/screenshots/04-help.png" alt="Yardım modali: kısa kullanım kılavuzu" width="100%" />
       </a>
       <br />
       <sub><strong>4. Yardım</strong>: kısa kullanım kılavuzu ve sık sorulanlar.</sub>
@@ -645,6 +647,28 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 | Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
 
 > Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-app.js`) tek başına gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+
+---
+
+## Sıkça sorulanlar
+
+**Kontrol listesi mobil uygulamamı denetlemek için yeterli mi?**
+Hayır, gerçek QA testinin yerini almaz. Mağaza reddi veya temel kalite boşluklarına yol açan ortak ihmalleri kapatır; asıl test süreciyle birlikte kullanılmak üzere tasarlandı. Crash testi, kullanıcı testi ve performans profilini bu uygulama yapmaz.
+
+**Birden fazla projeyi aynı anda yönetebilir miyim?**
+Evet. Araç çubuğundaki proje seçiciden 20'ye kadar farklı proje açabilirsin; her birinin framework, backend, dil ve anlatım stili tercihi ayrı tutulur. İşaretler ve notlar projeden projeye karışmaz.
+
+**Cihazlar arası senkron nasıl olur?**
+Otomatik senkron yok (sunucu yok, hesap yok). Araç çubuğundaki "Dışa Aktar" ile JSON dosyası alır, diğer cihazda "İçe Aktar" ile geri yüklersin. Tek yönlü, manuel, hızlı.
+
+**Yapay zekâ prompt özelliği nasıl çalışıyor?**
+Seçili framework, backend, dil, stil ve işaretsiz maddelere göre tek bir prompt metni üretip panoya kopyalar. Bu metni sen ChatGPT, Claude, Gemini gibi bir asistana yapıştırırsın. Uygulama hiçbir AI servisine veri göndermez; her şey lokal kalır.
+
+**Listede kullandığım framework veya backend yok.**
+`CONTRIBUTING.md` yeni framework veya backend eklemenin adımlarını tarif eder; pull request açabilirsin. Hızlı çözüm olarak en yakın benzerini seçebilirsin: çoğu madde framework-agnostic kaleme alınmıştır ve `_default` davranışına düşer.
+
+**Bir hata buldum veya öneri var.**
+GitHub Issues üzerinden bildirin: bug için "🐞 Bug report", öneri için "💡 Feature request" şablonu otomatik açılır. Güvenlik açığı için `SECURITY.md` adresindeki özel kanalı kullan.
 
 ---
 

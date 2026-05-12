@@ -47,56 +47,85 @@ const VIEWPORTS = {
 };
 
 /**
- * Each shot describes one capture. `prepare` runs inside the page before
- * the screenshot is taken; it can click buttons, open modals, etc.
+ * Each shot describes one capture. `seedStorage` runs BEFORE the first load
+ * to seed localStorage (used to skip the welcome flow for shots 02/03/04).
+ * `prepare` runs AFTER the reload, just before the screenshot.
  *
- * Selectors target the live app (see index.html). If markup changes, update
- * here. The script tolerates missing elements and logs a warning instead
- * of throwing.
+ * Selectors target the live app (see index.html and js/*.js). If markup
+ * changes, update here. Missing elements only warn, never throw.
  */
+const seedActiveProject = () => {
+  const projectsStore = {
+    active: "proj_demo",
+    list: [
+      {
+        id: "proj_demo",
+        name: "Demo",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        data: {
+          framework: "flutter",
+          backend: "firebase",
+          state: {},
+          notes: {},
+          collapsed: [],
+          celebrations: {},
+          viewMode: "both",
+          viewFilter: "all",
+          lockState: false,
+          collapseInit: false,
+        },
+      },
+    ],
+  };
+  localStorage.setItem("mobil_kontrol_projects_v2", JSON.stringify(projectsStore));
+  localStorage.setItem("mobil_kontrol_lang_v1", "tr");
+  localStorage.setItem("mobil_kontrol_style_v1", "technical");
+  localStorage.setItem("mobil_kontrol_mode_v1", "build");
+  localStorage.setItem("mobil_kontrol_theme_v1", "dark");
+};
+
 const SHOTS = [
   {
-    name: '01-welcome',
-    viewport: 'mobile',
-    prepare: async (page) => {
-      // First-run welcome modal appears automatically if storage is empty.
-      // We clear storage in the context to guarantee it.
+    name: "01-welcome",
+    viewport: "mobile",
+    seedStorage: null, // empty storage triggers the first-run welcome modal
+    prepare: async () => {},
+  },
+  {
+    name: "02-checklist",
+    viewport: "desktop",
+    seedStorage: seedActiveProject,
+    prepare: async page => {
+      await page.waitForSelector(".feature, .category", { timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(300);
     },
   },
   {
-    name: '02-checklist',
-    viewport: 'desktop',
-    prepare: async (page) => {
-      // Dismiss welcome if present, then wait for the main list.
+    name: "03-card-flip",
+    viewport: "desktop",
+    seedStorage: seedActiveProject,
+    prepare: async page => {
+      await page.waitForSelector("[data-flip-toggle]", { timeout: 5000 }).catch(() => {});
+      // Flip the first card via its dedicated trigger.
       await page.evaluate(() => {
-        const closeBtn = document.querySelector('#welcomeStart, [data-welcome-close]');
-        if (closeBtn) closeBtn.click();
+        const btn = document.querySelector("[data-flip-toggle]");
+        if (btn) btn.click();
       });
-      await page.waitForSelector('.cat-list, .category, main', { timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(700);
     },
   },
   {
-    name: '03-card-flip',
-    viewport: 'desktop',
-    prepare: async (page) => {
-      // Open the first checklist card detail (selector best-effort).
+    name: "04-help",
+    viewport: "desktop",
+    seedStorage: seedActiveProject,
+    prepare: async page => {
+      await page.waitForSelector("#helpBtn", { timeout: 5000 }).catch(() => {});
       await page.evaluate(() => {
-        const card = document.querySelector('.item, .check-item, [data-item-id]');
-        if (card) card.click();
+        const btn = document.getElementById("helpBtn");
+        if (btn) btn.click();
       });
-      await page.waitForTimeout(400);
-    },
-  },
-  {
-    name: '04-help',
-    viewport: 'desktop',
-    prepare: async (page) => {
-      // Open the help modal via its button if available.
-      await page.evaluate(() => {
-        const helpBtn = document.querySelector('#helpBtn, [data-help], [aria-label*="Help"], [aria-label*="Yardım"]');
-        if (helpBtn) helpBtn.click();
-      });
-      await page.waitForTimeout(400);
+      await page.waitForTimeout(500);
     },
   },
 ];
@@ -115,11 +144,21 @@ async function main() {
       const page = await context.newPage();
 
       console.log(`[capture] ${shot.name} (${shot.viewport}) ${vp.width}x${vp.height}`);
-      await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-      await page.evaluate(() => {
-        try { localStorage.clear(); } catch (_) { /* ignore */ }
-      });
-      await page.reload({ waitUntil: 'networkidle' });
+      // Visit once to establish the origin, then seed (or clear) localStorage,
+      // then reload so the app picks up the seeded state on its own startup.
+      await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
+      if (shot.seedStorage) {
+        await page.evaluate(shot.seedStorage);
+      } else {
+        await page.evaluate(() => {
+          try {
+            localStorage.clear();
+          } catch (_) {
+            /* ignore */
+          }
+        });
+      }
+      await page.reload({ waitUntil: "networkidle" });
 
       try {
         await shot.prepare(page);
