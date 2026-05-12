@@ -762,3 +762,28 @@
       break-inside: auto !important;
     }
   }
+
+  /* ==================== HAREKETI AZALT (prefers-reduced-motion) ====================
+     Kullanici isletim sistemi duzeyinde "hareketi azalt" tercihini etkinlestirdiginde
+     (Windows: Ayarlar > Erisilebilirlik > Gorsel efektler / macOS: Sistem Ayarlari >
+     Erisilebilirlik > Ekran > Hareketi azalt) tum gecisler ve animasyonlar pratik
+     olarak anlik hale gelir. Geri bildirim (hover, focus, checked state) korunur;
+     sadece hareket kaldirilir. Bu blok en son yuklenen CSS dosyasinda yer aldigi
+     icin onceki tum motion kurallarini override eder. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* Kart cevirme (front <-> back): 3D rotateY animasyonunu anlik gecise indirger.
+       transform-style ve backface-visibility kurallari korunur, sadece sure sifirlanir.
+       Yukseklik gecisi de anlik olur ki JS'in explicit height yonetimi gorunmesin. */
+    .feature-inner {
+      transition-duration: 0.01ms !important;
+    }
+  }

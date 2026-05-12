@@ -6,7 +6,7 @@
 
 **An interactive 14-category, 55-item quality checklist written so that nothing is left undone
 before you submit your mobile app to the App Store / Play Store.**
-*Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework + per-backend guidance · installable PWA.*
+_Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-live-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
@@ -39,6 +39,7 @@ before you submit your mobile app to the App Store / Play Store.**
 
 - [Why does it exist?](#why-does-it-exist)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Quick start](#quick-start)
 - [Browser support](#browser-support)
 - [Architecture](#architecture)
@@ -135,6 +136,77 @@ This app fills that gap:
 
 ---
 
+## Screenshots
+
+<p align="center">
+  <a href="https://ozcanorhandemirci.github.io/Mobil_App_Check_List/">
+    <img src="og-image.png" alt="Social preview image (1200x630)" width="640" />
+  </a>
+  <br />
+  <em>Social preview image (Open Graph, 1200x630).</em>
+</p>
+
+> The images below are placeholders. To capture real screenshots, run `scripts/capture-screenshots.mjs` (usage below).
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/01-welcome.svg">
+        <img src="assets/screenshots/01-welcome.svg" alt="Welcome screen: short intro on first run" width="100%" />
+      </a>
+      <br />
+      <sub><strong>1. Welcome</strong>: the intro modal shown on first run.</sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/02-checklist.svg">
+        <img src="assets/screenshots/02-checklist.svg" alt="Main checklist: 14 categories, 55 items, MVP and Release filters" width="100%" />
+      </a>
+      <br />
+      <sub><strong>2. Main checklist</strong>: 14 categories, 55 items with MVP and Release filters.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/03-card-flip.svg">
+        <img src="assets/screenshots/03-card-flip.svg" alt="Flipped card: step-by-step how-to guide" width="100%" />
+      </a>
+      <br />
+      <sub><strong>3. Card details</strong>: flipped card showing the step-by-step how-to guide.</sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/04-help.svg">
+        <img src="assets/screenshots/04-help.svg" alt="Help modal: short usage guide" width="100%" />
+      </a>
+      <br />
+      <sub><strong>4. Help</strong>: short usage guide and frequently asked questions.</sub>
+    </td>
+  </tr>
+</table>
+
+### Reproducing the screenshots (optional)
+
+If you want to regenerate the visuals, `scripts/capture-screenshots.mjs` drives Playwright against a local server.
+
+```bash
+# 1) Install Playwright as a dev dependency (we intentionally do NOT pin it in package.json):
+npm install -D playwright
+npx playwright install chromium
+
+# 2) Start a simple static server from the repo root:
+npx serve .                       # http://localhost:3000
+# or
+python -m http.server 5500        # http://localhost:5500
+
+# 3) Run the capture script (default URL is http://localhost:3000):
+node scripts/capture-screenshots.mjs
+# For a different port:
+BASE_URL=http://localhost:5500 node scripts/capture-screenshots.mjs
+```
+
+The script writes its output to `assets/screenshots/*.png`. Once real screenshots are ready, update the markdown image links above from `.svg` to `.png`.
+
+---
+
 ## Quick start
 
 ### 1. Use it in your browser
@@ -147,12 +219,12 @@ On first launch, a **7-step welcome flow** asks for language, usage mode, explan
 
 ### 2. Install on your device (PWA)
 
-| Platform | Step |
-|---|---|
-| **Android / Chrome** | The **Install** icon next to the address bar, or *"Add to Home screen"* from the menu |
-| **iOS / Safari** | Share button → **Add to Home Screen** |
-| **Windows / Edge** | The **Install** icon in the address bar, or *Settings → Apps → Install this site as an app* |
-| **macOS / Chrome** | The **Install** icon in the address bar |
+| Platform             | Step                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| **Android / Chrome** | The **Install** icon next to the address bar, or _"Add to Home screen"_ from the menu       |
+| **iOS / Safari**     | Share button → **Add to Home Screen**                                                       |
+| **Windows / Edge**   | The **Install** icon in the address bar, or _Settings → Apps → Install this site as an app_ |
+| **macOS / Chrome**   | The **Install** icon in the address bar                                                     |
 
 After installation it opens in **standalone** mode (no browser chrome), works **offline**, and lives in the **dock / start menu** with its own icon.
 
@@ -177,7 +249,7 @@ npx serve .
 ### 4. Publish to your own GitHub Pages
 
 1. **Fork** the repo.
-2. *Settings → Pages → Source: `main` / `(root)`*.
+2. _Settings → Pages → Source: `main` / `(root)`_.
 3. Within 1-2 minutes it goes live at `https://<your-username>.github.io/Mobil_App_Check_List/`.
 
 If you want a custom domain, add a `CNAME` file; no extra configuration needed.
@@ -186,13 +258,13 @@ If you want a custom domain, add a `CNAME` file; no extra configuration needed.
 
 ## Browser support
 
-| Browser | Version | PWA install | Offline |
-|---|---|---|---|
-| Chrome / Edge (desktop and mobile) | 90+ | Yes | Yes |
-| Safari (iOS and macOS) | 15+ | Yes (Add to Home Screen) | Yes |
-| Firefox (desktop and mobile) | 90+ | Limited (mobile only) | Yes |
-| Samsung Internet | 14+ | Yes | Yes |
-| Opera | latest | Yes | Yes |
+| Browser                            | Version | PWA install              | Offline |
+| ---------------------------------- | ------- | ------------------------ | ------- |
+| Chrome / Edge (desktop and mobile) | 90+     | Yes                      | Yes     |
+| Safari (iOS and macOS)             | 15+     | Yes (Add to Home Screen) | Yes     |
+| Firefox (desktop and mobile)       | 90+     | Limited (mobile only)    | Yes     |
+| Samsung Internet                   | 14+     | Yes                      | Yes     |
+| Opera                              | latest  | Yes                      | Yes     |
 
 > Uses ES2020+ syntax, CSS custom properties, Service Worker, and localStorage. Internet Explorer is **not supported**.
 
@@ -202,14 +274,14 @@ If you want a custom domain, add a `CNAME` file; no extra configuration needed.
 
 ### Tech stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| HTML | A single `index.html` (~1100 lines) | One PWA entry point; all modals are inline static HTML that JS shows / hides. |
-| CSS | 6 files, vanilla CSS | No build tool. Theme switching via CSS custom properties. Print styles in a dedicated file. |
-| JS | 16 files, vanilla ES2020+ | No build / transpile / bundling. Loaded sequentially via `<script>` tags (numbered filenames define the order). |
-| Data | A single `DATA` constant (`js/03-data.js`) | 14 categories × 55 items with language / style / framework / backend variants. A pure static JS object; no build or fetch. |
-| Service Worker | Network-first + cache fallback | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. |
-| Storage | `localStorage` | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server. |
+| Layer          | Choice                                     | Why                                                                                                                                                      |
+| -------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | A single `index.html` (~1100 lines)        | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                            |
+| CSS            | 6 files, vanilla CSS                       | No build tool. Theme switching via CSS custom properties. Print styles in a dedicated file.                                                              |
+| JS             | 16 files, vanilla ES2020+                  | No build / transpile / bundling. Loaded sequentially via `<script>` tags (numbered filenames define the order).                                          |
+| Data           | A single `DATA` constant (`js/03-data.js`) | 14 categories × 55 items with language / style / framework / backend variants. A pure static JS object; no build or fetch.                               |
+| Service Worker | Network-first + cache fallback             | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. |
+| Storage        | `localStorage`                             | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server.                                                                |
 
 ### Four-axis content resolver
 
@@ -228,10 +300,10 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
   // A) When style === "simple", try plain texts first
   if (currentStyle === "simple") {
     if (feature.simpleBackend?.[currentBackend]?.[level]) {
-      return feature.simpleBackend[currentBackend][level];   // most specific
+      return feature.simpleBackend[currentBackend][level]; // most specific
     }
     if (feature.simple?.[level]) {
-      return feature.simple[level];                          // plain text shared across the stack
+      return feature.simple[level]; // plain text shared across the stack
     }
     // if no plain text exists, fall through to technical content
   }
@@ -240,12 +312,12 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
   if (feature.backendVariants?.[currentBackend]) {
     const node = feature.backendVariants[currentBackend];
     if (node[currentFramework]?.[level]) return node[currentFramework][level];
-    if (node._default?.[level])         return node._default[level];
+    if (node._default?.[level]) return node._default[level];
   }
   if (feature.variants?.[currentFramework]?.[level]) {
     return feature.variants[currentFramework][level];
   }
-  return feature[level];                                     // most general
+  return feature[level]; // most general
 }
 ```
 
@@ -562,15 +634,15 @@ The same content is shown with **different wording** depending on the user's cho
 
 ## Performance
 
-| Metric | Target | Current |
-|---|---|---|
-| LCP (Largest Contentful Paint) | < 2.5 s | ~1.2 s (4G, cold cache) |
-| CLS (Cumulative Layout Shift) | < 0.1 | ~0.02 |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms |
-| Total assets (raw) | - | ~1.45 MB |
-| Total assets (gzipped) | - | ~380 KB |
-| Offline launch (SW cache) | - | Works |
-| Runtime dependency | - | Zero |
+| Metric                          | Target   | Current                 |
+| ------------------------------- | -------- | ----------------------- |
+| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, cold cache) |
+| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                   |
+| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                  |
+| Total assets (raw)              | -        | ~1.45 MB                |
+| Total assets (gzipped)          | -        | ~380 KB                 |
+| Offline launch (SW cache)       | -        | Works                   |
+| Runtime dependency              | -        | Zero                    |
 
 > Most of the asset payload comes from `js/03-data.js`, the four-axis multi-variant content library; the application logic (`14-app.js`) alone is under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
@@ -578,7 +650,7 @@ The same content is shown with **different wording** depending on the user's cho
 
 ## Roadmap
 
-Improvements that may be worth picking up (*all open to contribution; everything can come in as a pull request*):
+Improvements that may be worth picking up (_all open to contribution; everything can come in as a pull request_):
 
 - [ ] **More languages**: German, Spanish, French, Arabic (with RTL)
 - [ ] **Industry packs**: regional compliance items for e-commerce, healthcare, gaming, fintech (GDPR / HIPAA / PCI DSS / KVKK)

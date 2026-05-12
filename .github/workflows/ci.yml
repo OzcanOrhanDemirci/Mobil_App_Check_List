@@ -1,0 +1,129 @@
+# Continuous Integration for the Mobile App Quality Checklist PWA.
+#
+# What this runs:
+#   - lint:          ESLint (flat config) + Prettier format check.
+#   - test:          Node built-in test runner (node --test).
+#   - validate-html: Static HTML validation via html-validate.
+#   - pwa-check:     Quick sanity checks for manifest.webmanifest, sw.js,
+#                    and every js/*.js (JSON parse plus node --check).
+#
+# Triggers:
+#   - push to main
+#   - pull_request targeting main
+#   - workflow_dispatch (manual)
+#
+# Notes:
+#   - Static site, no build step. Single Node 20 version, Ubuntu only.
+#   - Jobs run in parallel where independent.
+#   - Action major versions are pinned (checkout@v4, setup-node@v4).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint and format check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Prettier format check
+        run: npm run format:check
+
+  test:
+    name: Unit tests (node --test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # node --test exits 0 when no test files match, so an empty
+      # tests/ directory will not break this job.
+      - name: Run tests
+        run: npm test
+
+  validate-html:
+    name: HTML validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Pin the major version of html-validate for reproducibility.
+      # Failures on index.html will fail this job, which is the intent.
+      - name: Run html-validate on index.html
+        run: npx --yes html-validate@9 index.html
+
+  pwa-check:
+    name: PWA asset sanity checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate manifest.webmanifest is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8')); console.log('manifest.webmanifest is valid JSON');"
+
+      - name: Syntax check sw.js
+        run: node --check sw.js
+
+      - name: Syntax check every js/*.js
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(js/*.js)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No js/*.js files found, skipping."
+            exit 0
+          fi
+          for f in "${files[@]}"; do
+            echo "Checking $f"
+            node --check "$f"
+          done

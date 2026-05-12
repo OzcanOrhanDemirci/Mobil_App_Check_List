@@ -6,7 +6,7 @@
 
 **Mobil uygulamanı App Store / Play Store'a göndermeden önce eksik bıraktığın hiçbir şey kalmasın diye yazılmış,
 14 kategori ve 55 maddelik etkileşimli kalite kontrol listesi.**
-*Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA.*
+_Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-yellow.svg)](LICENSE)
 [![Canlı demo](https://img.shields.io/badge/demo-canl%C4%B1-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
@@ -39,6 +39,7 @@
 
 - [Neden var?](#neden-var)
 - [Özellikler](#özellikler)
+- [Ekran görüntüleri](#ekran-görüntüleri)
 - [Hızlı başlangıç](#hızlı-başlangıç)
 - [Tarayıcı desteği](#tarayıcı-desteği)
 - [Mimari](#mimari)
@@ -135,6 +136,77 @@ Bu uygulama o boşluğu doldurur:
 
 ---
 
+## Ekran görüntüleri
+
+<p align="center">
+  <a href="https://ozcanorhandemirci.github.io/Mobil_App_Check_List/">
+    <img src="og-image.png" alt="Sosyal önizleme görseli (1200x630)" width="640" />
+  </a>
+  <br />
+  <em>Sosyal önizleme görseli (Open Graph, 1200x630).</em>
+</p>
+
+> Aşağıdaki görseller yer tutucudur. Gerçek ekran görüntüleri için `scripts/capture-screenshots.mjs` script'ini çalıştırın (kullanım aşağıda).
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/01-welcome.svg">
+        <img src="assets/screenshots/01-welcome.svg" alt="Karşılama ekranı: ilk açılışta kısa tanıtım" width="100%" />
+      </a>
+      <br />
+      <sub><strong>1. Karşılama</strong>: ilk açılışta gösterilen tanıtım modali.</sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/02-checklist.svg">
+        <img src="assets/screenshots/02-checklist.svg" alt="Ana liste: 14 kategori, 55 madde, MVP ve Release filtreleri" width="100%" />
+      </a>
+      <br />
+      <sub><strong>2. Ana liste</strong>: 14 kategori, MVP ve Release filtreleriyle 55 madde.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/03-card-flip.svg">
+        <img src="assets/screenshots/03-card-flip.svg" alt="Kart çevirildiğinde adım adım rehber" width="100%" />
+      </a>
+      <br />
+      <sub><strong>3. Kart detayı</strong>: ters yüze çevrildiğinde adım adım nasıl yapılır rehberi.</sub>
+    </td>
+    <td align="center" width="50%">
+      <a href="assets/screenshots/04-help.svg">
+        <img src="assets/screenshots/04-help.svg" alt="Yardım modali: kısa kullanım kılavuzu" width="100%" />
+      </a>
+      <br />
+      <sub><strong>4. Yardım</strong>: kısa kullanım kılavuzu ve sık sorulanlar.</sub>
+    </td>
+  </tr>
+</table>
+
+### Ekran görüntülerini yeniden üretmek (opsiyonel)
+
+Görselleri kendiniz oluşturmak isterseniz `scripts/capture-screenshots.mjs` script'i Playwright'la çalışan yerel sunucudan otomatik yakalama yapar.
+
+```bash
+# 1) Playwright'ı geliştirme bağımlılığı olarak kurun (package.json'a kalıcı eklemiyoruz):
+npm install -D playwright
+npx playwright install chromium
+
+# 2) Repo kökünde basit bir statik sunucu başlatın:
+npx serve .                       # http://localhost:3000
+# veya
+python -m http.server 5500        # http://localhost:5500
+
+# 3) Yakalama script'ini çalıştırın (varsayılan URL http://localhost:3000):
+node scripts/capture-screenshots.mjs
+# Farklı port için:
+BASE_URL=http://localhost:5500 node scripts/capture-screenshots.mjs
+```
+
+Script çıktıları `assets/screenshots/*.png` olarak yazar; gerçek görseller hazır olduğunda yukarıdaki markdown bağlantılarını `.svg` yerine `.png` olarak güncelleyebilirsiniz.
+
+---
+
 ## Hızlı başlangıç
 
 ### 1. Tarayıcıda kullanmak
@@ -147,12 +219,12 @@ En kolay yol: canlı demo'yu aç.
 
 ### 2. Cihaza kurmak (PWA)
 
-| Platform | Adım |
-|---|---|
-| **Android / Chrome** | Adres çubuğunun yanındaki **Yükle** simgesi veya menüden *"Ana ekrana ekle"* |
-| **iOS / Safari** | Paylaş düğmesi → **Ana Ekrana Ekle** |
-| **Windows / Edge** | Adres çubuğunda **Yükle** simgesi veya *Ayarlar → Uygulamalar → Bu siteyi uygulama olarak yükle* |
-| **macOS / Chrome** | Adres çubuğunda **Yükle** simgesi |
+| Platform             | Adım                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------ |
+| **Android / Chrome** | Adres çubuğunun yanındaki **Yükle** simgesi veya menüden _"Ana ekrana ekle"_                     |
+| **iOS / Safari**     | Paylaş düğmesi → **Ana Ekrana Ekle**                                                             |
+| **Windows / Edge**   | Adres çubuğunda **Yükle** simgesi veya _Ayarlar → Uygulamalar → Bu siteyi uygulama olarak yükle_ |
+| **macOS / Chrome**   | Adres çubuğunda **Yükle** simgesi                                                                |
 
 Kurulduktan sonra **standalone** modda açılır (tarayıcı çerçevesi yok), **offline** çalışır ve **dock / başlat menüsünde** kendi simgesiyle yer alır.
 
@@ -177,7 +249,7 @@ npx serve .
 ### 4. Kendi GitHub Pages'inde yayınlamak
 
 1. Repoyu **fork** et.
-2. *Settings → Pages → Source: `main` / `(root)`*.
+2. _Settings → Pages → Source: `main` / `(root)`_.
 3. 1-2 dakikada `https://<kullanıcı-adın>.github.io/Mobil_App_Check_List/` üzerinden yayında olur.
 
 Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
@@ -186,13 +258,13 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 
 ## Tarayıcı desteği
 
-| Tarayıcı | Sürüm | PWA install | Offline |
-|---|---|---|---|
-| Chrome / Edge (masaüstü ve mobil) | 90+ | Evet | Evet |
-| Safari (iOS ve macOS) | 15+ | Evet (Add to Home Screen) | Evet |
-| Firefox (masaüstü ve mobil) | 90+ | Kısıtlı (mobilde) | Evet |
-| Samsung Internet | 14+ | Evet | Evet |
-| Opera | son sürüm | Evet | Evet |
+| Tarayıcı                          | Sürüm     | PWA install               | Offline |
+| --------------------------------- | --------- | ------------------------- | ------- |
+| Chrome / Edge (masaüstü ve mobil) | 90+       | Evet                      | Evet    |
+| Safari (iOS ve macOS)             | 15+       | Evet (Add to Home Screen) | Evet    |
+| Firefox (masaüstü ve mobil)       | 90+       | Kısıtlı (mobilde)         | Evet    |
+| Samsung Internet                  | 14+       | Evet                      | Evet    |
+| Opera                             | son sürüm | Evet                      | Evet    |
 
 > ES2020+ syntax, CSS custom properties, Service Worker ve localStorage kullanır. Internet Explorer **desteklenmez**.
 
@@ -202,14 +274,14 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 
 ### Teknoloji yığını
 
-| Katman | Seçim | Neden |
-|---|---|---|
-| HTML | Tek `index.html` (~1100 satır) | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler. |
-| CSS | 6 dosya, vanilla CSS | Build tool yok. CSS custom properties ile tema değişimi. Print stilleri ayrı dosya. |
-| JS | 16 dosya, vanilla ES2020+ | Build/transpile/bundling yok. `<script>` etiketleri ile sıralı yüklenir (numaralı dosyalar sırayı belirler). |
-| Veri | Tek bir `DATA` sabiti (`js/03-data.js`) | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. Tamamı statik JS objesi; build veya fetch yok. |
-| Service Worker | Network-first + cache fallback | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. |
-| Depolama | `localStorage` | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez. |
+| Katman         | Seçim                                   | Neden                                                                                                                                        |
+| -------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | Tek `index.html` (~1100 satır)          | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                            |
+| CSS            | 6 dosya, vanilla CSS                    | Build tool yok. CSS custom properties ile tema değişimi. Print stilleri ayrı dosya.                                                          |
+| JS             | 16 dosya, vanilla ES2020+               | Build/transpile/bundling yok. `<script>` etiketleri ile sıralı yüklenir (numaralı dosyalar sırayı belirler).                                 |
+| Veri           | Tek bir `DATA` sabiti (`js/03-data.js`) | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. Tamamı statik JS objesi; build veya fetch yok.                            |
+| Service Worker | Network-first + cache fallback          | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. |
+| Depolama       | `localStorage`                          | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                             |
 
 ### Dört eksenli içerik çözücü
 
@@ -228,10 +300,10 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
   // A) Stil = "simple" ise önce sade metinleri dene
   if (currentStyle === "simple") {
     if (feature.simpleBackend?.[currentBackend]?.[level]) {
-      return feature.simpleBackend[currentBackend][level];   // en spesifik
+      return feature.simpleBackend[currentBackend][level]; // en spesifik
     }
     if (feature.simple?.[level]) {
-      return feature.simple[level];                          // tüm yığına ortak sade
+      return feature.simple[level]; // tüm yığına ortak sade
     }
     // sade metin yok ise teknik içeriğe düş
   }
@@ -240,12 +312,12 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
   if (feature.backendVariants?.[currentBackend]) {
     const node = feature.backendVariants[currentBackend];
     if (node[currentFramework]?.[level]) return node[currentFramework][level];
-    if (node._default?.[level])         return node._default[level];
+    if (node._default?.[level]) return node._default[level];
   }
   if (feature.variants?.[currentFramework]?.[level]) {
     return feature.variants[currentFramework][level];
   }
-  return feature[level];                                     // en geneli
+  return feature[level]; // en geneli
 }
 ```
 
@@ -562,15 +634,15 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 
 ## Performans
 
-| Metrik | Hedef | Mevcut |
-|---|---|---|
-| LCP (Largest Contentful Paint) | < 2.5 s | ~1.2 s (4G, soğuk cache) |
-| CLS (Cumulative Layout Shift) | < 0.1 | ~0.02 |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms |
-| Toplam asset (ham) | - | ~1.45 MB |
-| Toplam asset (gzipped) | - | ~380 KB |
-| Çevrimdışı açılış (SW cache) | - | Çalışır |
-| Çalışma zamanı bağımlılığı | - | Sıfır |
+| Metrik                          | Hedef    | Mevcut                   |
+| ------------------------------- | -------- | ------------------------ |
+| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, soğuk cache) |
+| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                    |
+| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                   |
+| Toplam asset (ham)              | -        | ~1.45 MB                 |
+| Toplam asset (gzipped)          | -        | ~380 KB                  |
+| Çevrimdışı açılış (SW cache)    | -        | Çalışır                  |
+| Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
 
 > Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-app.js`) tek başına gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
@@ -578,7 +650,7 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 
 ## Yol haritası
 
-İleride değerlendirilebilecek geliştirmeler (*katkıya açık, hepsi pull request olarak gelebilir*):
+İleride değerlendirilebilecek geliştirmeler (_katkıya açık, hepsi pull request olarak gelebilir_):
 
 - [ ] **Daha fazla dil**: Almanca, İspanyolca, Fransızca, Arapça (RTL ile)
 - [ ] **Sektör paketleri**: e-ticaret, sağlık, oyun, fintech için bölgesel uyum maddeleri (KVKK / GDPR / HIPAA / PCI DSS)

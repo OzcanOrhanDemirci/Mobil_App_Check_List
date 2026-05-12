@@ -2,6 +2,11 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
+
+<!-- Content Security Policy. Allows inline scripts and styles because the page bootstraps theme and language before external scripts load, and JS toggles inline styles. Inline icons use data: URIs and the export feature plus a service worker fallback use blob:. Hardening to nonces or hashes is a future step. Note: frame-ancestors and X-Content-Type-Options are intentionally omitted here because they are only effective when set as real HTTP headers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; object-src 'none';" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Mobil Uygulama Kalite Kontrol Listesi</title>
 
@@ -1093,21 +1098,26 @@
 
 <input type="file" id="importFile" accept="application/json" style="display:none" />
 
-<script src="js/01-i18n-strings.js"></script>
-<script src="js/02-help-content.js"></script>
-<script src="js/03-data.js"></script>
-<script src="js/04-projects.js"></script>
-<script src="js/04-storage.js"></script>
-<script src="js/05-framework.js"></script>
-<script src="js/05-backend.js"></script>
-<script src="js/06-view-state.js"></script>
-<script src="js/07-ui-helpers.js"></script>
-<script src="js/08-i18n-dom.js"></script>
-<script src="js/09-ai-prompt.js"></script>
-<script src="js/10-clipboard.js"></script>
-<script src="js/11-render.js"></script>
-<script src="js/12-progress.js"></script>
-<script src="js/13-filters.js"></script>
-<script src="js/14-app.js"></script>
+<!-- defer: parser-non-blocking download, ordered execution before DOMContentLoaded.
+     Order preserved exactly because deferred scripts run in document order.
+     14-app.js touches the DOM at top level, so defer is required for safety
+     if these tags are ever moved to head; at end-of-body the defer mainly
+     improves parallel download without altering execution semantics. -->
+<script src="js/01-i18n-strings.js" defer></script>
+<script src="js/02-help-content.js" defer></script>
+<script src="js/03-data.js" defer></script>
+<script src="js/04-projects.js" defer></script>
+<script src="js/04-storage.js" defer></script>
+<script src="js/05-framework.js" defer></script>
+<script src="js/05-backend.js" defer></script>
+<script src="js/06-view-state.js" defer></script>
+<script src="js/07-ui-helpers.js" defer></script>
+<script src="js/08-i18n-dom.js" defer></script>
+<script src="js/09-ai-prompt.js" defer></script>
+<script src="js/10-clipboard.js" defer></script>
+<script src="js/11-render.js" defer></script>
+<script src="js/12-progress.js" defer></script>
+<script src="js/13-filters.js" defer></script>
+<script src="js/14-app.js" defer></script>
 </body>
 </html>

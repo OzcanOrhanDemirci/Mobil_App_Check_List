@@ -1,0 +1,44 @@
+node_modules
+.git
+dist
+build
+coverage
+package-lock.json
+
+*.min.js
+*.min.css
+
+icons/
+assets/
+
+# Pre-existing app source preserves hand-tuned alignment (e.g., FRAMEWORK_META
+# colon columns) and intentional line breaks. Prettier is available via
+# `npm run format` for contributors who want to apply it to their changes,
+# but format:check does not enforce it on legacy files.
+js/01-i18n-strings.js
+js/02-help-content.js
+js/03-data.js
+js/04-projects.js
+js/04-storage.js
+js/05-backend.js
+js/05-framework.js
+js/06-view-state.js
+js/07-ui-helpers.js
+js/08-i18n-dom.js
+js/09-ai-prompt.js
+js/10-clipboard.js
+js/11-render.js
+js/12-progress.js
+js/13-filters.js
+js/14-app.js
+sw.js
+
+css/01-base.css
+css/02-layout.css
+css/03-categories.css
+css/04-presentation.css
+css/05-modals.css
+css/06-responsive-print.css
+
+index.html
+manifest.webmanifest

@@ -1,0 +1,45 @@
+{
+  "name": "mobil-app-check-list",
+  "version": "1.0.0",
+  "description": "Mobile app quality checklist PWA (Turkish/English) with 4-axis content resolution",
+  "main": "index.html",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "lint": "eslint js/ tests/ sw.js",
+    "lint:fix": "eslint js/ tests/ sw.js --fix",
+    "lint:strict": "eslint js/ tests/ sw.js --max-warnings=0",
+    "format": "prettier --write \"**/*.{js,css,html,md,json,yml}\"",
+    "format:check": "prettier --check \"**/*.{js,css,html,md,json,yml}\"",
+    "test": "node --test \"tests/*.test.js\"",
+    "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "pwa",
+    "mobile",
+    "checklist",
+    "quality-assurance",
+    "vanilla-js",
+    "i18n",
+    "offline-first"
+  ],
+  "author": "Özcan Orhan Demirci <ozcanorhandem@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git"
+  },
+  "homepage": "https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List#readme",
+  "bugs": {
+    "url": "https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/issues"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
