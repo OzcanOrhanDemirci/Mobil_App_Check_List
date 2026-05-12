@@ -60,11 +60,11 @@
 
 ## Neden var?
 
-Geliştiriciler, hobi projeleri ve özellikle yapay zekâ destekli kod üreticileri (Cursor, Claude, ChatGPT vb.) ile uygulama yazan kişiler için **mağazaya çıkış öncesi yapılacaklar listesi** dağınık, eksik ve büyük ölçüde sezgisel. Bir özelliği geliştirmek başlamak için 100 madde önerebilen sayısız blog yazısı var; ama "yayına hazır mıyım, neyi unuttum?" sorusunu **tek bir yerden, etkileşimli, hatırlatıcı** olarak cevaplayan bir araç yok.
+Geliştiriciler, hobi projeleri ve özellikle yapay zekâ destekli kod üreticileri (Cursor, Claude, ChatGPT vb.) ile uygulama yazan kişiler için **mağazaya çıkış öncesi yapılacaklar listesi** dağınık, eksik ve büyük ölçüde sezgisel. Tek bir özelliğe başlamak için 100 madde önerebilen sayısız blog yazısı var; ama "yayına hazır mıyım, neyi unuttum?" sorusunu **tek bir yerden, etkileşimli ve hatırlatıcı** olarak cevaplayan bir araç yok.
 
 Bu uygulama o boşluğu doldurur:
 
-- **Geliştirici uzmanı değilsin diye eksik bırakacağın 55 madde** burada yazılı.
+- **Uzman geliştirici değilsin diye gözden kaçırabileceğin 55 madde** burada yazılı.
 - Her madde **iki seviyede** ölçülür: MVP (en küçük çalışan ürün) ve Release (mağaza onayına hazır).
 - Her madde **adım adım nasıl yapılır rehberi** içerir; AI asistanına yapıştırılabilir.
 - İçerik **senin teknoloji yığınına** göre uyarlanır: Flutter mı, Swift mi? Firebase mi, Supabase mi? Kod örnekleri buna göre değişir.
@@ -83,12 +83,12 @@ Bu uygulama o boşluğu doldurur:
 
 ### İçerik
 
-- **14 kategori**, **55 madde**: planlama, tasarım, kod düzeni, Git, API, backend, offline, test, güvenlik, erişilebilirlik, yayın, monetizasyon, analytics, CI/CD
+- **14 kategori**, **55 madde**: planlama, tasarım, kod düzeni, Git, API, backend, offline, test, güvenlik, erişilebilirlik, yayın, monetizasyon, analitik, CI/CD
 - Her madde **iki seviye** (MVP / Release) ile işaretlenir
 - Her madde için **adım adım nasıl yapılır rehberi** (kartın arka yüzü)
 - Adımlar **tek tek işaretlenebilir**; ilerleme yüzdesi otomatik hesaplanır
 - **2 dil** (TR · EN) · **2 anlatım stili** (Basit · Teknik)
-- **2 kullanım biçimi**: Geliştiriyorum (uygulama ben yapan tarafım) · İnceliyorum (başkasının uygulamasını denetleyen tarafım)
+- **2 kullanım biçimi**: Geliştirme (kendi uygulamamı yapıyorum) · İnceleme (başkasının uygulamasını denetliyorum)
 
 </td>
 <td width="50%" valign="top">
@@ -96,7 +96,7 @@ Bu uygulama o boşluğu doldurur:
 ### Akıllı uyarlanma
 
 - **6 framework** desteği: Flutter · React Native · Swift (iOS) · Kotlin (Android) · Expo · PWA
-- **9 backend** desteği: Firebase · Supabase · Appwrite · PocketBase · Amplify · Convex · Kendi sunucum · Localhost · Backend yok
+- **9 backend** desteği: Firebase · Supabase · Appwrite · PocketBase · AWS Amplify · Convex · Kendi sunucum · Yerel geliştirme · Backend yok
 - Seçilen kombinasyona göre içerik **otomatik değişir**: paket adları, kod örnekleri, kurulum komutları
 - "Backend yok" seçilince **anlamsız maddeler tamamen gizlenir**
 - **Yapay zekâya hazır prompt üretici**: madde içeriğini ve kullanıcı seçimlerini AI'a doğrudan yapıştırılabilir markdown/JSON olarak verir
@@ -119,13 +119,13 @@ Bu uygulama o boşluğu doldurur:
 ### Görünüm ve etkileşim
 
 - **Açık / koyu tema** (sistem tercihine uyarlanır)
-- **Arama**: 55 madde içinde anında metin araması
-- **Filtre**: Yapılacak / Yapılan / Tümü; MVP / Release / İkisi
-- **Sunum modu** (P tuşu): tek tıkla projeksiyon için tam ekran
-- **Yazdır / PDF**: hem kontrol listesi hem How-To rehberi formatları
+- **Arama**: 55 madde içinde anında metin araması (`/` tuşu ile odaklanır)
+- **Filtre**: Yapılacak / Yapılan / Tümü × MVP / Release / İkisi
+- **Sunum modu** (`P` tuşu): tek tıkla projeksiyon için tam ekran
+- **Yazdır / PDF**: hem kontrol listesi hem Nasıl Yapılır? rehberi formatları
 - **Tek tıkla yükle**: ana ekrana / başlat menüsüne kurulabilir
-- **Offline çalışır**: Service Worker ile cache; internet kopsa da çalışır
-- **A11y**: WCAG kontrastı, klavye navigasyonu, prefers-reduced-motion
+- **Offline çalışır**: Service Worker önbelleği ile internet kopsa da açılır
+- **A11y**: yüksek kontrast paleti, klavye navigasyonu, focus-visible outline'ları, semantik ARIA rolleri
 
 </td>
 </tr>
@@ -192,7 +192,7 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 | Samsung Internet | 14+ | Evet | Evet |
 | Opera | son sürüm | Evet | Evet |
 
-> ES2020+ syntax, CSS custom properties, `<dialog>`, Service Worker ve localStorage kullanır. Internet Explorer **desteklenmez**.
+> ES2020+ syntax, CSS custom properties, Service Worker ve localStorage kullanır. Internet Explorer **desteklenmez**.
 
 ---
 
@@ -206,19 +206,19 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 | CSS | 6 dosya, vanilla CSS | Build tool yok. CSS custom properties ile tema değişimi. Print stilleri ayrı dosya. |
 | JS | 16 dosya, vanilla ES2020+ | Build/transpile/bundling yok. `<script>` etiketleri ile sıralı yüklenir (numaralı dosyalar sırayı belirler). |
 | Veri | Tek bir `DATA` sabiti (`js/03-data.js`) | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. Tamamı statik JS objesi; build veya fetch yok. |
-| Servis Worker | Cache-first + network update | `sw.js` ~30 satır; tüm aynı-origin GET istekleri cache'lenir, sonraki ziyarette anlık açılır. |
+| Service Worker | Network-first + cache fallback | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. |
 | Depolama | `localStorage` | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez. |
 
 ### Dört eksenli içerik çözücü
 
-Aynı bir madde, kullanıcının seçimine göre **dört eksende** farklı görünebilir:
+Aynı madde, kullanıcının seçimine göre **dört eksende** farklı görünebilir:
 
 ```
 Görünen içerik = f(dil, anlatım stili, framework, backend)
                    TR/EN   Basit/Teknik    6 seçenek   9 seçenek
 ```
 
-Toplam teorik kombinasyon sayısı **216** (`2 × 2 × 6 × 9`); ama her madde için bunlarin hepsini ayrı ayrı yazmaya gerek yok. **Öncelik zinciri** sayesinde sadece **gerçekten farklılaşan** içerik yazılır:
+Toplam teorik kombinasyon sayısı **216** (`2 × 2 × 6 × 9`); ama her madde için bunların hepsini ayrı ayrı yazmaya gerek yok. **Öncelik zinciri** sayesinde sadece **gerçekten farklılaşan** içerik yazılır:
 
 ```js
 // js/05-framework.js
@@ -247,7 +247,7 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
 }
 ```
 
-Bu sayede bir madde sadece **bir kez** yazılır, ve **gerektiği yerde** specialize edilir. Ortalama bir maddede 3-4 varyant tanımlıdır; 216 kombinasyonun hiçbiri "boş" görünmez.
+Bu sayede bir madde sadece **bir kez** yazılır ve **gerektiği yerde** özelleşir. Ortalama bir maddede 3-4 varyant tanımlıdır; 216 kombinasyonun hiçbiri "boş" görünmez.
 
 ### Modüler dosya yapısı
 
@@ -276,9 +276,9 @@ Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay z
 
 ### PWA stratejisi
 
-- `manifest.webmanifest` standalone modu açar, ikonları tanımlar.
-- `sw.js` **cache-first + background update** stratejisi: ilk ziyarette network'ten çekilir, sonraki ziyaretlerde anlık cache'ten döndürülür, arka planda güncelleme aranır.
-- `sw.js` dosyası bulunamazsa (örn. `file://` ile açıldığında) JS bir **blob URL üzerinden fallback service worker** kaydetmeye çalışır.
+- `manifest.webmanifest` standalone modu açar, ikonları (inline SVG, hem `any` hem `maskable`) tanımlar.
+- `sw.js` **network-first + cache fallback** stratejisi: her aynı-origin GET isteği önce ağdan denenir, başarılı yanıtlar `mobil-kontrol-v3` cache'ine yazılır; ağ erişimi koptuğunda son cache'lenmiş sürüm anlık servis edilir. Eski cache anahtarları `activate`'te otomatik temizlenir.
+- `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; Chromium blob URL'li SW'yi reddederse sessizce geçer.
 - HTTPS üzerinden servis edilince Chrome / Edge / Safari "Yükle" önerisini otomatik olarak gösterir.
 
 ---
@@ -288,10 +288,11 @@ Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay z
 ```text
 Mobil_App_Check_List/
 ├── index.html                Tek sayfa: modaller + script yükleme sırası
-├── manifest.webmanifest      PWA manifesti (icon, theme color, scope)
-├── sw.js                     Service Worker (cache-first + update)
+├── manifest.webmanifest      PWA manifesti (ad, ikon, tema rengi, scope)
+├── sw.js                     Service Worker (network-first + offline fallback)
 ├── og-image.png              1200×630 sosyal medya önizleme görseli
 ├── .nojekyll                 GitHub Pages Jekyll davranışını kapatır
+├── .gitignore                Yerel araç çıktıları (OS / editör artıkları)
 ├── LICENSE                   MIT
 ├── README.md
 ├── css/
@@ -370,7 +371,7 @@ Teknik (varsayılan) sıralama:
   3. backendVariants[backend][framework][level]
   4. backendVariants[backend]._default[level]
   5. variants[framework][level]
-  6. [level]                              → en geneli
+  6. feature[level]                       → en geneli
 ```
 
 > Yani **bir maddenin tüm 216 kombinasyonu**, çoğunlukla 2-4 metin yazılarak doldurulabilir. Sade metin yazıldığında otomatik olarak 108 (6×9×2) tek yerden gelir; backend-spesifik içerik gerekirse yalnızca o varyant yazılır.
@@ -402,15 +403,15 @@ Madde anında ön yüzde + arka yüzde (Nasıl?) çıkar. Backend'e bağlıysa `
 
 ### Yeni framework eklemek
 
-1. `js/05-framework.js` → `VALID_FRAMEWORKS` dizisine ekle.
-2. Aynı dosyada `FRAMEWORK_META` objesine label, kısa ad, ikon ve AI prompt adı yaz.
-3. Karşılama akışındaki framework grid'ine bir kart eklemek için `index.html`'de `data-framework="..."` butonu çoğalt.
+1. `js/05-framework.js` → `VALID_FRAMEWORKS` + `FRAMEWORK_META` (label/kısa ad/ikon/AI prompt) + `INSTALL_EXAMPLES` + `SETUP_ASSUMPTIONS`.
+2. `js/05-backend.js` → her backend için `BACKEND_INSTALL_EXAMPLES.{backend}.{yeni-framework}` satırını ekle.
+3. `index.html` içinde karşılama (`data-welcome-fw="..."`), framework değiştirici (`data-switch-fw="..."`) ve yeni proje (`data-add-fw="..."`) gridlerine birer kart ekle.
 
 Var olan maddelerin **çoğu** yeni framework için otomatik olarak `variants[framework]` tanımsız → evrensel fallback'e düşer. Spesifik kod örnekleri istediğin maddelerde ilgili `variants[yeni-framework]` veya `backendVariants[*][yeni-framework]` bloklarını doldur.
 
 ### Yeni backend eklemek
 
-Aynı pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + karşılama akışı kartı. Maddelerin backend'e bağlı kısımlarında `backendVariants.{yeni-backend}._default` blokları yazılır.
+Aynı pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + `BACKEND_INSTALL_EXAMPLES` + `BACKEND_SETUP_ASSUMPTIONS`. `index.html` içinde karşılama (`data-welcome-be="..."`) ve backend değiştirici (`data-switch-be="..."`) gridlerine birer kart ekle. Maddelerin backend'e bağlı kısımlarında `backendVariants.{yeni-backend}._default` blokları yazılır.
 
 ### Yeni dil eklemek
 
@@ -445,15 +446,15 @@ Resolver otomatik olarak `obj[currentLang]` döndürdüğü için ekleme yapısa
 <th>İkon</th>
 <th>Açıklama</th>
 </tr>
-<tr><td>Firebase</td><td>🔥</td><td>Google'ın BaaS'i: Auth, Firestore, Storage, AI Logic, App Check</td></tr>
-<tr><td>Supabase</td><td>⚡</td><td>Açık kaynak Firebase alternatifi: Postgres + Realtime + Edge Functions</td></tr>
-<tr><td>Appwrite</td><td>📦</td><td>Self-host edilebilir BaaS; Cloud + open-source seçenekleri</td></tr>
-<tr><td>PocketBase</td><td>🪶</td><td>Tek binary, SQLite, küçük projeler için ideal</td></tr>
-<tr><td>AWS Amplify</td><td>☁️</td><td>AWS'in yığını: AppSync + DynamoDB + Cognito</td></tr>
-<tr><td>Convex</td><td>🌀</td><td>TypeScript-first reactive backend</td></tr>
-<tr><td>Kendi sunucum</td><td>🛠️</td><td>Node/Python/Go/Ruby/Rust kendi backend'in</td></tr>
-<tr><td>Localhost</td><td>💻</td><td>Sadece geliştirme; production önerilmez</td></tr>
-<tr><td>Backend yok</td><td>📴</td><td>Tamamen istemci tarafı; backend gerektiren maddeler otomatik gizlenir</td></tr>
+<tr><td>Firebase</td><td>🔥</td><td>Google'ın BaaS'i: Auth + Firestore + Storage + Cloud Functions + App Check + FCM</td></tr>
+<tr><td>Supabase</td><td>🟢</td><td>Açık kaynak Firebase alternatifi: Postgres + Row Level Security + Realtime + Edge Functions</td></tr>
+<tr><td>Appwrite</td><td>🟣</td><td>Self-host veya Appwrite Cloud üzerinde açık kaynak BaaS</td></tr>
+<tr><td>PocketBase</td><td>📦</td><td>Tek binary, SQLite tabanlı; küçük ve orta projeler için ideal</td></tr>
+<tr><td>AWS Amplify</td><td>☁️</td><td>Amplify Gen 2 (TypeScript): Cognito + DynamoDB/AppSync + S3 + Lambda</td></tr>
+<tr><td>Convex</td><td>⚡</td><td>TypeScript-first reactive backend (end-to-end typed query/mutation)</td></tr>
+<tr><td>Kendi sunucum</td><td>🛠️</td><td>Kendi REST/GraphQL API'n (Node/Python/Go/Rust/Ruby/.NET)</td></tr>
+<tr><td>Yerel geliştirme</td><td>💻</td><td>Localhost / LAN üzerinde geliştirme sunucusu (production önerilmez)</td></tr>
+<tr><td>Backend yok</td><td>🚫</td><td>Tamamen istemci tarafı; backend gerektiren maddeler otomatik gizlenir</td></tr>
 </table>
 
 ---
@@ -473,7 +474,7 @@ Bu, sürdürülebilirliği ve katkıyı kolaylaştıran kasıtlı bir karardır:
 - Dosyaları doğrudan düzenle, sayfayı yenile, sonucu gör.
 - 5 yıl sonra bile aynı şekilde çalışacak; ekosistemde build aracı bağımlılıkları kırılsa bile.
 
-Karşı argüman: bundle boyutu ve performans. Bu projede tüm kod gzip sonrası ~80 KB; PWA cache'lendikten sonra ilk yükleme dışında bedava.
+Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS + JS) gzip sonrası **~380 KB**; büyük kısmı 55 madde × dört eksende çoklu varyant taşıyan içerik veri dosyasından gelir. İlk ziyaretten sonra Service Worker önbelleği ağ trafiğini neredeyse sıfırlar.
 
 </details>
 
@@ -496,12 +497,12 @@ Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` 11
 
 <br />
 
-55 madde × 4 eksende ~800 KB metin var. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
+55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan `js/03-data.js` ham hâliyle ~835 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
 
-- Kullanıcı **birkaç madde** değil, **tüm listeyi** görmek için geliyor. Lazy yüklemenin değer önerisi düşük.
-- Service Worker ilk ziyarette indirip cache'liyor; ikinci ziyaret anlık.
-- Gzip sonrası ~80 KB; 4G'de saniyenin altında.
-- Lazy loading mimarisi (kategori başına dosya, dinamik import, vb.) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
+- Kullanıcı **birkaç madde** değil, **tüm listeyi** görmek için geliyor: arama, filtre ve sunum modu listenin tamamı belleğe yüklenmişken anlamlı.
+- Tüm asset'ler gzip sonrası ~380 KB; çoğu bağlantıda saniyenin altında iniyor.
+- Service Worker ilk başarılı ziyaretten sonra cache'i dolduruyor; internet kopsa da uygulama açılıyor.
+- Lazy loading mimarisi (kategori başına dosya, dinamik import vb.) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
 
 Veri büyürse (örn. 200 madde) bu kararı yeniden düşünmek gerekir.
 
@@ -536,7 +537,7 @@ HTTP/2 ile çoklu küçük dosya, tek bir bundle'dan **anlamlı ölçüde** yava
 
 <br />
 
-Modern uygulama geliştirme **AI destekli**, ve geliştirenlerin **önemli bir kısmı** yazılım dünyasına uzak. Bir öğretmen, bir avukat, bir mağaza sahibi Cursor / Claude ile uygulama yazabiliyor; ama "Riverpod 3.x AsyncNotifier" gibi bir madde okuduğunda kapanıyor.
+Modern uygulama geliştirme **AI destekli** hâle geldi ve geliştirenlerin **önemli bir kısmı** yazılım dünyasına uzak. Bir öğretmen, bir avukat, bir mağaza sahibi Cursor / Claude ile uygulama yazabiliyor; ama "Riverpod 3.x AsyncNotifier" gibi bir madde okuduğunda kapanıyor.
 
 **Basit** stili package isimleri, sürüm numaraları, akronimler, dosya yolları içermez; günlük hayattan metaforlar kullanır ("telefonun güvenli çekmecesi", "ekran okuyucusu"). **Teknik** stili tüm detayı verir.
 
@@ -563,11 +564,12 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 | LCP (Largest Contentful Paint) | < 2.5 s | ~1.2 s (4G, soğuk cache) |
 | CLS (Cumulative Layout Shift) | < 0.1 | ~0.02 |
 | INP (Interaction to Next Paint) | < 200 ms | ~80 ms |
-| İlk yükleme (gzipped) | - | ~80 KB |
-| İkinci yükleme (SW cache) | - | Anlık |
+| Toplam asset (ham) | - | ~1.45 MB |
+| Toplam asset (gzipped) | - | ~380 KB |
+| Çevrimdışı açılış (SW cache) | - | Çalışır |
 | Çalışma zamanı bağımlılığı | - | Sıfır |
 
-> Lighthouse skorları: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100 (mobil profilde).
+> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-app.js`) tek başına gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 
