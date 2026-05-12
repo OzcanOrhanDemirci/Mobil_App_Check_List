@@ -2,6 +2,8 @@
 
 # Mobil Uygulama Kalite Kontrol Listesi
 
+**Türkçe** · [English](README.en.md)
+
 **Mobil uygulamanı App Store / Play Store'a göndermeden önce eksik bıraktığın hiçbir şey kalmasın diye yazılmış,
 14 kategori ve 55 maddelik etkileşimli kalite kontrol listesi.**
 *Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA.*
@@ -294,7 +296,8 @@ Mobil_App_Check_List/
 ├── .nojekyll                 GitHub Pages Jekyll davranışını kapatır
 ├── .gitignore                Yerel araç çıktıları (OS / editör artıkları)
 ├── LICENSE                   MIT
-├── README.md
+├── README.md                 Türkçe (ana dosya)
+├── README.en.md              İngilizce versiyon
 ├── css/
 │   ├── 01-base.css           Reset, CSS custom properties, base tipografi
 │   ├── 02-layout.css         Hero, sayfa düzeni, proje pili
