@@ -323,3 +323,119 @@ describe("Em-dash content rule", () => {
     );
   });
 });
+
+/* The render path in js/11-render.js writes DATA strings directly into
+   HTML via template literals (e.g. `<h3>${fTitle}</h3>`, `<p>${fDesc}</p>`)
+   with no escapeHtml step. This is deliberate: DATA is hand-authored
+   content that legitimately contains tags like <strong>, <em>, <code>,
+   <span class="hint">, and <a href="https://..."> for documentation
+   links. The invariants below pin the trust boundary, so a future
+   contributor who adds a <script> tag, an inline event handler, or a
+   javascript: URL trips the suite immediately.
+
+   The XSS defense at the application layer is escapeHtml in
+   js/07-ui-helpers.js, which is applied to user-controlled inputs
+   (project names, free-form notes, JSON-imported state). DATA is on
+   the OTHER side of that boundary; these tests enforce its safety
+   directly. */
+describe("XSS-safety invariants (DATA is interpolated into innerHTML)", () => {
+  /* Tags that either run script (<script>), can host script through
+     attributes (<svg> via on*=), pull external resources (<iframe>,
+     <object>, <embed>, <link>, <meta>, <base>), inject style (<style>),
+     or break out of a documentation context (<form> and friends). The
+     allow-list is by absence: anything not banned here is fine, so
+     <strong>, <em>, <code>, <span class="hint">, <a href="https://...">,
+     and ordinary inline / block formatting all pass. */
+  const DANGEROUS_TAG_PATTERNS = [
+    { name: "<script>", re: /<script\b/i },
+    { name: "<iframe>", re: /<iframe\b/i },
+    { name: "<object>", re: /<object\b/i },
+    { name: "<embed>", re: /<embed\b/i },
+    { name: "<svg>", re: /<svg\b/i },
+    { name: "<style>", re: /<style\b/i },
+    { name: "<link>", re: /<link\b/i },
+    { name: "<meta>", re: /<meta\b/i },
+    { name: "<base>", re: /<base\b/i },
+    { name: "<form>", re: /<form\b/i },
+    { name: "<input>", re: /<input\b/i },
+    { name: "<textarea>", re: /<textarea\b/i },
+    { name: "<button>", re: /<button\b/i },
+    { name: "<select>", re: /<select\b/i },
+    { name: "<option>", re: /<option\b/i },
+  ];
+
+  /* Inline event-handler attribute. Must be preceded by whitespace
+     (attribute context); otherwise innocent words like "one" or
+     "online" would match. The pattern is " onSOMETHING=" with optional
+     spaces around the equals sign. */
+  const EVENT_HANDLER_RE = /\son[a-z]+\s*=/i;
+
+  /* URL schemes that can execute script or render hostile content when
+     interpolated into href / src attributes. data: is allowed for image
+     URLs (data:image/png;base64,...) but text/html is rejected because
+     it can carry script. */
+  const DANGEROUS_URL_PATTERNS = [
+    { name: "javascript: URL", re: /javascript:/i },
+    { name: "vbscript: URL", re: /vbscript:/i },
+    { name: "data:text/html URL", re: /data:\s*text\/html/i },
+  ];
+
+  for (const { name, re } of DANGEROUS_TAG_PATTERNS) {
+    it(`no DATA string contains a ${name} tag`, () => {
+      const hits = [];
+      walkStrings(DATA, (str, pathParts) => {
+        if (re.test(str)) hits.push(`${pathParts.join(".")}: ${str.slice(0, 120)}`);
+      });
+      assert.equal(
+        hits.length,
+        0,
+        `${hits.length} ${name} violation(s):\n  ${hits.slice(0, 5).join("\n  ")}${hits.length > 5 ? "\n  ..." : ""}`
+      );
+    });
+  }
+
+  it("no DATA string contains an inline event-handler attribute (onclick=, onerror=, onload=, etc.)", () => {
+    const hits = [];
+    walkStrings(DATA, (str, pathParts) => {
+      if (EVENT_HANDLER_RE.test(str)) hits.push(`${pathParts.join(".")}: ${str.slice(0, 120)}`);
+    });
+    assert.equal(
+      hits.length,
+      0,
+      `${hits.length} event-handler violation(s):\n  ${hits.slice(0, 5).join("\n  ")}${hits.length > 5 ? "\n  ..." : ""}`
+    );
+  });
+
+  for (const { name, re } of DANGEROUS_URL_PATTERNS) {
+    it(`no DATA string contains a ${name}`, () => {
+      const hits = [];
+      walkStrings(DATA, (str, pathParts) => {
+        if (re.test(str)) hits.push(`${pathParts.join(".")}: ${str.slice(0, 120)}`);
+      });
+      assert.equal(
+        hits.length,
+        0,
+        `${hits.length} ${name} violation(s):\n  ${hits.slice(0, 5).join("\n  ")}${hits.length > 5 ? "\n  ..." : ""}`
+      );
+    });
+  }
+
+  it("every <a> tag, if present, uses an http(s) href (not javascript:, not data:)", () => {
+    /* Belt-and-suspenders: the URL checks above already reject
+       javascript: / data:text/html anywhere in DATA. This test makes the
+       intent explicit at the <a> tag level so a contributor reading the
+       failure understands the contract: links must be public URLs. */
+    const hits = [];
+    const anchorWithHref = /<a\s+[^>]*href\s*=\s*["']([^"']*)["']/gi;
+    walkStrings(DATA, (str, pathParts) => {
+      let m;
+      while ((m = anchorWithHref.exec(str)) !== null) {
+        const href = m[1].trim().toLowerCase();
+        if (!/^https?:\/\//.test(href)) {
+          hits.push(`${pathParts.join(".")}: href="${href}"`);
+        }
+      }
+    });
+    assert.equal(hits.length, 0, `${hits.length} non-http(s) anchor href(s):\n  ${hits.slice(0, 5).join("\n  ")}`);
+  });
+});

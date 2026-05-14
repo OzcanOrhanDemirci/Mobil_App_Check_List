@@ -174,6 +174,7 @@ const projectGlobals = {
   checkCelebrations: "writable",
 
   // js/13-filters.js
+  shouldShowFeature: "writable",
   applyFilters: "writable",
   attachSearch: "writable",
 

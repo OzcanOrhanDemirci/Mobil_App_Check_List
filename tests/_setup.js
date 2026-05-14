@@ -248,12 +248,18 @@ function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
       globalThis.VALID_BACKENDS   = VALID_BACKENDS;
       if (typeof DATA !== "undefined") globalThis.DATA = DATA;
 
-      /* UI helpers and progress: mirrored only when the caller loaded the
-         relevant source via extraFiles. Typeof guards keep this safe for
-         the legacy resolver / projects / data tests that do not need them. */
-      if (typeof escapeHtml   === "function") globalThis.escapeHtml   = escapeHtml;
-      if (typeof stripHtml    === "function") globalThis.stripHtml    = stripHtml;
-      if (typeof countLevels  === "function") globalThis.countLevels  = countLevels;
+      /* UI helpers, render helpers, progress, AI prompt builders, and
+         filter helpers: mirrored only when the caller loaded the relevant
+         source via extraFiles. Typeof guards keep this safe for the
+         legacy resolver / projects / data tests that do not need them. */
+      if (typeof escapeHtml              === "function") globalThis.escapeHtml              = escapeHtml;
+      if (typeof stripHtml               === "function") globalThis.stripHtml               = stripHtml;
+      if (typeof countLevels             === "function") globalThis.countLevels             = countLevels;
+      if (typeof countHowtoSteps         === "function") globalThis.countHowtoSteps         = countHowtoSteps;
+      if (typeof countCheckedStepsByPrefix === "function") globalThis.countCheckedStepsByPrefix = countCheckedStepsByPrefix;
+      if (typeof buildAIPromptTR         === "function") globalThis.buildAIPromptTR         = buildAIPromptTR;
+      if (typeof buildAIPromptJSON       === "function") globalThis.buildAIPromptJSON       = buildAIPromptJSON;
+      if (typeof shouldShowFeature       === "function") globalThis.shouldShowFeature       = shouldShowFeature;
 
       /* Test-only state setter. The script-mode "state" let binding is
          declared in js/06-view-state.js (loaded by SCRIPT_FILES) and is

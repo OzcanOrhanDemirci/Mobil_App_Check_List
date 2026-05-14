@@ -35,11 +35,51 @@ XSS-defense and progress-counting code paths work as intended.
   feature exclusion when `currentBackend === "noBackend"`, and the
   per-category breakdown counts the UI reads.
 - `tests/_setup.js`: adapter mirror now exposes `escapeHtml`,
-  `stripHtml`, `countLevels`, and a `__setState(state)` helper so test
-  files can drive state-dependent paths without touching the realm
-  directly. The `extraFiles` option remains the canonical way to load
-  the helper files; the mirror is guarded by `typeof` so the legacy
-  resolver / projects / data tests do not need to change.
+  `stripHtml`, `countLevels`, `countHowtoSteps`,
+  `countCheckedStepsByPrefix`, `buildAIPromptTR`,
+  `buildAIPromptJSON`, `shouldShowFeature`, and a `__setState(state)`
+  helper so test files can drive state-dependent paths without
+  touching the realm directly. The `extraFiles` option remains the
+  canonical way to load the helper files; the mirror is guarded by
+  `typeof` so the legacy resolver / projects / data tests do not need
+  to change.
+- `tests/data.test.js` XSS-safety invariants (+20 tests): walks every
+  DATA string and rejects `<script>`, `<iframe>`, `<object>`,
+  `<embed>`, `<svg>`, `<style>`, `<link>`, `<meta>`, `<base>`,
+  `<form>`, `<input>`, `<textarea>`, `<button>`, `<select>`,
+  `<option>` tags; inline `on*=` event handlers; `javascript:`,
+  `vbscript:`, `data:text/html` URLs; and non-http(s) `<a href>`.
+  Pins the "DATA may contain safe display HTML but never anything
+  executable" contract that the render path in `js/11-render.js`
+  relies on when interpolating `tx(...)` values into innerHTML
+  without `escapeHtml`. A future contributor who pastes a `<script>`
+  tag or an `onclick=` handler into a data shard now trips CI
+  immediately.
+- `tests/filters.test.js` (new, 30 tests) covers
+  `shouldShowFeature`: the default `both` / `all` short-circuit,
+  search-text matching (case-sensitive at the predicate level), the
+  3 x 3 `viewMode` x `viewFilter` dropdown matrix, empty-levels
+  behavior, and a state matrix that walks every (mvp checked?
+  release checked?) combination through every (mode, filter) pair.
+- `tests/ai-prompt.test.js` (new, 27 tests) covers
+  `buildAIPromptTR` and `buildAIPromptJSON`: language switch
+  (TR / EN headings), conditional MVP / Release sections,
+  framework-aware target-platform line (PWA / iOS / Android /
+  hybrid), install-command selection (backend SDK for backendStep
+  features, framework SDK otherwise), HTML stripping on titles,
+  JSON output shape (wrapped in a fenced json code block, inner
+  parseable), response_language, project_context.framework and
+  project_context.backend wiring, conditional `mvp_level` /
+  `release_level` payload, and `backendAssumption` injection only
+  for `backendStep` features.
+- `tests/progress.test.js` (+13 tests) now also covers
+  `countHowtoSteps` and `countCheckedStepsByPrefix` from
+  `js/11-render.js`. `countHowtoSteps` is exercised with empty
+  input, no `1)` marker, single step, multi-step, intro-then-steps,
+  empty body, inline HTML in steps, and newline separators.
+  `countCheckedStepsByPrefix` is exercised with zero total, empty
+  state, in-range vs out-of-range index counting, falsy state
+  values, and prefix isolation.
 - `.github/ISSUE_TEMPLATE/bug_report.yml` and
   `.github/ISSUE_TEMPLATE/feature_request.yml`: GitHub form-based issue
   templates replace the markdown versions. Dropdowns capture browser,
@@ -50,6 +90,16 @@ XSS-defense and progress-counting code paths work as intended.
 
 ### Changed
 
+- `js/13-filters.js`: extracted the level-matching loop inside
+  `applyFilters` into a pure `shouldShowFeature` predicate at
+  module scope. The predicate takes the search query, view mode,
+  view filter, search text, and a plain-object level array, and
+  returns a boolean. Behavior is byte-identical, including the
+  lazy DOM read for the default `both` + `all` combination (the
+  predicate is skipped entirely in that case so 55 features do
+  not trigger 55 useless `.level` queries per keystroke). The
+  extracted form is unit-testable without constructing a DOM;
+  `tests/filters.test.js` exercises the full filter matrix.
 - `sw.js` cache key is now derived from the project version
   (`mobil-kontrol-v1.1.0` at the time of this entry) so a release bump
   automatically invalidates the old PWA cache. Manual cache bumps

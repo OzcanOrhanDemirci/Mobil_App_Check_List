@@ -25,7 +25,7 @@
 
 "use strict";
 
-const { describe, it, before } = require("node:test");
+const { describe, it, before, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadAppContext, DATA_FILES } = require("./_setup.js");
 
@@ -67,9 +67,13 @@ let countLevels;
 before(() => {
   /* SCRIPT_FILES already loads framework / backend / view-state, which
      defines resolveLevelText, isHiddenByBackend, and the state/notes
-     globals. We add DATA_FILES so DATA is populated, and js/12-progress.js
-     so countLevels itself is declared. */
-  ctx = loadAppContext({ extraFiles: [...DATA_FILES, "js/12-progress.js"] });
+     globals. We add DATA_FILES so DATA is populated, js/11-render.js so
+     countHowtoSteps and countCheckedStepsByPrefix are declared (also
+     used internally by countLevels for the granular per-category
+     counts), and js/12-progress.js so countLevels itself is declared. */
+  ctx = loadAppContext({
+    extraFiles: [...DATA_FILES, "js/11-render.js", "js/12-progress.js"],
+  });
   DATA = ctx.DATA;
   countLevels = ctx.countLevels;
 });
@@ -280,5 +284,110 @@ describe("countLevels: framework gating", () => {
       withoutFramework.total <= withFramework.total,
       `framework-gated features should not raise the count: noFw=${withoutFramework.total}, fw=${withFramework.total}`
     );
+  });
+});
+
+/* countHowtoSteps + countCheckedStepsByPrefix live in js/11-render.js and
+   are used by countLevels to compute the per-category granular percentage.
+   Both are pure: countHowtoSteps takes a string and returns a number,
+   countCheckedStepsByPrefix reads the state map (set via __setState). The
+   tests below load the same sandbox that progress.test.js uses, just
+   exercise the helpers directly. */
+
+describe("countHowtoSteps", () => {
+  it("returns 0 for empty, null, undefined, or non-string input", () => {
+    assert.equal(ctx.countHowtoSteps(""), 0);
+    assert.equal(ctx.countHowtoSteps(null), 0);
+    assert.equal(ctx.countHowtoSteps(undefined), 0);
+    assert.equal(ctx.countHowtoSteps(42), 0);
+    assert.equal(ctx.countHowtoSteps({}), 0);
+  });
+
+  it("returns 0 when the string has no `1)` marker", () => {
+    /* The early `\b1\)\s` guard rejects strings without an opening
+       step. "2)" alone does not start a list. */
+    assert.equal(ctx.countHowtoSteps("plain prose without numbered steps"), 0);
+    assert.equal(ctx.countHowtoSteps("2) starts at two, no leading 1)"), 0);
+  });
+
+  it("counts a single `1)` step", () => {
+    assert.equal(ctx.countHowtoSteps("1) only step here"), 1);
+  });
+
+  it("counts multiple consecutive steps in increasing order", () => {
+    assert.equal(ctx.countHowtoSteps("1) a 2) b 3) c"), 3);
+    assert.equal(ctx.countHowtoSteps("1) a 2) b 3) c 4) d 5) e"), 5);
+  });
+
+  it("ignores intro text that appears before the `1)` marker", () => {
+    /* Real DATA strings often have an introductory clause before the
+       numbered list. */
+    assert.equal(ctx.countHowtoSteps("Some intro 1) step1 2) step2"), 2);
+  });
+
+  it("does not count an empty body after a numbered marker", () => {
+    /* `1)   ` with only whitespace after the marker is not a real step. */
+    assert.equal(ctx.countHowtoSteps("1)    "), 0);
+  });
+
+  it("handles inline HTML inside step bodies", () => {
+    /* Real DATA wraps step content with <strong>, <code>, <em>, etc. */
+    assert.equal(ctx.countHowtoSteps("1) <strong>foo</strong> 2) <code>bar</code>"), 2);
+  });
+
+  it("handles a newline-separated list", () => {
+    /* The split regex uses \s+ for the separator, so `1)\nfoo\n2)\nbar`
+       parses the same as `1) foo 2) bar`. */
+    assert.equal(ctx.countHowtoSteps("1)\nfoo step\n2)\nbar step"), 2);
+  });
+});
+
+describe("countCheckedStepsByPrefix", () => {
+  /* Each test starts with a clean state map so prior tests cannot leak. */
+  beforeEach(() => {
+    ctx.__setState({});
+  });
+
+  it("returns 0 when total is 0", () => {
+    assert.equal(ctx.countCheckedStepsByPrefix("anything", 0), 0);
+  });
+
+  it("returns 0 when state is empty", () => {
+    assert.equal(ctx.countCheckedStepsByPrefix("x", 5), 0);
+  });
+
+  it("counts only keys in the range [s0, s{total-1}]", () => {
+    ctx.__setState({
+      "x.s0": true,
+      "x.s1": true,
+      "x.s2": true,
+      "x.s5": true,
+    });
+    /* For total=3 only s0..s2 are inspected; s5 is out of range. */
+    assert.equal(ctx.countCheckedStepsByPrefix("x", 3), 3);
+    /* For total=6 we read s0..s5; the three true keys plus s5 yield 4. */
+    assert.equal(ctx.countCheckedStepsByPrefix("x", 6), 4);
+  });
+
+  it("ignores falsy state values (false, 0, null, empty string)", () => {
+    ctx.__setState({
+      "x.s0": true,
+      "x.s1": false,
+      "x.s2": 0,
+      "x.s3": null,
+      "x.s4": "",
+      "x.s5": true,
+    });
+    assert.equal(ctx.countCheckedStepsByPrefix("x", 6), 2);
+  });
+
+  it("does not count keys with a different prefix", () => {
+    ctx.__setState({
+      "x.s0": true,
+      "y.s0": true,
+      "x.s1": true,
+    });
+    assert.equal(ctx.countCheckedStepsByPrefix("x", 2), 2);
+    assert.equal(ctx.countCheckedStepsByPrefix("y", 2), 1);
   });
 });
