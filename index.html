@@ -1111,7 +1111,8 @@
 
 <!-- defer: parser-non-blocking download, ordered execution before DOMContentLoaded.
      Order preserved exactly because deferred scripts run in document order.
-     14-app.js touches the DOM at top level, so defer is required for safety
+     The 14..18 scripts touch the DOM at top level (event listeners,
+     applyFrameworkUI(), install banner init), so defer is required for safety
      if these tags are ever moved to head; at end-of-body the defer mainly
      improves parallel download without altering execution semantics. -->
 <script src="js/01-i18n-strings.js" defer></script>
@@ -1129,6 +1130,10 @@
 <script src="js/11-render.js" defer></script>
 <script src="js/12-progress.js" defer></script>
 <script src="js/13-filters.js" defer></script>
-<script src="js/14-app.js" defer></script>
+<script src="js/14-welcome.js" defer></script>
+<script src="js/15-projects.js" defer></script>
+<script src="js/16-presentation.js" defer></script>
+<script src="js/17-install.js" defer></script>
+<script src="js/18-app.js" defer></script>
 </body>
 </html>

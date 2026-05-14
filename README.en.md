@@ -345,7 +345,13 @@ JS files load in order; each file has a **single responsibility**:
 11-render.js         Main render loop, card template
 12-progress.js       Percentage calculation, celebrations
 13-filters.js        Search + 3×3 view filter
-14-app.js            Orchestration, welcome flow, reset, init
+14-welcome.js        7-step welcome flow + welcome help
+15-projects.js       Project / framework / backend modal + CRUD
+16-presentation.js   Presentation mode (P key, ESC, arrows)
+17-install.js        PWA install banner + platform-manual fallback
+18-app.js            Orchestration: toolbar, reset, lock, help
+                     accordion, print, export/import, keyboard
+                     shortcuts, PWA manifest/SW setup, init
 ```
 
 No build tool, no transpilation, no runtime dependency. A new developer (or AI assistant) can grasp the project **in minutes**.
@@ -646,7 +652,7 @@ The same content is shown with **different wording** depending on the user's cho
 | Offline launch (SW cache)       | -        | Works                   |
 | Runtime dependency              | -        | Zero                    |
 
-> Most of the asset payload comes from `js/03-data.js`, the four-axis multi-variant content library; the application logic (`14-app.js`) alone is under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+> Most of the asset payload comes from `js/03-data.js`, the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 

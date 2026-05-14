@@ -170,19 +170,7 @@ const projectGlobals = {
   applyFilters: "writable",
   attachSearch: "writable",
 
-  // js/14-app.js
-  setAllCardsFlipped: "writable",
-  setupResetScopeUi: "writable",
-  performReset: "writable",
-  setupLongPressEasterEgg: "writable",
-  enhanceHelpAccordion: "writable",
-  collapseAllHelpSections: "writable",
-  presentationIndex: "writable",
-  getPresentableCategories: "writable",
-  enterPresentation: "writable",
-  exitPresentation: "writable",
-  showPresentationCategory: "writable",
-  updatePresentationContextBar: "writable",
+  // js/14-welcome.js
   showWelcomeIfFirstVisit: "writable",
   pendingFramework: "writable",
   pendingBackend: "writable",
@@ -195,6 +183,8 @@ const projectGlobals = {
   setHelpLangSwitchVisible: "writable",
   applyHelpDisplayLang: "writable",
   closeHelpModal: "writable",
+
+  // js/15-projects.js
   applyFrameworkUI: "writable",
   applyBackendUI: "writable",
   setProjFwTab: "writable",
@@ -209,7 +199,20 @@ const projectGlobals = {
   pendingDeletedName: "writable",
   openProjPickNextModal: "writable",
   clearBackendMarks: "writable",
-  closeAllLvMenus: "writable",
+  /* projfwResetUi is created lazily in js/18-app.js (the script that
+     declares it loads after js/15-projects.js), then accessed inside
+     setProjFwTab in js/15-projects.js at user-click time. */
+  projfwResetUi: "writable",
+
+  // js/16-presentation.js
+  presentationIndex: "writable",
+  getPresentableCategories: "writable",
+  enterPresentation: "writable",
+  exitPresentation: "writable",
+  showPresentationCategory: "writable",
+  updatePresentationContextBar: "writable",
+
+  // js/17-install.js
   deferredInstallPrompt: "writable",
   INSTALL_DISMISS_KEY: "writable",
   showInstallBanner: "writable",
@@ -221,6 +224,18 @@ const projectGlobals = {
   INSTALL_STEPS_DATA: "writable",
   getInstallSteps: "writable",
   renderInstallInstructions: "writable",
+
+  // js/18-app.js (orchestration: toolbar wiring, reset UI, lock,
+  // mobile actions toggle, easter eggs, help accordion, print and
+  // export/import, keyboard shortcuts, PWA manifest + service worker
+  // setup IIFEs, hero level filter, hero style toggle, init sequence)
+  setAllCardsFlipped: "writable",
+  setupResetScopeUi: "writable",
+  performReset: "writable",
+  setupLongPressEasterEgg: "writable",
+  enhanceHelpAccordion: "writable",
+  collapseAllHelpSections: "writable",
+  closeAllLvMenus: "writable",
   RESET_INDEPENDENT_SCOPES: "writable",
 };
 

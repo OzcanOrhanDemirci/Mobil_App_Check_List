@@ -60,8 +60,15 @@ js/
   11-render.js             Main render loop, card template
   12-progress.js           Percentage, celebrations
   13-filters.js            Search + 3x3 view filter
-  14-app.js                Orchestration, welcome flow, init
-tests/                     Unit tests for the resolver and i18n
+  14-welcome.js            7-step welcome flow + welcome help
+  15-projects.js           Project / framework / backend modal + CRUD
+  16-presentation.js       Presentation mode (P key, ESC, arrows)
+  17-install.js            PWA install banner + platform-manual fallback
+  18-app.js                Orchestration: toolbar, reset, lock, help
+                           accordion, print, export/import, keyboard
+                           shortcuts, PWA manifest/SW setup, init
+tests/                     Unit tests for the resolver, data schema,
+                           and the multi-project store
 ```
 
 The data model lives in `js/03-data.js`. UI strings live in `js/01-i18n-strings.js`. Everything else is logic and presentation.

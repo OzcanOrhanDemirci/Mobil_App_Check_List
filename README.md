@@ -345,7 +345,13 @@ JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır:
 11-render.js         Ana render döngüsü, kart şablonu
 12-progress.js       Yüzde hesabı, kutlamalar
 13-filters.js        Arama + 3×3 görünüm filtresi
-14-app.js            Orkestrasyon, karşılama akışı, sıfırlama, init
+14-welcome.js        7 adımlı karşılama akışı + welcome yardım
+15-projects.js       Proje / framework / backend modal'ı + CRUD
+16-presentation.js   Sunum modu (P tuşu, ESC, ok tuşları)
+17-install.js        PWA install banner + platforma özel manuel
+18-app.js            Orkestrasyon: toolbar, sıfırlama, kilit, yardım
+                     accordion, yazdırma, dışa/içe aktarma, klavye
+                     kısayolları, PWA manifest/SW kurulumu, init
 ```
 
 Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay zekâ asistanı) projeyi **dakikalar içinde** anlayabilir.
@@ -646,7 +652,7 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 | Çevrimdışı açılış (SW cache)    | -        | Çalışır                  |
 | Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
 
-> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-app.js`) tek başına gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi birlikte gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 

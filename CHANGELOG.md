@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Split `js/14-app.js` (2392 lines, the post-1.0 orchestration / glue
+  layer) into five files so each concern is browsable on its own and a
+  newcomer is not asked to scroll through one mixed-purpose module:
+  - `js/14-welcome.js` (368 lines): 7-step welcome flow + the welcome
+    modal's inline help switcher.
+  - `js/15-projects.js` (888 lines): hero project pill,
+    `applyFrameworkUI` / `applyBackendUI`, the project / framework /
+    backend modal with its CRUD list, add / rename / delete flows,
+    the "pick which project to continue with" modal, and backend
+    switch confirmation.
+  - `js/16-presentation.js` (90 lines): presentation mode and its
+    toolbar buttons. The P / arrow / Esc keyboard handling stays
+    inside the global shortcut listener in `js/18-app.js`.
+  - `js/17-install.js` (389 lines): PWA install banner, platform-
+    specific manual instructions, and the deferredInstallPrompt
+    plumbing.
+  - `js/18-app.js` (839 lines, renamed from `js/14-app.js` via
+    `git mv` so history is preserved): the remaining orchestration
+    (toolbar wiring, reset UI, lock, mobile actions toggle, easter
+    eggs, help accordion, print, export / import, keyboard shortcuts,
+    PWA manifest + service worker setup IIFEs, hero level filter,
+    hero style toggle, init sequence).
+- `index.html` script tag order updated so the 14..18 scripts load
+  before any user interaction can fire (still `defer`, still in
+  document order).
+- `eslint.config.js` globals section regrouped to match the new five
+  files. One new global, `projfwResetUi`, is declared writable: it
+  is created in `js/18-app.js` (which loads after `js/15-projects.js`)
+  and read inside `setProjFwTab` only at user-click time, so the
+  cross-file lookup resolves correctly even though ESLint cannot
+  prove it lexically.
+- `README.md`, `README.en.md`, and `.github/CONTRIBUTING.md` file
+  listings now show the new layout. The performance note that
+  referenced `14-app.js` now lists the five files together.
+
+This change is behaviour-preserving: every function moved verbatim,
+no signatures changed, no side effects reordered. The split was
+performed via a one-shot helper script (`scripts/_split-app.mjs`,
+deleted after use) that extracted bottom-up by line range to keep
+earlier line numbers stable, then Prettier was applied to the new
+files. Verification: ESLint clean, Prettier clean, all 103 tests
+pass, em-dash check clean, html-validate clean.
+
 ### Added
 
 - `tests/data.test.js`: schema integrity tests for `js/03-data.js`. Locks
