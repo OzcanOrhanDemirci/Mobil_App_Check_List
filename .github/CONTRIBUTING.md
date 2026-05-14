@@ -135,7 +135,7 @@ tests/                           Unit tests for resolver, data schema, the
 
 3. If the item only makes sense when a backend is configured, add `backendStep: true`. It will hide automatically when the user selects "No backend".
 
-4. **Bump the count fixtures.** `tests/data.test.js` locks `EXPECTED_FEATURE_COUNT` to the figure quoted in README.md / README.en.md / CHANGELOG.md. Add `1` to that constant and the `55 items` line in both READMEs, otherwise the test suite will fail. The data-schema test is intentional: it forces a docs update on every content change.
+4. **Bump the count fixtures.** `tests/data.test.js` locks `EXPECTED_FEATURE_COUNT` to the figure quoted in README.md / README.tr.md / CHANGELOG.md. Add `1` to that constant and the `55 items` line in both READMEs, otherwise the test suite will fail. The data-schema test is intentional: it forces a docs update on every content change.
 
 ## How to add a language
 
@@ -211,7 +211,7 @@ If your diff also touched the orchestration layer that was split out of `js/14-a
 - **Never use the em dash character (`—`) in any user-facing text or data.** Use commas, colons, semicolons, parentheses, or hyphens (`-`) instead. This rule applies to translation strings, item content, How-To steps, and anything a user might read. CI runs `node scripts/check-em-dash.mjs` against `js/01-i18n-strings.js`, `js/02-help-content.js`, every `js/03*-data*.js` shard (the stub plus the 14 per-category files), and `index.html` to enforce it. The standalone placeholder string `"—"` used inside the data files for empty cells is explicitly allowed; anything else that contains an em-dash is rejected.
 - 2-space indentation, semicolons at end of statements, double quotes (`"..."`) in all `js/` files. The sole exception is `sw.js`, which uses single quotes by historical convention.
 - Plain `<script>`-loaded JavaScript, not ES modules. Functions and constants are intentionally global so files can share state without an import graph. Preserve this pattern. **When you add a new top-level function or constant in any `js/*.js` file, also add its name to the matching `projectGlobals` block in `eslint.config.js`.** ESLint's flat config tracks the project's globals explicitly because there is no module system; a missing entry shows up as a `no-undef` error in the file that consumes it.
-- ES2020+ syntax is fine. No transpilation runs, so avoid features that are not supported by the [browsers we target](../README.en.md#browser-support).
+- ES2020+ syntax is fine. No transpilation runs, so avoid features that are not supported by the [browsers we target](../README.md#browser-support).
 - CSS: edit the category file that owns the affected area. Use existing custom properties (`var(--...)`) for colors, radii, spacing.
 
 ## Tests and linting

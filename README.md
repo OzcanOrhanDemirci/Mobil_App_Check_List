@@ -1,136 +1,136 @@
 <div align="center">
 
-# Mobil Uygulama Kalite Kontrol Listesi
+# Mobile App Quality Checklist
 
-**Türkçe** · [English](README.en.md)
+[Türkçe](README.tr.md) · **English**
 
-**Mobil uygulamanı App Store / Play Store'a göndermeden önce eksik bıraktığın hiçbir şey kalmasın diye yazılmış,
-14 kategori ve 55 maddelik etkileşimli kalite kontrol listesi.**
-_Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
+**An interactive 14-category, 55-item quality checklist designed so you don't forget anything
+before you submit your mobile app to the App Store or Play Store.**
+_Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework and per-backend guidance · installable PWA._
 
-[![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
-[![Canlı demo](https://img.shields.io/badge/demo-canl%C4%B1-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
-[![PWA](https://img.shields.io/badge/PWA-kurulabilir-orange)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
-[![Build](https://img.shields.io/badge/build-zero%20config-blueviolet)](#mimari-kararlar)
-[![Diller](https://img.shields.io/badge/i18n-TR%20%C2%B7%20EN-lightgrey)](#özellikler)
-[![Frameworkler](https://img.shields.io/badge/framework-6-9cf)](#desteklenen-frameworkler-ve-backendler)
-[![Backend](https://img.shields.io/badge/backend-9-9cf)](#desteklenen-frameworkler-ve-backendler)
+[![Live demo](https://img.shields.io/badge/demo-live-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
+[![PWA](https://img.shields.io/badge/PWA-installable-orange)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
+[![Build](https://img.shields.io/badge/build-zero%20config-blueviolet)](#architectural-decisions)
+[![Languages](https://img.shields.io/badge/i18n-TR%20%C2%B7%20EN-lightgrey)](#features)
+[![Frameworks](https://img.shields.io/badge/frameworks-6-9cf)](#supported-frameworks-and-backends)
+[![Backends](https://img.shields.io/badge/backends-9-9cf)](#supported-frameworks-and-backends)
 
 <br />
 
 <a href="https://ozcanorhandemirci.github.io/Mobil_App_Check_List/">
-  <img src="og-image.png" alt="Mobil Uygulama Kalite Kontrol Listesi: 14 kategori, 55 madde, MVP ve Release" width="720" />
+  <img src="og-image-en.png" alt="Mobile App Quality Checklist: 14 categories, 55 items, MVP and Release" width="720" />
 </a>
 
 <br /><br />
 
-**[Canlı Demo](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)** ·
-**[Özellikler](#özellikler)** ·
-**[Mimari](#mimari)** ·
-**[Veri Modeli](#veri-modeli)** ·
-**[Genişletme](#genişletme)** ·
-**[Lisans](#lisans)**
+**[Live Demo](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)** ·
+**[Features](#features)** ·
+**[Architecture](#architecture)** ·
+**[Data Model](#data-model)** ·
+**[Extending](#extending)** ·
+**[License](#license)**
 
 </div>
 
 ---
 
-## İçindekiler
+## Table of contents
 
-- [Neden var?](#neden-var)
-- [Özellikler](#özellikler)
-- [Ekran görüntüleri](#ekran-görüntüleri)
-- [Hızlı başlangıç](#hızlı-başlangıç)
-- [Tarayıcı desteği](#tarayıcı-desteği)
-- [Mimari](#mimari)
-  - [Teknoloji yığını](#teknoloji-yığını)
-  - [Dört eksenli içerik çözücü](#dört-eksenli-içerik-çözücü)
-  - [Modüler dosya yapısı](#modüler-dosya-yapısı)
-  - [PWA stratejisi](#pwa-stratejisi)
-- [Proje yapısı](#proje-yapısı)
-- [Veri modeli](#veri-modeli)
-- [Genişletme](#genişletme)
-- [Desteklenen frameworkler ve backendler](#desteklenen-frameworkler-ve-backendler)
-- [Mimari kararlar](#mimari-kararlar)
-- [Kullanıcı verisi ve gizlilik](#kullanıcı-verisi-ve-gizlilik)
-- [Performans](#performans)
-- [Sıkça sorulanlar](#sıkça-sorulanlar)
-- [Yol haritası](#yol-haritası)
-- [Katkıda bulunma](#katkıda-bulunma)
-- [Lisans](#lisans)
-- [Yazar](#yazar)
-
----
-
-## Neden var?
-
-Geliştiriciler, hobi projeleri ve özellikle yapay zekâ destekli kod üreticileri (Cursor, Claude, ChatGPT vb.) ile uygulama yazan kişiler için **mağazaya çıkış öncesi yapılacaklar listesi** dağınık, eksik ve büyük ölçüde sezgisel. Tek bir özelliğe başlamak için 100 madde önerebilen sayısız blog yazısı var; ama "yayına hazır mıyım, neyi unuttum?" sorusunu **tek bir yerden, etkileşimli ve hatırlatıcı** olarak cevaplayan bir araç yok.
-
-Bu uygulama o boşluğu doldurur:
-
-- **Uzman geliştirici değilsin diye gözden kaçırabileceğin 55 madde** burada yazılı.
-- Her madde **iki seviyede** ölçülür: MVP (en küçük çalışan ürün) ve Release (mağaza onayına hazır).
-- Her madde **adım adım nasıl yapılır rehberi** içerir; AI asistanına yapıştırılabilir.
-- İçerik **senin teknoloji yığınına** göre uyarlanır: Flutter mı, Swift mi? Firebase mi, Supabase mi? Kod örnekleri buna göre değişir.
-- **Türkçe ve İngilizce** olarak; **Basit** veya **Teknik** anlatımla.
-- Tarayıcıdan kurulabilir bir uygulama (PWA), internet olmadan da çalışır.
-
-> **Hedef kitle:** indie geliştiriciler, öğrenciler, üniversite projeleri, hackathon ekipleri, bootcamp katılımcıları, AI asistanlarıyla uygulama yapan yarı-teknik kullanıcılar ve mağaza onayını ilk denemede geçirmek isteyen ekipler.
+- [Why does it exist?](#why-does-it-exist)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Quick start](#quick-start)
+- [Browser support](#browser-support)
+- [Architecture](#architecture)
+  - [Tech stack](#tech-stack)
+  - [Four-axis content resolver](#four-axis-content-resolver)
+  - [Modular file layout](#modular-file-layout)
+  - [PWA strategy](#pwa-strategy)
+- [Project layout](#project-layout)
+- [Data model](#data-model)
+- [Extending](#extending)
+- [Supported frameworks and backends](#supported-frameworks-and-backends)
+- [Architectural decisions](#architectural-decisions)
+- [User data and privacy](#user-data-and-privacy)
+- [Performance](#performance)
+- [Frequently asked questions](#frequently-asked-questions)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Author](#author)
 
 ---
 
-## Özellikler
+## Why does it exist?
+
+For developers, hobby builders, and especially people writing apps with AI-assisted code generators (Cursor, Claude, ChatGPT, etc.), the **pre-store-submission checklist** is scattered, incomplete, and largely intuitive. There are countless blog posts that recommend 100 items just to start building a single feature; but there is no tool that answers "am I ready to ship, what did I forget?" **all in one place, interactively, like a reminder.**
+
+This app fills that gap:
+
+- **The 55 items you might miss because you're not a seasoned developer** are written down here.
+- Each item is rated at **two tiers**: MVP (smallest working product) and Release (ready for store approval).
+- Each item ships with a **step-by-step how-to guide**, ready to paste into an AI assistant.
+- The content adapts to **your tech stack**: Flutter or Swift? Firebase or Supabase? The code samples change accordingly.
+- Available in **Turkish and English**, with **Simple** or **Technical** wording.
+- An installable browser app (PWA) that also works offline.
+
+> **Target audience:** indie developers, students, university projects, hackathon teams, bootcamp participants, semi-technical users building with AI assistants, and teams who want to pass store approval on the first try.
+
+---
+
+## Features
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-### İçerik
+### Content
 
-- **14 kategori**, **55 madde**: planlama, tasarım, kod düzeni, Git, API, backend, offline, test, güvenlik, erişilebilirlik, yayın, monetizasyon, analitik, CI/CD
-- Her madde **iki seviye** (MVP / Release) ile işaretlenir
-- Her madde için **adım adım nasıl yapılır rehberi** (kartın arka yüzü)
-- Adımlar **tek tek işaretlenebilir**; ilerleme yüzdesi otomatik hesaplanır
-- **2 dil** (TR · EN) · **2 anlatım stili** (Basit · Teknik)
-- **2 kullanım biçimi**: Geliştirme (kendi uygulamamı yapıyorum) · İnceleme (başkasının uygulamasını denetliyorum)
+- **14 categories**, **55 items**: planning, design, code layout, Git, API, backend, offline, testing, security, accessibility, release, monetization, analytics, CI/CD
+- Each item is checked at **two tiers** (MVP / Release)
+- A **step-by-step how-to guide** for each item (on the back of the card)
+- Steps are **individually checkable**; progress percentage is computed automatically
+- **2 languages** (TR · EN) · **2 explanation styles** (Simple · Technical)
+- **2 usage modes**: Development (I'm building my own app) · Review (I'm auditing someone else's app)
 
 </td>
 <td width="50%" valign="top">
 
-### Akıllı uyarlanma
+### Adaptive content
 
-- **6 framework** desteği: Flutter · React Native · Swift (iOS) · Kotlin (Android) · Expo · PWA
-- **9 backend** desteği: Firebase · Supabase · Appwrite · PocketBase · AWS Amplify · Convex · Kendi sunucum · Yerel geliştirme · Backend yok
-- Seçilen kombinasyona göre içerik **otomatik değişir**: paket adları, kod örnekleri, kurulum komutları
-- "Backend yok" seçilince **anlamsız maddeler tamamen gizlenir**
-- **Yapay zekâya hazır prompt üretici**: madde içeriğini ve kullanıcı seçimlerini AI'a doğrudan yapıştırılabilir markdown/JSON olarak verir
+- **6 frameworks** supported: Flutter · React Native · Swift (iOS) · Kotlin (Android) · Expo · PWA
+- **9 backends** supported: Firebase · Supabase · Appwrite · PocketBase · AWS Amplify · Convex · Self-hosted server · Local dev · No backend
+- Content **changes automatically** with the selected combination: package names, code samples, install commands
+- When "No backend" is selected, **irrelevant items are hidden entirely**
+- **AI-ready prompt generator**: serves the item content and the user's choices as paste-ready markdown / JSON for any AI assistant
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-### Çoklu proje
+### Multi-project
 
-- Aynı listede **20'ye kadar proje** tutulabilir
-- Her projenin **işaretleri, notları ve yığını** ayrı saklanır
-- Projeler arası **anında geçiş** (üst alandaki pille)
-- **JSON ile dışa/içe aktarma**: işaretleri ve notları yedekle, başka cihazda devam et
+- Manage **up to 20 projects** in the same list
+- Each project keeps its own **marks, notes, and stack**
+- **Instant switching** between projects (via the hero pill)
+- **JSON export / import**: back up your marks and notes, continue on another device
 
 </td>
 <td valign="top">
 
-### Görünüm ve etkileşim
+### View and interaction
 
-- **Açık / koyu tema** (sistem tercihine uyarlanır)
-- **Arama**: 55 madde içinde anında metin araması (`/` tuşu ile odaklanır)
-- **Filtre**: Yapılacak / Yapılan / Tümü × MVP / Release / İkisi
-- **Sunum modu** (`P` tuşu): tek tıkla projeksiyon için tam ekran
-- **Yazdır / PDF**: hem kontrol listesi hem Nasıl Yapılır? rehberi formatları
-- **Tek tıkla yükle**: ana ekrana / başlat menüsüne kurulabilir
-- **Offline çalışır**: Service Worker önbelleği ile internet kopsa da açılır
-- **A11y**: yüksek kontrast paleti, klavye navigasyonu, focus-visible outline'ları, semantik ARIA rolleri
+- **Light / dark theme** (adapts to system preference)
+- **Search**: instant text search across all 55 items (focus with the `/` key)
+- **Filter**: To do / Done / All × MVP / Release / Both
+- **Presentation mode** (`P` key): one click into a full-screen, projector-friendly view
+- **Print / PDF**: both checklist and How-To guide formats
+- **One-click install**: pin to the home screen / start menu
+- **Works offline**: Service Worker cache, opens even when the internet drops
+- **A11y**: high-contrast palette, keyboard navigation, focus-visible outlines, semantic ARIA roles
 
 </td>
 </tr>
@@ -138,179 +138,179 @@ Bu uygulama o boşluğu doldurur:
 
 ---
 
-## Ekran görüntüleri
+## Screenshots
 
 <p align="center">
   <a href="https://ozcanorhandemirci.github.io/Mobil_App_Check_List/">
-    <img src="og-image.png" alt="Sosyal önizleme görseli (1200x630)" width="640" />
+    <img src="og-image-en.png" alt="Social preview image (1200x630, English)" width="640" />
   </a>
   <br />
-  <em>Sosyal önizleme görseli (Open Graph, 1200x630).</em>
+  <em>Social preview image (Open Graph, 1200x630). A Turkish version lives at <code>og-image.png</code>.</em>
 </p>
 
-> Görseller `scripts/capture-screenshots.mjs` script'i ile Playwright üzerinden üretilir. Mevcut PNG'ler `assets/screenshots/` altında commit'lenmiştir; arayüz değişince script'i yeniden çalıştırarak güncelleyebilirsiniz (kullanım aşağıda).
+> The screenshots below are generated by `scripts/capture-screenshots.mjs`, which drives Playwright against a local server. The PNGs under `assets/screenshots/` are committed; re-run the script after any UI change to refresh them (usage below).
 
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/01-welcome.png">
-        <img src="assets/screenshots/01-welcome.png" alt="Karşılama ekranı: ilk açılışta kısa tanıtım" width="100%" />
+      <a href="assets/screenshots/en/01-welcome.png">
+        <img src="assets/screenshots/en/01-welcome.png" alt="Welcome screen: short intro on first run" width="100%" />
       </a>
       <br />
-      <sub><strong>1. Karşılama</strong>: ilk açılışta gösterilen tanıtım modali.</sub>
+      <sub><strong>1. Welcome</strong>: the intro modal shown on first run.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/02-checklist.png">
-        <img src="assets/screenshots/02-checklist.png" alt="Ana liste: 14 kategori, 55 madde, MVP ve Release filtreleri" width="100%" />
+      <a href="assets/screenshots/en/02-checklist.png">
+        <img src="assets/screenshots/en/02-checklist.png" alt="Main checklist: 14 categories, 55 items, MVP and Release filters" width="100%" />
       </a>
       <br />
-      <sub><strong>2. Ana liste</strong>: 14 kategori, MVP ve Release filtreleriyle 55 madde.</sub>
+      <sub><strong>2. Main checklist</strong>: 14 categories, 55 items with MVP and Release filters.</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <a href="assets/screenshots/03-card-flip.png">
-        <img src="assets/screenshots/03-card-flip.png" alt="Kart çevirildiğinde adım adım rehber" width="100%" />
+      <a href="assets/screenshots/en/03-card-flip.png">
+        <img src="assets/screenshots/en/03-card-flip.png" alt="Flipped card: step-by-step how-to guide" width="100%" />
       </a>
       <br />
-      <sub><strong>3. Kart detayı</strong>: ters yüze çevrildiğinde adım adım nasıl yapılır rehberi.</sub>
+      <sub><strong>3. Card details</strong>: flipped card showing the step-by-step how-to guide.</sub>
     </td>
     <td align="center" width="50%">
-      <a href="assets/screenshots/04-help.png">
-        <img src="assets/screenshots/04-help.png" alt="Yardım modali: kısa kullanım kılavuzu" width="100%" />
+      <a href="assets/screenshots/en/04-help.png">
+        <img src="assets/screenshots/en/04-help.png" alt="Help modal: short usage guide" width="100%" />
       </a>
       <br />
-      <sub><strong>4. Yardım</strong>: kısa kullanım kılavuzu ve sık sorulanlar.</sub>
+      <sub><strong>4. Help</strong>: short usage guide and frequently asked questions.</sub>
     </td>
   </tr>
 </table>
 
-### Ekran görüntülerini yeniden üretmek (opsiyonel)
+### Reproducing the screenshots (optional)
 
-Görselleri kendiniz oluşturmak isterseniz `scripts/capture-screenshots.mjs` script'i Playwright'la çalışan yerel sunucudan otomatik yakalama yapar.
+If you want to regenerate the visuals, `scripts/capture-screenshots.mjs` drives Playwright against a local server.
 
 ```bash
-# 1) Playwright'ı geliştirme bağımlılığı olarak kurun (package.json'a kalıcı eklemiyoruz):
+# 1) Install Playwright as a dev dependency (we intentionally do NOT pin it in package.json):
 npm install -D playwright
 npx playwright install chromium
 
-# 2) Repo kökünde basit bir statik sunucu başlatın:
+# 2) Start a simple static server from the repo root:
 npx serve .                       # http://localhost:3000
-# veya
+# or
 python -m http.server 5500        # http://localhost:5500
 
-# 3) Yakalama script'ini çalıştırın (varsayılan URL http://localhost:3000):
+# 3) Run the capture script (default URL is http://localhost:3000):
 node scripts/capture-screenshots.mjs
-# Farklı port için:
+# For a different port:
 BASE_URL=http://localhost:5500 node scripts/capture-screenshots.mjs
 ```
 
-Script çıktıları `assets/screenshots/*.png` olarak yazar; aynı dosya adlarıyla yukarıdaki referansların üzerine düşer. Mobil ve masaüstü viewport karması korunur (welcome mobil, geri kalanı masaüstü).
+The script writes its output to `assets/screenshots/*.png` and overwrites the referenced files in place. The mobile / desktop viewport mix is preserved (welcome on mobile, the rest on desktop).
 
 ---
 
-## Hızlı başlangıç
+## Quick start
 
-### 1. Tarayıcıda kullanmak
+### 1. Use it in your browser
 
-En kolay yol: canlı demo'yu aç.
+The easiest path: open the live demo.
 
 > [https://ozcanorhandemirci.github.io/Mobil_App_Check_List/](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 
-İlk açılışta seni karşılayan **7 adımlık karşılama akışı** dil, kullanım biçimi, anlatım stili, proje adı, framework ve backend tercihini sorar. Birkaç tıkla başlarsın.
+On first launch, a **7-step welcome flow** asks for language, usage mode, explanation style, project name, framework, and backend. You're off in a few clicks.
 
-### 2. Cihaza kurmak (PWA)
+### 2. Install on your device (PWA)
 
-| Platform             | Adım                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------ |
-| **Android / Chrome** | Adres çubuğunun yanındaki **Yükle** simgesi veya menüden _"Ana ekrana ekle"_                     |
-| **iOS / Safari**     | Paylaş düğmesi → **Ana Ekrana Ekle**                                                             |
-| **Windows / Edge**   | Adres çubuğunda **Yükle** simgesi veya _Ayarlar → Uygulamalar → Bu siteyi uygulama olarak yükle_ |
-| **macOS / Chrome**   | Adres çubuğunda **Yükle** simgesi                                                                |
+| Platform             | Step                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| **Android / Chrome** | The **Install** icon next to the address bar, or _"Add to Home screen"_ from the menu       |
+| **iOS / Safari**     | Share button → **Add to Home Screen**                                                       |
+| **Windows / Edge**   | The **Install** icon in the address bar, or _Settings → Apps → Install this site as an app_ |
+| **macOS / Chrome**   | The **Install** icon in the address bar                                                     |
 
-Kurulduktan sonra **standalone** modda açılır (tarayıcı çerçevesi yok), **offline** çalışır ve **dock / başlat menüsünde** kendi simgesiyle yer alır.
+After installation it opens in **standalone** mode (no browser chrome), works **offline**, and lives in the **dock / start menu** with its own icon.
 
-### 3. Yerel olarak çalıştırmak
+### 3. Run locally
 
-Build adımı yok. Statik dosyalar.
+No build step. Just static files.
 
 ```bash
-# Repoyu klonla
+# Clone the repo
 git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
-# Yerel sunucu başlat (Service Worker file:// üzerinde çalışmaz)
+# Start a local server (Service Worker won't run over file://)
 python -m http.server 8080
-# veya
+# or
 npx serve .
 
-# Sonra tarayıcıda:
+# Then in your browser:
 # http://localhost:8080
 ```
 
-### 4. Kendi GitHub Pages'inde yayınlamak
+### 4. Publish to your own GitHub Pages
 
-1. Repoyu **fork** et.
+1. **Fork** the repo.
 2. _Settings → Pages → Source: `main` / `(root)`_.
-3. 1-2 dakikada `https://<kullanıcı-adın>.github.io/Mobil_App_Check_List/` üzerinden yayında olur.
+3. Within 1-2 minutes it goes live at `https://<your-username>.github.io/Mobil_App_Check_List/`.
 
-Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
-
----
-
-## Tarayıcı desteği
-
-| Tarayıcı                          | Sürüm     | PWA install               | Offline |
-| --------------------------------- | --------- | ------------------------- | ------- |
-| Chrome / Edge (masaüstü ve mobil) | 90+       | Evet                      | Evet    |
-| Safari (iOS ve macOS)             | 15+       | Evet (Add to Home Screen) | Evet    |
-| Firefox (masaüstü ve mobil)       | 90+       | Kısıtlı (mobilde)         | Evet    |
-| Samsung Internet                  | 14+       | Evet                      | Evet    |
-| Opera                             | son sürüm | Evet                      | Evet    |
-
-> ES2020+ syntax, CSS custom properties, Service Worker ve localStorage kullanır. Internet Explorer **desteklenmez**.
+If you want a custom domain, add a `CNAME` file; no extra configuration needed.
 
 ---
 
-## Mimari
+## Browser support
 
-### Teknoloji yığını
+| Browser                            | Version | PWA install              | Offline |
+| ---------------------------------- | ------- | ------------------------ | ------- |
+| Chrome / Edge (desktop and mobile) | 90+     | Yes                      | Yes     |
+| Safari (iOS and macOS)             | 15+     | Yes (Add to Home Screen) | Yes     |
+| Firefox (desktop and mobile)       | 90+     | Limited (mobile only)    | Yes     |
+| Samsung Internet                   | 14+     | Yes                      | Yes     |
+| Opera                              | latest  | Yes                      | Yes     |
 
-| Katman         | Seçim                                             | Neden                                                                                                                                                                                 |
-| -------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | Tek `index.html` (~1170 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                     |
-| CSS            | 11 dosya, vanilla CSS                             | Build tool yok. CSS custom properties ile tema değişimi. Modal yüzeyleri kendi dosyalarına bölük (`css/05-modals-*.css`). Print stilleri ayrı dosya.                                  |
-| JS             | 35 dosya, vanilla ES2020+                         | 20 mantıksal modül + 14 kategori veri parçası + 1 senkron bootstrap. Build/transpile/bundling yok; `<script defer>` etiketleri sıralı yüklenir (numaralı dosyalar sırayı belirler).   |
-| Veri           | `window.DATA` dizisi, 14 kategori dosyasına bölük | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` her biri kendi kategorisini `push` eder. Build yok. |
-| Service Worker | Network-first + cache fallback                    | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. Cache anahtarı `package.json` ile bağlı. |
-| Depolama       | `localStorage`                                    | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                                                                      |
+> Uses ES2020+ syntax, CSS custom properties, Service Worker, and localStorage. Internet Explorer is **not supported**.
 
-### Dört eksenli içerik çözücü
+---
 
-Aynı madde, kullanıcının seçimine göre **dört eksende** farklı görünebilir:
+## Architecture
+
+### Tech stack
+
+| Layer          | Choice                                              | Why                                                                                                                                                                                               |
+| -------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | A single `index.html` (~1170 lines)                 | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                                                                     |
+| CSS            | 11 files, vanilla CSS                               | No build tool. Theme switching via CSS custom properties. Modal surfaces split into their own files (`css/05-modals-*.css`). Print styles in a dedicated file.                                    |
+| JS             | 35 files, vanilla ES2020+                           | 20 logical modules + 14 per-category data shards + 1 sync bootstrap. No build / transpile / bundling. Loaded sequentially via `<script defer>` tags (numbered filenames define the order).        |
+| Data           | `window.DATA` array, split across 14 category files | 14 categories × 55 items with language / style / framework / backend variants. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` each `push` their category. A pure static JS array. |
+| Service Worker | Network-first + cache fallback                      | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. Cache key tracks `package.json`.         |
+| Storage        | `localStorage`                                      | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server.                                                                                                         |
+
+### Four-axis content resolver
+
+The same item can look different across **four axes**, depending on the user's choices:
 
 ```
-Görünen içerik = f(dil, anlatım stili, framework, backend)
-                   TR/EN   Basit/Teknik    6 seçenek   9 seçenek
+Rendered content = f(language, explanation style, framework, backend)
+                     TR/EN     Simple/Technical    6 options   9 options
 ```
 
-Toplam teorik kombinasyon sayısı **216** (`2 × 2 × 6 × 9`); ama her madde için bunların hepsini ayrı ayrı yazmaya gerek yok. **Öncelik zinciri** sayesinde sadece **gerçekten farklılaşan** içerik yazılır:
+The theoretical maximum is **216 combinations** (`2 × 2 × 6 × 9`); but you don't need to write each of them for every item. A **priority chain** means only the content that **genuinely differs** has to be written:
 
 ```js
 // js/05-framework.js
 function resolveLevel(feature, level /* "mvp" | "release" */) {
-  // A) Stil = "simple" ise önce sade metinleri dene
+  // A) When style === "simple", try plain texts first
   if (currentStyle === "simple") {
     if (feature.simpleBackend?.[currentBackend]?.[level]) {
-      return feature.simpleBackend[currentBackend][level]; // en spesifik
+      return feature.simpleBackend[currentBackend][level]; // most specific
     }
     if (feature.simple?.[level]) {
-      return feature.simple[level]; // tüm yığına ortak sade
+      return feature.simple[level]; // plain text shared across the stack
     }
-    // sade metin yok ise teknik içeriğe düş
+    // if no plain text exists, fall through to technical content
   }
 
-  // B) Teknik (varsayılan) sıralama
+  // B) Technical (default) order
   if (feature.backendVariants?.[currentBackend]) {
     const node = feature.backendVariants[currentBackend];
     if (node[currentFramework]?.[level]) return node[currentFramework][level];
@@ -319,121 +319,121 @@ function resolveLevel(feature, level /* "mvp" | "release" */) {
   if (feature.variants?.[currentFramework]?.[level]) {
     return feature.variants[currentFramework][level];
   }
-  return feature[level]; // en geneli
+  return feature[level]; // most general
 }
 ```
 
-Bu sayede bir madde sadece **bir kez** yazılır ve **gerektiği yerde** özelleşir. Ortalama bir maddede 3-4 varyant tanımlıdır; 216 kombinasyonun hiçbiri "boş" görünmez.
+That way an item is written **once** and specialized **only where needed**. A typical item defines 3-4 variants; none of the 216 combinations renders as "empty".
 
-### Modüler dosya yapısı
+### Modular file layout
 
-JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Numaralı önek (`00`, `01`, ..., `18`) hem `<script defer>` etiketlerinin sırasını hem de bağımlılık ilişkilerini görsel olarak verir:
+JS files load in order; each file has a **single responsibility**. The numeric prefix (`00`, `01`, ..., `18`) drives both the `<script defer>` load order and gives a visual map of the dependency chain:
 
 ```
-00-bootstrap.js                Senkron IIFE: tema + dil ilk paint'ten önce ayarlanır
-01-i18n-strings.js             UI dize sözlüğü (TR/EN), t() ve tx() çözücüler
-02-help-content.js             Yardım modalının HTML içeriği
-03a-data-01-idea-planning.js   Kategori 01 verisi (Proje Fikri ve Planlama)
-03b-data-02-design.js          Kategori 02 verisi (Tasarım)
-03c-data-03-code-layout.js     Kategori 03 verisi (Kod Düzeni)
-03d-data-04-git.js             Kategori 04 verisi (Git ve Sürüm Kontrolü)
-03e-data-05-api.js             Kategori 05 verisi (API)
-03f-data-06-backend.js         Kategori 06 verisi (Backend)
-03g-data-07-offline.js         Kategori 07 verisi (Offline ve Önbellek)
-03h-data-08-testing.js         Kategori 08 verisi (Test)
-03i-data-09-security.js        Kategori 09 verisi (Güvenlik)
-03j-data-10-a11y.js            Kategori 10 verisi (Erişilebilirlik)
-03k-data-11-release.js         Kategori 11 verisi (Yayın ve Mağaza Süreci)
-03l-data-12-monetization.js    Kategori 12 verisi (Monetizasyon)
-03m-data-13-analytics.js       Kategori 13 verisi (Analitik)
-03n-data-14-cicd.js            Kategori 14 verisi (CI/CD)
-03-data.js                     window.DATA'yı const DATA olarak dışa veren stub
-04-projects.js                 Çoklu proje depolama (20 limit, migration)
-04-storage.js                  İşaret/not/açık-kapalı durum wrapper'ı
-05-framework.js                6 framework tanımı + dört eksenli resolver
-05-backend.js                  9 backend tanımı + "Backend yok"da gizleme
-06-view-state.js               currentFramework / currentBackend / view modu
-07-ui-helpers.js               Tema, modal helper'ları, toast, escapeHtml, stripHtml
-08-i18n-dom.js                 DOM'a i18n uygula, dil değiştir
-09-ai-prompt.js                Markdown + JSON AI prompt üreticisi
-10-clipboard.js                Panoya kopyalama helper'ı
-11-render.js                   Ana render döngüsü, kart şablonu
-12-progress.js                 Yüzde hesabı, kutlamalar
-13-filters.js                  Arama + 3×3 görünüm filtresi
-14-welcome.js                  7 adımlı karşılama akışı + welcome yardım
-15-projects.js                 Proje / framework / backend modal'ı + CRUD
-16-presentation.js             Sunum modu (P tuşu, ESC, ok tuşları)
-17-install.js                  PWA install banner + platforma özel manuel
-18-app.js                      Orkestrasyon: toolbar, sıfırlama, kilit, yardım
-                               accordion, yazdırma, dışa/içe aktarma, klavye
-                               kısayolları, PWA manifest/SW kurulumu, init
+00-bootstrap.js                Synchronous IIFE: theme + lang set before first paint
+01-i18n-strings.js             UI string dictionary (TR/EN), t() and tx() resolvers
+02-help-content.js             HTML content of the Help modal
+03a-data-01-idea-planning.js   Category 01 data (Project Idea and Planning)
+03b-data-02-design.js          Category 02 data (Design)
+03c-data-03-code-layout.js     Category 03 data (Code Layout)
+03d-data-04-git.js             Category 04 data (Git and Version Control)
+03e-data-05-api.js             Category 05 data (API)
+03f-data-06-backend.js         Category 06 data (Backend)
+03g-data-07-offline.js         Category 07 data (Offline and Cache)
+03h-data-08-testing.js         Category 08 data (Testing)
+03i-data-09-security.js        Category 09 data (Security)
+03j-data-10-a11y.js            Category 10 data (Accessibility)
+03k-data-11-release.js         Category 11 data (Release and Store Process)
+03l-data-12-monetization.js    Category 12 data (Monetization)
+03m-data-13-analytics.js       Category 13 data (Analytics)
+03n-data-14-cicd.js            Category 14 data (CI/CD)
+03-data.js                     Stub that exposes window.DATA as const DATA
+04-projects.js                 Multi-project storage (20-project limit, migrations)
+04-storage.js                  Mark / note / open-closed state wrapper
+05-framework.js                6 framework definitions + the four-axis resolver
+05-backend.js                  9 backend definitions + "No backend" hiding logic
+06-view-state.js               currentFramework / currentBackend / view mode
+07-ui-helpers.js               Theme, modal helpers, toast, escapeHtml, stripHtml
+08-i18n-dom.js                 Apply i18n to the DOM, switch languages
+09-ai-prompt.js                Markdown + JSON AI prompt generator
+10-clipboard.js                Clipboard helper
+11-render.js                   Main render loop, card template
+12-progress.js                 Percentage calculation, celebrations
+13-filters.js                  Search + 3×3 view filter
+14-welcome.js                  7-step welcome flow + welcome help
+15-projects.js                 Project / framework / backend modal + CRUD
+16-presentation.js             Presentation mode (P key, ESC, arrows)
+17-install.js                  PWA install banner + platform-manual fallback
+18-app.js                      Orchestration: toolbar, reset, lock, help
+                               accordion, print, export/import, keyboard
+                               shortcuts, PWA manifest/SW setup, init
 ```
 
-İçerik 14 dosyaya bölünmüş (`03a..03n`) ama runtime'da hâlâ tek bir `window.DATA` dizisi: her dosya kendi kategorisini `push` eder, `js/03-data.js` (15 satırlık stub) onu const olarak dışa verir. Bu bölmenin amacı içerik katkıcılarının merge çatışma yüzeyini düşürmek; resolver, ESLint globalleri, testler ve em-dash kontrolü bu çoklu dosya yapısını biliyor.
+The content is split across 14 files (`03a..03n`), but at runtime it is still a single `window.DATA` array: each file pushes its own category onto it, and `js/03-data.js` (a 15-line stub) re-exports it as a const. The split exists to lower the merge-conflict surface for content contributors; the resolver, ESLint globals, tests, and em-dash check are all aware of the multi-file layout.
 
-Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay zekâ asistanı) projeyi **dakikalar içinde** anlayabilir.
+No build tool, no transpilation, no runtime dependency. A new developer (or AI assistant) can grasp the project **in minutes**.
 
-### PWA stratejisi
+### PWA strategy
 
-- `manifest.webmanifest` standalone modu açar; ikonlar `assets/icons/` altında dört PNG dosyası olarak (`icon-192.png`, `icon-512.png` ve aynı boyutların `*-maskable.png` versiyonları). Bu dosyalar `og-image.png` ile aynı turuncu-tik-koyu-zemin görselinden üretilir.
-- `sw.js` **network-first + cache fallback** stratejisi: her aynı-origin GET isteği önce ağdan denenir, başarılı yanıtlar `mobil-kontrol-v{paket-sürümü}` cache'ine yazılır; ağ erişimi koptuğunda son cache'lenmiş sürüm anlık servis edilir. Eski cache anahtarları `activate`'te otomatik temizlenir. Cache anahtarı `package.json` `version` alanından otomatik üretilir (`scripts/check-sw-cache-version.mjs`); sürüm bump ettiğinde tüm istemcilerin cache'i otomatik geçersizleşir.
-- `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; aynı blob'a inline SVG ikon içeren küçük bir manifest'i de yazar. Chromium blob URL'li SW'yi reddederse sessizce geçer.
-- HTTPS üzerinden servis edilince Chrome / Edge / Safari "Yükle" önerisini otomatik olarak gösterir.
+- `manifest.webmanifest` enables standalone mode; icons live under `assets/icons/` as four PNG files (`icon-192.png`, `icon-512.png`, and `*-maskable.png` variants of each). They are generated from the same orange-check-on-dark visual as `og-image.png`.
+- `sw.js` uses a **network-first + cache fallback** strategy: every same-origin GET first goes to the network, successful responses are written to the `mobil-kontrol-v{package-version}` cache; when the network is unreachable, the last cached version is served instantly. Stale cache keys are cleaned up automatically on `activate`. The cache key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump automatically invalidates every client's cache.
+- If `./sw.js` cannot be loaded (e.g. single-file scenarios opened over `file://`), JS attempts to register a **fallback Service Worker via a blob URL** and writes a small blob-manifest with an inline SVG icon for that path; if Chromium rejects blob-URL SWs it fails silently.
+- When served over HTTPS, Chrome / Edge / Safari automatically surface the "Install" prompt.
 
 ---
 
-## Proje yapısı
+## Project layout
 
 ```text
 Mobil_App_Check_List/
-├── index.html                    Tek sayfa: modaller + script yükleme sırası
-├── manifest.webmanifest          PWA manifesti (ad, ikon, tema rengi, scope)
+├── index.html                    Single page: modals + script loading order
+├── manifest.webmanifest          PWA manifest (name, icons, theme color, scope)
 ├── sw.js                         Service Worker (network-first + offline fallback)
-├── og-image.png                  1200×630 sosyal medya önizleme görseli (TR)
-├── og-image-en.png               1200×630 sosyal medya önizleme görseli (EN)
-├── .nojekyll                     GitHub Pages Jekyll davranışını kapatır
-├── .gitignore                    Yerel araç çıktıları (OS / editör artıkları)
+├── og-image.png                  1200×630 social media preview image (TR)
+├── og-image-en.png               1200×630 social media preview image (EN)
+├── .nojekyll                     Disables GitHub Pages Jekyll processing
+├── .gitignore                    Local tool artifacts (OS / editor leftovers)
 ├── LICENSE                       MIT
-├── README.md                     Türkçe (ana dosya)
-├── README.en.md                  İngilizce versiyon
-├── CHANGELOG.md                  Keep a Changelog formatında sürüm geçmişi
+├── README.md                     English (primary)
+├── README.tr.md                  Turkish
+├── CHANGELOG.md                  Version history in Keep a Changelog format
 ├── assets/
-│   ├── icons/                    PWA install ikonları (192, 512; any + maskable)
-│   └── screenshots/              README görselleri (capture script çıktısı)
+│   ├── icons/                    PWA install icons (192, 512; any + maskable)
+│   └── screenshots/              README screenshots (capture script output)
 ├── css/
-│   ├── 01-base.css               Reset, CSS custom properties, base tipografi
-│   ├── 02-layout.css             Hero, sayfa düzeni, proje pili
-│   ├── 03-categories.css         Kategori kartları, madde kartları, flip
-│   ├── 04-presentation.css       Sunum modu (tam ekran odak)
-│   ├── 05-hero-pills.css         Hero pili (dikey kart) + dil/stil pilleri
-│   ├── 05-modals-core.css        Modal iskeleti + ortak stiller
-│   ├── 05-modals-welcome.css     7 adımlı karşılama akışı
-│   ├── 05-modals-projects.css    Proje, framework, backend tab'ları
-│   ├── 05-modals-install.css     PWA install rehberi
-│   ├── 05-modals-feedback.css    Toast bildirimleri + kutlama modali
-│   └── 06-responsive-print.css   Mobil + tablet + masaüstü + yazdırma
-├── js/                           35 dosya (yukarıdaki "Modüler dosya yapısı"na bak)
+│   ├── 01-base.css               Reset, CSS custom properties, base typography
+│   ├── 02-layout.css             Hero, page layout, project pill
+│   ├── 03-categories.css         Category cards, item cards, flip
+│   ├── 04-presentation.css       Presentation mode (full-screen focus)
+│   ├── 05-hero-pills.css         Hero pill (vertical card) + language/style pills
+│   ├── 05-modals-core.css        Modal skeleton + shared styles
+│   ├── 05-modals-welcome.css     7-step welcome flow
+│   ├── 05-modals-projects.css    Project / framework / backend tabs
+│   ├── 05-modals-install.css     PWA install guidance
+│   ├── 05-modals-feedback.css    Toast notifications + celebration modal
+│   └── 06-responsive-print.css   Mobile + tablet + desktop + print
+├── js/                           35 files (see "Modular file layout" above)
 ├── scripts/
 │   ├── run-tests.mjs             node --test wrapper
-│   ├── check-em-dash.mjs         CI em-dash kuralı
-│   ├── check-sw-cache-version.mjs  sw.js cache anahtarı paket sürümüyle eşleşmeli
-│   ├── install-githooks.mjs      `prepare` script ile pre-commit hook kurar
-│   ├── generate-pwa-assets.py    İkon ve OG görsellerini üretir (opsiyonel)
-│   └── capture-screenshots.mjs   Playwright ile README ekran görüntüleri
+│   ├── check-em-dash.mjs         CI em-dash rule
+│   ├── check-sw-cache-version.mjs  sw.js cache key must match package.json
+│   ├── install-githooks.mjs      `prepare` script installs the pre-commit hook
+│   ├── generate-pwa-assets.py    Generates icons and OG image (optional)
+│   └── capture-screenshots.mjs   Playwright-driven README screenshots
 └── tests/
     ├── _setup.js                 node:vm sandbox loader (extraFiles + seed)
     ├── resolver.test.js          resolveLevel + tx
-    ├── data.test.js              DATA şema bütünlüğü, em-dash kuralı
-    ├── projects.test.js          Çoklu proje store: CRUD, limit, migration
-    ├── ui-helpers.test.js        escapeHtml + stripHtml (XSS savunması)
-    └── progress.test.js          countLevels (ilerleme sayma)
+    ├── data.test.js              DATA schema integrity, em-dash rule
+    ├── projects.test.js          Multi-project store: CRUD, limits, migration
+    ├── ui-helpers.test.js        escapeHtml + stripHtml (the XSS defense)
+    └── progress.test.js          countLevels (progress counting)
 ```
 
 ---
 
-## Veri modeli
+## Data model
 
-Bir madde (feature) zaman içinde tamamen geriye uyumlu olacak şekilde genişledi. Tüm alanlar opsiyoneldir; resolver eksik olanları üst seviyeden tamamlar:
+A feature has evolved in a fully backwards-compatible way. All fields are optional; the resolver fills missing ones from upper layers:
 
 ```js
 {
@@ -441,11 +441,11 @@ Bir madde (feature) zaman içinde tamamen geriye uyumlu olacak şekilde genişle
   title: { tr: "...", en: "..." },
   desc:  { tr: "...", en: "..." },
 
-  // 1) Evrensel fallback: framework / backend / stil belirtilmedikçe bu görünür
+  // 1) Universal fallback: shown unless a framework / backend / style overrides it
   mvp:     { tr: "...", en: "..." },
   release: { tr: "...", en: "..." },
 
-  // 2) Framework eksen varyantları
+  // 2) Framework-axis variants
   variants: {
     flutter:     { mvp: {tr, en}, release: {tr, en} },
     reactNative: { ... },
@@ -455,12 +455,12 @@ Bir madde (feature) zaman içinde tamamen geriye uyumlu olacak şekilde genişle
     pwa:         { ... }
   },
 
-  // 3) Backend eksen varyantları
-  backendStep: true,           // true ise "Backend yok"da madde tamamen gizlenir
+  // 3) Backend-axis variants
+  backendStep: true,           // if true, the item is fully hidden when "No backend" is selected
   backendVariants: {
     firebase: {
-      _default: { mvp, release },              // backend-genel
-      flutter:  { mvp, release },              // opsiyonel framework override
+      _default: { mvp, release },              // backend-general
+      flutter:  { mvp, release },              // optional framework override
       reactNative: { ... },
     },
     supabase:  { _default: { ... } },
@@ -468,12 +468,12 @@ Bir madde (feature) zaman içinde tamamen geriye uyumlu olacak şekilde genişle
     // ...
   },
 
-  // 4) Anlatım stili "Basit" iken kullanılan metinler
+  // 4) Texts shown when the explanation style is "Simple"
   simple: {
     mvp:     { tr: "...", en: "..." },
     release: { tr: "...", en: "..." }
   },
-  // Opsiyonel: backend-spesifik sade metin (örn. "Backend yok"a özel uyarı)
+  // Optional: backend-specific plain text (e.g. a special note for "No backend")
   simpleBackend: {
     noBackend: {
       mvp:     { tr, en },
@@ -483,48 +483,48 @@ Bir madde (feature) zaman içinde tamamen geriye uyumlu olacak şekilde genişle
 }
 ```
 
-**Çözüm önceliği (`resolveLevel`):**
+**Resolution priority (`resolveLevel`):**
 
 ```
-Stil = "Basit" ise:
-  1. simpleBackend[backend][level]        → en spesifik
-  2. simple[level]                        → tüm yığına ortak sade
+If style === "Simple":
+  1. simpleBackend[backend][level]        → most specific
+  2. simple[level]                        → plain text shared across the stack
 
-Teknik (varsayılan) sıralama:
+Technical (default) order:
   3. backendVariants[backend][framework][level]
   4. backendVariants[backend]._default[level]
   5. variants[framework][level]
-  6. feature[level]                       → en geneli
+  6. feature[level]                       → most general
 ```
 
-> Yani **bir maddenin tüm 216 kombinasyonu**, çoğunlukla 2-4 metin yazılarak doldurulabilir. Sade metin yazıldığında otomatik olarak 108 (6×9×2) tek yerden gelir; backend-spesifik içerik gerekirse yalnızca o varyant yazılır.
+> So **all 216 combinations of an item** can usually be filled with just 2-4 text blocks. A single "simple" block automatically covers 108 (6×9×2) combinations on its own; backend-specific content is written only where it genuinely matters.
 
 ---
 
-## Genişletme
+## Extending
 
-### Yeni madde eklemek
+### Adding a new item
 
-İçerik 14 dosyaya bölünmüştür. Hangi kategoriye eklemek istiyorsan o dosyaya git:
+Content is split across 14 files. Edit the one that matches your category:
 
-| Kategori                   | Dosya                             |
-| -------------------------- | --------------------------------- |
-| 01 Proje Fikri ve Planlama | `js/03a-data-01-idea-planning.js` |
-| 02 Tasarım                 | `js/03b-data-02-design.js`        |
-| 03 Kod Düzeni              | `js/03c-data-03-code-layout.js`   |
-| 04 Git ve Sürüm Kontrolü   | `js/03d-data-04-git.js`           |
-| 05 API                     | `js/03e-data-05-api.js`           |
-| 06 Backend                 | `js/03f-data-06-backend.js`       |
-| 07 Offline ve Önbellek     | `js/03g-data-07-offline.js`       |
-| 08 Test                    | `js/03h-data-08-testing.js`       |
-| 09 Güvenlik                | `js/03i-data-09-security.js`      |
-| 10 Erişilebilirlik         | `js/03j-data-10-a11y.js`          |
-| 11 Yayın ve Mağaza         | `js/03k-data-11-release.js`       |
-| 12 Monetizasyon            | `js/03l-data-12-monetization.js`  |
-| 13 Analitik                | `js/03m-data-13-analytics.js`     |
-| 14 CI/CD                   | `js/03n-data-14-cicd.js`          |
+| Category                     | File                              |
+| ---------------------------- | --------------------------------- |
+| 01 Project Idea and Planning | `js/03a-data-01-idea-planning.js` |
+| 02 Design                    | `js/03b-data-02-design.js`        |
+| 03 Code Layout               | `js/03c-data-03-code-layout.js`   |
+| 04 Git and Version Control   | `js/03d-data-04-git.js`           |
+| 05 API                       | `js/03e-data-05-api.js`           |
+| 06 Backend                   | `js/03f-data-06-backend.js`       |
+| 07 Offline and Cache         | `js/03g-data-07-offline.js`       |
+| 08 Testing                   | `js/03h-data-08-testing.js`       |
+| 09 Security                  | `js/03i-data-09-security.js`      |
+| 10 Accessibility             | `js/03j-data-10-a11y.js`          |
+| 11 Release and Store         | `js/03k-data-11-release.js`       |
+| 12 Monetization              | `js/03l-data-12-monetization.js`  |
+| 13 Analytics                 | `js/03m-data-13-analytics.js`     |
+| 14 CI/CD                     | `js/03n-data-14-cicd.js`          |
 
-İlgili dosyanın `features` dizisine yeni bir obje ekle:
+Append a new object to the `features` array of that file:
 
 ```js
 {
@@ -541,38 +541,38 @@ Teknik (varsayılan) sıralama:
 }
 ```
 
-Madde anında ön yüzde + arka yüzde (Nasıl?) çıkar. Backend'e bağlıysa `backendStep: true` ekle: backend "yok" seçildiğinde otomatik gizlenir. `tests/data.test.js` sayıyı README ve CHANGELOG'a kilitlediği için, yeni bir madde eklediğinde `EXPECTED_FEATURE_COUNT` sabitini ve README'deki `55 madde` sayısını da güncellemen gerekir.
+The item shows up immediately on both the front and the back (How-To) face of the card. If it depends on a backend, add `backendStep: true`: when "No backend" is selected it disappears automatically. Because `tests/data.test.js` locks the count to the figure in README and CHANGELOG, you also need to bump `EXPECTED_FEATURE_COUNT` and the `55 items` line in both READMEs.
 
-### Yeni framework eklemek
+### Adding a new framework
 
-1. `js/05-framework.js` → `VALID_FRAMEWORKS` + `FRAMEWORK_META` (label/kısa ad/ikon/AI prompt) + `INSTALL_EXAMPLES` + `SETUP_ASSUMPTIONS`.
-2. `js/05-backend.js` → her backend için `BACKEND_INSTALL_EXAMPLES.{backend}.{yeni-framework}` satırını ekle.
-3. `index.html` içinde karşılama (`data-welcome-fw="..."`), framework değiştirici (`data-switch-fw="..."`) ve yeni proje (`data-add-fw="..."`) gridlerine birer kart ekle.
+1. `js/05-framework.js` → `VALID_FRAMEWORKS` + `FRAMEWORK_META` (label / short name / icon / AI prompt) + `INSTALL_EXAMPLES` + `SETUP_ASSUMPTIONS`.
+2. `js/05-backend.js` → add a `BACKEND_INSTALL_EXAMPLES.{backend}.{new-framework}` entry for every backend.
+3. In `index.html`, add a card to the welcome (`data-welcome-fw="..."`), framework switcher (`data-switch-fw="..."`), and new-project (`data-add-fw="..."`) grids.
 
-Var olan maddelerin **çoğu** yeni framework için otomatik olarak `variants[framework]` tanımsız → evrensel fallback'e düşer. Spesifik kod örnekleri istediğin maddelerde ilgili `variants[yeni-framework]` veya `backendVariants[*][yeni-framework]` bloklarını doldur.
+**Most** existing items will automatically fall back to the universal value for the new framework (because `variants[framework]` is undefined). Fill in `variants[new-framework]` or `backendVariants[*][new-framework]` only where a framework-specific code example is genuinely required.
 
-### Yeni backend eklemek
+### Adding a new backend
 
-Aynı pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + `BACKEND_INSTALL_EXAMPLES` + `BACKEND_SETUP_ASSUMPTIONS`. `index.html` içinde karşılama (`data-welcome-be="..."`) ve backend değiştirici (`data-switch-be="..."`) gridlerine birer kart ekle. Maddelerin backend'e bağlı kısımlarında `backendVariants.{yeni-backend}._default` blokları yazılır.
+Same pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + `BACKEND_INSTALL_EXAMPLES` + `BACKEND_SETUP_ASSUMPTIONS`. In `index.html`, add a card to the welcome (`data-welcome-be="..."`) and backend switcher (`data-switch-be="..."`) grids. For the backend-dependent parts of items, write `backendVariants.{new-backend}._default` blocks.
 
-### Yeni dil eklemek
+### Adding a new language
 
-1. `js/01-i18n-strings.js` → `UI_STRINGS` objesine her anahtarın yeni dildeki karşılığını ekle (örn. `de` için Almanca).
-2. 14 veri dosyasının (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) tamamında, her `{tr, en}` çiftinin yanına `de` alanı ekle. `simple`, `simpleBackend`, `variants` ve `backendVariants` blokları da dahil.
-3. Hero'daki dil pilini ve `applyI18nToDom`'u yeni anahtara genişlet.
+1. `js/01-i18n-strings.js` → add the new-language counterpart of every key to the `UI_STRINGS` object (e.g. `de` for German).
+2. In all 14 data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), next to every `{tr, en}` pair, add a new locale key (e.g. `de`). This includes titles, descriptions, MVP / Release texts, and How-To steps inside the `simple`, `simpleBackend`, `variants`, and `backendVariants` blocks.
+3. Extend the language pill in the hero and `applyI18nToDom` to recognize the new key.
 
-Resolver otomatik olarak `obj[currentLang]` döndürdüğü için ekleme yapısal olarak risksizdir.
+Because the resolver simply returns `obj[currentLang]`, the addition is structurally risk-free.
 
 ---
 
-## Desteklenen frameworkler ve backendler
+## Supported frameworks and backends
 
 <table>
 <tr>
 <th>Framework</th>
-<th>İkon</th>
-<th>AI prompt etiketi</th>
-<th>Karşılama dilinde</th>
+<th>Icon</th>
+<th>AI prompt label</th>
+<th>Welcome label</th>
 </tr>
 <tr><td>Flutter</td><td>🐦</td><td>Flutter / Dart</td><td>Flutter</td></tr>
 <tr><td>React Native</td><td>⚛</td><td>React Native (bare / CLI) / TypeScript</td><td>React Native</td></tr>
@@ -585,230 +585,230 @@ Resolver otomatik olarak `obj[currentLang]` döndürdüğü için ekleme yapısa
 <table>
 <tr>
 <th>Backend</th>
-<th>İkon</th>
-<th>Açıklama</th>
+<th>Icon</th>
+<th>Description</th>
 </tr>
-<tr><td>Firebase</td><td>🔥</td><td>Google'ın BaaS'i: Auth + Firestore + Storage + Cloud Functions + App Check + FCM</td></tr>
-<tr><td>Supabase</td><td>🟢</td><td>Açık kaynak Firebase alternatifi: Postgres + Row Level Security + Realtime + Edge Functions</td></tr>
-<tr><td>Appwrite</td><td>🟣</td><td>Self-host veya Appwrite Cloud üzerinde açık kaynak BaaS</td></tr>
-<tr><td>PocketBase</td><td>📦</td><td>Tek binary, SQLite tabanlı; küçük ve orta projeler için ideal</td></tr>
+<tr><td>Firebase</td><td>🔥</td><td>Google's BaaS: Auth + Firestore + Storage + Cloud Functions + App Check + FCM</td></tr>
+<tr><td>Supabase</td><td>🟢</td><td>Open-source Firebase alternative: Postgres + Row Level Security + Realtime + Edge Functions</td></tr>
+<tr><td>Appwrite</td><td>🟣</td><td>Open-source BaaS on self-host or Appwrite Cloud</td></tr>
+<tr><td>PocketBase</td><td>📦</td><td>Single binary, SQLite-backed; ideal for small to medium projects</td></tr>
 <tr><td>AWS Amplify</td><td>☁️</td><td>Amplify Gen 2 (TypeScript): Cognito + DynamoDB/AppSync + S3 + Lambda</td></tr>
-<tr><td>Convex</td><td>⚡</td><td>TypeScript-first reactive backend (end-to-end typed query/mutation)</td></tr>
-<tr><td>Kendi sunucum</td><td>🛠️</td><td>Kendi REST/GraphQL API'n (Node/Python/Go/Rust/Ruby/.NET)</td></tr>
-<tr><td>Yerel geliştirme</td><td>💻</td><td>Localhost / LAN üzerinde geliştirme sunucusu (production önerilmez)</td></tr>
-<tr><td>Backend yok</td><td>🚫</td><td>Tamamen istemci tarafı; backend gerektiren maddeler otomatik gizlenir</td></tr>
+<tr><td>Convex</td><td>⚡</td><td>TypeScript-first reactive backend (end-to-end typed queries/mutations)</td></tr>
+<tr><td>Self-hosted server</td><td>🛠️</td><td>Your own REST/GraphQL API (Node/Python/Go/Rust/Ruby/.NET)</td></tr>
+<tr><td>Local dev</td><td>💻</td><td>Development server on localhost / LAN (not recommended for production)</td></tr>
+<tr><td>No backend</td><td>🚫</td><td>Fully client-side; items that require a backend are hidden automatically</td></tr>
 </table>
 
 ---
 
-## Mimari kararlar
+## Architectural decisions
 
 <details>
-<summary><strong>Neden build adımı yok?</strong></summary>
+<summary><strong>Why no build step?</strong></summary>
 
 <br />
 
-Bu, sürdürülebilirliği ve katkıyı kolaylaştıran kasıtlı bir karardır:
+This is a deliberate decision that makes the project easy to maintain and easy to contribute to:
 
-- Yeni katkıcı `git clone` yapıp `index.html`'i açar. Bitti.
-- Bağımlılık güncellemeleri yok, lock file çatışmaları yok, `node_modules` yok.
-- Build hatası diye bir kavram yok; tarayıcı kodu olduğu gibi çalıştırır.
-- Dosyaları doğrudan düzenle, sayfayı yenile, sonucu gör.
-- 5 yıl sonra bile aynı şekilde çalışacak; ekosistemde build aracı bağımlılıkları kırılsa bile.
+- A new contributor runs `git clone` and opens `index.html`. Done.
+- No dependency upgrades, no lock-file conflicts, no `node_modules`.
+- "Build error" is not a concept here; the browser runs the code as-is.
+- Edit a file, refresh the page, see the result.
+- It will still work the same way 5 years from now, even if build-tool dependencies break across the ecosystem.
 
-Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS + JS) gzip sonrası **~380 KB**; büyük kısmı 55 madde × dört eksende çoklu varyant taşıyan içerik veri dosyasından gelir. İlk ziyaretten sonra Service Worker önbelleği ağ trafiğini neredeyse sıfırlar.
+The counter-argument: bundle size and performance. The entire static payload (HTML + CSS + JS) is **~380 KB** gzipped, most of it coming from the content data file that carries 55 items × four-axis variants. After the first visit, the Service Worker cache nearly eliminates network traffic.
 
 </details>
 
 <details>
-<summary><strong>Neden vanilla JS / CSS, framework yok?</strong></summary>
+<summary><strong>Why vanilla JS / CSS, no framework?</strong></summary>
 
 <br />
 
-- **Kapsam küçük**: tek bir kontrol listesi sayfası; React'in çözdüğü hiçbir gerçek karmaşıklık yok.
-- **Erişim engeli düşük**: HTML/CSS/JS bilen herkes katkı sağlayabilir; React/Vue/Svelte öğrenme zorunluluğu yok.
-- **Yük süresi**: framework yükü yok; ilk render anlık.
-- **Eksiklik yok**: state yönetimi, render, event delegation, history hepsi vanilla ile rahatlıkla yapılır.
+- **Small scope**: a single checklist page; no real complexity that React would solve.
+- **Low barrier to entry**: anyone who knows HTML / CSS / JS can contribute; no obligation to learn React / Vue / Svelte.
+- **Load time**: no framework overhead; the first render is instant.
+- **Nothing missing**: state management, rendering, event delegation, and history are all comfortably handled with vanilla code.
 
-Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` ~1170 satır. Bunun karşılığında işin tamamı görünür ve okunabilir. 1.0'da tek bir 3079 satırlık `js/03-data.js` ve 2392 satırlık `js/14-app.js` vardı; 1.1.0'da bunlar 14 kategori dosyasına ve 5 yönlendirme modülüne bölündü, böylece bir contributor tek bir özelliğe odaklanırken yalnızca o dosyayı açar.
+The cost of this simple decision: the codebase is **lightly abstracted**; `index.html` is ~1170 lines. In return, all the work is visible and readable. 1.0 carried a single 3079-line `js/03-data.js` and a 2392-line `js/14-app.js`; in 1.1.0 those were split into 14 per-category data files and 5 orchestration modules, so a contributor focusing on a single feature opens only the file that owns it.
 
 </details>
 
 <details>
-<summary><strong>Neden tüm veri tek bir <code>DATA</code> sabitinde?</strong></summary>
+<summary><strong>Why all the data in a single <code>DATA</code> array?</strong></summary>
 
 <br />
 
-55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan içerik ham hâliyle ~835 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
+The content carries 55 items × four-axis (language × style × framework × backend) variants, which is ~835 KB raw. At first glance you might say "this should be lazy-loaded." We didn't, because:
 
-- Kullanıcı **birkaç madde** değil, **tüm listeyi** görmek için geliyor: arama, filtre ve sunum modu listenin tamamı belleğe yüklenmişken anlamlı.
-- Tüm asset'ler gzip sonrası ~380 KB; çoğu bağlantıda saniyenin altında iniyor.
-- Service Worker ilk başarılı ziyaretten sonra cache'i dolduruyor; internet kopsa da uygulama açılıyor.
-- Lazy loading mimarisi (dinamik import) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
+- Users come to see **the whole list**, not just **a few items**: search, filtering, and presentation mode only make sense with the full list in memory.
+- All assets are ~380 KB gzipped; most connections download it in sub-second time.
+- The Service Worker fills its cache after a single successful visit; the app opens even when the internet is gone.
+- A lazy-loading architecture (dynamic imports) would require a build step, breaking the "vanilla JS" decision.
 
-  1.1.0'da içerik **14 kategori dosyasına** bölündü (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). Build adımı eklenmedi: her dosya kendi kategorisini `window.DATA` dizisine `push` eder, `js/03-data.js` (15 satırlık stub) onu `const DATA` olarak dışa verir. Tarayıcının runtime'ında hâlâ tek bir bellek-içi `DATA` dizisi var; sadece yazma tarafı 14 parçaya bölünmüş durumda. Bu hem merge çatışmalarını azaltır hem de bir contributor "ben sadece güvenlik maddelerine bakacağım" derken yalnızca `03i-data-09-security.js` dosyasını okumasına izin verir. Veri ~200 maddeye büyürse gerçek lazy loading'i (kategori başına async fetch) yeniden değerlendirmek gerekir.
+In 1.1.0 the content was split across **14 per-category files** (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). No build step was added: each file appends its own category to a `window.DATA` array, and `js/03-data.js` (a 15-line stub) exposes it as `const DATA`. At runtime the browser still sees one in-memory `DATA` array; only the writing side is split into 14 shards. The benefit is fewer merge conflicts plus a contributor saying "I only want to touch security items" can open just `03i-data-09-security.js`. If the data grows considerably (e.g. 200 items), revisiting real lazy loading (per-category async fetch) becomes worth the build-step trade-off.
 
 </details>
 
 <details>
-<summary><strong>Neden <code>localStorage</code> (IndexedDB değil)?</strong></summary>
+<summary><strong>Why <code>localStorage</code> (not IndexedDB)?</strong></summary>
 
 <br />
 
-Tüm kullanıcı verisi (işaretler, notlar, projeler) **toplamda birkaç KB**. IndexedDB'nin getirdiği async/transaction overhead'i bu boyutta gereksiz.
+All user data (marks, notes, projects) sits in **a few KB total**. The async / transaction overhead IndexedDB brings is unnecessary at this size.
 
-`localStorage` senkron API'sinin avantajı: render sırasında doğrudan okunabilir, sayfa yenilenince ilk frame'de doğru veri görünür. IndexedDB ile bunu yapmak için ek state yönetimi gerekir.
+The advantage of `localStorage`'s synchronous API: it can be read directly during render, so when the page reloads the correct state is visible on the very first frame. Doing the same with IndexedDB requires extra state management.
 
-Sınırlama: ~5 MB / origin. 20 proje × yüzlerce işaret bile bunun altında.
+Limit: ~5 MB / origin. Even 20 projects × hundreds of marks stays well under that.
 
 </details>
 
 <details>
-<summary><strong>Neden kategori başına ayrı CSS / JS dosyası?</strong></summary>
+<summary><strong>Why a CSS / JS file per category?</strong></summary>
 
 <br />
 
-Bir dev tek bir özellik üzerinde çalışırken **sadece o dosyaya** odaklanabilsin diye. Her dosyanın adı (`01-base.css`, `11-render.js`...) sorumluluğunu açıklar; sıralama da `<link>` ve `<script>` etiket sırasıyla deterministik.
+So a developer working on a single feature can focus on **just one file**. Each filename (`01-base.css`, `11-render.js`, etc.) describes its responsibility; the order is also deterministic because of the `<link>` and `<script>` tag sequence.
 
-HTTP/2 ile çoklu küçük dosya, tek bir bundle'dan **anlamlı ölçüde** yavaş değil. Eğer ilerde gerçekten bir performans sorunu çıkarsa minify + concat script bir gecede eklenir.
+With HTTP/2, many small files are **not meaningfully slower** than a single bundle. If a real performance issue ever appears, a minify + concat script can be added in an evening.
 
 </details>
 
 <details>
-<summary><strong>Neden Simple/Technical anlatım stili?</strong></summary>
+<summary><strong>Why a Simple / Technical explanation style?</strong></summary>
 
 <br />
 
-Modern uygulama geliştirme **AI destekli** hâle geldi ve geliştirenlerin **önemli bir kısmı** yazılım dünyasına uzak. Bir öğretmen, bir avukat, bir mağaza sahibi Cursor / Claude ile uygulama yazabiliyor; ama "Riverpod 3.x AsyncNotifier" gibi bir madde okuduğunda kapanıyor.
+Modern app development has become **AI-assisted**, and a **substantial portion** of the people building apps are not from the software world. A teacher, a lawyer, a shopkeeper can write apps with Cursor / Claude; but when they read an item like "Riverpod 3.x AsyncNotifier" they close the page.
 
-**Basit** stili package isimleri, sürüm numaraları, akronimler, dosya yolları içermez; günlük hayattan metaforlar kullanır ("telefonun güvenli çekmecesi", "ekran okuyucusu"). **Teknik** stili tüm detayı verir.
+The **Simple** style avoids package names, version numbers, acronyms, and file paths; it uses everyday metaphors ("the phone's secure drawer", "screen reader"). The **Technical** style gives full detail.
 
-Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösterilir. Bu, ürünün eşi olmayan farklarından biridir.
+The same content is shown with **different wording** depending on the user's choice. This is one of the product's most distinctive differences.
 
 </details>
 
 ---
 
-## Kullanıcı verisi ve gizlilik
+## User data and privacy
 
-- **Hiçbir veri sunucuya gitmez.** Tüm işaretler, notlar ve proje yapılandırmaları **yalnızca senin tarayıcında** (`localStorage`) yaşar.
-- **Analytics yok**, **çerez yok**, **3. parti tracker yok**.
-- **JSON export/import** ile kendi verini başka cihaza taşıyabilirsin.
-- **Sıfırla** her zaman tek tıkla erişilebilir.
-- Yapay zekâya gönderdiğin prompt'lar sen kopyaladıkça oluşur; uygulama kendiliğinden hiçbir AI servisine veri yollamaz.
-
----
-
-## Performans
-
-| Metrik                          | Hedef    | Mevcut                   |
-| ------------------------------- | -------- | ------------------------ |
-| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, soğuk cache) |
-| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                    |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                   |
-| Toplam asset (ham)              | -        | ~1.45 MB                 |
-| Toplam asset (gzipped)          | -        | ~380 KB                  |
-| Çevrimdışı açılış (SW cache)    | -        | Çalışır                  |
-| Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
-
-> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan 14 kategori veri dosyasından (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) gelir; uygulama mantığı (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi birlikte gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+- **No data leaves your device.** All marks, notes, and project configurations live **only in your browser** (`localStorage`).
+- **No analytics**, **no cookies**, **no third-party trackers**.
+- Use **JSON export / import** to move your data to another device.
+- **Reset** is always one click away.
+- AI prompts you send only exist when you copy them yourself; the app never autonomously sends data to any AI service.
 
 ---
 
-## Sıkça sorulanlar
+## Performance
 
-**Kontrol listesi mobil uygulamamı denetlemek için yeterli mi?**
-Hayır, gerçek QA testinin yerini almaz. Mağaza reddi veya temel kalite boşluklarına yol açan ortak ihmalleri kapatır; asıl test süreciyle birlikte kullanılmak üzere tasarlandı. Crash testi, kullanıcı testi ve performans profilini bu uygulama yapmaz.
+| Metric                          | Target   | Current                 |
+| ------------------------------- | -------- | ----------------------- |
+| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, cold cache) |
+| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                   |
+| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                  |
+| Total assets (raw)              | -        | ~1.45 MB                |
+| Total assets (gzipped)          | -        | ~380 KB                 |
+| Offline launch (SW cache)       | -        | Works                   |
+| Runtime dependency              | -        | Zero                    |
 
-**Birden fazla projeyi aynı anda yönetebilir miyim?**
-Evet. Araç çubuğundaki proje seçiciden 20'ye kadar farklı proje açabilirsin; her birinin framework, backend, dil ve anlatım stili tercihi ayrı tutulur. İşaretler ve notlar projeden projeye karışmaz.
-
-**Cihazlar arası senkron nasıl olur?**
-Otomatik senkron yok (sunucu yok, hesap yok). Araç çubuğundaki "Dışa Aktar" ile JSON dosyası alır, diğer cihazda "İçe Aktar" ile geri yüklersin. Tek yönlü, manuel, hızlı.
-
-**Yapay zekâ prompt özelliği nasıl çalışıyor?**
-Seçili framework, backend, dil, stil ve işaretsiz maddelere göre tek bir prompt metni üretip panoya kopyalar. Bu metni sen ChatGPT, Claude, Gemini gibi bir asistana yapıştırırsın. Uygulama hiçbir AI servisine veri göndermez; her şey lokal kalır.
-
-**Listede kullandığım framework veya backend yok.**
-`CONTRIBUTING.md` yeni framework veya backend eklemenin adımlarını tarif eder; pull request açabilirsin. Hızlı çözüm olarak en yakın benzerini seçebilirsin: çoğu madde framework-agnostic kaleme alınmıştır ve `_default` davranışına düşer.
-
-**Bir hata buldum veya öneri var.**
-GitHub Issues üzerinden bildirin: bug için "🐞 Bug report", öneri için "💡 Feature request" şablonu otomatik açılır. Güvenlik açığı için `SECURITY.md` adresindeki özel kanalı kullan.
+> Most of the asset payload comes from the 14 per-category data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 
-## Yol haritası
+## Frequently asked questions
 
-İleride değerlendirilebilecek geliştirmeler (_katkıya açık, hepsi pull request olarak gelebilir_). Çeyrek etiketleri yaklaşık hedeftir ve katkı temposuna göre öne / geriye kayabilir.
+**Is this checklist enough to QA my entire mobile app?**
+No. It does not replace real QA. It closes the common gaps that cause store rejections or basic quality issues; it is meant to be used alongside your real test process. Crash testing, user testing, and performance profiling are out of scope.
+
+**Can I manage multiple projects at the same time?**
+Yes. Up to 20 separate projects from the project picker in the toolbar. Each carries its own framework, backend, language, and explanation-style preference. Marks and notes never cross over.
+
+**How does cross-device sync work?**
+There is no automatic sync (no server, no account). Use "Export" from the toolbar to download a JSON file and "Import" on the other device to restore. One-way, manual, fast.
+
+**How does the AI prompt feature work?**
+Based on your selected framework, backend, language, style, and unchecked items, the app builds a single prompt and copies it to the clipboard. You paste it into ChatGPT, Claude, Gemini, or any assistant of your choice. The app sends nothing to any AI service; everything stays local.
+
+**My framework or backend is not in the list.**
+`CONTRIBUTING.md` describes how to add a new framework or backend; pull requests are welcome. As a workaround, pick the closest match: most items are written framework-agnostically and fall back to `_default` behaviour.
+
+**I found a bug or have a feature idea.**
+Open a GitHub issue using the "🐞 Bug report" or "💡 Feature request" template. For security vulnerabilities use the private channel documented in `SECURITY.md`.
+
+---
+
+## Roadmap
+
+Improvements that may be worth picking up (_all open to contribution; everything can come in as a pull request_). Quarter labels are rough targets and may slip forward or backward depending on contribution pace.
 
 **Q3 2026**
 
-- [ ] **Markdown dışa aktarma**: rapor olarak teslim edilebilir
-- [ ] **Daha fazla framework**: Ionic, NativeScript, .NET MAUI, Tauri
+- [ ] **Markdown export**: deliverable as a report
+- [ ] **More frameworks**: Ionic, NativeScript, .NET MAUI, Tauri
 
 **Q4 2026**
 
-- [ ] **Daha fazla dil**: Almanca, İspanyolca, Fransızca, Arapça (RTL ile)
-- [ ] **Daha fazla backend**: Hasura, Strapi, Directus, Nhost
-- [ ] **Sektör paketleri**: e-ticaret, sağlık, oyun, fintech için bölgesel uyum maddeleri (KVKK / GDPR / HIPAA / PCI DSS)
+- [ ] **More languages**: German, Spanish, French, Arabic (with RTL)
+- [ ] **More backends**: Hasura, Strapi, Directus, Nhost
+- [ ] **Industry packs**: regional compliance items for e-commerce, healthcare, gaming, fintech (GDPR / HIPAA / PCI DSS / KVKK)
 
-**2027 ve sonrası**
+**2027 and beyond**
 
-- [ ] **Takım modu**: aynı listeyi takım üyeleri arasında senkron etmek (opsiyonel, kendi backend'inle)
-- [ ] **Madde başına yorum eklemek**: kişisel notlardan ayrı, ekipçe görülen yorum dizileri
-- [ ] **Tarih bazlı geçmiş**: ne zaman hangi maddeyi işaretledin grafiği
-
----
-
-## Katkıda bulunma
-
-Katkılar memnuniyetle. Önerilen iş akışı:
-
-1. Repoyu **fork** et.
-2. **Issue aç** veya var olan birinde yorum yap; üzerinde çalışacağını belirt.
-3. `main` branch'inden bir **feature branch** çıkar: `git checkout -b feat/yeni-madde-x-y`.
-4. Değişikliği yap; küçük ve odaklı tut.
-5. Var olan stille tutarlı kal:
-   - JS: ES2020+, fonksiyon başlarında JSDoc-vari kısa yorum.
-   - CSS: ilgili kategori dosyasına, custom property'leri kullanarak.
-   - İçerik (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`): mevcut maddelerin şeklini ve tonunu takip et. Stub `js/03-data.js`'i düzenleme; o sadece 14 parçayı birleştirir.
-6. **Em dash karakteri (`—`) kullanma**: bu projenin yazılı stili kuralıdır. Yerine `:`, `;` veya parantez.
-7. **Conventional commit mesajları**: `feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`.
-8. PR açarken **kısa açıklama** + **ekran görüntüsü** (UI değişiyorsa) ekle.
-
-### İçerik katkısı için ipuçları
-
-- Yeni bir madde eklemeden önce: bir kullanıcının **gerçekten** unutabileceği, mağaza onayı veya kullanıcı deneyimi açısından **kritik** olan bir şey mi? Eklemeden önce maintainera danış (issue üzerinden).
-- Kod örnekleri verirken **2024+ güncel** sürümleri referans al (Firebase BoM 34+, RN 0.76+ New Architecture, Expo SDK 53+).
-- Basit stili yazarken paket adı / sürüm numarası / akronim kullanma; günlük hayattan metaforlar tercih et.
-- TR ve EN'i birlikte güncel tut; sadece TR commit'leri kabul edilmez.
-
-### Hata ve fikir bildirme
-
-[Issue aç](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/issues/new/choose): "🐞 Bug report" veya "💡 Feature request" şablonlarından birini seç (boş issue açma kapatılı). Reproduce adımları ve tarayıcı / cihaz bilgisi yardımcı olur. PR template'i de PR açtığında otomatik dolar.
+- [ ] **Team mode**: sync the same list across team members (optional, with your own backend)
+- [ ] **Comments per item**: separate from personal notes, visible to the team
+- [ ] **Time-based history**: a graph of which item was checked when
 
 ---
 
-## Lisans
+## Contributing
+
+Contributions are welcome. Suggested workflow:
+
+1. **Fork** the repo.
+2. **Open an issue** or comment on an existing one; mention that you'll work on it.
+3. Cut a **feature branch** off `main`: `git checkout -b feat/new-item-x-y`.
+4. Make the change; keep it small and focused.
+5. Stay consistent with the existing style:
+   - JS: ES2020+, a short JSDoc-like comment at the top of each function.
+   - CSS: into the relevant category file, using custom properties.
+   - Content (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`): follow the shape and tone of existing items. Do not edit the stub `js/03-data.js`; it only combines the 14 shards.
+6. **Do not use em dash characters (`—`)**: this is a written-style rule for the project. Use `:`, `;`, or parentheses instead.
+7. **Conventional commit messages**: `feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`.
+8. When opening a PR, include a **short description** + a **screenshot** (if the UI changes).
+
+### Tips for content contributions
+
+- Before adding a new item: is it something a user could **actually** forget, and is it **critical** for store approval or user experience? Discuss with the maintainer (via issue) before adding.
+- When adding code examples, reference **2024+ current** versions (Firebase BoM 34+, RN 0.76+ New Architecture, Expo SDK 53+).
+- Avoid package names, version numbers, and acronyms in the Simple style; prefer everyday-life metaphors.
+- Keep TR and EN in sync; TR-only commits are not accepted.
+
+### Reporting bugs and ideas
+
+[Open an issue](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/issues/new/choose): pick "🐞 Bug report" or "💡 Feature request" (blank issues are disabled). Reproduction steps and browser / device info help a lot. The PR template fills in automatically when you open a pull request.
+
+---
+
+## License
 
 [MIT](LICENSE) © 2026 Özcan Orhan Demirci
 
-Bu yazılımı ücretsiz olarak kullanabilir, değiştirebilir, ticari projelere dahil edebilirsin. Tek koşul telif bildiriminin korunmasıdır. Detay için `LICENSE` dosyasına bak.
+You can use, modify, and include this software in commercial projects for free. The only condition is that the copyright notice is preserved. See the `LICENSE` file for details.
 
 ---
 
-## Yazar
+## Author
 
 **Özcan Orhan Demirci**
 
 - GitHub: [@OzcanOrhanDemirci](https://github.com/OzcanOrhanDemirci)
 
-Eğer bu proje işine yaradıysa, repoya **yıldız** verebilir, çevrendekilere paylaşabilir, ya da kendi katkılarınla daha iyi hâle getirebilirsin. İçerik veya kod fikirleri için issue açmaktan çekinme.
+If this project was useful to you, please **star** the repo, share it with your network, or make it better with your own contributions. Don't hesitate to open an issue with content or code ideas.
 
 <br />
 
 <div align="center">
 
-**[↑ Başa dön](#mobil-uygulama-kalite-kontrol-listesi)**
+**[↑ Back to top](#mobile-app-quality-checklist)**
 
 </div>

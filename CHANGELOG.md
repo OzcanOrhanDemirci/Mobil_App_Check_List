@@ -90,6 +90,25 @@ XSS-defense and progress-counting code paths work as intended.
 
 ### Changed
 
+- **Default README is now English.** `README.md` (English) is the file
+  GitHub renders at the repo root; the Turkish version moves to
+  `README.tr.md`. Both files cross-link at the top so language
+  switching is one click either way. The repo metadata, social card,
+  and external links all already pointed at the English content; this
+  change makes the GitHub homepage match the rest. The app itself
+  still defaults to Turkish per browser language, unchanged.
+- **Screenshots split per language.** Existing Turkish screenshots
+  moved from `assets/screenshots/*.png` to `assets/screenshots/tr/*.png`
+  (preserving git history via `git mv`). A new
+  `assets/screenshots/en/*.png` set was captured for the English
+  README. Each README now references its own language's screenshot
+  folder.
+- `scripts/capture-screenshots.mjs` regenerates both languages in a
+  single run by default. Pass `SHOT_LANG=tr` or `SHOT_LANG=en` to
+  restrict to one. The seed functions now take a `seedArgs` object
+  (with a `lang` field) instead of capturing language via closure;
+  Playwright serializes the function body without the outer scope so
+  closure-captured variables would be lost in the browser realm.
 - `js/13-filters.js`: extracted the level-matching loop inside
   `applyFilters` into a pure `shouldShowFeature` predicate at
   module scope. The predicate takes the search query, view mode,

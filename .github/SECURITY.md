@@ -57,4 +57,4 @@ This is a fully static, client-side Progressive Web App:
 
 - Self-hosted forks or modified deployments. Report those to the operator of the fork.
 - Issues that require physical access to an unlocked device.
-- Issues only reachable through deprecated browsers (anything older than the support matrix in [README.en.md](../README.en.md#browser-support)).
+- Issues only reachable through deprecated browsers (anything older than the support matrix in [README.md](../README.md#browser-support)).
