@@ -186,13 +186,33 @@ function performReset(scope) {
     return;
   }
 
-  /* Seçimler: işaretler + kutlama bayrakları */
+  /* Seçimler: işaretler + kutlama bayrakları.
+     state objesi hem ön yüz seviye anahtarlarını (ör. "1.1-mvp") hem arka
+     yüz How-To adım anahtarlarını (ör. "1.1-mvp.s0") tutar. state = {}
+     ikisini de siler; DOM tarafında her iki yüzü de elle temizlemek
+     gerekir (renderContent çağrılmıyor çünkü selections-only path
+     hızlı kalmalı). Ek olarak seviye üzerindeki partial-fill (--step-
+     progress CSS değişkeni) ve level-progress-badge updateLevelProgressUI
+     tarafından state boş okunduğunda otomatik temizlenir. */
   if (scope.selections) {
     state = {};
     saveState();
     celebrations = {};
     saveCelebrations();
+    /* Ön yüz seviye işaretleri */
     document.querySelectorAll(".level.checked").forEach(el => el.classList.remove("checked"));
+    /* Arka yüz Nasıl Yapılır? adımları */
+    document.querySelectorAll(".howto-step.checked").forEach(li => {
+      li.classList.remove("checked");
+      li.setAttribute("aria-checked", "false");
+    });
+    /* Her seviyenin partial-fill yüzdesini ve progress badge'ini yeniden
+       hesapla (state boş olduğundan ikisi de görsel olarak kaldırılır). */
+    if (typeof updateLevelProgressUI === "function") {
+      document.querySelectorAll(".level[data-key]").forEach(el => {
+        updateLevelProgressUI(el.dataset.key);
+      });
+    }
   }
 
   /* Notlar: tüm notlar silinir */
