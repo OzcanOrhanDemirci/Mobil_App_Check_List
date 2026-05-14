@@ -439,6 +439,20 @@
   }
   .btn.primary:hover { filter: brightness(1.05); }
   .btn.ghost { background: transparent; }
+  /* Toolbar toggle pair'lerinde "şu an bu moddasin" sinyalini veren turuncu
+     vurgu. JS, currentMode (Tümü Nasıl / Tümü Liste) ve collapsedCats vs
+     kategori sayısı (Tümünü Aç / Tümünü Kapat) durumuna göre .active
+     class'ını ekler veya kaldırır. aria-pressed eşliğinde uygulanır. */
+  .btn.ghost.active {
+    background: rgba(249, 115, 22, 0.14);
+    border-color: var(--accent);
+    color: var(--accent-2);
+    font-weight: 600;
+  }
+  .btn.ghost.active:hover {
+    background: rgba(249, 115, 22, 0.22);
+    border-color: var(--accent);
+  }
   .btn.danger { color: #fca5a5; }
   .btn.danger:hover { color: #fff; background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.35); }
 

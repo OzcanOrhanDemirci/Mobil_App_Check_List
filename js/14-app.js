@@ -5,6 +5,8 @@ document.getElementById("expandAllBtn").addEventListener("click", () => {
     collapsedCats.delete(c.id);
   });
   saveCollapsed();
+  /* collapsedCats artık boş, "Tümünü Aç" turuncu, "Tümünü Kapat" pasif */
+  if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
 /* Tümünü Kapat */
@@ -14,6 +16,8 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
     collapsedCats.add(c.id);
   });
   saveCollapsed();
+  /* collapsedCats artık tüm kategorileri içeriyor, "Tümünü Kapat" turuncu */
+  if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
 /* Tüm madde kartlarını arka yüze çevir / ön yüze döndür.

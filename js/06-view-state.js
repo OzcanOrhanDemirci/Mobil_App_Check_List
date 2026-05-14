@@ -189,6 +189,40 @@ function updateToolbarButtonStates() {
   expandBtn.disabled = isSearching;
   collapseBtn.disabled = isSearching;
 
+  /* "Tümünü Aç" / "Tümünü Kapat" seçili-durum vurgusu. Tüm kategoriler açıksa
+     (collapsedCats boş) Aç butonu aktif; tüm kategoriler kapalıysa Kapat
+     butonu aktif; karışık durumda ikisi de pasif. Sonuç olarak "şu an tümü
+     açık" veya "şu an tümü kapalı" hissi anında görülebiliyor. Toplam
+     kategori sayısını DATA'dan alıyoruz; DATA henüz yüklenmemişse (test
+     ortamı, edge case) DOM'daki .category sayısına düşüyoruz. */
+  const totalCats = (typeof DATA !== "undefined" && Array.isArray(DATA))
+    ? DATA.length
+    : document.querySelectorAll(".category").length;
+  const collapsedCount = collapsedCats ? collapsedCats.size : 0;
+  const allOpen   = totalCats > 0 && collapsedCount === 0;
+  const allClosed = totalCats > 0 && collapsedCount === totalCats;
+  expandBtn.classList.toggle("active", allOpen);
+  expandBtn.setAttribute("aria-pressed", allOpen ? "true" : "false");
+  collapseBtn.classList.toggle("active", allClosed);
+  collapseBtn.setAttribute("aria-pressed", allClosed ? "true" : "false");
+
+  /* "Tümü Nasıl" / "Tümü Liste" seçili-durum vurgusu. currentMode aktif kart
+     görsel modunu tanımlar (review = arka yüz / Nasıl Yapılır?, build = ön
+     yüz / kontrol listesi). Buton, kendisinin temsil ettiği mod aktif iken
+     turuncu görünür. */
+  const howBtn  = document.getElementById("flipAllHowBtn");
+  const listBtn = document.getElementById("flipAllChecklistBtn");
+  if (howBtn) {
+    const isReview = currentMode === "review";
+    howBtn.classList.toggle("active", isReview);
+    howBtn.setAttribute("aria-pressed", isReview ? "true" : "false");
+  }
+  if (listBtn) {
+    const isBuild = currentMode === "build";
+    listBtn.classList.toggle("active", isBuild);
+    listBtn.setAttribute("aria-pressed", isBuild ? "true" : "false");
+  }
+
   /* Kilit butonu: hiç işaret yoksa gri */
   const lockBtn = document.getElementById("lockBtn");
   if (lockBtn) {

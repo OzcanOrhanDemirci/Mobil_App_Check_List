@@ -152,6 +152,10 @@ function applyMode(mode) {
   currentMode = mode;
   try { localStorage.setItem(MODE_KEY, mode); } catch {}
   document.documentElement.setAttribute("data-card-mode", mode);
+  /* Toolbar'daki "Tümü Nasıl" / "Tümü Liste" pair'inin aktif vurgusunu
+     senkronize et. Init sırasında DOM hazır olduğundan butonlara güvenle
+     erişebiliriz; fonksiyon henüz yüklenmediyse sessizce geç. */
+  if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
 /* ==================== TEMA ==================== */

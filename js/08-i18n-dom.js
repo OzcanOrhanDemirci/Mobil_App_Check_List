@@ -78,6 +78,11 @@ function applyLang() {
   if (typeof applyFilters === "function") applyFilters();
   /* Tema label'ı güncel dilde olmalı */
   applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
+  /* Anlatım stili label'ı (Basit / Teknik <-> Simple / Technical) güncel
+     dilde olmalı. applyStyle pill'in iç metnini her zaman currentLang'a
+     göre t() ile yazar, bu yüzden mevcut style'ı yeniden uygulamak
+     etiketi anında güncellemek için yeterli. */
+  if (typeof applyStyle === "function") applyStyle(currentStyle);
   /* Kilit butonu label'ı güncel dilde olmalı */
   if (typeof applyLock === "function") applyLock();
   /* Hero framework pill (varsa label güncellenmeli) */

@@ -252,6 +252,9 @@ function navigateToCategorySmart(catId) {
     catEl.classList.remove("collapsed");
     collapsedCats.delete(catSelector);
     saveCollapsed();
+    /* Bir kategori daha açıldı; Tümünü Aç / Kapat butonlarının aktif
+       vurgusu hâlâ doğru durumda mı kontrol et. */
+    if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
   }
 
   /* Layout'un genişlemesi için bir frame bekle, sonra scroll */
@@ -601,6 +604,9 @@ function attachClickHandlers() {
       if (isCollapsed) collapsedCats.add(catId);
       else collapsedCats.delete(catId);
       saveCollapsed();
+      /* Tek kategori değişti, artık "tümü açık" / "tümü kapalı" durumu
+         koruyor mu yoksa karışığa mı düştü? Toolbar pair'ini senkronla. */
+      if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
     });
   });
 
