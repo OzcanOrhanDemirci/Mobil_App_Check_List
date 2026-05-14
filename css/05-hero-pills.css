@@ -3,13 +3,13 @@
    css/05-modals.css in 1.1.0 because they share specificity-level rules
    with the modal surfaces but were colocated for historical reasons. */
 
-  /* Tema butonu */
+  /* Theme toggle button (sun/moon icon in the toolbar) */
   #themeToggle .theme-icon {
     margin-right: 4px;
     font-size: 13px;
   }
 
-  /* Hero sağ taraf kontrolleri (dil + framework birlikte) */
+  /* Hero right-side controls (language and framework pills grouped together) */
   .hero-controls-right {
     display: inline-flex;
     align-items: center;
@@ -17,7 +17,7 @@
     flex-wrap: wrap;
   }
 
-  /* Hero dil değiştirme pill'i (framework pill'in eşdeğeri) */
+  /* Hero language-toggle pill (visual sibling of the framework pill) */
   .hero-lang-pill {
     appearance: none;
     border: 1px solid var(--border);
@@ -53,8 +53,9 @@
     letter-spacing: 0.05em;
   }
 
-  /* Sol kolon: dil + anlatım stili pill'leri alt alta;
-     proje pill'i bunların sağında dikey ortalı kalır. */
+  /* Left column: stacks the language and explanation-style pills
+     vertically. The project / framework pill sits to their right,
+     vertically centered. */
   .hero-pill-stack {
     display: inline-flex;
     flex-direction: column;
@@ -62,7 +63,8 @@
     align-items: stretch;
   }
 
-  /* Hero anlatım dili pill'i (lang pill ile aynı görsel boyut, farklı ikon) */
+  /* Hero explanation-style pill (same visual footprint as the lang
+     pill but with a different icon: Simple vs. Technical). */
   .hero-style-pill {
     appearance: none;
     border: 1px solid var(--border);
@@ -96,10 +98,12 @@
     color: var(--text-mute);
     letter-spacing: 0.04em;
   }
-  /* Stil bağlamlı renk: Basit modda yeşil-tonu, Teknik modda turuncu-tonu */
+  /* Style-aware accent color: green tone in Simple mode, orange tone
+     in Technical mode (mirrors the body content palette). */
   .hero-style-pill.style-simple .style-current { color: var(--mvp); }
   .hero-style-pill.style-technical .style-current { color: var(--accent-2); }
-  /* Dar ekranda style pill'in ikinci seçeneğini gizle, sadece aktif olan kalsın */
+  /* Narrow screens: hide the inactive option on the style pill so only
+     the current choice is shown (saves horizontal space). */
   @media (max-width: 560px) {
     .hero-style-pill { padding: 5px 10px; font-size: 11.5px; }
     .hero-style-pill .style-sep,
@@ -108,7 +112,7 @@
   }
 
 
-  /* Toolbar framework pill */
+  /* Toolbar framework pill (icon plus label) */
   .framework-pill .fw-pill-icon {
     font-size: 14px;
     line-height: 1;

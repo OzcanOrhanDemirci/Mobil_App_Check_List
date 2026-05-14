@@ -1,4 +1,6 @@
-  /* Sunum modu */
+  /* Presentation mode: full-screen, one-category-at-a-time view used for live
+     demos and screen-sharing. Toolbar, hero, footer and progress card are
+     hidden so the slide-style content takes the full viewport. */
   body.presentation-mode {
     overflow-x: hidden;
   }
@@ -65,7 +67,9 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Sunum modu — üst sabit bağlam çubuğu */
+  /* Presentation mode: fixed top context bar (app name on the left,
+     active filter chip on the right). Slides in from the top when
+     presentation mode is entered. */
   .pres-context-bar { display: none; }
   body.presentation-mode .pres-context-bar {
     display: flex;
@@ -139,7 +143,7 @@
     border: 1px solid var(--border);
     letter-spacing: 0.04em;
   }
-  /* Filter rengine göre chip'i renklendir */
+  /* Color the chip according to the active filter (MVP / Release) */
   body.presentation-mode.pres-filter-mvp .pres-context-chip {
     background: var(--mvp-bg);
     border-color: var(--mvp-border);
@@ -153,7 +157,8 @@
     color: var(--release);
   }
 
-  /* Sunum modu — kategori kart düzeni: her madde bir kart olacak */
+  /* Presentation mode card layout: each feature becomes its own card,
+     laid out in an auto-fitting grid for easy scanning on stage. */
   body.presentation-mode .feature-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
@@ -177,11 +182,12 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
   }
-  /* Filtre uygulanmış maddeler/kategoriler sunum modunda da gizli kalsın
-     (yukarıdaki .feature display: flex bunu override etmesin) */
+  /* Items and categories filtered out should remain hidden in presentation
+     mode too. Without this rule the .feature { display: flex } above would
+     override .hidden and reveal them. */
   body.presentation-mode .feature.hidden { display: none !important; }
   body.presentation-mode .category.hidden { display: none !important; }
-  /* Kart başlığı: ID rozet + başlık */
+  /* Card header: ID badge plus title */
   body.presentation-mode .feature .feature-head {
     flex-wrap: nowrap;
     align-items: center;
@@ -227,15 +233,17 @@
     font-size: 9.5px;
     padding: 3px 8px;
   }
-  /* Sunumda not toggle, düzenleme alanı ve AI butonu gizlensin (dağınıklık olmasın).
-     Ancak NOT İÇERİĞİ varsa, salt-okunur bir kart olarak görünür kalsın. */
+  /* Hide the note toggle, edit field and AI button in presentation mode
+     to keep the slide clean. If the feature already has note CONTENT,
+     it is still shown below as a read-only card. */
   body.presentation-mode .feature-note-toggle,
   body.presentation-mode .feature-note,
   body.presentation-mode .feature-ai-wrap {
     display: none !important;
   }
 
-  /* Salt-okunur not kartı: normalde gizli, sunum modunda has-note feature'larında görünür */
+  /* Read-only note card: hidden by default, visible in presentation mode
+     for features that carry a saved note (.has-note). */
   .feature-note-display {
     display: none;
   }
@@ -265,16 +273,16 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
-  /* Kategori başlığı sunumda biraz daha gösterişli olsun */
+  /* Give the category header a slightly more prominent look on stage */
   body.presentation-mode .cat-header {
     background: linear-gradient(180deg, var(--surface-2), var(--surface));
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
   }
-  /* Sunum modunda üst sabit çubuk için içerik üstten boşluk al */
+  /* Reserve top padding so the fixed context bar does not cover content */
   body.presentation-mode section.category {
     padding-top: 80px;
   }
-  /* Dar ekranlarda tek sütun, padding küçült */
+  /* Narrow screens: collapse to a single column and tighten padding */
   @media (max-width: 700px) {
     body.presentation-mode .feature-list {
       grid-template-columns: 1fr;
@@ -336,7 +344,9 @@
     color: var(--accent-2);
   }
 
-  /* AI prompt kopyala, wrapper, ana buton, format seçenekleri */
+  /* AI prompt copy block: wrapper, primary button, and format options
+     (plain Turkish text vs. JSON). Used both in normal and presentation
+     mode, although hidden on stage by the rule above. */
   .feature-ai-wrap {
     display: inline-flex;
     align-items: center;

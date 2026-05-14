@@ -1,30 +1,30 @@
-/* ==================== ÇOKLU PROJE YÖNETİMİ ====================
-   Kullanıcı aynı anda 20'ye kadar ayrı proje (ör. "ChefOl iOS", "Liman Takibi")
-   tutabilir. Her proje kendi framework'ünü, işaretlerini, notlarını, kategori
-   collapse durumunu, kutlama bayraklarını, viewMode/viewFilter'ını ve kilit
-   durumunu izole biçimde saklar. Tema ve dil global kalır.
+/* ==================== MULTI-PROJECT MANAGEMENT ====================
+   The user can keep up to 20 separate projects at once (e.g. "ChefOl iOS",
+   "Liman Takibi"). Each project stores its own framework, backend, checkbox
+   state, notes, collapsed categories, celebration flags, viewMode/viewFilter,
+   and lock state in isolation. Theme and language stay global.
 
-   Veri şeması (localStorage["mobil_kontrol_projects_v2"]):
+   Data schema (localStorage["mobil_kontrol_projects_v2"]):
      {
        version: 1,
        activeId: "proj_xxx",
        projects: [
          {
            id: "proj_xxx",
-           name: "İlk Projem",
+           name: "My First Project",
            createdAt: "2026-05-10T...",
            updatedAt: "2026-05-10T...",
            data: {
              framework: "flutter" | null,
              backend: "firebase" | "supabase" | "noBackend" | ... | null,
-             state: { ...checkbox işaretleri... },
-             notes: { ...madde notları... },
+             state: { ...checkbox state... },
+             notes: { ...per-item notes... },
              collapsed: ["cat-01", ...],
              celebrations: { mvp:true, release:false, total:false },
              viewMode: "mvp" | "release" | "both",
              viewFilter: "all" | "pending" | "done",
              lockState: false,
-             collapseInit: true   // tüm kategorilerin ilk-açılış-kapalı bayrağı
+             collapseInit: true   // "first-open collapse all categories" flag
            }
          },
          ...
@@ -36,8 +36,8 @@ const PROJECTS_KEY = "mobil_kontrol_projects_v2";
 const PROJECTS_LIMIT = 20;
 const PROJECT_NAME_MAX = 60;
 
-/* Eski tek-proje sürümünden gelen anahtarlar — yalnızca migration için okunur,
-   migration başarılı olunca silinir. */
+/* Keys from the old single-project version: read only during migration and
+   removed once migration succeeds. */
 const LEGACY_KEYS = {
   state:        "mobil_kontrol_state_v1",
   notes:        "mobil_kontrol_notes_v1",
@@ -73,8 +73,9 @@ function emptyProjectData() {
   };
 }
 
-/* "İlk Projem" / "My First Project" — i18n hazır olunca lokalize, değilse TR fallback.
-   migrate() init sırasında çağrılır; t() o anda hazır olabilir. */
+/* "İlk Projem" / "My First Project": localized when i18n is ready, otherwise
+   a Turkish fallback. migrate() runs during init, by which time t() is
+   typically available. */
 function defaultProjectName() {
   if (typeof t === "function") {
     const v = t("proj.firstName.default");
@@ -99,22 +100,23 @@ function saveProjectsToStorage() {
   try { localStorage.setItem(PROJECTS_KEY, JSON.stringify(projectsStore)); } catch {}
 }
 
-/* Migration: v1 anahtarlarındaki tek-proje verisi varsa, "İlk Projem" adıyla
-   tek bir proje olarak v2 yapısına taşınır. Yoksa boş bir store oluşturulur
-   (kullanıcı welcome akışında kendi projesini oluşturacak). */
+/* Migration: if single-project data exists under v1 keys, it is migrated
+   into the v2 structure as a single project named "İlk Projem". Otherwise
+   an empty store is created (the user will create their own project during
+   the welcome flow). */
 function migrateLegacyIfNeeded() {
   const existing = loadProjectsFromStorage();
   if (existing) {
     projectsStore = existing;
-    /* Şema sağlamlık kontrolü: activeId mevcut bir projeye işaret etmeli */
+    /* Schema sanity check: activeId must point at an existing project. */
     if (projectsStore.activeId && !projectsStore.projects.find(p => p.id === projectsStore.activeId)) {
       projectsStore.activeId = projectsStore.projects[0]?.id || null;
       saveProjectsToStorage();
     }
-    /* v2 → v2.1 forward-compat: backend alanı eklenmeden önce oluşmuş projeler
-       bu alanı taşımıyor. Eski davranış Firebase odaklıydı, bu yüzden eksik
-       backend alanını "firebase" olarak doldur — kullanıcı listede aynı
-       maddeleri görmeye devam etsin. Daha sonra istediği zaman değiştirebilir. */
+    /* v2 to v2.1 forward-compat: projects created before the backend field
+       existed do not carry one. The old behavior was Firebase-centric, so
+       fill the missing backend with "firebase" to keep the same items
+       visible. The user can change it later. */
     let migrated = false;
     projectsStore.projects.forEach(p => {
       if (!p.data) return;
@@ -146,8 +148,8 @@ function migrateLegacyIfNeeded() {
     const v = localStorage.getItem(LEGACY_KEYS.framework);
     if (v === "flutter" || v === "reactNative" || v === "swift" || v === "kotlin" || v === "expo" || v === "pwa") {
       legacyData.framework = v;
-      /* v1'de backend seçimi yoktu; mevcut tek backend Firebase'ti. Geri
-         uyumluluk için Firebase varsay. */
+      /* v1 had no backend picker; the only backend was Firebase. Assume
+         Firebase for backwards compatibility. */
       legacyData.backend = "firebase";
       hasLegacy = true;
     }
@@ -188,17 +190,17 @@ function migrateLegacyIfNeeded() {
       }]
     };
     saveProjectsToStorage();
-    /* Migration başarılı; eski anahtarları temizle */
+    /* Migration succeeded; remove the old keys. */
     try { Object.values(LEGACY_KEYS).forEach(k => localStorage.removeItem(k)); } catch {}
   } else {
-    /* Hiç veri yok, gerçek ilk ziyaret. Welcome akışı projeyi oluşturacak. */
+    /* No data at all: a true first visit. The welcome flow will create the project. */
     projectsStore = { version: 1, activeId: null, projects: [] };
   }
 }
 
 migrateLegacyIfNeeded();
 
-/* ==================== AKTİF PROJE ERİŞİMİ ==================== */
+/* ==================== ACTIVE PROJECT ACCESS ==================== */
 
 function getActiveProject() {
   if (!projectsStore || !projectsStore.activeId) return null;
@@ -214,7 +216,8 @@ function getActiveProjectId() {
   return projectsStore ? projectsStore.activeId : null;
 }
 
-/* getProjectField: aktif projenin data.X alanını okur. Aktif proje yoksa undefined. */
+/* getProjectField: read data.<key> from the active project. Returns
+   undefined when no project is active. */
 function getProjectField(key) {
   const data = getActiveProjectData();
   if (!data) return undefined;
@@ -251,10 +254,11 @@ function projectExistsByName(name, excludeId) {
   return projectsStore.projects.some(p => p.id !== excludeId && p.name.trim().toLowerCase() === norm);
 }
 
-/* Proje oluşturur ve store'a yazar. Aktif proje değişmez (caller karar versin).
-   initialData: yeni projenin başlangıç data alanını seed etmek için (örn.
-   "+ Yeni Proje" akışında { framework: currentFramework } ile mevcut aktif
-   framework'ü inherit etmek). emptyProjectData üzerine merge edilir. */
+/* Create a project and write it to the store. The active project is not
+   changed (the caller decides whether to switch).
+   initialData seeds the new project's data field, e.g. the "+ New Project"
+   flow passes { framework: currentFramework } so the new project inherits
+   the current framework. It is merged on top of emptyProjectData. */
 function createProject(name, initialData) {
   if (!projectsStore) return { ok: false, error: "noStore" };
   const trimmed = String(name || "").trim();
@@ -267,7 +271,7 @@ function createProject(name, initialData) {
   const now = nowIso();
   const data = emptyProjectData();
   if (initialData && typeof initialData === "object") {
-    /* Sadece bilinen alanlar üzerine yaz (ekstra anahtarlar silsin) */
+    /* Only copy known fields (any extras in initialData are ignored). */
     if (initialData.framework && VALID_FRAMEWORKS.indexOf(initialData.framework) !== -1) {
       data.framework = initialData.framework;
     }
@@ -301,7 +305,7 @@ function renameProject(id, newName) {
   return { ok: true, project: proj };
 }
 
-/* Son projeyi silmeye izin vermeyiz; her zaman en az 1 proje olmalı. */
+/* Deleting the final project is not allowed: there must always be at least one. */
 function deleteProject(id) {
   if (!projectsStore) return { ok: false, error: "noStore" };
   if (projectsStore.projects.length <= 1) return { ok: false, error: "lastOne" };
@@ -310,7 +314,7 @@ function deleteProject(id) {
   const wasActive = projectsStore.activeId === id;
   projectsStore.projects.splice(idx, 1);
   if (wasActive) {
-    /* En son güncellenmiş diğer projeye geç */
+    /* Switch to the most recently updated remaining project. */
     const sorted = [...projectsStore.projects].sort((a, b) =>
       String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""))
     );
@@ -329,19 +333,20 @@ function setActiveProjectId(id) {
   return true;
 }
 
-/* "Tüm Sistem" sıfırlama tarafından çağrılır: tüm projeler silinir, store boşalır.
-   Ardından location.reload yapılınca welcome akışı yeniden tetiklenir. */
+/* Called by the "Whole System" reset: every project is removed and the store
+   is emptied. The subsequent location.reload re-triggers the welcome flow. */
 function resetAllProjects() {
   projectsStore = { version: 1, activeId: null, projects: [] };
   try { localStorage.removeItem(PROJECTS_KEY); } catch {}
 }
 
-/* Aktif proje değiştiğinde (welcome'da yeni proje yaratıldığında veya kullanıcı
-   proje yöneticisinden başka projeye geçtiğinde) çağrılır. In-memory state
-   değişkenlerini yeniden yükler ve UI'ı baştan render eder. Tüm bağımlı
-   fonksiyonlar global scope'ta tanımlı; çağrı anında hepsi hazır olur. */
+/* Called when the active project changes (a new project created in welcome,
+   or the user switching to another project from the project manager).
+   Reloads every in-memory state variable and re-renders the UI from
+   scratch. All dependents are defined at global scope and ready by the time
+   this runs. */
 function reloadActiveProjectAndRender() {
-  /* In-memory state'i yeniden yükle */
+  /* Reload in-memory state. */
   state            = loadState();
   notes            = loadNotes();
   collapsedCats    = loadCollapsed();
@@ -352,11 +357,11 @@ function reloadActiveProjectAndRender() {
   lockState        = loadLockState();
   celebrations     = loadCelebrations();
 
-  /* Yeni projenin ilk açılışı ise tüm kategorileri varsayılan olarak kapat */
+  /* On the new project's first open, collapse every category by default. */
   if (typeof initDefaultCollapsed === "function") initDefaultCollapsed();
 
-  /* UI'ı yeniden render: framework metinleri, içerik, click handler'lar,
-     ilerleme barları, görünürlük (filter), kilit görünümü */
+  /* Re-render the UI: framework labels, content, click handlers, progress
+     bars, visibility (filters), and lock appearance. */
   if (typeof applyFrameworkUI === "function")     applyFrameworkUI();
   if (typeof applyBackendUI === "function")       applyBackendUI();
   if (typeof updateProjectPill === "function")     updateProjectPill();

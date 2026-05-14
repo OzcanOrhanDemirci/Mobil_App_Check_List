@@ -3,7 +3,8 @@
    for contributors. Sibling files: 05-modals-feedback.css, 05-hero-pills.css,
    05-modals-welcome.css, 05-modals-install.css, 05-modals-projects.css. */
 
-  /* Modal sistemi */
+  /* Modal system: shared overlay, backdrop, content surface and header
+     styles used by every modal in the app (help, reset, confirm, etc.). */
   .modal {
     position: fixed;
     inset: 0;
@@ -36,8 +37,11 @@
     border-radius: 14px;
     box-shadow: var(--shadow);
     animation: modalSlide 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    /* Yeni stacking context: ic z-index'ler buranın icinde calissin,
-       ust modal stacking context'ine kacmasin */
+    /* New stacking context (isolation: isolate). Inner z-index values
+       (sticky header, body content, dropdowns) are confined to this
+       container and cannot leak above sibling modal surfaces or the
+       backdrop. Without this, the help modal's sticky header could
+       paint above an unrelated modal that opens on top of it. */
     isolation: isolate;
   }
   @keyframes modalFade {
@@ -86,9 +90,11 @@
     background: var(--surface-3);
   }
 
-  /* Yardım modalı başlığında, kapatma butonunun solunda anlık dil değiştirici.
-     Sadece ilk karşılama akışının 1. adımından (dil seçimi) açıldığında görünür.
-     Global currentLang'i değiştirmez; sadece help-modal içeriğini geçici olarak değiştirir. */
+  /* Help modal header: ad-hoc language switcher placed to the left of
+     the close button. Only visible when the help modal is opened from
+     step 1 of the welcome flow (language selection). It does NOT change
+     the global currentLang; it only retranslates the help modal body
+     so the user can preview both languages before committing. */
   .modal-head-right {
     display: inline-flex;
     align-items: center;
@@ -151,13 +157,17 @@
     font-weight: 700;
   }
 
-  /* ==================== YARDIM ACCORDION (açılır/kapanır bölümler) ====================
-     Yardım modal'ı section'lara bölünmüş; her section bağımsız açılıp kapanır.
-     Varsayılan: hepsi kapalı. Başlığa tıklama o section'ı toggle eder.
-     Modal başlığının altında "Tümünü Aç / Kapat" şerit kontrolleri vardır. */
+  /* ==================== HELP ACCORDION (collapsible sections) ====================
+     The help modal is split into independent sections; each one expands
+     and collapses on its own. Default state: all collapsed (the user
+     opens only what they need to keep the modal short). Clicking a
+     section's h3 toggles it. A strip of "Expand all / Collapse all"
+     controls sits directly below the modal header. */
 
-  /* Help modal'ında layout'u flex-column'a çevir ki header + controls sabit
-     kalsın, sadece body scroll olsun (iki sticky element çakışmasın). */
+  /* Switch the help modal to a flex column so the header and accordion
+     controls stay pinned while only the body scrolls. Using two
+     position: sticky elements (header and controls) caused them to
+     overlap on scroll; this layout sidesteps that entirely. */
   #helpModal .modal-content {
     display: flex;
     flex-direction: column;
@@ -186,7 +196,7 @@
     padding: 6px 12px;
   }
 
-  /* Yardım section'ları accordion mantığında çalışır */
+  /* Help sections behave as accordion panels */
   #helpModalBody section.help-section {
     margin-bottom: 8px;
     border: 1px solid var(--border);
@@ -198,7 +208,7 @@
   #helpModalBody section.help-section:hover {
     border-color: var(--accent);
   }
-  /* Başlık (h3) tıklanabilir tetikleyici olur */
+  /* Section heading (h3) acts as the clickable accordion trigger */
   #helpModalBody section.help-section > h3 {
     margin: 0;
     padding: 12px 14px;
@@ -217,7 +227,7 @@
   #helpModalBody section.help-section > h3:hover {
     background: var(--surface-2);
   }
-  /* Chevron, JS tarafında eklenir (.help-section-chevron) */
+  /* The chevron element (.help-section-chevron) is injected from JS */
   .help-section-chevron {
     flex-shrink: 0;
     font-size: 14px;
@@ -227,11 +237,12 @@
   #helpModalBody section.help-section.collapsed .help-section-chevron {
     transform: rotate(-90deg);
   }
-  /* Collapsed iken h3 dışında her şey gizlenir */
+  /* When collapsed, hide every direct child except the h3 trigger */
   #helpModalBody section.help-section.collapsed > *:not(h3) {
     display: none;
   }
-  /* Açıkken içerik için padding (h3 zaten kendi padding'ine sahip) */
+  /* When expanded, pad the body content (the h3 trigger already has
+     its own padding, so it is excluded from this rule). */
   #helpModalBody section.help-section > *:not(h3) {
     padding-left: 14px;
     padding-right: 14px;
@@ -291,7 +302,10 @@
     flex-shrink: 0;
   }
 
-  /* Reset scope seçim modalı (2 aşamalı sıfırlama akışı, 1. adım) */
+  /* Reset scope picker modal: step 1 of the two-step reset flow. The
+     user selects which scope to clear (project notes, project selections,
+     or the whole system); step 2 is the confirm modal below. The
+     "system" option disables the other two via :has(input:disabled). */
   .modal-content.modal-reset-scope {
     max-width: 520px;
   }
@@ -343,7 +357,8 @@
   .reset-scope-option.danger input[type="checkbox"] {
     accent-color: #dc2626;
   }
-  /* Disabled durumda (system seçildiğinde diğer 2 disable olur) */
+  /* Disabled state: when "system" is chosen the other two scope
+     options are disabled (selecting system implies them anyway). */
   .reset-scope-option:has(input:disabled) {
     opacity: 0.45;
     cursor: not-allowed;
@@ -386,7 +401,9 @@
     border-top: 1px solid var(--border);
   }
 
-  /* Confirm modalı */
+  /* Confirm modal: a small centered dialog with an icon, title,
+     message and action buttons. Used for destructive confirmations
+     and the framework-switch flow. */
   .modal-content.modal-confirm {
     max-width: 420px;
     padding: 28px 24px 22px;
@@ -423,12 +440,15 @@
     justify-content: center;
     gap: 10px;
   }
-  /* Framework switch confirm yüksek bilgi yoğunluğunda; daha geniş modal */
+  /* The framework-switch confirm is information-dense (from/to cards
+     plus an effects list), so widen the modal for it. */
   .modal-content.modal-confirm.modal-confirm--wide {
     max-width: 520px;
   }
 
-  /* Framework değişimi onay UI'ı: mevcut → yeni kart akışı + etki listesi */
+  /* Framework-switching confirm UI: a "from card -> to card" flow on
+     top, followed by a color-coded effects list explaining what gets
+     cleared and what is kept when the user changes framework. */
   .fw-switch-confirm {
     text-align: left;
     display: flex;
@@ -499,7 +519,8 @@
     flex-shrink: 0;
   }
 
-  /* Etki listesi: işaretleri sıfırlanır vs korunur (renk-kodlu) */
+  /* Effects list: color-coded rows showing which marks the framework
+     switch clears (red) versus which are preserved (green). */
   .fw-switch-effects {
     list-style: none !important;
     padding: 0 !important;

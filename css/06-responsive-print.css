@@ -2,20 +2,21 @@
     .wrap { padding: 16px; }
     header.hero { padding: 24px 18px; }
 
-    /* === Sabitlenmiş üst alanın kompakt mobil düzeni ===
-       Hedef: yaklaşık 95-105px sabit yükseklik. Eylem butonları ≡ düğmesinin
-       arkasına gizlenir, sadece arama + 3 mini ilerleme barı sabit görünür.
-       Kullanıcı ≡'e basınca tüm aksiyonlar açılır (yine sticky alan içinde). */
+    /* === Compact mobile layout for the sticky top area ===
+       Target: roughly 95 to 105px fixed height. Action buttons collapse behind
+       the hamburger toggle; only the search input and the 3 mini progress bars
+       stay visible. Pressing the toggle reveals all actions inline within the
+       sticky area (no overlay or dropdown). */
 
     .sticky-bar {
       margin: 12px 0 14px;
       gap: 8px;
     }
 
-    /* Mobilde sticky alanı tam opak yap; backdrop-filter blur sayfa
-       içeriğinin sticky alanın altından sızıp başlıkları/etiketleri
-       okunamaz hale getiriyordu. Solid surface-2 hem ayrımı korur
-       hem performansı iyileştirir. */
+    /* Force fully opaque sticky surfaces on mobile. The backdrop-filter blur
+       was letting page content bleed through and made the underlying titles
+       and labels unreadable. A solid surface-2 fill preserves visual
+       separation and is cheaper to paint on low-end devices. */
     .sticky-bar > .toolbar,
     .sticky-bar > .progress-card {
       background: var(--surface-2);
@@ -23,7 +24,7 @@
       -webkit-backdrop-filter: none;
     }
 
-    /* Toolbar: arama + ≡ düğmesi tek satırda */
+    /* Toolbar: search input and the hamburger button share a single row. */
     .toolbar {
       grid-template-columns: 1fr auto;
       grid-template-rows: auto;
@@ -33,7 +34,7 @@
     .search { padding: 7px 12px; }
     .search input { font-size: 14px; }
 
-    /* ≡ Eylem aç/kapa düğmesi */
+    /* Hamburger actions toggle */
     .actions-toggle {
       display: inline-flex;
       align-items: center;
@@ -62,7 +63,8 @@
     .toolbar.actions-open .actions-toggle .icon-menu { display: none; }
     .toolbar.actions-open .actions-toggle .icon-close { display: inline-block; }
 
-    /* Aksiyon butonları: varsayılan gizli, ≡'e basınca alt satırda akıştır */
+    /* Action buttons: hidden by default; when the toggle is open they flow
+       onto a second row below the search input. */
     .actions {
       display: none;
       grid-column: 1 / -1;
@@ -82,9 +84,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* action-group kutusunu mobilde yok say (display: contents); tüm butonlar
-       doğrudan .actions flex container'ına çocuk olur, satıra sığabildikleri
-       kadar yan yana dizilirler. role="group" ve aria-label DOM'da kalır. */
+    /* Collapse the .action-group wrapper on mobile via display: contents so
+       all buttons become direct children of the .actions flex container and
+       wrap as many per row as will fit. The role="group" / aria-label
+       attributes remain in the DOM for assistive technology. */
     .action-group {
       display: contents;
     }
@@ -98,7 +101,7 @@
       white-space: nowrap;
     }
 
-    /* === İlerleme kartı: 3 sütunlu kompakt hizalama === */
+    /* === Progress card: 3-column compact alignment === */
     .progress-card {
       padding: 9px 12px;
     }
@@ -131,7 +134,7 @@
     .progress-label .lbl-extra { display: none; }
     .bar { height: 5px; }
 
-    /* === Hero kontrolleri: mobilde dikey istif === */
+    /* === Hero controls: vertical stack on mobile === */
     .hero-controls {
       flex-direction: column;
       align-items: stretch;
@@ -165,7 +168,7 @@
       min-width: 0;
     }
 
-    /* === Footer baslik: dekoratif cizgileri kaldir, dengeli kirilim === */
+    /* === Footer title: drop the decorative side rules and use balanced wrap === */
     footer .foot-title::before,
     footer .foot-title::after {
       display: none;
@@ -177,7 +180,7 @@
       line-height: 1.35;
     }
 
-    /* === Diğer mobil ayarlar (önceki davranışla aynı) === */
+    /* === Remaining mobile tweaks (unchanged from prior behaviour) === */
     .cat-header { padding: 18px; flex-wrap: wrap; }
     .cat-header .num { width: 100%; }
     .cat-progress { margin-left: 0; text-align: left; }
@@ -186,25 +189,33 @@
     .level-tag { min-width: 72px; font-size: 9.5px; padding: 2px 7px; }
   }
 
-  /* Yazdırma sayfası boyutu ve marjları */
+  /* ==================== PRINT: PAGE BOX ====================
+     Top/bottom and left/right margins for the @page box. The 1.6cm vertical
+     and 1.4cm horizontal margins are tuned for readable density on A4: they
+     leave enough breathing room around the content while still fitting a
+     useful amount of checklist items per page. */
   @page {
     margin: 1.6cm 1.4cm;
   }
 
-  /* Print-only alt bilgi (sadece yazdırmada görünür) */
+  /* Print-only footer band. Hidden in the normal viewport; the @media print
+     block below promotes it to a table-footer-group so the browser repeats
+     it on every printed page. */
   .print-footer {
     display: none;
   }
 
   @media print {
-    /* Renklerin yazdırmada korunmasını zorla */
+    /* Force the browser to keep declared colours when printing (otherwise
+       most engines strip backgrounds and recolour text for ink saving). */
     * {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
       color-adjust: exact !important;
     }
 
-    /* Body'yi tablo gibi yap; print-footer her sayfada altta tekrarlansın */
+    /* Restructure body as a CSS table so the print-footer can act as a
+       table-footer-group and repeat at the bottom of every printed page. */
     html, body {
       background: white !important;
       color: #000 !important;
@@ -223,7 +234,7 @@
       margin: 0 !important;
     }
 
-    /* Alt bilgi: her sayfada altta tekrarlanır */
+    /* Footer band: repeats at the bottom of every printed page. */
     .print-footer {
       display: table-footer-group !important;
       text-align: center;
@@ -234,7 +245,7 @@
       border-top: 1px solid #d1d5db;
     }
 
-    /* Etkileşimli alanları gizle */
+    /* Hide all interactive chrome (controls, banners, modals, toasts). */
     .sticky-bar,
     .toolbar, .cat-nav, .actions, .progress-card,
     .install-banner,
@@ -246,7 +257,8 @@
       display: none !important;
     }
 
-    /* Yazdırmada sunum modu da olsa normal layout uygula */
+    /* Even if presentation mode is active, fall back to normal layout for
+       print so every section is visible in the document, not just one slide. */
     body.presentation-mode {
       overflow: visible !important;
     }
@@ -267,7 +279,7 @@
     body.presentation-mode .progress-card {
       display: block !important;
     }
-    /* Collapse durumunu yazdırmada açık göster */
+    /* Force collapsed categories to render expanded when printing. */
     .category.collapsed .feature-list {
       display: block !important;
     }
@@ -275,7 +287,7 @@
       cursor: default !important;
     }
 
-    /* Tüm metinleri siyaha çevir */
+    /* Force all body text to black for maximum print legibility. */
     h1, h2, h3, h4, p, span, strong, li, td, th,
     .feature-desc, .feature-head h3,
     .progress-label, .progress-label .num,
@@ -285,13 +297,13 @@
       color: #000 !important;
     }
 
-    /* Vurgu renkleri korunsun (turuncu) */
+    /* Keep brand accent (orange) on emphasis chrome. */
     .eyebrow,
     .cat-header .num {
       color: #ea580c !important;
     }
 
-    /* H1 içindeki gradient'i düz turuncuya çevir */
+    /* Flatten the gradient text inside H1 to a solid orange for print. */
     h1 em {
       background: none !important;
       -webkit-background-clip: unset !important;
@@ -300,7 +312,8 @@
       color: #ea580c !important;
     }
 
-    /* ID ve hint biraz koyu gri (siyah olmasa da okunaklı) */
+    /* Feature ID and hint text use dark grey instead of pure black to keep
+       the hierarchy readable without dominating the page. */
     .feature-head .id {
       color: #4b5563 !important;
     }
@@ -308,14 +321,14 @@
       color: #374151 !important;
     }
 
-    /* Code etiketi okunaklı */
+    /* Make inline <code> readable on paper: black text on light grey fill. */
     code {
       color: #000 !important;
       background: #f3f4f6 !important;
       border: 1px solid #e5e7eb !important;
     }
 
-    /* MVP rozeti yeşil */
+    /* MVP badge: green palette. */
     .level.mvp .level-tag {
       color: #15803d !important;
       background: #ecfdf5 !important;
@@ -325,7 +338,7 @@
       border-left: 3px solid #16a34a !important;
     }
 
-    /* Release rozeti mavi */
+    /* Release badge: blue palette. */
     .level.release .level-tag {
       color: #1d4ed8 !important;
       background: #eff6ff !important;
@@ -335,7 +348,7 @@
       border-left: 3px solid #2563eb !important;
     }
 
-    /* İşaretli kutular (renkleri korunsun) */
+    /* Checkbox boxes: keep their MVP/Release colours when checked. */
     .check {
       background: white !important;
       border-color: #9ca3af !important;
@@ -352,7 +365,7 @@
       border-color: #fff !important;
     }
 
-    /* İşaretli satırların hafif tonlu arka planı */
+    /* Checked rows: very light tinted background so the row stands out. */
     .level.checked.mvp {
       background: #ecfdf5 !important;
     }
@@ -360,7 +373,7 @@
       background: #eff6ff !important;
     }
 
-    /* Konteyner stilleri */
+    /* Container styling: flat white surfaces with light borders for print. */
     header.hero {
       background: white !important;
       border: 1px solid #d1d5db !important;
@@ -369,7 +382,8 @@
       display: none !important;
     }
 
-    /* Sayfa bölünmesi kuralları (içerik mantıklı yerden bölünsün) */
+    /* Page-break rules: let categories break naturally so content flows
+       through the document instead of forcing every category to a new page. */
     section.category {
       page-break-inside: auto !important;
       break-inside: auto !important;
@@ -377,14 +391,15 @@
       background: white !important;
     }
 
-    /* Madde (feature) tek parça kalsın, ortadan bölünmesin */
+    /* Keep a single feature card on one page; never split mid-card. */
     .feature {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
       border-bottom: 1px solid #e5e7eb !important;
     }
 
-    /* Kategori başlığı sayfanın altına yalnız kalmasın */
+    /* Prevent a category header from ending up alone at the bottom of a
+       page with no content under it (orphan control). */
     .cat-header {
       page-break-after: avoid !important;
       break-after: avoid !important;
@@ -394,7 +409,8 @@
       border-bottom: 1px solid #d1d5db !important;
     }
 
-    /* Feature başlık ve açıklaması seviye listesinden kopmasın */
+    /* Keep the feature title and description glued to their level list so
+       a heading never gets separated from its content. */
     .feature-head,
     .feature-desc,
     h2, h3 {
@@ -402,7 +418,7 @@
       break-after: avoid !important;
     }
 
-    /* Tek bir seviye satırı (rozet) bölünmesin */
+    /* A single level row (MVP/Release badge + text) stays unbroken. */
     .level {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -410,16 +426,17 @@
       border: 1px solid #e5e7eb !important;
     }
 
-    /* Hero (kapak) tek sayfada kalsın */
+    /* Hero (cover) stays on a single page. */
     header.hero {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
 
-    /* Hero kontrolleri (filtre pill'leri + framework seçici) yazdırmada gizlensin */
+    /* Hide hero controls (level filter pills + framework picker) on print. */
     .hero-controls { display: none !important; }
 
-    /* Madde başlığı ve ID düzeni, yazdırmada kesilmeyi önler */
+    /* Feature title and ID layout: render inline so the heading reflows
+       cleanly without odd line breaks between the ID and the title. */
     article.feature .feature-head {
       display: block !important;
       margin-bottom: 8px !important;
@@ -445,7 +462,7 @@
       color: #000 !important;
     }
 
-    /* Kategori başlığı da kesilmeye karşı korumalı */
+    /* Category header: allow safe wrapping to avoid mid-word overflow. */
     .cat-header {
       flex-wrap: wrap !important;
     }
@@ -459,24 +476,24 @@
       min-width: 0 !important;
     }
 
-    /* Feature padding'i biraz azaltarak kenar boşluğunu artır */
+    /* Slightly reduce feature padding so more usable margin remains. */
     .feature {
       padding: 14px 16px !important;
     }
   }
 
-  /* ==================== NASIL YAPILIR? PDF MODU ====================
-     printBtn → modal → "Nasıl Yapılır? Rehberi" seçildiğinde JS body'ye
-     .print-howto class'ını ekler ve window.print() tetikler. Bu blok sadece
-     bu modda devreye girer: ön yüz (kontrol listesi seviyeleri, checkbox vb.)
-     gizlenir, arka yüz (how-to rehberi) sayfa için yeniden biçimlendirilir.
-     "Normal" yazdırma (checklist) bundan etkilenmez — yukarıdaki @media print
-     bloğu olduğu gibi çalışmaya devam eder.
+  /* ==================== HOW-TO PDF MODE ====================
+     When the user picks "How-To Guide" from the print modal, JS adds the
+     .print-howto class to <body> and then calls window.print(). This block
+     only activates in that mode: the card front (checklist levels, checkbox,
+     etc.) is hidden and the card back (the how-to guide) is reformatted for
+     paper. Normal checklist printing is not affected; the @media print block
+     above keeps working independently.
 
-     TASARIM HEDEFİ: sayfa başına çok madde sığsın, her madde belirgin bir
-     dikdörtgen kart (border + radius) olarak çıksın, sayfalar dolu görünsün,
-     "Hazırlayan" bilgisi tekrarlanmasın. Bu nedenle font ve aralıklar
-     kontrol-listesi yazdırmasına göre belirgin biçimde küçültüldü. */
+     DESIGN GOAL: fit a lot of items per page, render each item as a clearly
+     bounded rounded card (border + radius), keep pages visually full, and
+     avoid repeating the "Prepared by" line. Fonts and spacing are noticeably
+     tighter here than in the regular checklist print. */
   @media print {
     body.print-howto * {
       -webkit-print-color-adjust: exact !important;
@@ -484,7 +501,8 @@
       color-adjust: exact !important;
     }
 
-    /* Backface gizleme override: bu modda back'i göstereceğiz */
+    /* Override the 3D flip backface hiding: in this mode we want the back
+       face (the how-to guide) visible and positioned in normal flow. */
     body.print-howto .feature-inner > .feature-back {
       display: block !important;
       position: static !important;
@@ -503,7 +521,9 @@
       display: block !important;
     }
 
-    /* Flip butonu, AI sor / Not ekle, kategori ilerleme yüzdesi — hepsi gizli */
+    /* Hide everything not useful in the how-to PDF: the flip button, the
+       "Ask AI" / "Add note" actions, the inline notes, the front-face level
+       list, the per-category progress percent, and the repeating footer. */
     body.print-howto .feature-flip-btn,
     body.print-howto .feature-actions,
     body.print-howto .feature-note,
@@ -513,11 +533,12 @@
       display: none !important;
     }
 
-    /* Footer'da "HAZIRLAYAN · Özcan" pill + bir alttaki print-footer aynı
-       bilgiyi iki kez gösteriyordu (özellikle son sayfada). Print-footer'ı
-       gizledik; footer içindeki HAZIRLAYAN pill yeterli. */
+    /* The footer "PREPARED BY / Ozcan" pill plus the table-footer print band
+       below it duplicated the same line on every page (most visibly on the
+       last page). We hide the print-footer here; the pill inside the regular
+       footer is enough. */
 
-    /* ----- Hero (kapak) küçült ----- */
+    /* ----- Hero (cover): shrink for the how-to PDF ----- */
     body.print-howto header.hero {
       padding: 14px 18px !important;
       margin: 0 0 12px !important;
@@ -541,7 +562,7 @@
       display: none !important;
     }
 
-    /* ----- Kategori: dış kutu yok, başlık ince banner ----- */
+    /* ----- Category: no outer box; the header becomes a thin banner ----- */
     body.print-howto section.category {
       border: 0 !important;
       background: transparent !important;
@@ -583,7 +604,7 @@
       gap: 6px !important;
     }
 
-    /* ----- Madde kartları: belirgin border + rounded, kompakt ----- */
+    /* ----- Feature cards: prominent border + rounded corners, compact ----- */
     body.print-howto .feature {
       padding: 9px 12px !important;
       border: 1px solid #d1d5db !important;
@@ -597,7 +618,7 @@
       border-bottom: 1px solid #d1d5db !important;
     }
 
-    /* Madde başlığı kompakt */
+    /* Compact feature heading on the back face. */
     body.print-howto .feature-back .feature-head {
       margin-bottom: 6px !important;
       display: block !important;
@@ -616,7 +637,7 @@
       display: inline !important;
     }
 
-    /* How-To grid: sıkı yerleşim */
+    /* How-To grid: tight 2-column layout (tag column + text column). */
     body.print-howto .howto-body {
       margin-top: 2px !important;
     }
@@ -635,7 +656,7 @@
       margin-top: 8px !important;
     }
 
-    /* MVP / Release chip'leri kompakt */
+    /* MVP / Release chips: compact pill sizing for the PDF. */
     body.print-howto .howto-tag {
       height: 18px !important;
       line-height: 16px !important;
@@ -656,7 +677,7 @@
       border: 1px solid #93c5fd !important;
     }
 
-    /* How-to metni ve adım listeleri ----- */
+    /* ----- How-to body text and step lists ----- */
     body.print-howto .howto-text {
       font-size: 9pt !important;
       line-height: 1.4 !important;
@@ -724,7 +745,8 @@
       font-weight: 700 !important;
       border: 1px solid #d1d5db !important;
     }
-    /* ✓ tikli adım: PDF'te "yapıldı" görünümü; MVP yeşil, Release mavi */
+    /* Checked step: renders as a "done" tick in the PDF, with the marker
+       coloured by the step's level (MVP green, Release blue). */
     body.print-howto .howto-steps > li.checked::before {
       content: "✓" !important;
       color: #fff !important;
@@ -747,7 +769,7 @@
       color: #6b7280 !important;
     }
 
-    /* "Rehber yok" placeholder mesajı */
+    /* "No guide available" placeholder message. */
     body.print-howto .howto-empty {
       font-size: 8.5pt !important;
       color: #6b7280 !important;
@@ -755,21 +777,23 @@
       margin: 2px 0 0 !important;
     }
 
-    /* Sayfanın aşağı bölünmesini optimize et: container kuralları gevşek
-       (kategoriler arası serbest), sadece feature içleri sıkı korumalı */
+    /* Optimise downward page flow: keep container rules relaxed so the
+       browser can break freely between categories, while individual feature
+       cards stay tightly protected against mid-card splits. */
     body.print-howto section.category {
       page-break-inside: auto !important;
       break-inside: auto !important;
     }
   }
 
-  /* ==================== HAREKETI AZALT (prefers-reduced-motion) ====================
-     Kullanici isletim sistemi duzeyinde "hareketi azalt" tercihini etkinlestirdiginde
-     (Windows: Ayarlar > Erisilebilirlik > Gorsel efektler / macOS: Sistem Ayarlari >
-     Erisilebilirlik > Ekran > Hareketi azalt) tum gecisler ve animasyonlar pratik
-     olarak anlik hale gelir. Geri bildirim (hover, focus, checked state) korunur;
-     sadece hareket kaldirilir. Bu blok en son yuklenen CSS dosyasinda yer aldigi
-     icin onceki tum motion kurallarini override eder. */
+  /* ==================== REDUCED MOTION (prefers-reduced-motion) ====================
+     When the user has the OS-level "reduce motion" preference enabled
+     (Windows: Settings > Accessibility > Visual effects; macOS: System
+     Settings > Accessibility > Display > Reduce motion), all transitions
+     and animations become effectively instantaneous. Visual feedback
+     (hover, focus, checked state) is preserved; only the movement is
+     removed. This block lives in the last-loaded stylesheet so it
+     overrides every prior motion rule. */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -780,18 +804,20 @@
       scroll-behavior: auto !important;
     }
 
-    /* Kart cevirme (front <-> back): 3D rotateY animasyonunu anlik gecise indirger.
-       transform-style ve backface-visibility kurallari korunur, sadece sure sifirlanir.
-       Yukseklik gecisi de anlik olur ki JS'in explicit height yonetimi gorunmesin. */
+    /* Card flip (front to back): collapse the 3D rotateY animation to an
+       instant swap. transform-style and backface-visibility stay in effect;
+       only the duration is zeroed. The height transition also becomes
+       instant so the JS-driven explicit-height step is never visible. */
     .feature-inner {
       transition-duration: 0.01ms !important;
     }
   }
 
-  /* ==================== ERISILEBILIRLIK PRIMITIFLERI ====================
-     skip-link: klavye veya ekran okuyucu kullanicilari menuleri atlayip ana
-     icerige gecebilsin. Gorsel olarak ekran disinda durur, sadece odaklaninca
-     gorunur hale gelir. WCAG 2.4.1 Bypass Blocks gereksinimini karsilar. */
+  /* ==================== ACCESSIBILITY PRIMITIVES ====================
+     skip-link: lets keyboard and screen-reader users jump past the menus
+     and straight to the main content. Sits off-screen visually and only
+     becomes visible once it receives focus. Satisfies WCAG 2.4.1 Bypass
+     Blocks. */
   .skip-link {
     position: absolute;
     top: -100px;
@@ -812,8 +838,10 @@
     outline-offset: 2px;
   }
 
-  /* noscript fallback: JS kapaliysa gorunen banner. Bilingual cunku
-     uygulamanin dil degistirme mantigi JS olmadan calismaz. */
+  /* noscript fallback: banner shown when JavaScript is disabled. Kept
+     bilingual (Turkish + English) because the app's language-switching
+     logic itself requires JS, so the message has to cover both audiences
+     up front. */
   .noscript-banner {
     margin: 16px auto;
     max-width: 720px;

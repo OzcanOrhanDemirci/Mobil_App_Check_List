@@ -1,53 +1,53 @@
-/* ==================== DİL DEĞİŞTİRME (TR/EN TOGGLE) ==================== */
+/* ==================== I18N (LANGUAGE SWITCHING TR/EN) ==================== */
 function applyI18nToDom() {
-  /* data-i18n: textContent set */
+  /* data-i18n: set textContent. */
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
     const v = t(key);
     if (v && v !== key) el.textContent = v;
   });
-  /* data-i18n-html: innerHTML set (HTML içeren çeviri için) */
+  /* data-i18n-html: set innerHTML (for translations that contain HTML). */
   document.querySelectorAll("[data-i18n-html]").forEach(el => {
     const key = el.getAttribute("data-i18n-html");
     const v = t(key);
     if (v && v !== key) el.innerHTML = v;
   });
-  /* data-i18n-title: title attr */
+  /* data-i18n-title: set the title attribute. */
   document.querySelectorAll("[data-i18n-title]").forEach(el => {
     const key = el.getAttribute("data-i18n-title");
     const v = t(key);
     if (v && v !== key) el.setAttribute("title", v);
   });
-  /* data-i18n-aria-label: aria-label attr */
+  /* data-i18n-aria-label: set the aria-label attribute. */
   document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
     const key = el.getAttribute("data-i18n-aria-label");
     const v = t(key);
     if (v && v !== key) el.setAttribute("aria-label", v);
   });
-  /* data-i18n-placeholder: placeholder attr */
+  /* data-i18n-placeholder: set the placeholder attribute. */
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
     const key = el.getAttribute("data-i18n-placeholder");
     const v = t(key);
     if (v && v !== key) el.setAttribute("placeholder", v);
   });
-  /* data-i18n-attr-data-locked-msg → set custom data-* attribute */
+  /* data-i18n-attr-data-locked-msg: set the custom data-locked-msg attribute. */
   document.querySelectorAll("[data-i18n-attr-data-locked-msg]").forEach(el => {
     const key = el.getAttribute("data-i18n-attr-data-locked-msg");
     const v = t(key);
     if (v && v !== key) el.setAttribute("data-locked-msg", v);
   });
 
-  /* Help modal içeriğini doldur ve accordion davranışını yeniden kur */
+  /* Populate the help modal body and re-attach the accordion behavior. */
   const helpBody = document.getElementById("helpModalBody");
   if (helpBody && HELP_HTML[currentLang]) {
     helpBody.innerHTML = HELP_HTML[currentLang];
     if (typeof enhanceHelpAccordion === "function") enhanceHelpAccordion();
   }
 
-  /* html.lang attribute */
+  /* Update the <html lang="..."> attribute. */
   document.documentElement.setAttribute("lang", currentLang);
 
-  /* Lang toggle butonu içeriğini güncelle */
+  /* Update the language toggle button labels. */
   const langBtn = document.getElementById("langToggle");
   if (langBtn) {
     const cur = langBtn.querySelector(".lang-current");
@@ -70,24 +70,24 @@ function saveLang(l) {
 
 function applyLang() {
   applyI18nToDom();
-  /* DATA içeriği değişeceği için yeniden render */
+  /* DATA-derived content must be rebuilt in the new language. */
   if (typeof renderCategoryNav === "function") renderCategoryNav();
   if (typeof renderContent === "function") renderContent();
   if (typeof attachClickHandlers === "function") attachClickHandlers();
   if (typeof updateProgress === "function") updateProgress();
   if (typeof applyFilters === "function") applyFilters();
-  /* Tema label'ı güncel dilde olmalı */
+  /* Theme button label must follow the current language. */
   applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
-  /* Anlatım stili label'ı (Basit / Teknik <-> Simple / Technical) güncel
-     dilde olmalı. applyStyle pill'in iç metnini her zaman currentLang'a
-     göre t() ile yazar, bu yüzden mevcut style'ı yeniden uygulamak
-     etiketi anında güncellemek için yeterli. */
+  /* The explanation-style pill label (Simple / Technical) must follow the
+     current language. applyStyle always writes the pill's inner text via t()
+     against currentLang, so re-applying the current style is enough to
+     refresh the label immediately. */
   if (typeof applyStyle === "function") applyStyle(currentStyle);
-  /* Kilit butonu label'ı güncel dilde olmalı */
+  /* Lock button label must follow the current language. */
   if (typeof applyLock === "function") applyLock();
-  /* Hero framework pill (varsa label güncellenmeli) */
+  /* Hero framework pill (if present) must update its label too. */
   if (typeof applyFrameworkUI === "function") applyFrameworkUI();
-  /* Welcome modalında sefte buton label'ları — pending state'e göre dinamik */
+  /* Welcome modal CTA labels: text depends on pending selection state. */
   const welcomeLangNext = document.getElementById("welcomeLangNext");
   if (welcomeLangNext) {
     if (window.pendingLang) {
@@ -108,7 +108,7 @@ function applyLang() {
       welcomeNext.disabled = true;
     }
   }
-  /* Welcome 2. adım (proje adı) CTA'sı dil değişikliğine göre yenilensin */
+  /* Refresh the welcome step 2 (project name) CTA in the new language. */
   if (typeof updateWelcomeProjNameCta === "function") updateWelcomeProjNameCta();
 }
 

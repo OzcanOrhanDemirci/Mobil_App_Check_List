@@ -1,14 +1,14 @@
 /* ==================== PWA INSTALL ====================
-   Tarayicinin kendi yukle promptu (beforeinstallprompt event'i,
-   deferredInstallPrompt) varsa otomatik tetiklenir. Yoksa platforma
-   ozel manuel talimat modali (Android Chrome, iOS Safari, Windows
-   Edge, Mac Chrome, Mac Safari, Firefox Desktop, default) gosterilir.
-   Banner kapatma (X ile reddetme veya yukledikten sonra) localStorage
-   bayragi ile kalici; floating footer butonu banner kapaliyken
-   gorunur. initInstallBanner IIFE ilk acilista banner gorunurlugunu
-   karara baglar. */
+   If the browser exposes its native install prompt (the beforeinstallprompt
+   event, captured into deferredInstallPrompt), it is triggered directly.
+   Otherwise a platform-specific manual instructions modal is shown (Android
+   Chrome, iOS Safari, Windows Edge, Mac Chrome, Mac Safari, Firefox
+   Desktop, default). Banner dismissal (closing the X or being installed) is
+   persisted via a localStorage flag; the floating footer button is visible
+   while the banner is closed. The initInstallBanner IIFE decides the
+   banner's visibility on first load. */
 
-/* ==================== UYGULAMA YÜKLE (PWA INSTALL) ==================== */
+/* ==================== PWA INSTALL ==================== */
 let deferredInstallPrompt = null;
 
 window.addEventListener("beforeinstallprompt", e => {
@@ -29,7 +29,8 @@ window.addEventListener("appinstalled", () => {
 const INSTALL_DISMISS_KEY = "mobil_kontrol_install_dismissed_v1";
 
 function showInstallBanner() {
-  /* Daha önce kapatılmışsa veya yüklenmişse gösterme; sadece floating buton güncellenir. */
+  /* If previously dismissed or already installed, do not show; only refresh
+     the floating button's visibility. */
   try {
     if (localStorage.getItem(INSTALL_DISMISS_KEY)) {
       updateFloatingInstallVisibility();
@@ -47,20 +48,21 @@ function hideInstallBanner() {
   updateFloatingInstallVisibility();
 }
 
-/* Footer'daki küçük indirme ikonu butonu: banner kapatıldığında veya hiç
-   gözükmediğinde alternatif erişim noktası. Standalone modda veya install
-   tamamlandı bayrağı varsa gizlenir. Banner görünürken floating gizlenir. */
+/* The small download-icon button in the footer: an alternative entry point
+   when the banner is dismissed or never appeared. Hidden in standalone mode
+   or when the install-complete flag is set. While the banner is visible the
+   floating button is hidden (no need for an alternative). */
 function updateFloatingInstallVisibility() {
   const floatingBtn = document.getElementById("installFloatingBtn");
   if (!floatingBtn) return;
 
-  /* Standalone (yüklü + kendi penceresinde açık) → her ikisi de gizli */
+  /* Standalone (installed and running in its own window) hides both. */
   if (isStandaloneMode()) {
     floatingBtn.hidden = true;
     return;
   }
 
-  /* Önceden "installed" işaretliyse zaten yüklendi → gizle */
+  /* Flagged "installed" previously means the app is already installed; hide. */
   let dismiss = "";
   try {
     dismiss = localStorage.getItem(INSTALL_DISMISS_KEY) || "";
@@ -70,8 +72,8 @@ function updateFloatingInstallVisibility() {
     return;
   }
 
-  /* Banner görünüyorsa floating gizli (alternatife gerek yok); banner gizliyse
-     floating görünür. */
+  /* Banner visible: hide the floating button (no need for an alternative).
+     Banner hidden: show the floating button. */
   const banner = document.getElementById("installBanner");
   const bannerVisible = banner && !banner.hidden;
   floatingBtn.hidden = bannerVisible;
@@ -312,8 +314,9 @@ function renderInstallInstructions() {
   container.innerHTML = html;
 }
 
-/* Banner "Yükle" ve footer floating buton ortak akış: native prompt
-   destekleniyorsa onu tetikle, değilse cihaza özel manuel talimat modali aç. */
+/* Shared flow for the banner's "Install" button and the floating footer
+   button: trigger the native prompt if supported, otherwise open the
+   device-specific manual instructions modal. */
 async function triggerInstallFlow() {
   if (deferredInstallPrompt) {
     try {
@@ -336,36 +339,39 @@ async function triggerInstallFlow() {
     }
     return;
   }
-  /* Native install desteği yoksa (iOS, Firefox, file://, henüz event gelmemiş Chrome vs.)
-     cihaza uygun manuel talimat modalını göster */
+  /* No native install support (iOS, Firefox, file://, a Chrome that has not
+     yet fired the event, etc.): show the device-specific manual modal. */
   renderInstallInstructions();
   openModal("installModal");
 }
 
 document.getElementById("installBannerBtn").addEventListener("click", triggerInstallFlow);
 
-/* Footer'daki küçük indirme ikon butonu: aynı install akışını tetikler. */
+/* The small download-icon button in the footer triggers the same install flow. */
 const installFloatingBtn = document.getElementById("installFloatingBtn");
 if (installFloatingBtn) {
   installFloatingBtn.addEventListener("click", triggerInstallFlow);
 }
 
-/* Banner kapat butonu, bir daha gösterme bayrağı */
+/* Banner close button: persists a "do not show again" flag. */
 document.getElementById("installBannerClose").addEventListener("click", () => {
   try {
     localStorage.setItem(INSTALL_DISMISS_KEY, "dismissed");
   } catch {}
   hideInstallBanner();
-  /* hideInstallBanner içinde updateFloatingInstallVisibility çağrılıyor;
-     dismissed olduğu için banner kapalı, floating görünür hale gelecek. */
+  /* hideInstallBanner already calls updateFloatingInstallVisibility. Since
+     we just flagged "dismissed", the banner stays hidden and the floating
+     button becomes visible. */
 });
 
-/* Init: banner her durumda görünür (kullanıcı kapatmadıysa veya zaten yüklemediyse)
-   - Daha önce × ile kapatılmış → gizli (footer floating buton görünür)
-   - Daha önce yüklenmiş veya standalone modda → her ikisi de gizli
-   - Diğer tüm durumlar → banner görünür (tıkladığında ortama göre davranır)
-   Sonunda updateFloatingInstallVisibility çağrılarak footer butonun
-   görünürlüğü banner durumuna göre senkronize edilir. */
+/* Init: banner is visible by default (unless the user dismissed it or it is
+   already installed):
+   - Previously dismissed with the X: hidden (footer floating button visible).
+   - Previously installed or running in standalone mode: both hidden.
+   - All other cases: banner visible (clicking it behaves based on the
+     environment).
+   Finally updateFloatingInstallVisibility is called to sync the footer
+   button's visibility with the banner's. */
 (function initInstallBanner() {
   const banner = document.getElementById("installBanner");
   if (!banner) {

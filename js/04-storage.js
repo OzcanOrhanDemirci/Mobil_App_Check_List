@@ -1,8 +1,9 @@
-/* Aktif projeye bağlı state/notes/collapsed depolaması.
-   Tüm okuma/yazma 04-projects.js → getProjectField/setProjectField üzerinden
-   aktif projenin .data alanına gider. Aktif proje yoksa load* boş döner,
-   save* no-op olur (welcome akışı projeyi oluşturmadan kullanıcı işaret
-   yapamaz çünkü welcome modalı tüm UI'ı bloke eder). */
+/* Per-project storage for state/notes/collapsed.
+   All reads and writes go through 04-projects.js (getProjectField /
+   setProjectField) into the active project's .data field. With no active
+   project, load* returns empty and save* becomes a no-op (the welcome
+   modal blocks the UI until a project exists, so the user cannot mark
+   anything before then). */
 
 function loadState() {
   const v = getProjectField("state");
@@ -26,9 +27,9 @@ function saveCollapsed() {
   setProjectField("collapsed", [...collapsedCats]);
 }
 
-/* İlk ziyarette (her proje için bir kez) tüm kategoriler varsayılan olarak
-   kapalı olur. Bayrak proje data'sının içinde tutulur — bu sayede yeni
-   oluşturulan her proje de aynı temiz/kapalı durumla başlar. */
+/* On first visit (once per project), all categories start collapsed by
+   default. The flag is stored inside the project's data, so every newly
+   created project begins in the same clean/collapsed state. */
 function initDefaultCollapsed() {
   const data = getActiveProjectData();
   if (!data) return;

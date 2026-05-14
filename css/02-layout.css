@@ -10,8 +10,8 @@
     overflow: hidden;
     margin-bottom: 24px;
   }
-  /* Bir dropdown menüsü açıkken hero'nun overflow:hidden kuralını geçici olarak
-     gevşet ki menü altta kesilmesin. Modern tarayıcılarda :has() destekleniyor. */
+  /* Relax the hero's overflow:hidden while a dropdown menu is open so the menu
+     is not clipped at the bottom. Relies on :has(), supported in modern browsers. */
   header.hero:has(.lv-menu:not([hidden])) {
     overflow: visible;
   }
@@ -20,8 +20,8 @@
     position: absolute; inset: 0;
     background: radial-gradient(600px 200px at 90% 0%, rgba(59, 130, 246, 0.18), transparent 60%);
     pointer-events: none;
-    /* Hero overflow:visible olduğu zamanlarda (dropdown açıkken) gradient'in
-       köşelerden taşmaması için pseudo'ya da rounded corner ver. */
+    /* When hero is overflow:visible (dropdown open), match the rounded corners on
+       the pseudo element so the gradient stays inside the rounded boundary. */
     border-radius: inherit;
   }
   .eyebrow {
@@ -46,10 +46,10 @@
     background-clip: text;
     color: transparent;
   }
-  /* Hazırlayan rozeti (hero içinde h1 altı), gizli linkedin easter egg.
-     Hover ve aktif durumda basılabilir hissi verir; kısa tıklamada
-     hiçbir şey olmaz, ~3 sn basılı tutmak ::after ile dolan progress
-     gradient'i tamamlandığında profili açar. */
+  /* Instructor badge (inside hero, below h1): hidden LinkedIn easter egg.
+     Hover and active states give a pressable feel; a short tap does nothing.
+     Holding for ~3 seconds fills the ::after progress gradient and, when
+     complete, opens the profile. */
   .instructor {
     display: inline-flex;
     align-items: center;
@@ -124,8 +124,9 @@
     letter-spacing: -0.005em;
   }
 
-  /* Hero kontrolleri: seviye filtreleri + framework seçici (eski legend yerine).
-     Bu sabit alan; sık değişmeyen UI elemanları toolbar'la karışmasın diye burada. */
+  /* Hero controls: level filters and the framework/project selector (replaces
+     the old legend). Kept in the hero so this stable, rarely-changing UI does
+     not crowd the toolbar. */
   .hero-controls {
     display: flex;
     align-items: center;
@@ -186,10 +187,11 @@
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
   }
 
-  /* Hero proje + framework + backend kompakt card pill.
-     İçerik: 3 satır (proje / framework / backend) sol kolonda alt alta,
-     chevron sağ tarafta dikey ortalı.
-     Yatayda az yer kaplar (eski tek satır pill yerine küçük dikdörtgen kart). */
+  /* Hero project + framework + backend compact card pill.
+     Layout: 3 rows (project / framework / backend) stacked in the left column,
+     chevron vertically centered on the right.
+     Takes little horizontal space (a small rectangular card replacing the
+     older single-line pill). */
   .hero-project-pill {
     appearance: none;
     border: 1px solid var(--border);
@@ -217,7 +219,7 @@
     pointer-events: none;
     filter: grayscale(0.6);
   }
-  /* Sol kolon: 3 satır alt alta */
+  /* Left column: 3 stacked rows */
   .hero-project-pill .proj-pill-rows {
     display: flex;
     flex-direction: column;
@@ -226,7 +228,7 @@
     flex: 1;
     min-width: 0;
   }
-  /* Her satır: ikon + etiket yatay */
+  /* Each row: icon + label laid out horizontally */
   .hero-project-pill .proj-pill-row {
     display: flex;
     align-items: center;
@@ -234,7 +236,7 @@
     white-space: nowrap;
     min-width: 0;
   }
-  /* Üst satır: proje adı vurgulu */
+  /* Top row: emphasized project name */
   .hero-project-pill .proj-pill-project { font-size: 13px; }
   .hero-project-pill .proj-pill-icon { font-size: 14px; line-height: 1; flex-shrink: 0; }
   .hero-project-pill .proj-pill-name {
@@ -245,7 +247,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Alt satırlar: framework + backend daha küçük, daha sönük */
+  /* Bottom rows: framework + backend rendered smaller and dimmer */
   .hero-project-pill .proj-pill-framework,
   .hero-project-pill .proj-pill-backend {
     font-size: 11.5px;
@@ -260,14 +262,14 @@
     text-overflow: ellipsis;
     min-width: 0;
   }
-  /* Sağ kolon: chevron, dikey ortalı */
+  /* Right column: vertically centered chevron */
   .hero-project-pill .fw-pill-chevron {
     color: var(--text-mute);
     font-size: 12px;
     flex-shrink: 0;
     align-self: center;
   }
-  /* Mobilde extra daraltma: proje adı taşmasın */
+  /* Extra mobile tightening so the project name does not overflow */
   @media (max-width: 560px) {
     .hero-project-pill { min-width: 120px; padding: 6px 10px; }
     .hero-project-pill .proj-pill-name { max-width: 130px; }
@@ -283,8 +285,8 @@
   .dot.mvp { background: var(--mvp); box-shadow: 0 0 0 3px var(--mvp-strong); }
   .dot.release { background: var(--release); box-shadow: 0 0 0 3px var(--release-strong); }
 
-  /* Kilit butonu: aktif (kilitli) durumda yeşil tonlu, normalde nötr.
-     Sağdaki ikon kilit aç/kapalı durumunu göstermek için JS tarafından güncellenir. */
+  /* Lock button: green-tinted when active (locked), neutral otherwise.
+     The right-side icon is swapped by JS to reflect the open/closed lock state. */
   #lockBtn .lock-icon { font-size: 14px; line-height: 1; }
   #lockBtn.locked {
     background: var(--mvp-bg);
@@ -296,13 +298,13 @@
     border-color: var(--mvp);
   }
 
-  /* body.locked iken: işaretler dondurulur, framework/reset/import disabled,
-     export/print görsel olarak vurgulanır (kullanıcı doğal aksiyonu görsün) */
+  /* When body.locked: checks are frozen, framework/reset/import become disabled,
+     and export/print are visually emphasized so the user spots the natural next action. */
   body.locked .level {
     pointer-events: none;
     cursor: not-allowed;
   }
-  /* Vurgulu Yazdır + Dışa Aktar — kilitli iken altın çerçeve + ışıma */
+  /* Emphasized Print + Export: gold border and glow while the checklist is locked */
   body.locked #printBtn,
   body.locked #exportBtn {
     border-color: var(--accent);
@@ -313,7 +315,7 @@
     background: var(--hero-grad);
     color: var(--text);
   }
-  /* Kilit aktif iken hero-controls'un üstünde ince bir bilgi şeridi (ipucu) */
+  /* While the lock is active, show a thin info strip (hint pill) above hero-controls */
   body.locked .hero::after {
     content: attr(data-locked-msg);
     display: block;
@@ -328,10 +330,10 @@
     margin-top: 14px;
   }
 
-  /* Seviye görünümü filtreleri:
-     - "Sadece MVP" → tüm Release satırları gizli (işaretli/işaretsiz fark etmez)
-     - "Sadece Release" → tüm MVP satırları gizli
-     - İlerleme bloklarındaki üst summary barlar da daralır. */
+  /* Level view filters:
+     - "MVP only": all Release rows are hidden (checked or unchecked)
+     - "Release only": all MVP rows are hidden
+     - The top summary bars in the progress blocks shrink accordingly. */
   body.view-mvp-only .progress-block[data-level="release"],
   body.view-mvp-only .progress-block[data-level="total"] { display: none !important; }
   body.view-release-only .progress-block[data-level="mvp"],
@@ -340,13 +342,13 @@
   body.view-mvp-only .level.release { display: none !important; }
   body.view-release-only .level.mvp { display: none !important; }
 
-  /* viewFilter (status) kuralları — viewMode (level group) ile birleşince 9 kombinasyon:
-     - filter-pending  → tüm işaretli satırlar gizli (yalnızca yapılacaklar görünür)
-     - filter-done     → tüm işaretsiz satırlar gizli (yalnızca yapılanlar görünür)
-     - (filter yok)    → tüm satırlar (status'undan bağımsız) görünür
+  /* viewFilter (status) rules: combined with viewMode (level group) they yield 9 combinations:
+     - filter-pending: all checked rows hidden (only to-do items visible)
+     - filter-done:    all unchecked rows hidden (only completed items visible)
+     - (no filter):    all rows visible regardless of status
 
-     view-mvp-only / view-release-only zaten karşı seviyeyi gizliyor; bu kurallarla
-     birleşince örn. view-mvp-only + filter-pending = yalnızca işaretsiz MVP satırları. */
+     view-mvp-only / view-release-only already hide the opposite level; combined
+     with these rules, e.g. view-mvp-only + filter-pending shows only unchecked MVP rows. */
   body.filter-pending .level.checked { display: none !important; }
   body.filter-done .level:not(.checked) { display: none !important; }
 
@@ -439,10 +441,10 @@
   }
   .btn.primary:hover { filter: brightness(1.05); }
   .btn.ghost { background: transparent; }
-  /* Toolbar toggle pair'lerinde "şu an bu moddasin" sinyalini veren turuncu
-     vurgu. JS, currentMode (Tümü Nasıl / Tümü Liste) ve collapsedCats vs
-     kategori sayısı (Tümünü Aç / Tümünü Kapat) durumuna göre .active
-     class'ını ekler veya kaldırır. aria-pressed eşliğinde uygulanır. */
+  /* Orange highlight on toolbar toggle pairs that signals "you are in this mode".
+     JS adds or removes the .active class based on currentMode (All How-To /
+     All List) and on collapsedCats vs category count (Expand All / Collapse All).
+     Applied together with aria-pressed for accessibility. */
   .btn.ghost.active {
     background: rgba(249, 115, 22, 0.14);
     border-color: var(--accent);
@@ -456,7 +458,7 @@
   .btn.danger { color: #fca5a5; }
   .btn.danger:hover { color: #fff; background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.35); }
 
-  /* Sabitlenmiş üst alan: toolbar + progress card birlikte sticky */
+  /* Pinned top area: toolbar + progress card stick together at the top */
   .sticky-bar {
     position: sticky;
     top: 0;
@@ -474,7 +476,7 @@
     margin: 0;
   }
 
-  /* Mobil eylem aç/kapa düğmesi, masaüstünde gizli, mobilde görünür */
+  /* Mobile actions open/close toggle: hidden on desktop, shown on mobile */
   .actions-toggle { display: none; }
   .actions-toggle .icon-close { display: none; }
 

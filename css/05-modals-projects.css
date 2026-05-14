@@ -2,7 +2,10 @@
    forms, mini framework/backend grids; backend picker (welcome step 4 + proj
    modal tab); print options modal. Split out of css/05-modals.css in 1.1.0. */
 
-  /* ==================== ÇOKLU PROJE — PROJ + FW MODAL ==================== */
+  /* ==================== MULTI-PROJECT: PROJECT + FRAMEWORK MODAL ====================
+     Single tabbed shell that hosts three management surfaces: project list,
+     framework switcher, and backend switcher. Body scrolls internally so the
+     head and tab strip remain sticky-visible. */
   .modal-content.modal-projfw {
     max-width: 720px;
     padding: 0;
@@ -18,7 +21,9 @@
     overflow-y: auto;
   }
 
-  /* Sekme şeridi */
+  /* Tab strip: horizontal switcher that swaps the modal body between
+     Projects, Framework, and Backend panes. Active tab carries the accent
+     underline; the negative margin-bottom aligns its border with the strip's. */
   .projfw-tabs {
     display: flex;
     gap: 0;
@@ -45,7 +50,7 @@
     border-bottom-color: var(--accent);
   }
 
-  /* ==================== PROJE LİSTESİ + EKLEME FORMU ==================== */
+  /* ==================== PROJECT LIST + ADD FORM ==================== */
   .proj-header {
     display: flex;
     align-items: flex-start;
@@ -89,7 +94,9 @@
     width: 100%;
   }
 
-  /* Yeni proje oluşturma modalı */
+  /* New-project creation modal: standalone (not the tabbed shell) for
+     adding a project from scratch. Pairs a name input with the mini
+     framework + backend grids defined below. */
   .modal-content.modal-proj-create {
     max-width: 560px;
   }
@@ -100,7 +107,8 @@
     line-height: 1.5;
   }
 
-  /* Aktif proje silindiğinde "hangi projeye geçeyim" seçim modalı */
+  /* When the active project is deleted: pick-which-to-switch-to modal.
+     Lists remaining projects so the app always has an active selection. */
   .modal-content.modal-proj-pick {
     max-width: 520px;
   }
@@ -209,7 +217,9 @@
     padding: 0 4px;
   }
 
-  /* Yeni proje formundaki mini framework grid (welcome step 3'ün kompakt versiyonu) */
+  /* Mini framework grid inside the new-project form: compact version of
+     welcome step 5's full picker. Three columns on desktop, two on narrow
+     viewports, kept dense so the entire form fits without scroll. */
   .proj-add-fw-label {
     font-size: 11.5px;
     font-weight: 700;
@@ -407,16 +417,17 @@
     }
   }
 
-  /* ==================== BACKEND SEÇİMİ (welcome step 4 + projfw modal sekmesi) ====================
-     Framework grid'i ile aynı 2-kolon kart düzeni, ancak "Backend yok" seçeneği
-     prominently first-row-full-width gösterilir; kullanıcı internet gerektirmeyen
-     bir uygulama için bunu kolayca seçebilsin. */
+  /* ==================== BACKEND SELECTION (welcome step 6 + projfw modal tab) ====================
+     Same 2-column card layout as the framework grid, but the "No backend"
+     option is shown prominently full-width on the first row so users
+     building an offline-only app can choose it without scanning the list. */
   .backend-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
-  /* "Backend yok" kartı: ilk satırda tam genişlik + büyük tipografi + ayırt edici stil */
+  /* "No backend" card: full-width first row, larger typography, and a
+     distinctive green-tinted gradient to set it apart from real backends. */
   .backend-options > .backend-option--none {
     grid-column: 1 / -1;
     flex-direction: row;
@@ -456,7 +467,7 @@
     text-align: left;
   }
 
-  /* Normal backend kartları (framework-option stiliyle paralel) */
+  /* Standard backend cards (mirrors framework-option styling for visual parity) */
   .backend-option {
     appearance: none;
     background: var(--surface);
@@ -499,8 +510,8 @@
     line-height: 1.35;
   }
 
-  /* Mobil: tek sütun düzeni; "Backend yok" zaten full-width olduğu için
-     görsel olarak en üstte ve büyük durmaya devam eder. */
+  /* Mobile: single-column layout. Since "No backend" is already
+     full-width, it visually stays at the top and prominent. */
   @media (max-width: 480px) {
     .backend-options { grid-template-columns: 1fr; }
     .backend-options > .backend-option--none {
@@ -514,9 +525,10 @@
     }
   }
 
-  /* ==================== PROJE OLUŞTUR MODALI — MINI BACKEND GRID ====================
-     Framework mini grid'i ile aynı pattern; noBackend için full-width + yeşil
-     aksanlı vurgu. */
+  /* ==================== NEW-PROJECT MODAL: MINI BACKEND GRID ====================
+     Same pattern as the mini framework grid (compact button cards in a
+     3-column grid). The noBackend option spans full width with a green
+     accent so the "skip backend" choice reads clearly. */
   .proj-add-be-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -576,14 +588,14 @@
     white-space: nowrap;
   }
 
-  /* ==================== YAZDIRMA SEÇENEKLERİ MODALI ====================
-     printBtn'a tıklayınca açılır; "Kontrol Listesi" veya "Nasıl Yapılır?
-     Rehberi" seçeneklerinden birini seç → window.print() o moda göre
-     tetiklenir. Visual olarak framework-option kartlarını andırır. */
+  /* ==================== PRINT OPTIONS MODAL ====================
+     Opens when printBtn is clicked. User picks either "Checklist" or
+     "How-To Guide", which sets the print mode before window.print() runs.
+     Visually echoes the framework-option cards for consistency. */
   .modal-content.modal-print-options {
     max-width: 580px;
   }
-  /* modal-head'in altındaki body içeriği için iç padding */
+  /* Inner padding for body content under modal-head */
   .modal-print-options > :not(.modal-head):not(.modal-backdrop) {
     padding-left: 24px;
     padding-right: 24px;

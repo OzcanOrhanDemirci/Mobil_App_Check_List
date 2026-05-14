@@ -1,13 +1,13 @@
-/* ==================== BACKEND SEÇİMİ ====================
-   Backend, framework gibi davranır: seçilen değer aktif projeye özeldir,
-   listedeki backend'e bağlı maddeler bu seçime göre içerik değiştirir veya
-   "noBackend" seçildiğinde tamamen gizlenir.
+/* ==================== BACKEND SELECTION ====================
+   Backend behaves like framework: the selected value is per-project, and
+   backend-dependent items in the list either swap their content based on the
+   choice or are hidden entirely when "noBackend" is selected.
 
-   Veri yolu: proj.data.backend → "firebase" | "supabase" | ... | "noBackend"
-   Yeni kullanıcılar welcome akışında bir backend seçer (Adım 4). Eski (v2)
-   projelerde alan yoksa migration "firebase" varsayar — çünkü mevcut Backend
-   kategorisi başlangıçta Firebase odaklıydı; bu sayede kullanıcı geri uyumlu
-   şekilde aynı listeyi görmeye devam eder. */
+   Data path: proj.data.backend -> "firebase" | "supabase" | ... | "noBackend"
+   New users pick a backend in the welcome flow (Step 4). For legacy (v2)
+   projects without this field, migration assumes "firebase": the original
+   Backend category was Firebase-focused, so this keeps backward compatibility
+   and the user continues to see the same list. */
 
 const VALID_BACKENDS = [
   "noBackend",
@@ -32,8 +32,9 @@ function saveBackend(b) {
   setProjectField("backend", b);
 }
 
-/* Her backend için meta: kısa görünüm etiketi, ikonu, AI'a verilecek tam ad.
-   noBackend prompted prominently in UI; kept first in the list. */
+/* Per-backend metadata: short display label, icon, and the full name handed
+   to the AI. noBackend is prompted prominently in the UI and kept first in
+   the list. */
 const BACKEND_META = {
   noBackend: {
     label:  { tr: "Backend yok",          en: "No backend" },
@@ -103,10 +104,10 @@ function backendShort(b) {
   return tx(m.short);
 }
 
-/* SDK / paket kurulumu örnekleri — AI prompt'larında "tam kurulum komutu" satırı
-   için kullanılır. backendStep:true olan bir maddede framework+backend kombosuna
-   uygun, somut bir kurulum komutu verilir. Eksik combo'lar için her zaman default
-   bir fallback komut tanımlı. */
+/* SDK / package install examples used by the "full install command" line in
+   AI prompts. For items with backendStep:true, a concrete command matching
+   the framework+backend combination is supplied. Every backend defines a
+   fallback for any missing combo so the prompt always has a command to show. */
 const BACKEND_INSTALL_EXAMPLES = {
   firebase: {
     flutter:     { tr: "flutterfire configure && flutter pub add firebase_core firebase_auth cloud_firestore", en: "flutterfire configure && flutter pub add firebase_core firebase_auth cloud_firestore" },
@@ -174,8 +175,8 @@ const BACKEND_INSTALL_EXAMPLES = {
   }
 };
 
-/* AI'a bağlamı vermek için kısa bir setup varsayım metni — backend ne olursa
-   olsun, geliştiricinin yeni başlayan biri olduğunu varsayan kısa cümle. */
+/* Short setup-assumption sentence that frames the context for the AI: regardless
+   of backend, it states what the developer is presumed to already have in place. */
 const BACKEND_SETUP_ASSUMPTIONS = {
   firebase:   "Assume the Firebase project is already created in the Firebase Console and the platform app entries (iOS Bundle ID / Android package + SHA fingerprints) are registered.",
   supabase:   "Assume a Supabase project is already provisioned and the project's URL + anon key are available; SQL migrations are managed via the Supabase Studio or supabase-cli.",
@@ -188,9 +189,10 @@ const BACKEND_SETUP_ASSUMPTIONS = {
   noBackend:  "There is no backend at all. The app is fully on-device. Skip any cloud-dependent items."
 };
 
-/* `f.backendStep` olan bir madde currentBackend "noBackend" iken görünmemeli.
-   Henüz backend seçilmediyse (welcome akışı tamamlanmadan) de görünmez —
-   welcome modalı zaten UI'ı bloke ettiği için bu yalnızca defansif. */
+/* A feature with `f.backendStep` must not appear when currentBackend is
+   "noBackend". It is also hidden when no backend has been chosen yet (welcome
+   flow incomplete); the welcome modal already blocks the UI, so this branch
+   is purely defensive. */
 function isHiddenByBackend(f) {
   if (!f || !f.backendStep) return false;
   if (!currentBackend) return true;

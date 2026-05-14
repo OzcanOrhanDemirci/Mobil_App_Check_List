@@ -2,14 +2,18 @@
    backend, summary) plus the multi-project welcome name step. Split out of
    css/05-modals.css in 1.1.0. */
 
-  /* Karşılama (welcome) modalı */
+  /* Welcome modal: 7-step onboarding flow (language, mode, style, project
+     name, framework, backend, summary). One shell + multiple .welcome-pane
+     children swapped via [hidden]; data-step attribute drives per-step
+     overrides on the title, help button, and step indicator. */
   .modal-content.modal-welcome {
     max-width: 540px;
     padding: 32px 30px 28px;
     text-align: center;
     position: relative;
   }
-  /* Sağ üst köşede sabit yardım butonu (her iki adımda da görünür) */
+  /* Help button: fixed in the top-right corner, visible on every step.
+     Opens the bilingual help/usage modal. */
   .welcome-help-btn {
     position: absolute;
     top: 14px;
@@ -52,8 +56,9 @@
     .welcome-help-btn { padding: 6px; }
   }
 
-  /* 1. adımda (dil seçimi) yardım butonu sadece "?" simgesi olarak görünsün
-     — kullanıcı henüz dil seçmediği için yazı iki dilde de yer kaplamasın. */
+  /* Step 1 (language selection): help button collapses to a "?" glyph
+     only. The user has not picked a language yet, so showing the label
+     in both Turkish and English would waste space. */
   #welcomeModal[data-step="1"] .welcome-help-btn .welcome-help-label {
     display: none;
   }
@@ -64,8 +69,9 @@
     justify-content: center;
   }
 
-  /* Eyebrow + başlık: 1. adımda iki dilde, 2/3. adımda sadece seçilen dilde.
-     Default: mono (tek dil) görünür, bilingual gizli. 1. adımda tersine çevir. */
+  /* Eyebrow + title: bilingual on step 1, single-language on every later
+     step. Default state: mono visible, bilingual hidden. Step 1 inverts
+     this so both languages render before the user picks one. */
   .welcome-bilingual { display: none; }
   .welcome-mono { display: inline; }
   #welcomeModal[data-step="1"] .welcome-bilingual { display: inline; }
@@ -152,12 +158,15 @@
     cursor: not-allowed;
     filter: grayscale(0.4);
   }
-  /* Margin'i butona değil, butonu içeren konteynerlere ver — böylece step 2'de
-     welcomeBack + welcomeStart aynı yatay hizada kalır (welcome-actions üzerinde tek margin) */
+  /* Apply margin to the button containers (not the buttons themselves) so
+     that on step 2 the welcomeBack and welcomeStart buttons stay on the
+     same horizontal line: a single margin lives on .welcome-actions. */
   .welcome-pane > .welcome-cta { margin-top: 22px; }
   .welcome-actions { margin-top: 22px; }
 
-  /* 2 kademeli karşılama: adım göstergesi + pane geçişleri */
+  /* Multi-step welcome: step indicator (numbered dots + connecting lines)
+     and pane transitions. Each dot toggles between idle, .active (current
+     step), and .done (completed); connector lines turn green once passed. */
   .welcome-steps {
     display: flex;
     align-items: center;
@@ -228,7 +237,9 @@
     }
   }
 
-  /* Framework picker (welcome modalı içinde + framework switch modalı) */
+  /* Framework picker: shared by the welcome modal (step 5) and the
+     standalone framework-switch modal. 2-column grid of card-style
+     buttons with emoji, title, and tagline. */
   .framework-pick {
     text-align: left;
     background: var(--surface-2);
@@ -255,8 +266,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
-  /* Tek başına kalan 5. seçenek son satırda tam genişlik + yatay düzen
-     (yalnızca tek kalan tek-numaralı son element için, 4'lü grid'de etki yok) */
+  /* If a single 5th option is left on its own row, span it full-width
+     and switch to a horizontal layout. The :nth-child(odd):last-child
+     selector only matches when the count is odd, so an even (4-item)
+     grid is unaffected. */
   .framework-options > .framework-option:nth-child(odd):last-child {
     grid-column: 1 / -1;
     flex-direction: row;
@@ -319,7 +332,9 @@
     .framework-options { grid-template-columns: 1fr; }
   }
 
-  /* Dil seçimi: 2 seçenekli, sade metin tabanlı kartlar (bayrak yok) */
+  /* Language selection: two text-only cards (no flags) for "Türkçe" and
+     "English". Larger title typography and uppercase tagline distinguish
+     it from the framework grid that shares the same base classes. */
   .framework-options--lang {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -352,7 +367,10 @@
   }
 
 
-  /* ==================== ÇOKLU PROJE — WELCOME PROJE ADI ADIMI ==================== */
+  /* ==================== MULTI-PROJECT: WELCOME PROJECT-NAME STEP ====================
+     Step 4 of the welcome flow: single text input where the user names
+     their first project. Validation error message renders below the
+     input in red. */
   .welcome-projname-wrap {
     margin: 18px 0 22px;
     display: flex;

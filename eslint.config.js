@@ -107,10 +107,10 @@ const projectGlobals = {
   applyView: "writable",
   setView: "writable",
   updateToolbarButtonStates: "writable",
-  /* Toolbar "user chose" bayrak yardımcıları. ilk-açılış sönük durumunu
-     kullanıcı bilinçli toolbar tıklaması veya doğrudan UI etkileşimine
-     kadar koruyan kontrol; "Sıfırla > Ayarlar" scope'u temizler. Detay
-     için js/06-view-state.js başındaki yorum bloğuna bak. */
+  /* Toolbar "user chose" flag helpers. They keep the first-launch dim
+     state in place until the user makes a deliberate toolbar click or a
+     direct UI interaction; the "Reset > Settings" scope clears them. See
+     the comment block at the top of js/06-view-state.js for details. */
   markCollapseTouched: "writable",
   markFlipTouched: "writable",
   clearCollapseFlipTouchFlags: "writable",

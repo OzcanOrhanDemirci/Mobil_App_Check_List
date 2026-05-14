@@ -52,11 +52,12 @@ function closeAllModals() {
   document.querySelectorAll(".modal").forEach(m => m.hidden = true);
 }
 
-/* Onay modalı (window.confirm yerine).
-   opts.title, opts.yesText, opts.cancelText (default İptal),
-   opts.html (true ise message HTML olarak render edilir; default plain text),
-   opts.wide (true ise modal genişler — yoğun içerik için),
-   opts.onCancel (kullanıcı modal'ı iptal/X/backdrop ile kapatırsa çağrılır) */
+/* Custom confirmation modal (replacement for window.confirm).
+   Options:
+     opts.title, opts.yesText, opts.cancelText (default "Cancel"),
+     opts.html      : if true, message is rendered as HTML (default: plain text),
+     opts.wide      : if true, widen the modal for dense content,
+     opts.onCancel  : invoked when the user dismisses via Cancel / X / backdrop. */
 let confirmCallback = null;
 let confirmCancelCallback = null;
 function customConfirm(message, onConfirm, opts = {}) {
@@ -74,7 +75,8 @@ function customConfirm(message, onConfirm, opts = {}) {
   openModal("confirmModal");
 }
 document.getElementById("confirmYes").addEventListener("click", () => {
-  /* Onaylandı; close handler'ı cancel callback'i tetiklemesin diye önce temizle */
+  /* Confirmed; clear the cancel callback first so the close handler does not
+     fire it when the modal closes via the Yes button. */
   confirmCancelCallback = null;
   closeModal("confirmModal");
   if (typeof confirmCallback === "function") {
@@ -84,20 +86,21 @@ document.getElementById("confirmYes").addEventListener("click", () => {
   }
 });
 
-/* Modal kapatma (backdrop, X, data-modal-close) */
+/* Global modal-close handler: backdrop click, X button, or any [data-modal-close]. */
 document.addEventListener("click", (e) => {
   if (e.target.matches("[data-modal-close]")) {
     const modal = e.target.closest(".modal");
     if (modal) {
       modal.hidden = true;
-      /* Yardım modalı kapanıyorsa anlık dil switcher'ını sıfırla */
+      /* If the help modal is closing, reset its temporary language switcher. */
       if (modal.id === "helpModal" && typeof setHelpLangSwitchVisible === "function") {
         setHelpLangSwitchVisible(false);
         if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
       }
-      /* Confirm modalı iptal yoluyla kapandıysa cancel callback'i çalıştır.
-         (confirmYes button'unun click handler'ı kapatmadan önce
-         confirmCancelCallback'i null yapar; oradan gelmiyorsak hala dolu olabilir.) */
+      /* If the confirm modal was dismissed (not approved), run the cancel
+         callback. The confirmYes click handler nulls confirmCancelCallback
+         before closing, so if we get here with a non-null value it came
+         from a cancel/X/backdrop interaction. */
       if (modal.id === "confirmModal") {
         const cb = confirmCancelCallback;
         confirmCancelCallback = null;
@@ -106,23 +109,23 @@ document.addEventListener("click", (e) => {
       }
     }
   }
-  /* AI format paneli, dışına tıklanırsa kapat */
+  /* Close the AI format panel when the user clicks anywhere outside it. */
   if (!e.target.closest(".feature-ai-wrap")) {
     document.querySelectorAll(".feature-ai-wrap.ai-open").forEach(w => w.classList.remove("ai-open"));
   }
 });
 
-/* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
-   STYLE_KEY ve currentStyle 01-i18n-strings.js'de tanımlı (tx() tarafından
-   doğrudan kullanılıyor). Burada uygulama mantığı: tema gibi global,
-   localStorage'da saklı; değişince listenin yeniden render edilmesi gerekir
-   çünkü her madde farklı metin gösterebilir. */
+/* ==================== EXPLANATION STYLE (SIMPLE / TECHNICAL) ====================
+   STYLE_KEY and currentStyle are defined in 01-i18n-strings.js (tx() reads
+   them directly). This file owns the application logic: the preference is
+   global like theme and persisted in localStorage; whenever it changes the
+   list must be re-rendered, since each item can resolve to different text. */
 function applyStyle(style) {
   if (style !== "simple" && style !== "technical") style = "technical";
   currentStyle = style;
   try { localStorage.setItem(STYLE_KEY, style); } catch {}
   document.documentElement.setAttribute("data-explanation-style", style);
-  /* Pill üzerindeki aktif/pasif vurgu */
+  /* Sync the active / inactive halves of the style pill. */
   const btn = document.getElementById("styleToggle");
   if (btn) {
     const cur = btn.querySelector(".style-current");
@@ -138,7 +141,7 @@ function applyStyle(style) {
 function toggleStyle() {
   const next = currentStyle === "simple" ? "technical" : "simple";
   applyStyle(next);
-  /* İçeriği yeniden render et — madde metinleri stil duyarlı */
+  /* Re-render the content: item text is style-aware and must be rebuilt. */
   if (typeof renderContent === "function") renderContent();
   if (typeof attachClickHandlers === "function") attachClickHandlers();
   if (typeof applyFilters === "function") applyFilters();
@@ -146,24 +149,24 @@ function toggleStyle() {
   showToast(next === "simple" ? t("style.toast.simple") : t("style.toast.technical"), "info", 1400);
 }
 
-/* ==================== KULLANIM BİÇİMİ (BUILD / REVIEW) ====================
-   MODE_KEY ve currentMode 01-i18n-strings.js'de tanımlı. Burada sadece
-   localStorage senkronizasyonu — kartların DOM'da çevrilmesi (flip) farklı bir
-   yerden tetikleniyor (renderdan sonra applyInitialCardMode, ya da toolbar
-   butonlarından flipFeatureCard). Bu fonksiyon DOM'a hiç dokunmaz; sadece
-   tercihi yazar ki sonraki render'larda doğru başlangıç durumu uygulansın. */
+/* ==================== CARD MODE (BUILD / REVIEW) ====================
+   MODE_KEY and currentMode live in 01-i18n-strings.js. This function only
+   syncs the preference to localStorage; flipping cards in the DOM is driven
+   from elsewhere (applyInitialCardMode after render, or flipFeatureCard from
+   the toolbar buttons). It never touches the DOM directly; it just records
+   the preference so the next render starts in the right state. */
 function applyMode(mode) {
   if (mode !== "build" && mode !== "review") mode = "build";
   currentMode = mode;
   try { localStorage.setItem(MODE_KEY, mode); } catch {}
   document.documentElement.setAttribute("data-card-mode", mode);
-  /* Toolbar'daki "Tümü Nasıl" / "Tümü Liste" pair'inin aktif vurgusunu
-     senkronize et. Init sırasında DOM hazır olduğundan butonlara güvenle
-     erişebiliriz; fonksiyon henüz yüklenmediyse sessizce geç. */
+  /* Sync the active highlight on the toolbar's "All How-To" / "All List"
+     button pair. During init the DOM is ready so the buttons are reachable;
+     if the updater function has not loaded yet, skip silently. */
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
-/* ==================== TEMA ==================== */
+/* ==================== THEME ==================== */
 const THEME_KEY = "mobil_kontrol_theme_v1";
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);

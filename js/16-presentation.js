@@ -1,17 +1,19 @@
-/* ==================== SUNUM MODU ====================
-   Toolbar Sun butonu ve P tusu ile girilen tam-ekran tek-kategori
-   gorunumu. Filtreler (viewMode/viewFilter) sunumda da aktif kalir;
-   getPresentableCategories filtreye gore bos kalmayan kategorileri
-   dondurur. Klavye oklari + space/PageUp/PageDown ile gezinme,
-   Esc ile cikis (klavye dinleyici 18-app.js'tedir; enterPresentation
-   / exitPresentation / showPresentationCategory / presentationIndex
-   buradan global olarak erisilir). */
+/* ==================== PRESENTATION MODE ====================
+   Full-screen, one-category-at-a-time view entered from the toolbar
+   "Present" button or the P key. Filters (viewMode / viewFilter) stay
+   active during presentation; getPresentableCategories returns the
+   categories that are not empty under the current filter. Navigation
+   is via arrow keys plus Space / PageUp / PageDown, and Esc exits
+   (the keyboard listener lives in 18-app.js; enterPresentation,
+   exitPresentation, showPresentationCategory, and presentationIndex
+   are exposed globally from here). */
 
-/* ==================== SUNUM MODU ==================== */
+/* ==================== PRESENTATION MODE ==================== */
 let presentationIndex = 0;
 
-/* Sunulabilir kategoriler: aktif filtrelerle gizlenmemiş olanlar.
-   Bu sayede "Yapılan MVP" filtresinde sadece o filtreye uyan kategoriler arası geçilir. */
+/* Presentable categories: those not hidden by the active filters.
+   This way, under a filter like "Done MVP", navigation only steps
+   through the categories that still match. */
 function getPresentableCategories() {
   return [...document.querySelectorAll(".category:not(.hidden)")];
 }
@@ -19,7 +21,7 @@ function getPresentableCategories() {
 function enterPresentation() {
   const cats = getPresentableCategories();
   if (cats.length === 0) {
-    /* Filtre + arama hiçbir şeyle eşleşmiyorsa sunum boş olur — uyarı verip iptal */
+    /* If filter + search match nothing, presentation would be empty; warn and cancel. */
     showToast(t("pres.empty") || "Sunulacak madde yok", "info", 1800);
     return;
   }
@@ -41,9 +43,9 @@ function showPresentationCategory(index) {
   if (index < 0) index = 0;
   if (index >= cats.length) index = cats.length - 1;
   presentationIndex = index;
-  /* Önce tüm presenting class'ını temizle (önceki sunumlardan kalmamış olsun) */
+  /* Clear every existing .presenting class first (no leftovers from previous runs). */
   document.querySelectorAll(".category.presenting").forEach(c => c.classList.remove("presenting"));
-  /* Aktif olan görünür kategoriye presenting ekle, kapalıysa aç */
+  /* Mark the active visible category as presenting and expand it if collapsed. */
   const activeCat = cats[index];
   if (activeCat) {
     activeCat.classList.add("presenting");
@@ -54,18 +56,19 @@ function showPresentationCategory(index) {
   updatePresentationContextBar();
 }
 
-/* Sunum modu üst başlık çubuğunu mevcut filter + level view'e göre günceller.
-   Hangi süzgeçle sunum yapıldığını ve görünür madde sayısını gösterir. */
+/* Refreshes the presentation header bar to reflect the current filter
+   and level view, showing which filter is active and how many items
+   are visible. */
 function updatePresentationContextBar() {
   const labelEl = document.getElementById("presContextLabel");
   const countEl = document.getElementById("presContextCount");
   if (!labelEl || !countEl) return;
 
-  /* Chip rengi: viewMode mvp ise yeşil, release ise mavi, both ise nötr */
+  /* Chip color: green for viewMode "mvp", blue for "release", neutral for "both". */
   document.body.classList.toggle("pres-filter-mvp", viewMode === "mvp");
   document.body.classList.toggle("pres-filter-release", viewMode === "release");
 
-  /* Bağlam etiketi: 9 kombinasyon (viewMode × viewFilter) */
+  /* Context label: 9 combinations of viewMode x viewFilter. */
   let labelKey = "pres.context.all";
   if (viewMode === "mvp" && viewFilter === "all") labelKey = "pres.context.mvp";
   else if (viewMode === "mvp" && viewFilter === "pending") labelKey = "pres.context.mvpPending";
@@ -75,10 +78,10 @@ function updatePresentationContextBar() {
   else if (viewMode === "release" && viewFilter === "done") labelKey = "pres.context.releaseDone";
   else if (viewMode === "both" && viewFilter === "pending") labelKey = "pres.context.bothPending";
   else if (viewMode === "both" && viewFilter === "done") labelKey = "pres.context.bothDone";
-  /* both + all → "Tüm Liste" (default labelKey) */
+  /* both + all falls through to "Tüm Liste" / "All Items" (the default labelKey). */
   labelEl.textContent = t(labelKey);
 
-  /* Görünür madde sayısı: aktif (presenting) kategorideki .feature:not(.hidden) sayısı */
+  /* Visible item count: number of .feature:not(.hidden) inside the active (presenting) category. */
   const activeCat = document.querySelector(".category.presenting");
   const visibleCount = activeCat ? activeCat.querySelectorAll(".feature:not(.hidden)").length : 0;
   countEl.textContent = visibleCount === 1 ? t("pres.itemCountOne") : t("pres.itemCount", { n: visibleCount });

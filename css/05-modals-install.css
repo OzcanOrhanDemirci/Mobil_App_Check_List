@@ -2,7 +2,9 @@
    modal, footer floating install button, version stamp easter egg. Split
    out of css/05-modals.css in 1.1.0. */
 
-  /* Promote banner, sayfa başında özel "Yükle" davet alanı */
+  /* Promote banner: dedicated "Install" invitation strip near the top of
+     the page. Hidden via [hidden] when the app is already installed or the
+     user has dismissed it. */
   .install-banner[hidden] {
     display: none !important;
   }
@@ -133,7 +135,9 @@
     }
   }
 
-  /* Yükleme talimatı modalı */
+  /* Install instructions modal: platform-specific step-by-step cards
+     (iOS Safari, Android Chrome, desktop). Used as fallback when the
+     native beforeinstallprompt event is unavailable. */
   .modal-content.modal-install {
     max-width: 540px;
   }
@@ -210,8 +214,9 @@
     color: var(--text-mute) !important;
   }
 
-  /* Versiyon damgası, gizli github easter egg (hazirlayan rozeti
-     ile ayni davranis: 3 sn basili tut -> github.com/OzcanOrhanDemirci) */
+  /* Version stamp: hidden GitHub easter egg (same behavior as the author
+     badge: press and hold for 3 seconds to open github.com/OzcanOrhanDemirci).
+     The ::after fill bar animates over 3s while .pressing is applied. */
   footer .foot-version {
     font-size: 10.5px;
     color: var(--text-mute);
@@ -276,13 +281,14 @@
     margin: 0 6px;
   }
 
-  /* ==================== FOOTER FLOATING INSTALL BUTONU ====================
-     Üstteki turuncu install banner'ı kapalıyken görünür küçük yuvarlak buton.
-     SVG download ikonu içerir, yazı yok. Tıklayınca aynı install flow tetiklenir
-     (native prompt destekleniyorsa veya cihaza özel adım modali). Standalone
-     mode'da veya zaten yüklendi bayrağıyla saklanır (JS kontrolü).
-     Footer sıralaması: Hazırlayan → Yükle butonu → Sürüm. Buton tam ortalı,
-     üstündeki ve altındaki satırlardan eşit boşluk. */
+  /* ==================== FOOTER FLOATING INSTALL BUTTON ====================
+     Small round button shown when the orange install banner at the top is
+     dismissed. Contains an SVG download icon (no label). Clicking triggers
+     the same install flow as the banner: native prompt if supported, or the
+     platform-specific instructions modal as fallback. Hidden in standalone
+     mode or when the "already installed" flag is set (JS-controlled).
+     Footer order: Author badge, install button, version stamp. The button
+     is centered with equal spacing above and below. */
   .install-floating-btn {
     display: flex;
     align-items: center;
@@ -313,7 +319,7 @@
     outline-offset: 3px;
   }
   .install-floating-btn[hidden] { display: none; }
-  /* Print'te asla görünme */
+  /* Never visible in print output */
   @media print {
     .install-floating-btn { display: none !important; }
   }

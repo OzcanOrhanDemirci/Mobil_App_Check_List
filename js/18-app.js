@@ -1,69 +1,70 @@
-/* Tümünü Aç */
+/* Open All */
 document.getElementById("expandAllBtn").addEventListener("click", () => {
   document.querySelectorAll(".category").forEach(c => {
     c.classList.remove("collapsed");
     collapsedCats.delete(c.id);
   });
   saveCollapsed();
-  /* Kullanıcı collapse pair'ine bilinçli dokundu; ilk-açılış sönük durumundan
-     çık, vurgu artık DOM ile eşleşmeyle çalışır. */
+  /* The user deliberately touched the collapse pair; exit the dim first-open
+     state. Highlighting from this point on is driven by matching the DOM. */
   if (typeof markCollapseTouched === "function") markCollapseTouched();
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
-/* Tümünü Kapat */
+/* Close All */
 document.getElementById("collapseAllBtn").addEventListener("click", () => {
   document.querySelectorAll(".category").forEach(c => {
     c.classList.add("collapsed");
     collapsedCats.add(c.id);
   });
   saveCollapsed();
-  /* Aynı sebep, mark collapse touched bayrağı; collapse vurgusu artık aktif. */
+  /* Same reason: set the collapse-touched flag; collapse highlight is now active. */
   if (typeof markCollapseTouched === "function") markCollapseTouched();
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
-/* Tüm madde kartlarını arka yüze çevir / ön yüze döndür.
-   Per-item flip butonuyla aynı görsel etki (.feature.flipped class);
-   sadece çok sayıda madde için tek tıkla toplu çevirme sağlar. Hiçbir
-   completion state değiştirilmez, sadece view modu değişir.
+/* Flip every feature card to the back face / return them to the front face.
+   Produces the same visual effect as the per-item flip button (.feature.flipped
+   class); the toolbar entry just provides a single-click bulk flip when there
+   are many items. No completion state is touched; only the view mode changes.
 
-   flipFeatureCard kullanır — böylece her kartta height animasyonu (uzayıp
-   küçülme) per-item flip ile birebir aynı şekilde çalışır. */
+   Uses flipFeatureCard so each card runs the same height animation (expand /
+   shrink) as the per-item flip. */
 function setAllCardsFlipped(flipped) {
   document.querySelectorAll(".feature").forEach(f => {
     if (typeof flipFeatureCard === "function") {
       flipFeatureCard(f, flipped);
     } else {
-      /* Fallback: render.js henüz yüklenmediyse class toggle yeter */
+      /* Fallback: if render.js is not loaded yet, toggling the class is enough. */
       f.classList.toggle("flipped", flipped);
     }
   });
-  /* Tüm kartlar artık aynı yüzde; "Tümü Nasıl" veya "Tümü Liste"
-     turuncu olmalı (DOM sayısından türetilir). */
+  /* All cards now share the same face; either "All How-To" or "All Checklist"
+     should be highlighted orange (derived from the DOM count). */
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
-/* "❔ Tümü Nasıl?" — toolbar'dan tüm kartları arka yüze çevirir VE kullanım
-   biçimi tercihini "review"a yükseltir; böylece sonraki render'larda da
-   (filter/dil/style değişimi vb.) kartlar arka yüzde başlar. */
+/* "All How-To" toolbar button: flips every card to the back face AND promotes
+   the usage-mode preference to "review", so subsequent renders (after a filter,
+   language, or style change) also start cards on the back face. */
 const flipAllHowBtn = document.getElementById("flipAllHowBtn");
 if (flipAllHowBtn) {
   flipAllHowBtn.addEventListener("click", () => {
-    /* Bilinçli toolbar tıklaması: flip vurgu bayrağını set et (welcome'da
-       mode seçimi MARK ETMEZ, sadece doğrudan UI etkileşimi). */
+    /* Deliberate toolbar click: set the flip-touched flag. The welcome-modal
+       mode selection does NOT mark; only direct UI interaction does. */
     if (typeof markFlipTouched === "function") markFlipTouched();
     if (typeof applyMode === "function") applyMode("review");
     setAllCardsFlipped(true);
     showToast(t("flipAll.toastHow"), "info", 1400);
   });
 }
-/* "📋 Tümü Liste" — tüm kartları ön yüze döndürür VE kullanım biçimi tercihini
-   "build"e indirir; render sonrası applyInitialCardMode hiçbir şey yapmaz. */
+/* "All Checklist" toolbar button: flips every card back to the front face AND
+   demotes the usage-mode preference to "build"; after a render,
+   applyInitialCardMode is a no-op. */
 const flipAllChecklistBtn = document.getElementById("flipAllChecklistBtn");
 if (flipAllChecklistBtn) {
   flipAllChecklistBtn.addEventListener("click", () => {
-    /* Aynı şekilde bilinçli toolbar tıklaması: flip vurgu bayrağını set et. */
+    /* Same as above: a deliberate toolbar click sets the flip-touched flag. */
     if (typeof markFlipTouched === "function") markFlipTouched();
     if (typeof applyMode === "function") applyMode("build");
     setAllCardsFlipped(false);
@@ -71,17 +72,18 @@ if (flipAllChecklistBtn) {
   });
 }
 
-/* ==================== RESET UI'I — İKİ AYRI YERDE KULLANIM ====================
-   1) Toolbar Sıfırla butonu → resetScopeModal (sadece selections + notes)
-   2) Proje/FW modal'ın "Sıfırla" sekmesi → projfw-pane-reset (4 seçenek)
-   Aynı performReset fonksiyonuna scope objesi göndererek çalışırlar. */
+/* ==================== RESET UI: USED IN TWO PLACES ====================
+   1) Toolbar Reset button: resetScopeModal (only selections + notes)
+   2) Project/Framework modal "Reset" tab: projfw-pane-reset (4 options)
+   Both code paths call the same performReset function with a scope object. */
 
 const RESET_INDEPENDENT_SCOPES = ["selections", "notes", "settings"];
 
-/* Bir reset-scope UI'ını (checkbox grubu + İleri butonu) bir araya bağlar.
-   `attr` her UI için farklı bir data-attribute adı (DOM çakışmasını önler).
-   `nextBtnId` o UI'ın "İleri" butonunun ID'si.
-   `onBeforeConfirm` opsiyonel — confirm açılmadan önce çağrılır (ör. modal kapatma). */
+/* Wires up a reset-scope UI (a group of checkboxes plus a "Next" button).
+   `attr` is a different data-attribute name per UI (prevents DOM collisions).
+   `nextBtnId` is the ID of that UI's "Next" button.
+   `onBeforeConfirm` is optional and fires just before the confirm opens
+   (e.g. to close the host modal). */
 function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
   const cbs = document.querySelectorAll(`[${attr}]`);
   const nextBtn = document.getElementById(nextBtnId);
@@ -90,7 +92,7 @@ function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
   const sysCb = document.querySelector(`[${attr}="system"]`);
   const independents = RESET_INDEPENDENT_SCOPES.map(s => document.querySelector(`[${attr}="${s}"]`)).filter(Boolean);
 
-  /* Tüm seçenekleri sıfırla (modal/sekme yeniden açılışında çağrılır) */
+  /* Reset all options (called whenever the modal/tab is reopened). */
   function resetUi() {
     cbs.forEach(cb => {
       cb.checked = false;
@@ -99,7 +101,8 @@ function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
     nextBtn.disabled = true;
   }
 
-  /* Checkbox değişimi: system ↔ diğerleri ilişkisini yönet, İleri butonunu güncelle */
+  /* Checkbox change: manage the system vs. independent-options relationship
+     and refresh the "Next" button. */
   cbs.forEach(cb => {
     cb.addEventListener("change", () => {
       if (sysCb && cb === sysCb) {
@@ -124,7 +127,7 @@ function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
     });
   });
 
-  /* İleri butonu → scope topla → onay aç → performReset çağır */
+  /* "Next" button: collect the scope, open a confirm, then call performReset. */
   nextBtn.addEventListener("click", () => {
     const scope = {
       selections: document.querySelector(`[${attr}="selections"]`)?.checked || false,
@@ -166,23 +169,24 @@ function setupResetScopeUi(attr, nextBtnId, onBeforeConfirm) {
   return { resetUi };
 }
 
-/* UI #1: Toolbar Sıfırla → resetScopeModal (sadece selections + notes). */
+/* UI #1: Toolbar Reset, hosted by resetScopeModal (selections + notes only). */
 const toolbarResetUi = setupResetScopeUi("data-reset-scope", "resetScopeNext", () => closeModal("resetScopeModal"));
 
-/* Toolbar Sıfırla butonu — modalı her açılışta UI'ı sıfırla */
+/* Toolbar Reset button: clear the UI each time the modal is opened. */
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (lockState) return;
   if (toolbarResetUi) toolbarResetUi.resetUi();
   openModal("resetScopeModal");
 });
 
-/* UI #2: Proje/FW modal "Sıfırla" sekmesi (4 seçenek: tüm modlar). */
+/* UI #2: Project/Framework modal "Reset" tab (4 options, covering all scopes). */
 const projfwResetUi = setupResetScopeUi("data-full-reset-scope", "projfwResetNext", () => closeModal("frameworkModal"));
 
-/* Asıl sıfırlama mantığı, scope objesine göre */
+/* Performs the actual reset, dispatching on the scope object
+   `{ selections, notes, settings, system }` (each a boolean). */
 function performReset(scope) {
-  /* "Tüm Sistem": localStorage'ı tamamen temizle ve sayfayı yenile.
-     Böylece welcome akışı yeniden tetiklenir, kullanıcı baştan başlar. */
+  /* "Full System": wipe localStorage completely and reload the page. This
+     re-triggers the welcome flow so the user starts from scratch. */
   if (scope.system) {
     showToast("✓", "info", 600);
     setTimeout(() => {
@@ -194,28 +198,28 @@ function performReset(scope) {
     return;
   }
 
-  /* Seçimler: işaretler + kutlama bayrakları.
-     state objesi hem ön yüz seviye anahtarlarını (ör. "1.1-mvp") hem arka
-     yüz How-To adım anahtarlarını (ör. "1.1-mvp.s0") tutar. state = {}
-     ikisini de siler; DOM tarafında her iki yüzü de elle temizlemek
-     gerekir (renderContent çağrılmıyor çünkü selections-only path
-     hızlı kalmalı). Ek olarak seviye üzerindeki partial-fill (--step-
-     progress CSS değişkeni) ve level-progress-badge updateLevelProgressUI
-     tarafından state boş okunduğunda otomatik temizlenir. */
+  /* Selections: checks plus celebration flags.
+     The `state` object stores BOTH front-face level keys (e.g. "1.1-mvp")
+     and back-face How-To step keys (e.g. "1.1-mvp.s0"). `state = {}` clears
+     both; on the DOM side we still need to clear each face by hand
+     (renderContent is intentionally not called here, since the selections-only
+     path needs to stay fast). The partial-fill CSS variable (--step-progress)
+     and the level-progress-badge are cleared automatically by
+     updateLevelProgressUI when it sees an empty `state`. */
   if (scope.selections) {
     state = {};
     saveState();
     celebrations = {};
     saveCelebrations();
-    /* Ön yüz seviye işaretleri */
+    /* Front-face level checks. */
     document.querySelectorAll(".level.checked").forEach(el => el.classList.remove("checked"));
-    /* Arka yüz Nasıl Yapılır? adımları */
+    /* Back-face How-To steps. */
     document.querySelectorAll(".howto-step.checked").forEach(li => {
       li.classList.remove("checked");
       li.setAttribute("aria-checked", "false");
     });
-    /* Her seviyenin partial-fill yüzdesini ve progress badge'ini yeniden
-       hesapla (state boş olduğundan ikisi de görsel olarak kaldırılır). */
+    /* Recompute each level's partial-fill percentage and progress badge
+       (with an empty `state` both are visually removed). */
     if (typeof updateLevelProgressUI === "function") {
       document.querySelectorAll(".level[data-key]").forEach(el => {
         updateLevelProgressUI(el.dataset.key);
@@ -223,11 +227,12 @@ function performReset(scope) {
     }
   }
 
-  /* Notlar: tüm notlar silinir */
+  /* Notes: clear every note. */
   if (scope.notes) {
     notes = {};
     saveNotes();
-    /* Açık not textarea'larını temizle, has-note class'ını kaldır, sunum-notu textini sil */
+    /* Clear any open note textareas, drop the has-note class, blank the
+       presentation-note display text. */
     document.querySelectorAll("[data-note-input]").forEach(ta => {
       ta.value = "";
     });
@@ -235,7 +240,7 @@ function performReset(scope) {
     document.querySelectorAll(".note-display-text").forEach(el => {
       el.textContent = "";
     });
-    /* Not toggle butonlarındaki ikon/etiket güncelle ("+ Not ekle" haline dön) */
+    /* Refresh the icon/label of each note toggle button (back to "+ Add note"). */
     document.querySelectorAll("[data-note-toggle]").forEach(btn => {
       const icon = btn.querySelector(".note-icon");
       const label = btn.querySelector(".note-label");
@@ -244,10 +249,10 @@ function performReset(scope) {
     });
   }
 
-  /* Ayarlar: kategori collapse + tema + anlatım dili + view + lock.
-     Ek olarak toolbar pair'lerinin "kullanıcı seçti mi?" bayrakları
-     temizlenir; kullanıcı varsayılana döndüğü için collapse ve flip
-     vurguları yeniden ilk-açılış sönük durumuna iner. */
+  /* Settings: category collapse state, theme, explanation style, view, lock.
+     Also clears the "did the user pick this?" flags for the toolbar pairs,
+     so collapse and flip highlights drop back to the dim first-open state
+     once the user returns to defaults. */
   if (scope.settings) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
@@ -259,30 +264,31 @@ function performReset(scope) {
     if (typeof clearCollapseFlipTouchFlags === "function") clearCollapseFlipTouchFlags();
   }
 
-  /* UI'ı yenile */
+  /* Refresh the UI. */
   if (scope.selections || scope.notes || scope.settings) {
     if (scope.settings) {
-      /* renderContent collapsedCats'i uygular (tüm cats kapalı) — selections/notes
-         de zaten yeni state'i okuyarak doğru render edecek */
+      /* renderContent applies collapsedCats (all categories closed). The
+         selections/notes branches already read the updated state and render
+         correctly. */
       renderContent();
       attachClickHandlers();
     }
-    applyView(); // body class'ları, hero pill'leri, filter
+    applyView(); // body classes, hero pills, filter
     applyLock(); // lock UI
-    updateProgress(); // ilerleme barı + toolbar buton state'leri
+    updateProgress(); // progress bar + toolbar button states
     applyFilters(); // feature/category visibility
   }
 
-  /* Toast */
+  /* Toast. */
   if (scope.selections || scope.notes || scope.settings) {
     showToast(t("reset.toast.done"), "info", 1500);
   }
 }
 
-/* ==================== KİLİT (LOCK) ==================== */
+/* ==================== LOCK ==================== */
 document.getElementById("lockBtn").addEventListener("click", () => {
   if (!lockState) {
-    /* Kilitle: zengin onay UI'ı */
+    /* Locking flow: rich confirm UI. */
     const html = `
       <div class="lock-confirm">
         <p class="fw-switch-intro">${t("lock.intro")}</p>
@@ -311,7 +317,7 @@ document.getElementById("lockBtn").addEventListener("click", () => {
       }
     );
   } else {
-    /* Kilidi aç: daha basit onay */
+    /* Unlocking flow: a simpler confirm. */
     const html = `
       <div class="lock-confirm">
         <p class="fw-switch-intro">${t("lock.unlockIntro")}</p>
@@ -340,10 +346,11 @@ document.getElementById("lockBtn").addEventListener("click", () => {
   }
 });
 
-/* Mobil eylem menüsü aç/kapa
-   Mobil ekranda sticky alan kompakttır: arama + 3 mini ilerleme barı görünür,
-   diğer butonlar ≡ düğmesinin arkasında durur. Burada açma/kapama davranışı,
-   panel dışına tıklama ile kapatma ve eylem sonrası otomatik kapatma var. */
+/* Mobile actions menu (open/close).
+   On mobile the sticky toolbar is compact: search + 3 mini progress bars are
+   visible while the rest of the buttons hide behind the hamburger (≡). This
+   block handles open/close, click-outside dismiss, and auto-close after an
+   action runs. */
 (function setupMobileActionsToggle() {
   const toggleBtn = document.getElementById("actionsToggle");
   const toolbarEl = toggleBtn ? toggleBtn.closest(".toolbar") : null;
@@ -364,16 +371,17 @@ document.getElementById("lockBtn").addEventListener("click", () => {
     else open();
   });
 
-  /* Toolbar dışında bir yere tıklayınca paneli kapat */
+  /* Clicking anywhere outside the toolbar closes the panel. */
   document.addEventListener("click", e => {
     if (!toolbarEl.classList.contains("actions-open")) return;
     if (toolbarEl.contains(e.target)) return;
     close();
   });
 
-  /* Filtre toggle butonları (MVP/Release Eksik) görsel toggle olduğu için
-     panel açık kalsın. Diğer eylemler genelde modal/işlem açar; tıklayınca
-     mobilde görüş alanını boşaltmak için paneli kapat. */
+  /* Filter toggle buttons (MVP/Release Pending/Done) are pure visual toggles,
+     so keep the panel open for them. Other actions generally open a modal or
+     run an operation; close the panel after clicking so the user can see the
+     screen on mobile. */
   const KEEP_OPEN_IDS = new Set(["filterMvpPending", "filterMvpDone", "filterReleasePending", "filterReleaseDone"]);
   toolbarEl.querySelectorAll(".actions .btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -382,22 +390,23 @@ document.getElementById("lockBtn").addEventListener("click", () => {
     });
   });
 
-  /* Esc ile de kapansın (mevcut keydown handler'ı bozmadan ayrı dinleyici) */
+  /* Also close on Esc (separate listener so the existing keydown handler is
+     left untouched). */
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
     if (!toolbarEl.classList.contains("actions-open")) return;
-    /* Açık modal varsa onun esc handler'ı önce çalışsın */
+    /* If a modal is open, let its Esc handler run first. */
     const openModalEl = [...document.querySelectorAll(".modal")].find(m => !m.hidden);
     if (openModalEl) return;
     close();
   });
 })();
 
-/* Long-press easter egg, generic kurulum.
-   Kısa tıklama hiçbir şey yapmaz; ~3 sn basılı tutunca verilen URL
-   yeni sekmede açılır. Mouse + dokunma desteklenir; parmak >14px
-   kayarsa basış iptal olur (kullanıcı sayfayı kaydırmaya çalışırsa
-   kazara tetiklenmesin). Mobilde context menü engellenir. */
+/* Generic long-press easter-egg setup.
+   A short click does nothing; holding for ~3 seconds opens the given URL in a
+   new tab. Mouse and touch are both supported; if the finger drifts more than
+   14px the press is cancelled (so accidentally trying to scroll the page does
+   not fire the egg). The native context menu is suppressed on mobile. */
 function setupLongPressEasterEgg(el, link, toastMsg) {
   if (!el) return;
   const HOLD_MS = 3000;
@@ -430,7 +439,7 @@ function setupLongPressEasterEgg(el, link, toastMsg) {
     el.classList.remove("pressing");
   };
 
-  /* Mouse */
+  /* Mouse. */
   el.addEventListener("mousedown", e => {
     if (e.button !== 0) return;
     start();
@@ -438,7 +447,7 @@ function setupLongPressEasterEgg(el, link, toastMsg) {
   el.addEventListener("mouseup", cancel);
   el.addEventListener("mouseleave", cancel);
 
-  /* Touch */
+  /* Touch. */
   el.addEventListener(
     "touchstart",
     e => {
@@ -461,15 +470,14 @@ function setupLongPressEasterEgg(el, link, toastMsg) {
   el.addEventListener("touchend", cancel);
   el.addEventListener("touchcancel", cancel);
 
-  /* Mobil long-press menüsünü engelle */
+  /* Suppress the mobile long-press context menu. */
   el.addEventListener("contextmenu", e => e.preventDefault());
 }
 
-/* Hero rozeti -> LinkedIn; footer versiyon damgası -> GitHub.
-   toastMsg her seferinde t() ile çözülsün diye fonksiyonel olarak verilebilir
-   ama mevcut setup kuralı statik string istiyor; aşağıda lazy çağrı için
-   her tetiklenmede currentLang üzerinden çevir. setup'a fonksiyonel desteği
-   eklemek yerine, çeviri için bir wrapper kullanıyoruz. */
+/* Hero instructor badge: opens LinkedIn. Footer version stamp: opens GitHub.
+   `toastMsg` can be passed as a function so each press resolves the text via
+   t() against the current language (the egg setup itself accepts either a
+   string or a function, then invokes the function each time the egg fires). */
 setupLongPressEasterEgg(document.querySelector(".instructor"), "https://www.linkedin.com/in/ozcan-orhan-demirci/", () =>
   t("easter.linkedin")
 );
@@ -477,11 +485,12 @@ setupLongPressEasterEgg(document.getElementById("footVersion"), "https://github.
   t("easter.github")
 );
 
-/* ==================== YARDIM ACCORDION ====================
-   Yardım modal'ındaki HELP_HTML her dil değişiminde yeniden render edilir;
-   bu render'dan sonra her section'a `.help-section.collapsed` class'ı + h3'e
-   chevron eklenerek accordion davranışı kazandırılır. Click handler ile
-   "Tümünü Aç/Kapat" butonları aşağıda tek seferlik bağlanır. */
+/* ==================== HELP ACCORDION ====================
+   The Help modal's HELP_HTML is re-rendered every time the language changes;
+   after each render, every section is given the `.help-section.collapsed`
+   class and its h3 gets a chevron, which produces the accordion behavior.
+   The click handler plus the "Expand/Collapse All" buttons are wired up once
+   below. */
 function enhanceHelpAccordion() {
   const sections = document.querySelectorAll("#helpModalBody > section");
   sections.forEach(section => {
@@ -497,64 +506,66 @@ function enhanceHelpAccordion() {
   });
 }
 
-/* Tüm bölümleri kapatır (modal her yeniden açılışında temiz başlangıç için) */
+/* Collapse every section (called on each modal open for a clean start). */
 function collapseAllHelpSections() {
   document.querySelectorAll("#helpModalBody > section.help-section").forEach(s => s.classList.add("collapsed"));
 }
 
-/* h3 tıklaması → section toggle. helpModalBody parent kalıcı olduğundan
-   innerHTML değişse bile delegated handler çalışmaya devam eder. */
+/* h3 click toggles its section. The helpModalBody parent is permanent, so the
+   delegated handler keeps working even when innerHTML is replaced. */
 document.getElementById("helpModalBody")?.addEventListener("click", e => {
   const h3 = e.target.closest("#helpModalBody > section.help-section > h3");
   if (!h3) return;
   h3.parentElement.classList.toggle("collapsed");
 });
 
-/* "Tümünü Aç" → tüm section'lardan collapsed class'ını kaldır */
+/* "Expand All": remove the collapsed class from every section. */
 document.getElementById("helpExpandAll")?.addEventListener("click", () => {
   document.querySelectorAll("#helpModalBody > section.help-section").forEach(s => s.classList.remove("collapsed"));
 });
 
-/* "Tümünü Kapat" → tüm section'lara collapsed class ekle */
+/* "Collapse All": add the collapsed class to every section. */
 document.getElementById("helpCollapseAll")?.addEventListener("click", () => {
   collapseAllHelpSections();
 });
 
-/* Yardım butonu (toolbar) — anlık dil switcher'ı göstermez (zaten dil seçilmiştir,
-   üst-sağdaki global 🌐 TR/EN butonu var). Modal her açılışta bölümler kapalı
-   başlasın (kullanıcı temiz bir TOC ile karşılaşsın). */
+/* Help button (toolbar): does NOT show the in-modal language switcher
+   (language has already been chosen, and the global TR/EN button sits in the
+   top right). Sections start collapsed every time the modal opens, so the user
+   always sees a clean TOC. */
 document.getElementById("helpBtn").addEventListener("click", () => {
   if (typeof setHelpLangSwitchVisible === "function") setHelpLangSwitchVisible(false);
-  /* Eğer önceki açılıştan in-modal switcher ile dil değişmiş kaldıysa global dile çek */
+  /* If a previous open used the in-modal switcher to change languages, snap
+     the help content back to the global language now. */
   if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
   collapseAllHelpSections();
   openModal("helpModal");
 });
 
-/* Print — artık modal açıyor; kullanıcı kontrol listesi mi yoksa Nasıl Yapılır?
-   rehberi mi PDF'i istediğini seçer. window.print() seçim yapıldığında
-   tetiklenir. body'ye geçici class (print-howto) eklenerek CSS ilgili modu
-   uygulanır; print bittikten sonra class kaldırılır. */
+/* Print: now opens a modal first; the user chooses whether to PDF the
+   checklist or the How-To guide. window.print() fires after the choice. A
+   temporary body class (print-howto) is added so CSS can switch into the
+   correct print mode, then removed once printing is done. */
 document.getElementById("printBtn").addEventListener("click", () => {
   openModal("printOptionsModal");
 });
 
-/* Yazdırma modu seçenek butonları (modal içinde) */
+/* Print-mode option buttons inside the modal. */
 document.querySelectorAll("[data-print-mode]").forEach(btn => {
   btn.addEventListener("click", () => {
     const mode = btn.dataset.printMode;
     closeModal("printOptionsModal");
-    /* Modal kapanma animasyonu/DOM güncellemesi sonrası print'i tetikle —
-       aynı tick'te yapmak bazı tarayıcılarda modal'ın yazdırma görüntüsünde
-       takılı kalmasına yol açıyor. */
+    /* Trigger printing after the modal's close animation / DOM update;
+       running it in the same tick causes some browsers to leave the modal
+       stuck in the print preview. */
     if (mode === "howto") {
       document.body.classList.add("print-howto");
     }
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.print();
-        /* Print dialog kapandıktan sonra class'ı temizle. afterprint
-           event'i tüm tarayıcılarda güvenilir değil; setTimeout da ekle. */
+        /* Clear the class once the print dialog closes. The afterprint event
+           is not reliable in every browser, so back it up with a setTimeout. */
         const cleanup = () => {
           document.body.classList.remove("print-howto");
           window.removeEventListener("afterprint", cleanup);
@@ -566,7 +577,7 @@ document.querySelectorAll("[data-print-mode]").forEach(btn => {
   });
 });
 
-/* Export: state + notes birlikte */
+/* Export: state and notes together. */
 document.getElementById("exportBtn").addEventListener("click", () => {
   const data = JSON.stringify(
     {
@@ -587,7 +598,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
-/* Import: yeni format (state + notes) ve eski format (sadece state) */
+/* Import: accepts the new format (state + notes) and the legacy format (state only). */
 const importFile = document.getElementById("importFile");
 document.getElementById("importBtn").addEventListener("click", () => {
   if (lockState) return;
@@ -622,20 +633,21 @@ importFile.addEventListener("change", e => {
   importFile.value = "";
 });
 
-/* ==================== KLAVYE KISAYOLLARI ==================== */
+/* ==================== KEYBOARD SHORTCUTS ==================== */
 document.addEventListener("keydown", e => {
   const inPres = document.body.classList.contains("presentation-mode");
   const inField = e.target.matches("input, textarea");
 
-  /* Esc her durumda: önce açık modal, sonra açık AI paneli, sonra sunum */
+  /* Esc, in priority order: open modal first, then open AI panel, then presentation. */
   if (e.key === "Escape") {
     const openModalEl = [...document.querySelectorAll(".modal")].find(m => !m.hidden);
     if (openModalEl) {
-      /* Karşılama modalı Esc ile kapanmaz, kullanıcı bilinçli olarak Tamam'a basmalı */
+      /* The welcome modal cannot be dismissed with Esc; the user must press OK
+         deliberately. */
       if (openModalEl.id === "welcomeModal") return;
       e.preventDefault();
       openModalEl.hidden = true;
-      /* Yardım modalı Esc ile kapatıldıysa anlık dil switcher'ını sıfırla */
+      /* If the Help modal was closed via Esc, reset its in-modal language switcher. */
       if (openModalEl.id === "helpModal" && typeof setHelpLangSwitchVisible === "function") {
         setHelpLangSwitchVisible(false);
         if (typeof applyHelpDisplayLang === "function") applyHelpDisplayLang(currentLang);
@@ -683,11 +695,11 @@ document.addEventListener("keydown", e => {
 });
 
 /* ==================== PWA MANIFEST ====================
-   http(s) ortamında <link rel="manifest" href="manifest.webmanifest">
-   statik referansı kullanılır. file:// ile (offline tek-dosya açılış)
-   manifest.webmanifest yüklenemediğinde blob URL'li bir manifest
-   üretip statik linki onunla değiştiririz, böylece offline indirilen
-   tek HTML dosyası da çalışır. */
+   Under http(s) the static <link rel="manifest" href="manifest.webmanifest">
+   reference is used. Under file:// (offline single-file open) the
+   manifest.webmanifest cannot be loaded, so we generate a blob-URL manifest
+   on the fly and replace the static link with it. That keeps the offline
+   single-HTML download working as a PWA. */
 (function setupManifest() {
   if (location.protocol !== "file:") return;
   try {
@@ -722,23 +734,23 @@ document.addEventListener("keydown", e => {
     link.href = url;
     document.head.appendChild(link);
   } catch (err) {
-    /* sessizce geç */
+    /* Swallow silently. */
   }
 })();
 
 /* ==================== SERVICE WORKER ====================
-   Gerçek bir sw.js dosyası kayıt için kullanılır, Chrome/Edge gibi
-   Chromium tabanlı tarayıcılarda PWA install prompt için ZORUNLU
-   (blob: URL'li SW kayıtları install kriterlerini geçmiyor).
-   Eğer ./sw.js yüklenemezse (file:// veya 404), blob URL'li bir
-   yedek SW devreye girer; Chromium yine reddederse sessizce geçilir. */
+   Registration uses a real sw.js file. Chromium-based browsers (Chrome, Edge)
+   REQUIRE a same-origin script for the PWA install prompt; SW registrations
+   from a blob: URL do not satisfy the install criteria.
+   If ./sw.js cannot be loaded (file:// or 404) a blob-URL fallback SW is
+   registered instead. If Chromium still rejects it, we fail silently. */
 (function setupServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   if (!window.isSecureContext) return;
   if (location.protocol !== "https:" && location.protocol !== "http:") return;
 
   navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {
-    /* sw.js bulunamadıysa (örn. tek-dosya offline kullanım) blob fallback */
+    /* sw.js is missing (e.g. single-file offline use): fall back to a blob SW. */
     try {
       const swCode = `
           const CACHE_NAME = 'mobil-kontrol-v1';
@@ -769,18 +781,18 @@ document.addEventListener("keydown", e => {
       const swBlob = new Blob([swCode], { type: "application/javascript" });
       const swUrl = URL.createObjectURL(swBlob);
       navigator.serviceWorker.register(swUrl, { scope: "./" }).catch(() => {
-        /* Chromium blob URL'li SW'yi reddeder; sessizce geç */
+        /* Chromium rejects a blob-URL SW; swallow silently. */
       });
     } catch {
-      /* sessizce */
+      /* Swallow silently. */
     }
   });
 })();
 
-/* ==================== HERO LEVEL/STATUS FİLTRESİ (3x3 = 9 kombinasyon) ==================== */
-/* Üç pill (MVP / Release / MVP+Release) + her birinin altında 3 opsiyonlu dropdown
-   (Tümü / Yapılacak / Yapılan). Pill'e tıklamak dropdown'u açar; menü item'ı
-   tıklandığında setView ile hem viewMode hem viewFilter atanır. */
+/* ==================== HERO LEVEL/STATUS FILTER (3x3 = 9 combinations) ==================== */
+/* Three pills (MVP / Release / MVP+Release) and a 3-option dropdown under each
+   (All / Pending / Done). Clicking a pill opens its dropdown; clicking a menu
+   item calls setView, which assigns both viewMode and viewFilter. */
 
 function closeAllLvMenus() {
   document.querySelectorAll(".lv-menu").forEach(m => (m.hidden = true));
@@ -811,12 +823,13 @@ document.querySelectorAll(".lv-group").forEach(group => {
   });
 });
 
-/* Dış tıklama menüyü kapatır */
+/* Click outside the group closes the menu. */
 document.addEventListener("click", e => {
   if (!e.target.closest(".lv-group")) closeAllLvMenus();
 });
 
-/* Esc menüyü kapatır (mevcut Esc handler'ından önce çalışsın diye capture) */
+/* Esc closes the menu. Registered in the capture phase so it runs before the
+   main Esc handler (which would otherwise try to close a modal first). */
 document.addEventListener(
   "keydown",
   e => {
@@ -830,12 +843,12 @@ document.addEventListener(
   true
 );
 
-/* İlk yüklemede mevcut view'i uygula */
+/* Apply the current view on first load. */
 applyView();
 
-/* Hero anlatım dili pill'i (üst kontroller arasında) — tıklanınca tüm madde
-   metinleri yeni stile göre yeniden render edilir, kullanıcıya küçük bir toast
-   bilgilendirmesi gösterilir. */
+/* Hero explanation-style pill (in the top controls): clicking re-renders all
+   item text in the new style (Simple / Technical) and shows a brief toast to
+   confirm the switch. */
 const styleToggleBtn = document.getElementById("styleToggle");
 if (styleToggleBtn) {
   styleToggleBtn.addEventListener("click", () => {
@@ -844,15 +857,15 @@ if (styleToggleBtn) {
 }
 
 /* ==================== INIT ==================== */
-/* İlk olarak DOM'a kaydedilmiş dile göre tüm i18n işaretli elementleri tercüme et */
+/* Translate every i18n-tagged element using the language stored in the DOM. */
 applyI18nToDom();
 
-/* Anlatım dilini DOM'a uygula (button label + data-explanation-style attr) */
+/* Apply the explanation style to the DOM (button label + data-explanation-style attr). */
 if (typeof applyStyle === "function") applyStyle(currentStyle);
 
-/* Kullanım biçimi tercihini DOM'a uygula (data-card-mode attr).
-   Kartların aslında çevrilmesi attachClickHandlers sonunda applyInitialCardMode
-   ile yapılır; burada sadece tercih html'e yansıtılır. */
+/* Apply the usage-mode preference to the DOM (data-card-mode attr).
+   Actual card flipping happens later inside attachClickHandlers, via
+   applyInitialCardMode; here we only mirror the preference into the HTML. */
 if (typeof applyMode === "function") applyMode(currentMode);
 
 applyTheme(localStorage.getItem(THEME_KEY) || "dark");
@@ -862,10 +875,12 @@ renderContent();
 attachClickHandlers();
 attachSearch();
 
-/* İlk açılışta updateProgress kutlama tetiklemesin (zaten c.total === 0 koşulu sağlamasıyla tetiklenmiyor ama yine de güvenli) */
+/* On first load updateProgress must not trigger a celebration (the c.total === 0
+   guard already prevents it, but we call it deliberately here as a safe op). */
 updateProgress();
 
-/* Kilit durumunu localStorage'dan yükleyip uygula (button etiketi, body class, disabled hedefler) */
+/* Load the lock state from localStorage and apply it (button label, body class,
+   disabled targets). */
 applyLock();
 
 showWelcomeIfFirstVisit();

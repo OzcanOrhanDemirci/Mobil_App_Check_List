@@ -10,15 +10,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Mobil Uygulama Kalite Kontrol Listesi</title>
 
-<!-- Açıklama: mağaza ve sosyal medya önizlemeleri için tek satır.
-     WhatsApp/Slack/Discord/X bu metni link preview kartında gösterir. -->
+<!-- Description meta tag (single line for stores and social-media previews).
+     WhatsApp / Slack / Discord / X show this text in the link-preview card. -->
 <meta name="description" content="Mobil uygulamanı yayınlamadan önce 14 kategori, 55 madde üzerinden MVP ve Release kontrolü. Her madde için adım adım nasıl yapılır rehberi. 6 framework, 9 backend desteklenir. Kurulabilir PWA." />
 <meta name="author" content="Özcan Orhan Demirci" />
 <meta name="keywords" content="mobil uygulama, kalite kontrol, MVP, Release, checklist, PWA, Flutter, React Native, Swift, Kotlin, Expo, Firebase, Supabase" />
 <link rel="canonical" href="https://ozcanorhandemirci.github.io/Mobil_App_Check_List/" />
 
-<!-- Open Graph: link paylaşıldığında WhatsApp/Slack/Discord/LinkedIn/Telegram
-     bunları okuyarak başlık + açıklama + görsel olan bir önizleme kartı çizer. -->
+<!-- Open Graph: rich-card metadata used when the link is shared.
+     WhatsApp / Slack / Discord / LinkedIn / Telegram read these tags and
+     render a preview card with title, description, and image. -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Mobil Uygulama Kalite Kontrol Listesi" />
 <meta property="og:title" content="Mobil Uygulama Kalite Kontrol Listesi" />
@@ -38,7 +39,7 @@
 <meta property="og:locale" content="tr_TR" />
 <meta property="og:locale:alternate" content="en_US" />
 
-<!-- Twitter / X kartı: büyük görselli özet kart (summary_large_image). -->
+<!-- Twitter / X card: large-image summary card (summary_large_image). -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Mobil Uygulama Kalite Kontrol Listesi" />
 <meta name="twitter:description" content="14 kategori × 55 madde üzerinden MVP ve Release kalite kontrolü. Her madde için adım adım rehber." />
@@ -240,10 +241,11 @@
   <footer>
     <p class="foot-line foot-title" data-i18n="footer.title">Mobil Uygulama Kalite Kontrol Listesi</p>
     <p class="foot-line foot-instructor"><span class="foot-label" data-i18n="footer.preparedBy">Hazırlayan</span> Özcan Orhan Demirci</p>
-    <!-- Footer install butonu: üstteki turuncu yükle banner'ı kapalıyken
-         görünür (kullanıcı banner'ı X ile kapadıysa veya hiç gelmediyse
-         alternatif ulaşım yolu). Standalone modda veya zaten yüklendiyse gizli.
-         Sıralama: Hazırlayan → Yükle → Sürüm (alt alta, ortalı). -->
+    <!-- Footer install button: appears when the orange install banner at the
+         top is dismissed (alternative entry point when the user closed the
+         banner with X or it never appeared). Hidden in standalone mode or
+         once the app is already installed.
+         Footer order: Prepared by, Install, Version (stacked, centered). -->
     <button type="button" class="install-floating-btn" id="installFloatingBtn" hidden
             aria-label="Uygulamayı yükle"
             title="Uygulamayı cihazına yükle"
@@ -261,7 +263,7 @@
 
 <div class="print-footer" data-i18n="footer.printFooter">Hazırlayan: Özcan Orhan Demirci</div>
 
-<!-- Sunum modu üst bilgi çubuğu (sabit, tüm kategoriler boyunca görünür) -->
+<!-- Presentation mode top context bar (sticky; visible across all categories) -->
 <div class="pres-context-bar" aria-hidden="true">
   <div class="pres-context-left">
     <span class="pres-context-emoji">📱</span>
@@ -282,7 +284,7 @@
   <button id="presExit" class="pres-exit" title="Sunumdan çık (Esc)" data-i18n-title="pres.exit" data-i18n="pres.exitLabel">Kapat</button>
 </div>
 
-<!-- Yardım modalı -->
+<!-- Help modal -->
 <div class="modal" id="helpModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
@@ -543,7 +545,7 @@
   </div>
 </div>
 
-<!-- Karşılama modalı (ilk açılışta), 2 kademeli: 1) Framework seçimi  2) Hoşgeldin / nasıl kullanılır -->
+<!-- Welcome modal (shown on first launch); 7-step flow: language, usage mode, explanation style, project name, framework, backend, and a closing how-to overview. -->
 <div class="modal" id="welcomeModal" hidden>
   <div class="modal-backdrop"></div>
   <div class="modal-content modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
@@ -557,7 +559,7 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Adım göstergesi (7 adım: Dil, Kullanım Biçimi, Anlatım Dili, Proje Adı, Framework, Backend, Karşılama) -->
+    <!-- Step indicator (7 steps: Language, Usage mode, Explanation style, Project name, Framework, Backend, Welcome) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
@@ -574,7 +576,7 @@
       <span class="welcome-step-dot" data-step-dot="7">7</span>
     </div>
 
-    <!-- 1. Adım: Dil seçimi (kullanıcı bir dil seçmeden önce iki dilli) -->
+    <!-- Step 1: Language selection (bilingual labels until the user picks a language) -->
     <div class="welcome-pane" data-pane="1">
       <p class="framework-pick-q" data-i18n="welcome.langQuestion">Hangi dilde devam etmek istersin? · Which language would you like to continue in?</p>
       <p class="framework-pick-sub" data-i18n="welcome.langSub">Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.</p>
@@ -591,19 +593,21 @@
       <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
     </div>
 
-    <!-- 2. Adım: Kullanım Biçimi (Geliştirme / İnceleme).
-         Geliştirme = checklist odaklı (varsayılan). İnceleme = "Nasıl Yapılır?"
-         rehberi odaklı; uygulama açıldığında tüm kartlar arka yüzde başlar. -->
+    <!-- Step 2: Usage mode (Build / Review).
+         "Geliştirme" (Build, in UI) opens with the How-To guide face-up for
+         every item, suited to building a new app. "İnceleme" (Review, in UI)
+         shows the plain checklist face, suited to auditing an existing app. -->
     <div class="welcome-pane" data-pane="2" hidden>
       <p class="framework-pick-q" data-i18n="welcome.modeQuestion">Neye odaklanmak istersin?</p>
       <p class="framework-pick-sub" data-i18n="welcome.modeSub">Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için "nasıl yapılır?" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.</p>
       <div class="framework-options framework-options--lang" role="group" aria-label="Kullanım biçimi seçimi" data-i18n-aria-label="welcome.modeAria">
-        <!-- "Geliştirme" butonu → data-welcome-mode="review": yeni uygulama
-             geliştirirken her madde için Nasıl Yapılır? rehberi açılışta görünür.
-             "İnceleme" butonu → data-welcome-mode="build": mevcut uygulamayı
-             kontrol ederken sade checklist görünür. (Dahili mode adları "build"
-             ve "review", kart görsel durumunu tanımlar, kullanıcı niyeti
-             değil. Kullanıcı niyeti UI etiketleriyle ifade edilir.) -->
+        <!-- The "Geliştirme" (Build) button maps to data-welcome-mode="review":
+             cards start on the How-To face so a developer building a new app
+             sees step-by-step guidance. The "İnceleme" (Review) button maps to
+             data-welcome-mode="build": cards start on the plain checklist face
+             for auditing an existing app. Internal mode names ("build" /
+             "review") describe the card's visual state, not user intent; user
+             intent is conveyed by the UI labels. -->
         <button type="button" class="framework-option" data-welcome-mode="review">
           <span class="fw-title" data-i18n="welcome.mode.build.title">❔ Geliştirme</span>
           <span class="fw-desc" data-i18n="welcome.mode.build.desc">Yeni bir uygulama geliştiriyorum; her madde için "nasıl yapılır?" rehberini görmek istiyorum.</span>
@@ -619,7 +623,7 @@
       </div>
     </div>
 
-    <!-- 3. Adım: Anlatım dili (Basit / Teknik) -->
+    <!-- Step 3: Explanation style (Simple / Technical) -->
     <div class="welcome-pane" data-pane="3" hidden>
       <p class="framework-pick-q" data-i18n="welcome.styleQuestion">Anlatım dili: Basit mi, Teknik mi?</p>
       <p class="framework-pick-sub" data-i18n-html="welcome.styleSub">Maddeleri nasıl okumak istersin? Yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan <strong>Basit</strong> en rahatı; paket adı, sürüm, fonksiyon gibi teknik detayları görmek istersen <strong>Teknik</strong> daha verimli. İstediğin zaman üstteki butondan değiştirebilirsin.</p>
@@ -639,7 +643,7 @@
       </div>
     </div>
 
-    <!-- 4. Adım: Proje adı -->
+    <!-- Step 4: Project name -->
     <div class="welcome-pane" data-pane="4" hidden>
       <p class="framework-pick-q" data-i18n="welcome.projNameQuestion">Bu listeyle hangi projenin kontrolünü yapacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.projNameSub">Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.</p>
@@ -653,7 +657,7 @@
       </div>
     </div>
 
-    <!-- 5. Adım: Framework seçimi -->
+    <!-- Step 5: Framework selection -->
     <div class="welcome-pane" data-pane="5" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
@@ -695,7 +699,7 @@
       </div>
     </div>
 
-    <!-- 6. Adım: Backend seçimi -->
+    <!-- Step 6: Backend selection -->
     <div class="welcome-pane" data-pane="6" hidden>
       <p class="framework-pick-q" data-i18n="welcome.beQuestion">Hangi backend ile çalışacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.beSub">Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.</p>
@@ -752,7 +756,7 @@
       </div>
     </div>
 
-    <!-- 7. Adım: Hoşgeldin / Nasıl kullanılır -->
+    <!-- Step 7: Welcome / How to use -->
     <div class="welcome-pane" data-pane="7" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">14 kategoride 55 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. Her maddenin arka yüzünde adım adım <strong>Nasıl Yapılır?</strong> rehberi var; adımları tek tek tikleyerek de ilerleyebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
@@ -783,7 +787,7 @@
   </div>
 </div>
 
-<!-- Proje + Framework birleşik modalı (hero pill'den açılır, iki sekme) -->
+<!-- Combined Project + Framework modal (opened from the hero pill; four tabs: Project, Framework, Backend, Reset) -->
 <div class="modal" id="frameworkModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-framework modal-projfw" role="dialog" aria-modal="true" aria-labelledby="frameworkModalTitle">
@@ -792,7 +796,7 @@
       <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
     </header>
 
-    <!-- Sekme şeridi -->
+    <!-- Tab strip -->
     <div class="projfw-tabs" role="tablist" aria-label="Proje / Framework / Backend / Sıfırla">
       <button type="button" class="projfw-tab active" role="tab" aria-selected="true" data-projfw-tab="project" data-i18n="proj.tab.project">Proje</button>
       <button type="button" class="projfw-tab" role="tab" aria-selected="false" data-projfw-tab="framework" data-i18n="proj.tab.framework">Framework</button>
@@ -802,7 +806,7 @@
 
     <div class="modal-body">
 
-      <!-- Sekme 1: Proje yöneticisi -->
+      <!-- Tab 1: Project manager -->
       <div class="projfw-pane projfw-pane-project" data-projfw-pane="project">
         <div class="proj-header">
           <div class="proj-header-text">
@@ -812,16 +816,16 @@
           <span class="proj-count" id="projCount">0 / 20</span>
         </div>
 
-        <!-- Yeni proje ekleme: "+ Yeni Proje" butonu ayrı bir modal (projCreateModal) açar -->
+        <!-- Add new project: the "+ Yeni Proje" button opens a separate modal (projCreateModal) -->
         <div class="proj-add-row" id="projAddRow">
           <button type="button" class="btn primary proj-add-btn" id="projAddBtn" title="Yeni proje oluştur" data-i18n-title="proj.add.title" data-i18n="proj.add.btn">+ Yeni Proje</button>
         </div>
 
-        <!-- Proje listesi (JS doldurur) -->
+        <!-- Project list (populated by JS) -->
         <ul class="proj-list" id="projList" aria-label="Projeler"></ul>
       </div>
 
-      <!-- Sekme 3: Sıfırla (tam mod: proje içeriği + ayarlar + tüm sistem) -->
+      <!-- Tab 4: Reset (full mode; active project content, settings, or whole system) -->
       <div class="projfw-pane projfw-pane-reset" data-projfw-pane="reset" hidden>
         <p class="reset-scope-sub" data-i18n="reset.scopeFullSub">Aktif projeyi, uygulama ayarlarını veya tüm sistemi sıfırlayabilirsin. Bir veya birden fazla seçenek seçebilirsin. "Tüm Sistem" seçilirse diğerleri otomatik iptal olur.</p>
         <div class="reset-scope-options">
@@ -863,7 +867,7 @@
         </div>
       </div>
 
-      <!-- Sekme 2: Framework seçici (mevcut davranışa eşdeğer) -->
+      <!-- Tab 2: Framework picker (equivalent to the previous standalone behavior) -->
       <div class="projfw-pane projfw-pane-framework" data-projfw-pane="framework" hidden>
         <p class="framework-modal-sub" data-i18n="fwModal.sub">28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.</p>
         <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -900,7 +904,7 @@
         </div>
       </div>
 
-      <!-- Sekme: Backend seçici (Framework sekmesi ile aynı pattern) -->
+      <!-- Tab 3: Backend picker (same pattern as the Framework tab) -->
       <div class="projfw-pane projfw-pane-backend" data-projfw-pane="backend" hidden>
         <p class="framework-modal-sub" data-i18n="beModal.sub">Backend kategorisindeki maddeler seçtiğin backend'e göre değişir. 'Backend yok' seçersen backend'le ilgili tüm maddeler listeden kaldırılır. İşaretlemelerin ve notların korunur.</p>
         <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
@@ -956,7 +960,7 @@
   </div>
 </div>
 
-<!-- Yeni proje oluşturma modalı (Proje/Framework modalındaki "+Yeni Proje" tetikler) -->
+<!-- New-project creation modal (triggered by "+ Yeni Proje" in the Project / Framework modal) -->
 <div class="modal" id="projCreateModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-proj-create" role="dialog" aria-modal="true" aria-labelledby="projCreateTitle">
@@ -999,7 +1003,7 @@
   </div>
 </div>
 
-<!-- Aktif proje silindiğinde "hangi projeye geçeyim" seçim modalı (sadece 3+ proje varken tetiklenir) -->
+<!-- Pick-next-project modal (triggered only when the active project is deleted and 3+ projects exist) -->
 <div class="modal" id="projPickNextModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-proj-pick" role="dialog" aria-modal="true" aria-labelledby="projPickTitle">
@@ -1014,7 +1018,7 @@
   </div>
 </div>
 
-<!-- Yükleme talimatı modalı -->
+<!-- Install-instructions modal -->
 <div class="modal" id="installModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-install" role="dialog" aria-modal="true" aria-labelledby="installTitle">
@@ -1029,7 +1033,7 @@
   </div>
 </div>
 
-<!-- Reset scope seçim modalı (toolbar Sıfırla butonu açar: sadece aktif proje içeriği) -->
+<!-- Reset-scope picker modal (opened by the toolbar Reset button; covers active-project content only) -->
 <div class="modal" id="resetScopeModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-reset-scope" role="dialog" aria-modal="true" aria-labelledby="resetScopeTitle">
@@ -1065,7 +1069,7 @@
   </div>
 </div>
 
-<!-- Tamamlama kutlama modalı -->
+<!-- Completion celebration modal -->
 <div class="modal" id="celebrationModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-celebration" role="dialog" aria-modal="true" aria-labelledby="celebrationTitle">
@@ -1076,7 +1080,7 @@
   </div>
 </div>
 
-<!-- Yazdırma seçenekleri modalı: kontrol listesi mi yoksa Nasıl Yapılır? rehberi mi? -->
+<!-- Print-options modal: choose between the checklist or the How-To guide -->
 <div class="modal" id="printOptionsModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-print-options" role="dialog" aria-modal="true" aria-labelledby="printOptionsTitle">
@@ -1103,7 +1107,7 @@
   </div>
 </div>
 
-<!-- Onay modalı -->
+<!-- Confirm modal -->
 <div class="modal" id="confirmModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
   <div class="modal-content modal-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
@@ -1117,7 +1121,7 @@
   </div>
 </div>
 
-<!-- Toast bildirimleri -->
+<!-- Toast notifications -->
 <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
 <input type="file" id="importFile" accept="application/json" style="display:none" />

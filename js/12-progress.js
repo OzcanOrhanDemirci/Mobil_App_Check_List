@@ -1,35 +1,36 @@
 function countLevels() {
-  /* Üst satırdaki ana ilerleme barları (Toplam / MVP / Release) seviye-tabanlı
-     atomik sayım üzerinden çalışır — her MVP/Release seviyesi bir "task" olarak.
-     Kategori başlığındaki yüzde ise GRANÜLER: her seviyenin Nasıl-Yapılır adım
-     sayısı kadar alt-birim üretir. Böylece "%1-2-3-4-5" hassasiyetinde
-     değişimler olur (örn. 6 adımdan 3'ü tikliyse o seviye %50 done, 0/1 değil).
-     Adım içermeyen seviyeler tek birim olarak sayılır (geriye uyumluluk). */
+  /* The top progress bars (Total / MVP / Release) use atomic, level-based
+     counting: each MVP or Release level counts as one "task". The per-category
+     percentage shown in the section header is GRANULAR: each level contributes
+     as many sub-units as it has How-To steps. That lets the percentage move
+     in 1-2-3-4-5% increments (e.g. 3 of 6 steps ticked makes the level 50%
+     done instead of 0/1). Levels with no steps still count as a single unit
+     for backward compatibility. */
   let total = 0, totalChecked = 0;
   let mvp = 0, mvpChecked = 0;
   let release = 0, releaseChecked = 0;
-  /* perCat: kategori başlığındaki %/X-Y için step-granüler sayım */
+  /* perCat: step-granular counts that feed the category-header %/X-Y display. */
   const perCat = {};
 
   DATA.forEach(cat => {
     perCat[cat.id] = {
       total: 0, checked: 0,
-      /* Kategorinin sadece-MVP veya sadece-Release tamamlanma durumunu
-         tespit edebilmek için iki tip ayrı sayılır (yine step-granüler). */
+      /* Track MVP and Release totals separately (still step-granular) so we
+         can detect MVP-only or Release-only completion states. */
       mvpTotal: 0, mvpChecked: 0,
       releaseTotal: 0, releaseChecked: 0,
     };
     cat.features.forEach(f => {
-      /* Backend "noBackend" iken backend'e bağlı maddeler ilerleme barlarına
-         da girmesin — kullanıcı görünmeyen maddelere göre hesaplanan bir oran
-         görmemeli. Aynı kural framework'ü seçilmemiş projeler için de geçerli. */
+      /* Skip features hidden by the current selection so progress percentages
+         only reflect items the user can actually see. Applies to features
+         awaiting a framework choice and to backend-gated items. */
       if (f.variants && !currentFramework) return;
       if (typeof isHiddenByBackend === "function" && isHiddenByBackend(f)) return;
       ["mvp", "release"].forEach(L => {
         const v = resolveLevelText(f, L);
         if (!v || v === "—") return;
 
-        /* Üst satır sayıları: seviye-bazlı (atomik, mevcut davranış). */
+        /* Top-bar counts: atomic, one unit per level (existing behavior). */
         total++;
         const key = `${cat.id}.${f.id}.${L}`;
         const isChecked = !!state[key];
@@ -37,10 +38,10 @@ function countLevels() {
         if (L === "mvp") { mvp++; if (isChecked) mvpChecked++; }
         if (L === "release") { release++; if (isChecked) releaseChecked++; }
 
-        /* Kategori sayımı: step-bazlı (granüler).
-           Nasıl-Yapılır metni varsa içindeki numaralandırılmış adımların
-           sayısı kadar birim üretiriz; her tikli adım birim olarak sayılır.
-           Adımlar yoksa seviye kendisi 1 birim. */
+        /* Category counts: granular, step-based.
+           If the level has a How-To text, contribute one unit per numbered
+           step and count each ticked step as a completed unit. Levels with
+           no steps contribute exactly one unit. */
         const howtoRaw = (typeof resolveHowto === "function") ? resolveHowto(f, L) : null;
         const howtoText = howtoRaw ? tx(howtoRaw) : "";
         const stepCount = (typeof countHowtoSteps === "function") ? countHowtoSteps(howtoText) : 0;
@@ -48,8 +49,9 @@ function countLevels() {
         let unitsTotal, unitsChecked;
         if (stepCount > 0) {
           unitsTotal = stepCount;
-          /* Seviye doğrudan tikliyse tüm adımlar yapılmış kabul edilir (eski
-             state'de adım keyleri olmayabilir; geriye uyumluluk). */
+          /* If the whole level is ticked, treat all steps as done; legacy
+             state may not include per-step keys, so this preserves backward
+             compatibility. */
           unitsChecked = isChecked
             ? stepCount
             : ((typeof countCheckedStepsByPrefix === "function")
@@ -95,20 +97,20 @@ function updateProgress() {
     const numEl = document.querySelector(`[data-cat-num="${id}"]`);
     if (pctEl) pctEl.textContent = pct + "%";
 
-    /* Tamamlanma varyasyonları:
-       - completed         : kategoride var olan tüm seviye tiplerinin hepsi bitti
-                             (yeşil bg + mavi metin + ✓ rozet)
-       - completed-mvp     : sadece MVP'lerin hepsi bitti, Release devam
-                             (yeşil bg + yeşil metin, tik yok)
-       - completed-release : sadece Release'lerin hepsi bitti, MVP devam
-                             (mavi bg + mavi metin, tik yok)
-       - none              : hiçbiri tam değil */
+    /* Completion variants:
+       - completed         : every level type present in the category is done
+                             (green bg + blue text + checkmark badge)
+       - completed-mvp     : all MVPs are done but Release is still in progress
+                             (green bg + green text, no check)
+       - completed-release : all Releases are done but MVP is still in progress
+                             (blue bg + blue text, no check)
+       - none              : neither side is fully complete */
     const mvpAllDone = v.mvpTotal > 0 && v.mvpChecked >= v.mvpTotal;
     const releaseAllDone = v.releaseTotal > 0 && v.releaseChecked >= v.releaseTotal;
     const mvpExists = v.mvpTotal > 0;
     const releaseExists = v.releaseTotal > 0;
-    /* Tüm var olan tipler bitti mi? Tek tip varsa o yeterli; iki tip de varsa
-       ikisi de bitmeli. */
+    /* Is every level type that exists in this category complete? If only one
+       type is present, finishing it is enough; if both exist, both must be done. */
     const allDone =
       (mvpExists || releaseExists) &&
       (!mvpExists || mvpAllDone) &&
@@ -120,8 +122,8 @@ function updateProgress() {
     else if (releaseAllDone && mvpExists && !mvpAllDone) completionState = "completed-release";
 
     if (numEl) {
-      /* Tam tamamlanmışsa X / Y yerine "Tamamlandı"; kısmi durumlarda numerik
-         kalır (kullanıcı "ne kadar kaldı" hala görebilsin). */
+      /* Fully complete categories show "Completed" instead of X / Y; partial
+         states keep the numeric form so the user can still see how much is left. */
       numEl.textContent = (completionState === "completed")
         ? t("cat.completed")
         : `${v.checked} / ${v.total}`;
@@ -135,13 +137,13 @@ function updateProgress() {
   });
 
   checkCelebrations(c);
-  /* İşaret sayıları değiştiği için filter butonlarının disabled state'ini de güncelle */
+  /* Check counts have changed, so refresh the disabled state of filter buttons. */
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
-/* ==================== TAMAMLAMA KUTLAMALARI ====================
-   celebrations bayrağı (mvp/release/total) aktif projeye bağlıdır; her proje
-   kendi tamamlama kutlamasını ayrıca tetikler. */
+/* ==================== COMPLETION CELEBRATIONS ====================
+   The celebrations flag (mvp/release/total) is per-project, so each project
+   triggers its own completion celebration independently. */
 // eslint-disable-next-line prefer-const -- reassigned cross-file in js/04-projects.js#reloadActive and js/14-app.js (reset flows)
 let celebrations = loadCelebrations();
 function loadCelebrations() {
@@ -156,7 +158,7 @@ function showCelebration(emoji, title, message) {
   document.getElementById("celebrationEmoji").textContent = emoji;
   document.getElementById("celebrationTitle").textContent = title;
   document.getElementById("celebrationMessage").textContent = message;
-  /* Önceki açık modalı kapat ki üstte gözüksün */
+  /* Close any other open modal so the celebration appears on top. */
   document.querySelectorAll(".modal").forEach(m => { if (m.id !== "celebrationModal") m.hidden = true; });
   openModal("celebrationModal");
 }
@@ -166,7 +168,8 @@ function checkCelebrations(c) {
   const mvpDone    = c.mvp     > 0 && c.mvpChecked     === c.mvp;
   const releaseDone= c.release > 0 && c.releaseChecked === c.release;
 
-  /* En yüksek başarıdan başlayarak kutla, aynı anda çakışırsa sadece en üst seviyeyi göster */
+  /* Celebrate starting from the highest tier so that if several land at once,
+     only the top-level celebration is shown. */
   if (totalDone && !celebrations.total) {
     celebrations.total = true;
     celebrations.mvp = true;
@@ -195,7 +198,8 @@ function checkCelebrations(c) {
     );
   }
 
-  /* Eğer kullanıcı işareti geri alırsa bayrağı sıfırla, ileride tekrar tamamladığında kutlama yine gözüksün */
+  /* Reset the flag if the user un-ticks an item, so finishing again later
+     re-triggers the celebration. */
   if (!totalDone && celebrations.total) { celebrations.total = false; saveCelebrations(); }
   if (!releaseDone && celebrations.release) { celebrations.release = false; saveCelebrations(); }
   if (!mvpDone && celebrations.mvp) { celebrations.mvp = false; saveCelebrations(); }

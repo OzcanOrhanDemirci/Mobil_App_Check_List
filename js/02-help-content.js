@@ -1,4 +1,4 @@
-/* Help modalı içeriği, uzun olduğu için ayrı dosyada tanımlı */
+/* Help-modal content, kept in a separate file because it is long. */
 const HELP_HTML = {
   tr: `
       <section>

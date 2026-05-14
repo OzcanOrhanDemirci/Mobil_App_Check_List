@@ -37,7 +37,7 @@ function saveFramework(fw) {
  * @returns {string | { tr?: string, en?: string } | undefined} Raw resolved value.
  */
 function resolveLevel(f, level) {
-  /* A) Basit modda önce madde-seviyesi sade metinleri dene */
+  /* A) In simple mode, try the item-level simple texts first. */
   if (typeof currentStyle !== "undefined" && currentStyle === "simple") {
     if (f.simpleBackend && currentBackend && f.simpleBackend[currentBackend] && f.simpleBackend[currentBackend][level] !== undefined) {
       return f.simpleBackend[currentBackend][level];
@@ -45,9 +45,9 @@ function resolveLevel(f, level) {
     if (f.simple && f.simple[level] !== undefined) {
       return f.simple[level];
     }
-    /* Sade metin bulunamadı → teknik içeriğe düş (zaten anlaşılır) */
+    /* No simple text found; fall through to technical content (which is still readable). */
   }
-  /* B) Mevcut teknik çözüm sıralaması */
+  /* B) Standard technical resolution chain. */
   if (f.backendVariants && currentBackend && f.backendVariants[currentBackend]) {
     const node = f.backendVariants[currentBackend];
     if (currentFramework && node[currentFramework] && node[currentFramework][level] !== undefined) {
@@ -114,7 +114,7 @@ const FRAMEWORK_META = {
   pwa:         { label: { tr: "PWA (Web)",  en: "PWA (Web)" }, short: "PWA",  icon: "🌐", aiName: "Progressive Web App (PWA), full spectrum from a simple website to a web app, HTML/CSS/JS + framework choice flexible (React/Vue/Svelte/Next/Nuxt/SvelteKit/Astro or vanilla)" }
 };
 
-/* FRAMEWORK_META.label'i string veya {tr,en} olarak destekler. */
+/* Reads FRAMEWORK_META.label whether it's a plain string or a {tr,en} object. */
 function fwLabel(fw) {
   const m = FRAMEWORK_META[fw];
   if (!m) return fw || "";

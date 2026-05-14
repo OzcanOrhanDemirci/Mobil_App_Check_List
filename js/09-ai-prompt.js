@@ -1,7 +1,7 @@
-/* ==================== AI PROMPT BUILDER'LARI ==================== */
+/* ==================== AI PROMPT BUILDERS ==================== */
 
-/* Türkçe veya İngilizce, Markdown formatında, başlangıç dostu, detaylı rehber ister.
-   Mevcut currentLang'a göre prompt dili otomatik seçilir. */
+/* Builds a beginner-friendly, detailed Markdown guide request in Turkish or
+   English. The prompt language is chosen automatically from currentLang. */
 function buildAIPromptTR(cat, f) {
   const title = stripHtml(tx(f.title));
   const desc = stripHtml(tx(f.desc));
@@ -17,10 +17,11 @@ function buildAIPromptTR(cat, f) {
   const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
     ? FRAMEWORK_META[currentFramework].aiName
     : "Flutter / Dart";
-  /* Backend bilgilerini bağlamı belirleyici biçimde derle. f.backendStep ise
-     install örneği backend SDK'sından üretilir (örn. firebase + flutter →
-     "flutterfire configure && flutter pub add firebase_*"); aksi halde framework
-     için genel paket install örneği (eski davranış). */
+  /* Assemble backend info so it grounds the AI's context. When f.backendStep
+     is set, the install example is derived from the backend SDK (e.g.
+     firebase + flutter -> "flutterfire configure && flutter pub add
+     firebase_*"); otherwise we fall back to the framework's generic package
+     install example (legacy behavior). */
   const beMeta = (currentBackend && BACKEND_META[currentBackend]) ? BACKEND_META[currentBackend] : null;
   const beName = beMeta ? beMeta.aiName : null;
   const isBackendStep = !!f.backendStep;
@@ -190,7 +191,7 @@ function buildAIPromptTR(cat, f) {
   return p;
 }
 
-/* İngilizce, Yapılandırılmış JSON formatı, AI'ın tutarlı çıktı vermesi için */
+/* English, structured JSON payload format; encourages consistent AI output. */
 function buildAIPromptJSON(cat, f) {
   const mvpRaw = resolveLevelText(f, "mvp");
   const releaseRaw = resolveLevelText(f, "release");
@@ -202,8 +203,8 @@ function buildAIPromptJSON(cat, f) {
   const fwName = (currentFramework && FRAMEWORK_META[currentFramework])
     ? FRAMEWORK_META[currentFramework].aiName
     : "Flutter / Dart";
-  /* Backend-aware install command + setup assumption; backendStep değilse eski
-     framework-only davranış. */
+  /* Backend-aware install command and setup assumption. If the feature is
+     not a backendStep we fall back to the legacy framework-only behavior. */
   const beMeta = (currentBackend && BACKEND_META[currentBackend]) ? BACKEND_META[currentBackend] : null;
   const beName = beMeta ? beMeta.aiName : null;
   const isBackendStep = !!f.backendStep;
@@ -306,8 +307,9 @@ function buildAIPromptJSON(cat, f) {
       "Provide working code that the developer can copy and run immediately",
       `Avoid unnecessary jargon; if a technical term must be used, give a brief ${responseLanguage} explanation in parentheses`,
       setupAssumption,
-      /* Backend tabanlı maddelerde backend SDK varsayımını da ilet; backend
-         olmayan maddelerde bunu eklemek konuyu dağıtır, atla. */
+      /* For backend-bound items, also pass the backend SDK assumption.
+         Including it for non-backend items would dilute focus, so skip it
+         in that case. */
       ...(isBackendStep && backendAssumption ? [backendAssumption] : []),
       "Keep total response focused, quality over length",
       `Do not output the JSON back; respond as a structured ${responseLanguage} guide`

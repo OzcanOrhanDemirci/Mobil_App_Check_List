@@ -1,15 +1,14 @@
-/* ==================== PROJE YONETIMI + FRAMEWORK / BACKEND MODALI ====================
-   Hero'daki proje pill'i ve onunla acilan tab'li modal: Proje listesi,
-   Framework degistirme, Backend degistirme, Sifirla. CRUD: yeni proje
-   olusturma (isim + framework + backend), yeniden adlandirma, silme
-   (son projeyi silmeyi engeller; aktif proje silindiyse devamini secme
-   modali). applyFrameworkUI / applyBackendUI buradadir: hero pill'i ve
-   modal vurgularini tek yerden tazeler; 08-i18n-dom.js ve 04-projects.js
-   tarafindan typeof-guard ile cagrilir. En altta init icin top-level
-   applyFrameworkUI() cagrisi var (sayfa acildiginda hero pill'i dogru
-   durumda baslasin diye). */
+/* ==================== PROJECT MANAGEMENT + FRAMEWORK / BACKEND MODAL ====================
+   The hero project pill and its tabbed modal: project list, framework switch,
+   backend switch, and reset. CRUD: create new project (name + framework +
+   backend), rename, delete (blocks deleting the last project; when the active
+   project is deleted a "pick next project" modal opens). applyFrameworkUI /
+   applyBackendUI live here: they refresh the hero pill and modal highlights
+   in one place, and are called via typeof-guards from 08-i18n-dom.js and
+   04-projects.js. A top-level applyFrameworkUI() call at the bottom seeds
+   the hero pill correctly on page load. */
 
-/* ==================== PROJE + FRAMEWORK PILL (HERO) ==================== */
+/* ==================== PROJECT + FRAMEWORK PILL (HERO) ==================== */
 function applyFrameworkUI() {
   const proj = getActiveProject();
   const meta = currentFramework ? FRAMEWORK_META[currentFramework] : null;
@@ -23,16 +22,16 @@ function applyFrameworkUI() {
   if (projName) {
     projName.textContent = proj ? proj.name : "—";
   }
-  /* Switch modalında mevcut seçimi vurgula */
+  /* Highlight the current selection in the switch modal */
   document.querySelectorAll("[data-switch-fw]").forEach(b => {
     b.classList.toggle("selected", b.dataset.switchFw === currentFramework);
   });
-  /* Backend leg'i de her FW update'inde tazele (proje değişiminde framework ve
-     backend birlikte güncelleniyor; iki ayrı uygulamayı tek yerde topla) */
+  /* Refresh the backend leg on every framework update (a project switch changes
+     framework and backend together; keep both applies in one place) */
   applyBackendUI();
 }
 
-/* Hero pill'in backend satırını ve backend sekmesi seçim vurgusunu uygular. */
+/* Apply the backend row on the hero pill and the selection highlight on the backend tab. */
 function applyBackendUI() {
   const beMeta = currentBackend ? BACKEND_META[currentBackend] : null;
   const beIcon = document.querySelector("#projectFrameworkBtn .be-pill-icon");
@@ -42,29 +41,29 @@ function applyBackendUI() {
     beIcon.textContent = beMeta.icon;
     beLabel.textContent = tx(beMeta.short);
   }
-  /* Backend satırını yalnızca backend seçilmişse göster (welcome akışı sırasında
-     pill arka planda kalır; backend henüz seçilmemiş olabilir) */
+  /* Show the backend row only when a backend has been chosen (during the welcome
+     flow the pill sits in the background and a backend may not yet be selected) */
   const showBackendRow = !!currentBackend;
   if (beRow) beRow.hidden = !showBackendRow;
-  /* projfw modal Backend sekmesinde aktif kart seçimini vurgula */
+  /* Highlight the active card on the projfw modal Backend tab */
   document.querySelectorAll("[data-switch-be]").forEach(b => {
     b.classList.toggle("selected", b.dataset.switchBe === currentBackend);
   });
 }
 
 document.getElementById("projectFrameworkBtn").addEventListener("click", () => {
-  /* Mobil toolbar otomatik kapanması zaten setupMobileActionsToggle içinde halledilmiş */
+  /* Auto-closing the mobile toolbar is already handled inside setupMobileActionsToggle */
   applyFrameworkUI();
-  /* Modalı her açılışta varsayılan olarak Proje sekmesinde aç ve listeyi yenile */
+  /* On every open default to the Project tab and refresh the list */
   setProjFwTab("project");
   renderProjectList();
   resetProjAddForm();
   openModal("frameworkModal");
 });
 
-/* ==================== PROJE + FRAMEWORK MODAL — SEKME GEÇİŞİ ==================== */
+/* ==================== PROJECT + FRAMEWORK MODAL: TAB SWITCHING ==================== */
 function setProjFwTab(tabName) {
-  /* tabName: "project" veya "framework" */
+  /* tabName: "project", "framework", "backend", or "reset" */
   document.querySelectorAll(".projfw-tab").forEach(t => {
     const isActive = t.dataset.projfwTab === tabName;
     t.classList.toggle("active", isActive);
@@ -82,24 +81,24 @@ document.querySelectorAll(".projfw-tab").forEach(tab => {
     if (target === "project") {
       renderProjectList();
     } else if (target === "backend") {
-      /* Aktif backend kartını vurgula */
+      /* Highlight the active backend card */
       applyBackendUI();
     } else if (target === "framework") {
-      /* Aktif framework kartını vurgula (applyFrameworkUI bunu yapıyor) */
+      /* Highlight the active framework card (applyFrameworkUI handles this) */
       applyFrameworkUI();
     } else if (target === "reset" && projfwResetUi) {
-      /* Sekmeye her geçişte seçimler sıfırlanır — kullanıcı temiz başlasın */
+      /* Reset selections every time the tab is entered so the user starts clean */
       projfwResetUi.resetUi();
     }
   });
 });
 
-/* ==================== PROJE YÖNETİMİ ==================== */
+/* ==================== PROJECT MANAGEMENT ==================== */
 
-/* Proje listesini DOM'a basar. Aktif proje vurgulu; her satırda rename/sil
-   butonları. Satıra (boş alana) tıklamak o projeye geçer. Inline rename
-   modu açık satır .renaming class'ı alır; o satırda input + Kaydet/Vazgeç
-   gösterilir, normal görünüm gizlenir. */
+/* Render the project list into the DOM. The active project is highlighted; each
+   row has rename/delete buttons. Clicking the row (empty area) switches to that
+   project. A row with inline rename mode open carries the .renaming class; that
+   row shows an input plus Save/Cancel buttons while the normal view is hidden. */
 function renderProjectList() {
   const listEl = document.getElementById("projList");
   const countEl = document.getElementById("projCount");
@@ -108,14 +107,14 @@ function renderProjectList() {
   const projects = listProjects();
   const activeId = getActiveProjectId();
 
-  /* Üst sayaç */
+  /* Top counter */
   if (countEl) countEl.textContent = t("proj.count", { n: projects.length });
 
-  /* Listeyi temizle ve yeniden oluştur. Inline rename state'ini koruma derdi
-     yok çünkü liste her açılışta sıfırdan render ediliyor (modal close/open). */
+  /* Clear and rebuild the list. No need to preserve inline rename state because
+     the list is rendered from scratch on every modal open. */
   listEl.innerHTML = "";
 
-  /* Sıralama: aktif olan üstte, sonra updatedAt'e göre yeniye doğru */
+  /* Sort: active project at the top, then by updatedAt newest first */
   const sorted = [...projects].sort((a, b) => {
     if (a.id === activeId) return -1;
     if (b.id === activeId) return 1;
@@ -126,16 +125,16 @@ function renderProjectList() {
     const li = document.createElement("li");
     li.className = "proj-item" + (p.id === activeId ? " active" : "");
     li.dataset.projId = p.id;
-    /* Sol ikon: projenin framework'ünün emoji'si (yoksa 📁); isim yanında
-       parantez içinde framework + backend adı. Ana paneldeki pill'le tutarlı. */
+    /* Left icon: the project framework's emoji (fallback 📁). Next to the name
+       in parentheses: framework + backend label. Consistent with the hero pill. */
     const fwMeta = p.data && p.data.framework ? FRAMEWORK_META[p.data.framework] : null;
     const fwIcon = fwMeta ? fwMeta.icon : "📁";
     const fwName = fwMeta ? tx(fwMeta.short) : "—";
     const beMeta = p.data && p.data.backend ? BACKEND_META[p.data.backend] : null;
     const beShortName = beMeta ? tx(beMeta.short) : "";
     const beIcon = beMeta ? beMeta.icon : "";
-    /* Görüntü: "(Flutter · 🔥 Firebase)" şeklinde — beIcon yoksa veya backend yoksa
-       sadece "(Flutter)". noBackend için emoji 🚫 ile gözükür. */
+    /* Display format: "(Flutter · 🔥 Firebase)"; with no backend or no icon it
+       collapses to just "(Flutter)". For noBackend the icon is 🚫. */
     const stackLabel = beMeta ? `${fwName} · ${beIcon} ${beShortName}` : fwName;
     li.innerHTML = `
       <button type="button" class="proj-row" data-proj-switch="${p.id}" title="${escapeHtml(p.name)} projesine geç">
@@ -155,14 +154,14 @@ function renderProjectList() {
         <div class="proj-rename-error" role="alert" aria-live="polite" hidden></div>
       </div>
     `;
-    /* İsmi + framework etiketini textContent ile ata (XSS güvenli) */
+    /* Set name + framework label via textContent (XSS safe) */
     li.querySelector(".proj-row-icon").textContent = fwIcon;
     li.querySelector(".proj-row-name").textContent = p.name;
     li.querySelector(".proj-row-fw").textContent = "(" + stackLabel + ")";
     if (p.id === activeId) {
       li.querySelector(".proj-row-active-badge").hidden = false;
     }
-    /* Son proje silinemez: sil butonunu görsel olarak disable et + tooltip */
+    /* The last remaining project cannot be deleted: visually disable the button and update tooltip */
     if (projects.length <= 1) {
       const delBtn = li.querySelector(".proj-action-delete");
       if (delBtn) {
@@ -184,13 +183,14 @@ function updateProjAddButtonState() {
   addBtn.title = atLimit ? t("proj.limit.toast") : t("proj.add.title");
 }
 
-/* "+ Yeni Proje" akışında seçilen framework + backend — Oluştur'a basılana
-   kadar geçici. Üçü de gerekli: ad + framework + backend. */
+/* Pending framework + backend chosen in the "+ New Project" flow; transient
+   until Create is pressed. All three are required: name + framework + backend. */
 let pendingNewProjFw = null;
 let pendingNewProjBe = null;
 
-/* Formu sıfırlar (input boşalt, framework + backend seçimi temizle, hata gizle,
-   butonu disable yap). Modal'ın görünürlüğünü değiştirmez; o ayrıca yönetilir. */
+/* Reset the form: clear the input, clear framework + backend selection, hide
+   the error, and disable the Create button. Does not toggle modal visibility
+   (visibility is managed separately). */
 function resetProjAddForm() {
   const input = document.getElementById("projAddInput");
   const err = document.getElementById("projAddError");
@@ -206,8 +206,8 @@ function resetProjAddForm() {
   updateProjAddCreateState();
 }
 
-/* Oluştur butonu: ad + framework + backend hepsi girilmişse enable, aksi
-   halde disable. Backend "noBackend" da geçerli bir seçim sayılır. */
+/* Create button: enabled only when name + framework + backend are all chosen,
+   disabled otherwise. "noBackend" counts as a valid backend selection. */
 function updateProjAddCreateState() {
   const input = document.getElementById("projAddInput");
   const createBtn = document.getElementById("projAddCreate");
@@ -223,9 +223,9 @@ function showProjAddError(msg) {
   err.hidden = false;
 }
 
-/* "+ Yeni Proje" → ayrı modal aç + state sıfırla + input'a focus.
-   Proje/Framework modal'ı arkada açık kalır; create iptal edilirse kullanıcı
-   geri o modal'a düşer (oradan zaten projeler listesini görmeye devam eder). */
+/* "+ New Project": open a separate modal, reset state, and focus the input.
+   The Project/Framework modal stays open in the background; if Create is
+   cancelled the user falls back to it (and continues to see the project list). */
 document.getElementById("projAddBtn").addEventListener("click", () => {
   if (projectsCount() >= 20) {
     showToast(t("proj.limit.toast"), "warn", 2400);
@@ -237,20 +237,20 @@ document.getElementById("projAddBtn").addEventListener("click", () => {
   if (input) setTimeout(() => input.focus(), 60);
 });
 
-/* Vazgeç → modal'ı kapat ve state'i sıfırla. Kullanıcı arkadaki proje
-   yöneticisine geri döner. */
+/* Cancel: close the modal and reset state. The user returns to the project
+   manager modal that was open behind it. */
 document.getElementById("projAddCancel").addEventListener("click", () => {
   closeModal("projCreateModal");
   resetProjAddForm();
 });
 
-/* Mini framework grid: tıklanan framework pendingNewProjFw'ye atanır,
-   sadece o buton .selected vurgulu, butonun durumu güncellenir */
+/* Mini framework grid: assign the clicked framework to pendingNewProjFw, mark
+   only that button .selected, then refresh the Create button state */
 document.querySelectorAll(".proj-add-fw").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingNewProjFw = btn.dataset.addFw;
     document.querySelectorAll(".proj-add-fw").forEach(b => b.classList.toggle("selected", b === btn));
-    /* Hata mesajı varsa temizle (kullanıcı düzeltiyor) */
+    /* Clear any existing error (the user is correcting input) */
     const errEl = document.getElementById("projAddError");
     if (errEl) {
       errEl.textContent = "";
@@ -260,9 +260,10 @@ document.querySelectorAll(".proj-add-fw").forEach(btn => {
   });
 });
 
-/* Mini backend grid: aynı pattern — tıklanan backend pendingNewProjBe'ye atanır.
-   noBackend dahil her geçerli backend seçilebilir; updateProjAddCreateState
-   her ikisini de zorunlu görüyor (boş değil + framework + backend). */
+/* Mini backend grid: same pattern; the clicked backend is assigned to
+   pendingNewProjBe. Any valid backend including noBackend is allowed;
+   updateProjAddCreateState still requires all three (non-empty name +
+   framework + backend). */
 document.querySelectorAll(".proj-add-be").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingNewProjBe = btn.dataset.addBe;
@@ -276,9 +277,9 @@ document.querySelectorAll(".proj-add-be").forEach(btn => {
   });
 });
 
-/* Input değişiminde validasyon */
+/* Validate on input change */
 document.getElementById("projAddInput").addEventListener("input", () => {
-  /* Yazmaya başlayınca varsa hatayı temizle */
+  /* Clear any existing error once the user starts typing */
   const errEl = document.getElementById("projAddError");
   if (errEl && !errEl.hidden) {
     errEl.textContent = "";
@@ -287,7 +288,7 @@ document.getElementById("projAddInput").addEventListener("input", () => {
   updateProjAddCreateState();
 });
 
-/* Enter / Escape kısayolları */
+/* Enter / Escape shortcuts */
 document.getElementById("projAddInput").addEventListener("keydown", e => {
   if (e.key === "Enter") {
     e.preventDefault();
@@ -300,9 +301,9 @@ document.getElementById("projAddInput").addEventListener("keydown", e => {
   }
 });
 
-/* Oluştur → önce onay modal'ı aç. Kabul edilirse projeyi oluştur, aktif yap,
-   UI yenile ve TÜM modal'ları kapat (ana ekrana dön). İptal edilirse
-   projCreateModal yeniden gösterilir; kullanıcı yazdıkları geri gelir. */
+/* Create: first open a confirm modal. If accepted, create the project, mark it
+   active, refresh UI, and close ALL modals (return to the main screen). If
+   cancelled, projCreateModal is reopened with the user's input preserved. */
 document.getElementById("projAddCreate").addEventListener("click", () => {
   const input = document.getElementById("projAddInput");
   const name = (input?.value || "").trim();
@@ -347,12 +348,12 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
     }
   `;
 
-  /* Hem projCreateModal hem frameworkModal'ı kapat; confirm tek başına önde dursun */
+  /* Close both projCreateModal and frameworkModal so confirm sits on top alone */
   closeModal("projCreateModal");
   closeModal("frameworkModal");
-  /* Onay sonrası işin yapılması için seçimleri local'e kopyala — customConfirm
-     callback'i gecikmeli çalışıyor, bu arada kullanıcı modalı tekrar açabilir
-     ve pendingNewProj* değişebilir. Defansif kopya. */
+  /* Snapshot selections into locals for the confirm callback. The customConfirm
+     callback runs later; the user could reopen the modal in the meantime and
+     mutate the pendingNewProj* values, so this defensive copy is required. */
   const finalName = name;
   const finalFw = pendingNewProjFw;
   const finalBe = pendingNewProjBe;
@@ -368,12 +369,12 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
         else showToast(t("proj.error.empty"), "warn", 2200);
         return;
       }
-      /* Yeni projeyi otomatik aktif yap (kullanıcı confirmation'ı onayladı, doğal akış).
-         Eski projenin verisi projects[] içinde aynen kalır. */
+      /* Auto-activate the new project (the user accepted the confirm; natural flow).
+         The old project's data remains untouched inside projects[]. */
       setActiveProjectId(result.project.id);
       reloadActiveProjectAndRender();
       resetProjAddForm();
-      /* Tüm modal'lar zaten kapalı — kullanıcı doğrudan ana ekrana, yeni proje seçili */
+      /* All modals are already closed; the user lands on the main screen with the new project active */
       showToast(t("proj.created.toast", { name: result.project.name }), "success", 1800);
     },
     {
@@ -382,9 +383,10 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
       cancelText: t("confirm.cancel"),
       html: true,
       wide: true,
-      /* İptal/X/backdrop ile kapatılırsa kullanıcının yazdıkları kaybolmasın:
-         arkadaki frameworkModal ve önündeki projCreateModal yeniden açılsın,
-         focus input'a dönsün. State (input değeri + framework seçimi) sıfırlanmaz. */
+      /* If dismissed via Cancel/X/backdrop, preserve what the user typed:
+         reopen frameworkModal in the background and projCreateModal in front,
+         then refocus the input. State (input value + framework selection)
+         is intentionally not reset. */
       onCancel: () => {
         openModal("frameworkModal");
         openModal("projCreateModal");
@@ -395,16 +397,16 @@ document.getElementById("projAddCreate").addEventListener("click", () => {
   );
 });
 
-/* Liste içindeki tüm tıklamalar tek delegasyonla yönetilir (rename/delete/switch) */
+/* All clicks inside the list are handled via a single delegated listener (rename/delete/switch) */
 document.getElementById("projList").addEventListener("click", e => {
   const target = e.target.closest("button, [data-proj-switch]");
   if (!target) return;
 
-  /* Switch satırı (proje değiştir) — onaylı: customConfirm aç, kullanıcı
-     kabul ederse aktif projeyi değiştir ve tüm UI'ı yeniden render et. */
+  /* Switch row (change project): confirmed action. Open customConfirm; if the
+     user accepts, set the active project and re-render the entire UI. */
   const switchId = target.getAttribute("data-proj-switch");
   if (switchId !== null) {
-    /* Aktif satıra tıklamak no-op (zaten içindeyiz) */
+    /* Clicking the already-active row is a no-op (close modal and exit) */
     if (switchId === getActiveProjectId()) {
       closeModal("frameworkModal");
       return;
@@ -421,7 +423,7 @@ document.getElementById("projList").addEventListener("click", e => {
         <li class="effect-keep"><span class="effect-icon">→</span><span>${t("proj.switch.effect.target", { to: toName })}</span></li>
       </ul>
     `;
-    /* Frameworks modal'ını önce kapat, üst üste binmesin (confirm onun yerine açılır) */
+    /* Close the frameworks modal first to avoid stacking (confirm opens in its place) */
     closeModal("frameworkModal");
     customConfirm(
       html,
@@ -442,7 +444,7 @@ document.getElementById("projList").addEventListener("click", e => {
     return;
   }
 
-  /* Rename modu aç */
+  /* Enter rename mode */
   const renameId = target.getAttribute("data-proj-rename");
   if (renameId !== null) {
     const li = target.closest(".proj-item");
@@ -462,7 +464,7 @@ document.getElementById("projList").addEventListener("click", e => {
     return;
   }
 
-  /* Rename kaydet */
+  /* Save rename */
   const renameSaveId = target.getAttribute("data-proj-rename-save");
   if (renameSaveId !== null) {
     const li = target.closest(".proj-item");
@@ -482,13 +484,13 @@ document.getElementById("projList").addEventListener("click", e => {
       return;
     }
     showToast(t("proj.renamed.toast"), "success", 1400);
-    /* Aktif projeyi rename ettiysek pill etiketini de güncellemeliyiz */
+    /* If the active project was renamed, refresh the hero pill label too */
     if (renameSaveId === getActiveProjectId()) applyFrameworkUI();
     renderProjectList();
     return;
   }
 
-  /* Rename vazgeç */
+  /* Cancel rename */
   const renameCancelId = target.getAttribute("data-proj-rename-cancel");
   if (renameCancelId !== null) {
     const li = target.closest(".proj-item");
@@ -501,14 +503,14 @@ document.getElementById("projList").addEventListener("click", e => {
       errEl.textContent = "";
       errEl.hidden = true;
     }
-    /* Input'u orijinal değerine geri çek */
+    /* Restore the input to its original value */
     const inp = li.querySelector(".proj-rename-input");
     const proj = findProjectById(renameCancelId);
     if (inp && proj) inp.value = proj.name;
     return;
   }
 
-  /* Sil */
+  /* Delete */
   const deleteId = target.getAttribute("data-proj-delete");
   if (deleteId !== null) {
     if (target.disabled) return;
@@ -519,19 +521,19 @@ document.getElementById("projList").addEventListener("click", e => {
     const proj = findProjectById(deleteId);
     if (!proj) return;
     const wasActive = deleteId === getActiveProjectId();
-    /* Onay (modal üstüne modal açabilmek için confirmModal'ın z-index'i yeterli) */
+    /* Confirm (confirmModal's z-index is high enough to stack on top of other modals) */
     customConfirm(
       t("proj.delete.confirmMsg", { name: escapeHtml(proj.name) }),
       () => {
-        /* Aktif proje siliniyor + en az 3 proje var → kullanıcıya "hangisine
-           geçeyim" seçim modal'ı göster. Silme + geçiş tek seferde, seçim
-           modalında yapılır (orada ek onay alınmaz; bu noktada kullanıcı
-           silme onayını zaten verdi ve aktif projesi olmayacak). */
+        /* Active project being deleted AND at least 3 projects exist: show the
+           "which one to switch to" picker. Delete + switch happen together in
+           that picker (no extra confirm there; the user already confirmed the
+           delete and there must always be an active project). */
         if (wasActive && projectsCount() >= 3) {
           openProjPickNextModal(proj, deleteId);
           return;
         }
-        /* Tek aktif veya az proje durumu: mevcut otomatik geçiş davranışı sürer */
+        /* Otherwise (inactive target, or only 2 projects): fall through to the existing auto-switch behaviour */
         const r = deleteProject(deleteId);
         if (!r.ok) {
           if (r.error === "lastOne") showToast(t("proj.delete.lastOne"), "warn", 2400);
@@ -539,7 +541,7 @@ document.getElementById("projList").addEventListener("click", e => {
         }
         showToast(t("proj.deleted.toast", { name: proj.name }), "info", 1600);
         if (wasActive) {
-          /* Aktif silindi: deleteProject yeni aktif id'yi atadı; UI'ı yeniden yükle */
+          /* Active project was deleted: deleteProject assigned a new active id; reload the UI */
           reloadActiveProjectAndRender();
         }
         renderProjectList();
@@ -555,14 +557,15 @@ document.getElementById("projList").addEventListener("click", e => {
   }
 });
 
-/* ==================== AKTİF PROJE SİLİNDİĞİNDE GEÇİŞ SEÇİM MODALI ==================== */
+/* ==================== "PICK NEXT PROJECT" MODAL (WHEN ACTIVE IS DELETED) ==================== */
 
-/* Silme onayı verildikten sonra (aktif + 3+ proje koşulunda), kullanıcıya
-   "hangi projeye geçeyim" sorusunu soran modal. State şuralarda yaşar:
-   - pendingDeleteId: silinmek üzere olan projenin id'si
-   - pendingDeletedName: toast için ismini sakla
-   Seçim yapılana kadar silme henüz gerçekleşmez; seçim yapılınca delete +
-   setActive eş zamanlı çalışır (yarım kalmış aktif yok durumunu önler). */
+/* After delete is confirmed (when the active project is the target and 3+
+   projects exist), this modal asks "which project should I switch to?".
+   State lives in:
+   - pendingDeleteId: id of the project about to be deleted
+   - pendingDeletedName: name kept for the success toast
+   The delete is not applied until the user picks; on selection delete +
+   setActive run together to avoid a window with no active project. */
 let pendingDeleteId = null;
 let pendingDeletedName = null;
 
@@ -574,10 +577,10 @@ function openProjPickNextModal(deletedProj, deleteId) {
   pendingDeleteId = deleteId;
   pendingDeletedName = deletedProj.name;
 
-  /* Alt yazı: hangi projenin silineceğini hatırlat */
+  /* Subtitle: remind the user which project is about to be deleted */
   if (subEl) subEl.innerHTML = t("proj.pickNext.sub", { name: escapeHtml(deletedProj.name) });
 
-  /* Listeyi doldur: silinen hariç tüm projeler; son güncellenen başta */
+  /* Populate the list with every project except the one being deleted; most recently updated first */
   listEl.innerHTML = "";
   const others = listProjects().filter(p => p.id !== deleteId);
   others.sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
@@ -598,19 +601,20 @@ function openProjPickNextModal(deletedProj, deleteId) {
     listEl.appendChild(li);
   });
 
-  /* Frameworks modal'ını kapat ki seçim modal'ı tek başına önde gelsin
-     (silme onayını verdik; kullanıcı X / backdrop ile bu modal'dan çıkarsa
-     aktif projesi olmayan tutarsız bir duruma düşmeyelim diye dikkat ediyoruz
-     — bu yüzden modal'ın yan kapatma yolu yine projeyi silmeden bırakır,
-     kullanıcı silme onayını bir daha verebilir.) */
+  /* Close the frameworks modal so the picker sits alone in front. The delete
+     was already confirmed, but if the user dismisses this picker via X /
+     backdrop we must not end up with no active project. We handle that by
+     leaving the project intact on side-close (no delete happens); the user
+     can re-trigger the delete confirm later. */
   closeModal("frameworkModal");
   openModal("projPickNextModal");
 }
 
-/* Liste tıklaması → seçilen projeye geçiş + eski proje silme.
-   X / backdrop ile kapanış: state temizlenir, silme yapılmaz (kullanıcı
-   vazgeçti — confirmModal onayı verilmiş olsa da bu nokta hala "geri al"
-   sayılır çünkü silme henüz uygulanmadı). */
+/* List click: switch to the picked project and delete the old one.
+   X / backdrop close: clears state and does NOT delete (the user has
+   backed out; even though confirmModal was previously accepted, this
+   step still counts as a final "undo" because the delete has not been
+   applied yet). */
 document.getElementById("projPickList").addEventListener("click", e => {
   const btn = e.target.closest("[data-proj-pick]");
   if (!btn) return;
@@ -620,8 +624,9 @@ document.getElementById("projPickList").addEventListener("click", e => {
   const deletedName = pendingDeletedName;
   const targetProj = findProjectById(targetId);
 
-  /* Sırayla: önce aktifi hedef'e taşı (deleteProject'in fallback'i çalışmasın),
-     sonra eskiyi sil. setActiveProjectId zaten saveProjectsToStorage çağırıyor. */
+  /* Order matters: first move active to the target (so deleteProject's
+     fallback active-pick does not kick in), then delete the old one.
+     setActiveProjectId already calls saveProjectsToStorage. */
   setActiveProjectId(targetId);
   const r = deleteProject(pendingDeleteId);
   if (!r.ok) {
@@ -637,8 +642,8 @@ document.getElementById("projPickList").addEventListener("click", e => {
   showToast(t("proj.deletedAndSwitched.toast", { from: deletedName, to: targetProj?.name || "" }), "success", 2200);
 });
 
-/* Modal X / backdrop ile kapanırsa pending silme state'ini temizle.
-   (Silme yapılmaz; kullanıcı seçim yapmadan vazgeçti.) */
+/* If the modal closes via X / backdrop, clear the pending-delete state.
+   (No delete is performed; the user backed out before picking.) */
 document.addEventListener("click", e => {
   if (e.target.matches("[data-modal-close]")) {
     const modal = e.target.closest(".modal");
@@ -649,7 +654,7 @@ document.addEventListener("click", e => {
   }
 });
 
-/* Rename input içinde Enter/Escape kısayolları */
+/* Enter/Escape shortcuts inside the rename input */
 document.getElementById("projList").addEventListener("keydown", e => {
   if (!e.target.classList.contains("proj-rename-input")) return;
   const li = e.target.closest(".proj-item");
@@ -671,7 +676,7 @@ document.querySelectorAll("[data-switch-fw]").forEach(btn => {
       return;
     }
 
-    /* Geçişi gerçekleştiren ortak fonksiyon */
+    /* Shared helper that actually performs the framework switch */
     const performSwitch = clearMarks => {
       if (clearMarks) {
         state = {};
@@ -692,15 +697,15 @@ document.querySelectorAll("[data-switch-fw]").forEach(btn => {
       showToast(msg, "success", clearMarks ? 1800 : 1400);
     };
 
-    /* Eğer en az bir madde işaretliyse onay iste — geçiş yapılırsa state sıfırlanır.
-       Hiç işaret yoksa (yeni kullanıcı veya temizlenmiş liste) doğrudan geç. */
+    /* If at least one item is checked, ask for confirmation: switching will
+       reset state. With no checks (new user or cleared list) switch directly. */
     const hasMarks = Object.keys(state).length > 0;
     if (!hasMarks) {
       performSwitch(false);
       return;
     }
 
-    /* Onay popup'ı için önce framework switch modalını kapat (üst üste binmesin) */
+    /* Close the framework switch modal before opening the confirm popup so they do not stack */
     closeModal("frameworkModal");
     const currentMeta = (currentFramework && FRAMEWORK_META[currentFramework]) || {
       icon: "?",
@@ -741,17 +746,18 @@ document.querySelectorAll("[data-switch-fw]").forEach(btn => {
   });
 });
 
-/* ==================== BACKEND DEĞİŞTİRME (modal Backend sekmesi) ====================
-   Framework switch'i ile aynı davranış: bir backend kartına tıklayınca aktif
-   backend ile farklıysa, mevcut backend işaretleri varsa onay popup'ı aç ve
-   onaylanırsa backend kategorisindeki işaretleri sıfırla. Backend "noBackend"
-   olduğunda kategori tamamen gizleneceği için tüm backend işaretleri yok sayılır
-   (saveState'de kalsalar bile render edilmez); ama UI'da "sıfırlanır" mesajı
-   doğru olur çünkü kullanıcı listede gerçekten o işaretleri görmeyecek.
+/* ==================== BACKEND SWITCH (Backend tab in projfw modal) ====================
+   Same behaviour as the framework switch: clicking a backend card different
+   from the active one opens a confirm popup (if backend marks exist) and,
+   on confirm, clears marks in the backend category. When switching to
+   "noBackend" the category is fully hidden, so any backend marks become
+   invisible (they remain in storage but are not rendered); the UI still
+   shows the "will be reset" message because the user will no longer see
+   them in the list either way.
 
-   Backend kategorisi şu an cat 06 ("Backend"). Bu blok cat ID'sini sabitlemek
-   yerine `backendStep: true` etiketli tüm feature'ları tarar — gelecekte başka
-   kategorilere backend maddeleri eklenirse de doğru çalışır. */
+   The backend category is currently cat 06 ("Backend"). Rather than hard-coding
+   that id, this block scans every feature tagged `backendStep: true`, so future
+   backend items added to other categories will work without changes. */
 function clearBackendMarks() {
   let changed = false;
   DATA.forEach(cat => {
@@ -763,9 +769,10 @@ function clearBackendMarks() {
           delete state[key];
           changed = true;
         }
-        /* Aynı seviyeye bağlı Nasıl-Yapılır adım state'lerini de temizle
-           (örn. "1.1.mvp.s0", "1.1.mvp.s1" ...). Backend değişimi seçimi
-           sıfırlıyorsa, aynı seçime bağlı adım ilerlemesi de kalmamalı. */
+        /* Also clear the How-To step state tied to this level
+           (e.g. "1.1.mvp.s0", "1.1.mvp.s1" ...). If the backend switch is
+           resetting the selection, the step progress tied to that selection
+           must not linger. */
         const prefix = `${key}.s`;
         Object.keys(state).forEach(k => {
           if (k.startsWith(prefix)) {
@@ -787,9 +794,9 @@ document.querySelectorAll("[data-switch-be]").forEach(btn => {
       return;
     }
 
-    /* Geçişi gerçekleştiren ortak fonksiyon: clearBackendMarks varsa backend
-       kategorisi işaretlerini siler, kutlama bayraklarını sıfırlar, sonra
-       UI'ı baştan render eder (backend maddeleri gözükür/gizlenir). */
+    /* Shared helper that performs the backend switch. If clearMarks is true,
+       wipe backend-category marks, reset celebration flags, then re-render
+       the UI so backend items appear/disappear correctly. */
     const performSwitch = clearMarks => {
       if (clearMarks) {
         clearBackendMarks();
@@ -803,10 +810,10 @@ document.querySelectorAll("[data-switch-be]").forEach(btn => {
       applyFilters();
       updateProgress();
       closeModal("frameworkModal");
-      /* Bilgilendirme toast'u, üç farklı senaryo:
-         - noBackend → "backend yok, maddeler gizlendi"
-         - eskiden noBackend, yenisi gerçek backend → "maddeler tekrar görünür"
-         - normal switch → tek satırlık "X seçildi" (clearMarks varsa "sıfırlandı")
+      /* Status toast covers three scenarios:
+         - target is noBackend: "no backend, items hidden"
+         - was noBackend, now a real backend: "items are visible again"
+         - normal switch: single-line "X selected" (or "reset" when clearMarks)
        */
       const goingToNone = be === "noBackend";
       const comingFromNone = currentBackend === "noBackend" && be !== "noBackend";
@@ -823,8 +830,8 @@ document.querySelectorAll("[data-switch-be]").forEach(btn => {
       showToast(msg, "success", clearMarks ? 1800 : 1400);
     };
 
-    /* Backend kategorisindeki herhangi bir işaret varsa onay iste — switch
-       yapılırsa o işaretler sıfırlanır. Yoksa doğrudan geç. */
+    /* If any backend-category mark exists, prompt for confirmation: the
+       switch will reset those marks. Otherwise switch directly. */
     const hasBackendMarks = DATA.some(cat =>
       cat.features.some(f => f.backendStep && (state[`${cat.id}.${f.id}.mvp`] || state[`${cat.id}.${f.id}.release`]))
     );
@@ -834,11 +841,11 @@ document.querySelectorAll("[data-switch-be]").forEach(btn => {
       return;
     }
 
-    /* Onay popup'ı için önce projfw modalını kapat (üst üste binmesin) */
+    /* Close the projfw modal before opening the confirm popup so they do not stack */
     closeModal("frameworkModal");
     const currentMeta = (currentBackend && BACKEND_META[currentBackend]) || { icon: "?", label: currentBackend || "—" };
     const newMeta = BACKEND_META[be];
-    /* "noBackend" tarafına geçişte özel etki listesi: maddeler gizlenir */
+    /* Special "effect" line for transitions involving noBackend: items become hidden or shown again */
     const goingToNone = be === "noBackend";
     const comingFromNone = currentBackend === "noBackend";
     const extraEffectKey = goingToNone
@@ -884,5 +891,5 @@ document.querySelectorAll("[data-switch-be]").forEach(btn => {
   });
 });
 
-/* İlk yüklemede (eğer framework varsa) hero pill'i doğru göster */
+/* On first load, seed the hero pill with the current framework (if one is selected) */
 applyFrameworkUI();

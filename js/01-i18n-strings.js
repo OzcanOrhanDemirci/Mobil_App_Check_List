@@ -4,7 +4,7 @@
    and currentMode in js/07-ui-helpers.js. ESLint lints each file in isolation
    and cannot see those reassignments, so `prefer-const` is a false positive here. */
 
-/* ==================== I18N (DİL DEĞİŞTİRME) ==================== */
+/* ==================== I18N (LANGUAGE SWITCHING) ==================== */
 const LANG_KEY = "mobil_kontrol_lang_v1";
 let currentLang = (() => {
   try {
@@ -13,10 +13,10 @@ let currentLang = (() => {
   } catch { return "tr"; }
 })();
 
-/* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
-   Global tercih; localStorage'da tema gibi saklanır. Default "technical",
-   eski kullanıcı içerikleri olduğu gibi görsün diye. Yeni kullanıcılar
-   welcome akışının 3. adımında seçer. */
+/* ==================== EXPLANATION STYLE (SIMPLE / TECHNICAL) ====================
+   Global preference; persisted in localStorage like the theme setting. Defaults
+   to "technical" so existing users keep seeing the same content they always saw.
+   New users pick this on step 3 of the welcome flow. */
 const STYLE_KEY = "mobil_kontrol_style_v1";
 let currentStyle = (() => {
   try {
@@ -25,13 +25,13 @@ let currentStyle = (() => {
   } catch { return "technical"; }
 })();
 
-/* ==================== KULLANIM BİÇİMİ (GELİŞTİRME / İNCELEME) ====================
-   Global tercih; localStorage'da saklanır. Welcome akışının 2. adımında seçilir.
-   Default "build": kart ön yüzü (checklist) ile başlar.
-   "review" seçilirse renderdan hemen sonra tüm kartlar sessizce arka yüze
-   (Nasıl Yapılır? rehberi) çevrilir. Kullanıcı toolbar'daki "❔ Tümü Nasıl?" /
-   "📋 Tümü Liste" butonlarıyla seans içinde modu değiştirebilir; bu butonlar
-   currentMode'u günceller ve seçim kalıcı olur. */
+/* ==================== USAGE MODE (BUILD / REVIEW) ====================
+   Global preference; persisted in localStorage. Picked on step 2 of the welcome
+   flow. Default is "build": the app starts on the card front face (checklist).
+   When "review" is selected, every card is silently flipped to the back face
+   (How-To guide) right after render. Users can toggle the mode mid-session via
+   the toolbar buttons "Show All How-To" / "Show All Checklist"; those buttons
+   update currentMode and the choice is persisted. */
 const MODE_KEY = "mobil_kontrol_mode_v1";
 let currentMode = (() => {
   try {
@@ -78,16 +78,16 @@ function tx(obj) {
   return String(obj);
 }
 
-/* UI metinleri sözlüğü, statik HTML için (data-i18n / data-i18n-title / vb.) */
+/* UI strings dictionary used by static HTML (data-i18n / data-i18n-title / etc.). */
 const UI_STRINGS = {
   // common
   "common.close": { tr: "Kapat", en: "Close" },
   "common.cancel": { tr: "İptal", en: "Cancel" },
 
-  // erişilebilirlik (a11y) primitifleri
+  // accessibility (a11y) primitives
   "a11y.skipToContent": { tr: "İçeriğe geç", en: "Skip to content" },
 
-  // yazdırma seçenekleri modalı (printBtn açar)
+  // print-options modal (opened by printBtn)
   "print.modal.title": { tr: "Yazdırma Seçeneği", en: "Print Option" },
   "print.modal.lead": { tr: "Hangi formatı çıktı almak istersin? Aynı projede farklı amaçlar için iki ayrı PDF üretebilirsin.", en: "Which format would you like to export? You can generate two different PDFs from the same project for different purposes." },
   "print.modal.aria": { tr: "Yazdırma seçenekleri", en: "Print options" },
@@ -113,8 +113,8 @@ const UI_STRINGS = {
   "install.bannerDesc": { tr: "Mobilde ana ekrana, masaüstünde başlat menüsüne kısayol olarak eklenir. İnternet olmadan da kullanabilirsin.", en: "Adds a shortcut to your home screen on mobile or start menu on desktop. Works offline." },
   "install.bannerBtn": { tr: "📲 Yükle", en: "📲 Install" },
   "install.bannerClose": { tr: "Bu bildirimi kapat", en: "Dismiss this notification" },
-  /* Footer'ın altındaki küçük indirme ikon butonu (üstteki yükle banner'ı
-     kapalıyken görünür); aria + title metinleri. */
+  /* Small install-icon button anchored at the footer; appears only when the
+     orange install banner at the top is dismissed (aria + title labels). */
   "install.floatingAria": { tr: "Uygulamayı yükle", en: "Install app" },
   "install.floatingTitle": { tr: "Uygulamayı cihazına yükle", en: "Install app on your device" },
 
@@ -133,7 +133,7 @@ const UI_STRINGS = {
   "group.data": { tr: "Veri", en: "Data" },
   "group.helpPrint": { tr: "Yardım ve yazdır", en: "Help and print" },
 
-  // dropdown opsiyon label'ları (3x3 view × filter matrisi)
+  // Dropdown option labels for the 3x3 view-by-filter matrix.
   "viewFilter.all": { tr: "Tümü", en: "All" },
   "viewFilter.pending": { tr: "Yapılacak", en: "Pending" },
   "viewFilter.done": { tr: "Yapılan", en: "Done" },
@@ -213,7 +213,7 @@ const UI_STRINGS = {
   "pres.exit": { tr: "Sunumdan çık (Esc)", en: "Exit presentation (Esc)" },
   "pres.exitLabel": { tr: "Kapat", en: "Close" },
 
-  // presentation context bar (üst başlık)
+  // Presentation context bar (top heading)
   "pres.appName": { tr: "Mobil Uygulama Kalite Kontrol", en: "Mobile App Quality Check" },
   "pres.context.all": { tr: "Tüm Liste", en: "All Items" },
   "pres.context.mvp": { tr: "Sadece MVP Seviyesi", en: "MVP Level Only" },
@@ -247,18 +247,20 @@ const UI_STRINGS = {
   "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
   "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
 
-  // welcome: kullanım biçimi (2. adım: Geliştirme vs İnceleme)
+  // welcome: usage mode (step 2: Build vs Review)
   "welcome.modeQuestion": { tr: "Neye odaklanmak istersin?", en: "What would you like to focus on?" },
   "welcome.modeSub": { tr: "Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için \"nasıl yapılır?\" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.", en: "This app can be used in two ways: as a step-by-step checklist while building a new app; or as a \"how to\" guide for each item while auditing an app you already have. You can switch any time from the top buttons." },
   "welcome.modeAria": { tr: "Kullanım biçimi seçimi", en: "Usage mode selection" },
-  /* NOT: i18n key adları (welcome.mode.build.*, welcome.mode.review.*) tarihsel
-     sebeplerle dahili mod adlarıyla aynı; ancak kullanıcıya gösterdikleri
-     ETİKETLER tam tersine eşlenir:
-       - welcome.mode.build.*  → "❔ Geliştirme" butonu (data-welcome-mode="review")
-       - welcome.mode.review.* → "📋 İnceleme" butonu (data-welcome-mode="build")
-     Sebep: kullanıcı niyeti ile kart görsel durumu farklı kavramlar; yeni
-     uygulama geliştirirken Nasıl Yapılır? rehberi, mevcut uygulamayı kontrol
-     ederken sade checklist daha kullanışlı. */
+  /* NOTE: the i18n key names (welcome.mode.build.*, welcome.mode.review.*)
+     match the internal mode names for historical reasons, but the LABELS
+     shown to the user are deliberately swapped:
+       - welcome.mode.build.*  -> "Building"  button (data-welcome-mode="review")
+       - welcome.mode.review.* -> "Reviewing" button (data-welcome-mode="build")
+     Reason: user intent and card visual state are different concepts. While
+     building a new app, the How-To guide (back face) is more useful, so the
+     "Building" button actually selects the review-face card mode; while
+     auditing an existing app, the plain checklist (front face) is more
+     useful, so the "Reviewing" button selects the build-face card mode. */
   "welcome.mode.build.title": { tr: "❔ Geliştirme", en: "❔ Building" },
   "welcome.mode.build.desc": { tr: "Yeni bir uygulama geliştiriyorum; her madde için \"nasıl yapılır?\" rehberini görmek istiyorum.", en: "I am building a new app; I want to see the \"how to\" guide for each item." },
   "welcome.mode.review.title": { tr: "📋 İnceleme", en: "📋 Reviewing" },
@@ -272,16 +274,16 @@ const UI_STRINGS = {
   "welcome.lead": { tr: "Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.", en: "This web app is built to help you audit the quality of the mobile app you are developing." },
   "welcome.body": { tr: "14 kategoride 55 özellik var. Her özelliğin <strong style=\"color: var(--mvp);\">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style=\"color: var(--release);\">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. Her maddenin arka yüzünde adım adım <strong>Nasıl Yapılır?</strong> rehberi var; adımları tek tek tikleyerek de ilerleyebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.", en: "55 features across 14 categories. Track progress by marking each feature's <strong style=\"color: var(--mvp);\">MVP (green, must-have)</strong> and <strong style=\"color: var(--release);\">Release (blue, store-ready professional quality)</strong> levels. Each item also has a step-by-step <strong>How-To</strong> guide on its back face; you can tick steps one by one as you go. Your marks are auto-saved in your browser." },
   "welcome.featuresList": {
-    /* Mantıksal eşleştirme: her grid satırında (2 sütun) konu olarak ilgili
-       iki özellik yan yana. Sıralama:
-       1) Dil ve anlatım: TR/EN + Basit/Teknik
-       2) Yazılım yığını: Framework + Backend
-       3) Madde başına yardım: Nasıl Yapılır? + AI'a sor
-       4) Kişisel veri ve koruma: Notlar + Kilit
-       5) Listeyi daraltma: Filtre + Arama
-       6) Veri yönetimi: Çoklu proje + Yedek
-       7) Görsel mod: Tema + Sunum
-       8) Çıktı ve taşınabilirlik: Yazdır + PWA yükle */
+    /* Pairing rationale: each grid row holds two thematically related
+       features side by side (the grid is 2 columns wide). Ordering:
+       1) Language and tone:          TR/EN + Simple/Technical
+       2) Software stack:             Framework + Backend
+       3) Per-item assistance:        How-To guide + Ask AI
+       4) Personal data and safety:   Notes + Lock
+       5) List narrowing:             Filter + Search
+       6) Data management:            Multi-project + Backup
+       7) Visual mode:                Theme + Presentation
+       8) Output and portability:     Print + PWA install */
     tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>koyu ve açık mod</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
     en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>28 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>dark and light mode</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
   },
@@ -289,7 +291,7 @@ const UI_STRINGS = {
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
   "welcome.start": { tr: "Tamam, Başlayalım", en: "OK, Let's Start" },
 
-  // welcome: project name (yeni adım: dil → proje adı → framework → karşılama)
+  // welcome: project name (step in the 7-step flow: language -> project name -> framework -> welcome)
   "welcome.projNameQuestion": { tr: "Bu listeyle hangi projenin kontrolünü yapacaksın?", en: "Which project will you check with this list?" },
   "welcome.projNameSub": { tr: "Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.", en: "Give your project a name. You can rename it later or add new projects any time." },
   "welcome.projNameAria": { tr: "Proje adı", en: "Project name" },
@@ -376,7 +378,7 @@ const UI_STRINGS = {
   "celebration.mvpTitle": { tr: "MVP seviyesi tamamlandı!", en: "MVP level complete!" },
   "celebration.mvpMsg": { tr: "Uygulamanın temel iskeleti hazır. Şimdi profesyonel kaliteye yükseltmek için Release seviyesindeki maddelere geç.", en: "Your app's core skeleton is ready. Move on to Release-level items to elevate it to professional quality." },
 
-  // kategori başlığı: %100 olunca X/Y yerine bu yazı çıkar
+  // Category header label shown in place of X / Y once the category hits 100 percent.
   "cat.completed": { tr: "Tamamlandı", en: "Completed" },
 
   "confirm.defaultTitle": { tr: "Emin misin?", en: "Are you sure?" },
@@ -384,7 +386,7 @@ const UI_STRINGS = {
   "confirm.yes": { tr: "Evet, devam et", en: "Yes, continue" },
   "confirm.cancel": { tr: "İptal", en: "Cancel" },
 
-  // reset (2 aşamalı: scope seçimi + onay; 4 seçenek)
+  // Reset flow (2 stages: scope selection + confirm; up to 4 scope options).
   "reset.scopeTitle": { tr: "Neyi sıfırlamak istersin?", en: "What do you want to reset?" },
   "reset.scopeSub": { tr: "Bir veya birden fazla seçenek seçebilirsin. \"Tüm Sistem\" seçilirse diğerleri otomatik iptal olur (zaten her şeyi kapsar).", en: "Pick one or more options. \"Whole System\" cancels the others (it already covers everything)." },
   "reset.scopeProjectTitle": { tr: "Bu projeyi sıfırla", en: "Reset this project" },
@@ -455,7 +457,7 @@ const UI_STRINGS = {
   "level.mvp": { tr: "MVP", en: "MVP" },
   "level.release": { tr: "Release", en: "Release" },
 
-  // ==================== HOW-TO GUIDE (KART ARKA YÜZÜ) ====================
+  // ==================== HOW-TO GUIDE (CARD BACK FACE) ====================
   "howto.button":     { tr: "Nasıl?", en: "How?" },
   "howto.back":       { tr: "Geri",   en: "Back" },
   "howto.flipTitle":  { tr: "Bu maddeyi nasıl tamamlayacağını öğren", en: "Learn how to complete this item" },
@@ -463,7 +465,7 @@ const UI_STRINGS = {
   "howto.intro":      { tr: "Aşağıdaki adımları takip et: ön yüzdeki hedefe ulaşmanı sağlar. <em>Bu sayfada işaretleme kutusu yoktur; tamamlandığında üst-sağ köşedeki butonla kartı geri çevirip ön yüzde işaretle.</em>", en: "Follow the steps below to reach the goal on the front. <em>There are no checkboxes on this side; once you're done, flip the card back via the top-right button and check it off on the front.</em>" },
   "howto.empty":      { tr: "Bu madde için ayrı bir nasıl-yapılır rehberi yok; ön yüzdeki açıklama yeterince yönlendirici. AI'a sor butonu ile de daha derin yardım alabilirsin.", en: "There is no separate how-to guide for this item; the front-face description is self-explanatory. You can also use the Ask AI button for deeper help." },
 
-  // ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
+  // ==================== EXPLANATION STYLE (SIMPLE / TECHNICAL) ====================
   "style.simple":    { tr: "Basit",   en: "Simple" },
   "style.technical": { tr: "Teknik",  en: "Technical" },
   "style.toast.simple":    { tr: "Anlatım dili: Basit (sade ve gündelik). İstediğin zaman üstten Teknik'e dönebilirsin.", en: "Explanation style: Simple (plain, everyday wording). Switch to Technical any time from the top." },
@@ -478,8 +480,8 @@ const UI_STRINGS = {
   "welcome.style.technical.title": { tr: "🛠️ Teknik", en: "🛠️ Technical" },
   "welcome.style.technical.desc":  { tr: "Paket adları, sürüm numaraları, kod örnekleri ve fonksiyon isimleri tam haliyle.", en: "Package names, version numbers, code snippets and function names in full." },
 
-  // ==================== BACKEND SEÇİMİ ====================
-  // welcome step 4 (backend)
+  // ==================== BACKEND SELECTION ====================
+  // welcome step 6 (backend)
   "welcome.beQuestion": { tr: "Hangi backend ile çalışacaksın?", en: "Which backend will you use?" },
   "welcome.beSub": { tr: "Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.", en: "The backend is the server side of your app (sign-up, database, file upload). The backend category in this list adapts to your choice. If your app never connects to the internet, pick 'No backend' to remove all backend items from the list." },
   "welcome.beAria": { tr: "Backend seçimi", en: "Backend selection" },

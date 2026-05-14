@@ -1,17 +1,18 @@
-/* ==================== KARSILAMA (WELCOME) AKISI ====================
-   Ilk ziyarette aktif proje + framework + backend yoksa karsilama
-   modalini 7 adimda gosterir: dil, kullanim bicimi, anlatim stili,
-   proje adi, framework, backend, baslangic. Her adim pending*
-   degiskenlerinde tutulur (hem let hem window.pending* ile yazilir;
-   08-i18n-dom.js applyLang welcome CTA'larini window uzerinden okur),
-   son adimda createProject ile kalicilasir. Welcome modali icindeki
-   Yardim butonu da burada (anlik dil switcher'i dahil). 18-app.js init
-   sirasinda showWelcomeIfFirstVisit cagrilir. */
+/* ==================== WELCOME FLOW ====================
+   On first visit, if there is no active project + framework + backend, show
+   the welcome modal in 7 steps: language, usage mode, explanation style,
+   project name, framework, backend, get-started. Each step is held in a
+   pending* variable (mirrored to window.pending* so 08-i18n-dom.js applyLang
+   can read the welcome CTAs across modules); the final step persists the
+   selections via createProject. The welcome modal's Help button (with its
+   in-modal language switcher) lives in this file too. showWelcomeIfFirstVisit
+   is called from 18-app.js during init. */
 
-/* ==================== KARŞILAMA (WELCOME) MODALI ==================== */
-/* Aktif proje + framework + backend yoksa karşılama modalını 7 adımda göster:
-   1) Dil  2) Kullanım Biçimi  3) Anlatım Dili  4) Proje Adı
-   5) Framework  6) Backend  7) Tanıtım / Başlayalım */
+/* ==================== WELCOME MODAL ==================== */
+/* If there is no active project + framework + backend, show the welcome modal
+   in 7 steps:
+   1) Language  2) Usage Mode  3) Explanation Style  4) Project Name
+   5) Framework  6) Backend  7) Get Started */
 function showWelcomeIfFirstVisit() {
   if (getActiveProjectId() && currentFramework && currentBackend) return;
   setTimeout(() => {
@@ -20,7 +21,8 @@ function showWelcomeIfFirstVisit() {
   }, 350);
 }
 
-/* Welcome modalı içindeki seçimler — buton tıklanana dek kalıcılaştırılmaz */
+/* Selections inside the welcome modal: not persisted until the final
+   "Get Started" button is clicked. */
 let pendingFramework = null;
 let pendingBackend = null;
 let pendingLang = null;
@@ -29,28 +31,28 @@ let pendingStyle = null;
 let pendingProjName = null;
 
 function setWelcomeStep(n) {
-  /* 1 → dil, 2 → kullanım biçimi, 3 → anlatım dili, 4 → proje adı,
-     5 → framework, 6 → backend, 7 → karşılama */
+  /* 1 = language, 2 = usage mode, 3 = explanation style, 4 = project name,
+     5 = framework, 6 = backend, 7 = get-started. */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
-  /* Adım göstergesini güncelle (7 nokta + 6 çizgi) */
+  /* Update the step indicator (7 dots + 6 connecting lines). */
   document.querySelectorAll("[data-step-dot]").forEach(d => {
     const idx = Number(d.dataset.stepDot);
     d.classList.toggle("active", idx === n);
     d.classList.toggle("done", idx < n);
   });
   document.querySelectorAll("[data-step-line]").forEach(line => {
-    const after = Number(line.dataset.stepLine); // 1 → 1.dot ile 2.dot arasındaki çizgi
+    const after = Number(line.dataset.stepLine); // value 1 = line between dot 1 and dot 2
     line.classList.toggle("done", n > after);
   });
-  /* Modalın hangi adımda olduğunu CSS'in görebilmesi için data-step attribute'u
-     (örn. 1. adımda yardım butonunun yazısı CSS ile gizleniyor — kullanıcı
-     henüz dil seçmediği için "Yardım/Help" iki dilde yer kaplamasın). */
+  /* Expose the current step to CSS via a data-step attribute. For example,
+     on step 1 the help button's label is hidden by CSS so "Yardım/Help" does
+     not take up space in both languages before the user has picked one. */
   const modal = document.getElementById("welcomeModal");
   if (modal) modal.setAttribute("data-step", String(n));
-  /* Proje adı adımına geçişte (artık step 4) input'a otomatik focus +
-     buton metnini ayarla */
+  /* When entering the project-name step (now step 4): auto-focus the input
+     and update the CTA label. */
   if (n === 4) {
     const input = document.getElementById("welcomeProjName");
     if (input) {
@@ -60,8 +62,9 @@ function setWelcomeStep(n) {
   }
 }
 
-/* Proje adı input'u değiştiğinde "İleri" butonunun aktif/pasif durumunu güncelle.
-   Boş veya 60 karakterden uzun isim → disabled. Geçici olarak boş hata mesajı. */
+/* Update the "Next" button's enabled/disabled state as the project-name
+   input changes. Empty or longer than 60 characters disables the button.
+   The error element is hidden when there is nothing to report. */
 function updateWelcomeProjNameCta() {
   const input = document.getElementById("welcomeProjName");
   const cta = document.getElementById("welcomeProjNameNext");
@@ -91,7 +94,7 @@ function updateWelcomeProjNameCta() {
   }
 }
 
-/* 1. ADIM: Dil seçimi */
+/* STEP 1: Language selection. */
 document.querySelectorAll("[data-welcome-lang]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingLang = btn.dataset.welcomeLang;
@@ -107,7 +110,7 @@ document.querySelectorAll("[data-welcome-lang]").forEach(btn => {
 
 document.getElementById("welcomeLangNext").addEventListener("click", () => {
   if (!pendingLang) return;
-  /* Seçilen dili anında uygula: bundan sonraki adımlar bu dilde gözüksün */
+  /* Apply the chosen language immediately so the remaining steps render in it. */
   if (pendingLang !== currentLang) {
     saveLang(pendingLang);
     applyLang();
@@ -115,9 +118,9 @@ document.getElementById("welcomeLangNext").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 2. ADIM: Kullanım Biçimi (Geliştirme / İnceleme).
-   Seçim welcomeStart'ta applyMode ile kalıcılaştırılır; o zamana kadar pendingMode
-   olarak tutulur. */
+/* STEP 2: Usage Mode (Build / Review).
+   The choice is persisted in welcomeStart via applyMode; until then it lives
+   in pendingMode. */
 document.querySelectorAll("[data-welcome-mode]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingMode = btn.dataset.welcomeMode;
@@ -142,7 +145,7 @@ document.getElementById("welcomeModeBack").addEventListener("click", () => {
   setWelcomeStep(1);
 });
 
-/* 3. ADIM: Anlatım dili (Basit / Teknik) */
+/* STEP 3: Explanation style (Simple / Technical). */
 document.querySelectorAll("[data-welcome-style]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingStyle = btn.dataset.welcomeStyle;
@@ -160,9 +163,10 @@ document.querySelectorAll("[data-welcome-style]").forEach(btn => {
 
 document.getElementById("welcomeStyleNext").addEventListener("click", () => {
   if (!pendingStyle) return;
-  /* Seçilen anlatım dilini anında uygula: kalan welcome adımları ve hero pill
-     bu stile göre gözüksün. (Listeyi render etmeye gerek yok; welcome modal
-     açıkken liste zaten başka renderContent'le güncelleniyor.) */
+  /* Apply the chosen explanation style immediately so the remaining welcome
+     steps and the hero pill reflect it. (No need to re-render the list:
+     while the welcome modal is open, the list is already kept in sync by
+     other renderContent calls.) */
   if (typeof applyStyle === "function") applyStyle(pendingStyle);
   setWelcomeStep(4);
 });
@@ -171,7 +175,7 @@ document.getElementById("welcomeStyleBack").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* 4. ADIM: Proje adı */
+/* STEP 4: Project name. */
 const welcomeProjNameInput = document.getElementById("welcomeProjName");
 if (welcomeProjNameInput) {
   welcomeProjNameInput.addEventListener("input", () => {
@@ -198,7 +202,7 @@ document.getElementById("welcomeProjNameBack").addEventListener("click", () => {
   setWelcomeStep(3);
 });
 
-/* 5. ADIM: Framework seçimi */
+/* STEP 5: Framework selection. */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -221,7 +225,7 @@ document.getElementById("welcomeFwBack").addEventListener("click", () => {
   setWelcomeStep(4);
 });
 
-/* 6. ADIM: Backend seçimi */
+/* STEP 6: Backend selection. */
 document.querySelectorAll("[data-welcome-be]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingBackend = btn.dataset.welcomeBe;
@@ -246,59 +250,62 @@ document.getElementById("welcomeBeBack").addEventListener("click", () => {
   setWelcomeStep(5);
 });
 
-/* 7. ADIM: Karşılama */
+/* STEP 7: Get started. */
 document.getElementById("welcomeBack").addEventListener("click", () => {
   setWelcomeStep(6);
 });
 
-/* Welcome modalı içindeki yardım butonu — yardım modalını üstte açar, welcome'ı kapatmaz.
-   helpModal DOM'da welcomeModal'dan önce, ikisi aynı z-index'te. Help'i welcome üstüne
-   getirebilmek için z-index'i geçici olarak yükselt. Yardım modalını kapattığında welcome
-   modalı altta görünür kalır.
-   1. adımda (kullanıcı henüz dil seçmediyse) yardım modalı içinde anlık TR/EN switcher
-   gösterilir; sadece o açılış için yardım metnini değiştirir, currentLang'a dokunmaz. */
+/* Help button inside the welcome modal: opens the help modal on top without
+   closing welcome. helpModal appears before welcomeModal in the DOM and
+   both share the same z-index, so we temporarily raise help's z-index to
+   render it above. When help is closed the welcome modal stays visible
+   underneath.
+   On step 1 (before the user has picked a language) the help modal shows an
+   in-modal TR/EN switcher; that switcher only changes the help text for the
+   current opening and never mutates currentLang. */
 document.getElementById("welcomeHelpBtn").addEventListener("click", () => {
   const helpEl = document.getElementById("helpModal");
   if (helpEl) helpEl.style.zIndex = "10001";
-  /* Welcome 1. adımda mı? */
+  /* Is welcome currently on step 1 (language pick)? */
   const onLangStep = document.getElementById("welcomeModal")?.getAttribute("data-step") === "1";
   setHelpLangSwitchVisible(onLangStep);
-  /* Yardım modalı her açılışta tüm bölümler kapalı başlasın */
+  /* Collapse every help section on each open so users always start fresh. */
   if (typeof collapseAllHelpSections === "function") collapseAllHelpSections();
   openModal("helpModal");
 });
 
-/* Yardım modalındaki anlık dil değiştirici, görünürlük kontrolü.
-   Switcher görünürken aktif buton currentLang ile senkron olur. */
+/* Visibility control for the help modal's in-modal language switcher.
+   When the switcher is visible, the active button is synced with currentLang. */
 function setHelpLangSwitchVisible(visible) {
   const sw = document.getElementById("helpLangSwitch");
   if (!sw) return;
   sw.hidden = !visible;
   if (visible) {
-    /* Aktif butonu currentLang ile senkronla */
+    /* Sync the active button with currentLang. */
     sw.querySelectorAll("[data-help-lang]").forEach(b => {
       b.classList.toggle("active", b.dataset.helpLang === currentLang);
     });
   }
 }
 
-/* Yardım metnini sadece bu modalda geçici olarak verilen dile çevir.
-   currentLang ve localStorage'a dokunmaz; modal kapanıp tekrar açıldığında
-   global dil neyse oraya geri döner (applyI18nToDom yeniden uygulayarak). */
+/* Temporarily render the help text in the given language, only inside this
+   modal. Does not touch currentLang or localStorage; once the modal is
+   closed and reopened, the content reverts to whatever the global language
+   is (applyI18nToDom reapplies it). */
 function applyHelpDisplayLang(lang) {
   if (lang !== "tr" && lang !== "en") return;
   const helpBody = document.getElementById("helpModalBody");
   if (helpBody && HELP_HTML[lang]) {
     helpBody.innerHTML = HELP_HTML[lang];
-    /* innerHTML değişimi DOM elementlerini yeniden oluşturur; accordion'ı
-       yeniden kur (section.help-section.collapsed class'ı + chevron span). */
+    /* innerHTML replacement recreates DOM elements, so rebuild the accordion
+       (section.help-section.collapsed class + chevron span). */
     if (typeof enhanceHelpAccordion === "function") enhanceHelpAccordion();
   }
   const helpTitle = document.getElementById("helpTitle");
   if (helpTitle && UI_STRINGS["help.title"]) {
     helpTitle.textContent = UI_STRINGS["help.title"][lang] || helpTitle.textContent;
   }
-  /* Switcher butonlarındaki active state'i güncelle */
+  /* Update the active state on the switcher buttons. */
   document.querySelectorAll("[data-help-lang]").forEach(b => {
     b.classList.toggle("active", b.dataset.helpLang === lang);
   });
@@ -310,39 +317,40 @@ document.querySelectorAll("[data-help-lang]").forEach(btn => {
   });
 });
 
-/* Yardım modalı her kapatıldığında switcher'i sıfırla:
-   bir sonraki açılış doğru bağlamda davransın. data-modal-close dinleyicisi
-   zaten var, ama oraya bağlama yerine modalın "hidden" değişimini izlemek
-   yerine, kapanma noktalarına özel olarak switcher'i gizliyoruz. */
+/* Reset the switcher every time the help modal closes so the next open
+   starts in the correct context. The data-modal-close listener exists, but
+   instead of hooking into that (or observing the modal's "hidden" property),
+   we explicitly hide the switcher at the close points. */
 function closeHelpModal() {
   const helpEl = document.getElementById("helpModal");
   if (helpEl) helpEl.hidden = true;
   setHelpLangSwitchVisible(false);
-  /* Eğer kullanıcı in-modal switcher ile dil değiştirmişse, currentLang'a göre
-     doğru içeriği geri yükle (sonraki açılış global dilde olsun). */
+  /* If the user changed languages via the in-modal switcher, restore the
+     content for currentLang so the next open shows the global language. */
   applyHelpDisplayLang(currentLang);
 }
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
   if (!pendingFramework || !pendingProjName || !pendingBackend) return;
-  /* Anlatım dilini kalıcılaştır (kullanıcı 3. adımda zaten anında uygulanmıştı;
-     burada localStorage'a yazılması garanti altına alınıyor). */
+  /* Persist the explanation style. It was already applied live in step 3;
+     this call guarantees it is also written to localStorage. */
   if (pendingStyle && typeof applyStyle === "function") {
     applyStyle(pendingStyle);
   }
-  /* Kullanım biçimini kalıcılaştır. applyMode sadece localStorage'a yazar +
-     html'e data-card-mode atar; kartların DOM'da çevrilmesi reloadActive..
-     içindeki renderdan sonra attachClickHandlers'ın sonunda applyInitialCardMode
-     tarafından yapılır. */
+  /* Persist the usage mode. applyMode only writes localStorage and sets the
+     html data-card-mode attribute; the actual DOM card flip happens after
+     the render in reloadActive..., at the end of attachClickHandlers via
+     applyInitialCardMode. */
   if (pendingMode && typeof applyMode === "function") {
     applyMode(pendingMode);
   }
-  /* Önce projeyi oluştur ve aktif yap; saveFramework/saveBackend artık aktif
-     projeye yazıyor */
+  /* Create the project and make it active first; saveFramework/saveBackend
+     write to whichever project is active. */
   const created = createProject(pendingProjName);
   if (!created.ok) {
-    /* En olası hata: aynı isimde proje zaten var (genelde yeni kullanıcıda olmaz).
-       Limit hatası welcome akışında oluşamaz çünkü 0 proje var. */
+    /* Most likely error: another project already has this name (unusual for
+       a new user). The limit error cannot trigger during welcome because
+       the store has zero projects. */
     let msg = t("proj.error.empty");
     if (created.error === "duplicate") msg = t("proj.error.duplicate");
     else if (created.error === "tooLong") msg = t("proj.error.tooLong");
@@ -353,9 +361,9 @@ document.getElementById("welcomeStart").addEventListener("click", () => {
   saveFramework(pendingFramework);
   saveBackend(pendingBackend);
   closeModal("welcomeModal");
-  /* Yeni projenin tüm in-memory state'ini yükle ve UI'ı baştan render et */
+  /* Load the new project's full in-memory state and re-render the UI. */
   reloadActiveProjectAndRender();
-  /* Pendingleri temizle ki ileride welcome tekrar açılırsa eski seçim kalmasın */
+  /* Clear pending* so a later welcome session does not inherit old picks. */
   pendingProjName = null;
   pendingFramework = null;
   pendingBackend = null;
