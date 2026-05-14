@@ -1,13 +1,16 @@
 # Continuous Integration for the Mobile App Quality Checklist PWA.
 #
 # What this runs:
-#   - lint:          ESLint (flat config) + Prettier format check.
-#   - test:          Node built-in test runner (node --test).
-#   - validate-html: Static HTML validation via html-validate.
-#   - pwa-check:     Quick sanity checks for manifest.webmanifest, sw.js,
-#                    and every js/*.js (JSON parse plus node --check).
-#   - em-dash-check: Project content rule, no em-dash ("—") in any of the
-#                    user-facing files (i18n strings, help text, data, HTML).
+#   - lint:           ESLint (flat config) + Prettier format check.
+#   - test:           Node built-in test runner (node --test).
+#   - validate-html:  Static HTML validation via html-validate.
+#   - pwa-check:      Quick sanity checks for manifest.webmanifest, sw.js,
+#                     and every js/*.js (JSON parse plus node --check).
+#   - em-dash-check:  Project content rule, no em-dash ("—") in any of the
+#                     user-facing files (i18n strings, help text, data, HTML).
+#   - sw-cache-check: Service Worker cache key in sw.js must match the
+#                     version in package.json. Ties PWA cache invalidation
+#                     to release bumps automatically.
 #
 # Triggers:
 #   - push to main
@@ -160,3 +163,21 @@ jobs:
       # empty cells is allowed; the script explicitly excludes it.
       - name: Enforce em-dash content rule
         run: node scripts/check-em-dash.mjs
+
+  sw-cache-check:
+    name: Service Worker cache version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Ensures sw.js's CACHE_NAME constant tracks package.json `version`.
+      # Mismatches fail this job; locally a contributor fixes it with
+      # `npm run sw:sync` (or `node scripts/check-sw-cache-version.mjs --fix`).
+      - name: Enforce sw.js cache version matches package.json
+        run: node scripts/check-sw-cache-version.mjs

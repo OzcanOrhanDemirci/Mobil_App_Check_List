@@ -244,6 +244,12 @@ const projectGlobals = {
   collapseAllHelpSections: "writable",
   closeAllLvMenus: "writable",
   RESET_INDEPENDENT_SCOPES: "writable",
+  /* JSON-import validation helpers, declared near the importFile handler
+     in js/18-app.js. Only consumed in the same file but listed here for
+     the project convention (every top-level function shows up explicitly). */
+  isPlainObject: "writable",
+  sanitizeImportState: "writable",
+  sanitizeImportNotes: "writable",
 };
 
 module.exports = [

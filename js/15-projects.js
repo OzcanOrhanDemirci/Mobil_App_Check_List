@@ -137,7 +137,7 @@ function renderProjectList() {
        collapses to just "(Flutter)". For noBackend the icon is 🚫. */
     const stackLabel = beMeta ? `${fwName} · ${beIcon} ${beShortName}` : fwName;
     li.innerHTML = `
-      <button type="button" class="proj-row" data-proj-switch="${p.id}" title="${escapeHtml(p.name)} projesine geç">
+      <button type="button" class="proj-row" data-proj-switch="${p.id}" title="${escapeHtml(t("proj.switch.rowTitle", { name: p.name }))}">
         <span class="proj-row-icon" aria-hidden="true"></span>
         <span class="proj-row-name"></span>
         <span class="proj-row-fw"></span>

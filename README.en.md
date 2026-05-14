@@ -276,14 +276,14 @@ If you want a custom domain, add a `CNAME` file; no extra configuration needed.
 
 ### Tech stack
 
-| Layer          | Choice                                     | Why                                                                                                                                                      |
-| -------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | A single `index.html` (~1100 lines)        | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                            |
-| CSS            | 6 files, vanilla CSS                       | No build tool. Theme switching via CSS custom properties. Print styles in a dedicated file.                                                              |
-| JS             | 18 files, vanilla ES2020+                  | No build / transpile / bundling. Loaded sequentially via `<script>` tags (numbered filenames define the order).                                          |
-| Data           | A single `DATA` constant (`js/03-data.js`) | 14 categories × 55 items with language / style / framework / backend variants. A pure static JS object; no build or fetch.                               |
-| Service Worker | Network-first + cache fallback             | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. |
-| Storage        | `localStorage`                             | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server.                                                                |
+| Layer          | Choice                                              | Why                                                                                                                                                                                               |
+| -------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | A single `index.html` (~1170 lines)                 | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                                                                     |
+| CSS            | 11 files, vanilla CSS                               | No build tool. Theme switching via CSS custom properties. Modal surfaces split into their own files (`css/05-modals-*.css`). Print styles in a dedicated file.                                    |
+| JS             | 35 files, vanilla ES2020+                           | 20 logical modules + 14 per-category data shards + 1 sync bootstrap. No build / transpile / bundling. Loaded sequentially via `<script defer>` tags (numbered filenames define the order).        |
+| Data           | `window.DATA` array, split across 14 category files | 14 categories × 55 items with language / style / framework / backend variants. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` each `push` their category. A pure static JS array. |
+| Service Worker | Network-first + cache fallback                      | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. Cache key tracks `package.json`.         |
+| Storage        | `localStorage`                                      | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server.                                                                                                         |
 
 ### Four-axis content resolver
 
@@ -327,40 +327,57 @@ That way an item is written **once** and specialized **only where needed**. A ty
 
 ### Modular file layout
 
-JS files load in order; each file has a **single responsibility**:
+JS files load in order; each file has a **single responsibility**. The numeric prefix (`00`, `01`, ..., `18`) drives both the `<script defer>` load order and gives a visual map of the dependency chain:
 
 ```
-01-i18n-strings.js   UI string dictionary (TR/EN), t() and tx() resolvers
-02-help-content.js   HTML content of the Help modal
-03-data.js           14 categories, 55 items, all variants (~3000 lines)
-04-projects.js       Multi-project storage (20-project limit, migrations)
-04-storage.js        Mark / note / open-closed state wrapper
-05-framework.js      6 framework definitions + the four-axis resolver
-05-backend.js        9 backend definitions + "No backend" hiding logic
-06-view-state.js     currentFramework / currentBackend / view mode
-07-ui-helpers.js     Theme, modal helpers, toast
-08-i18n-dom.js       Apply i18n to the DOM, switch languages
-09-ai-prompt.js      Markdown + JSON AI prompt generator
-10-clipboard.js      Clipboard helper
-11-render.js         Main render loop, card template
-12-progress.js       Percentage calculation, celebrations
-13-filters.js        Search + 3×3 view filter
-14-welcome.js        7-step welcome flow + welcome help
-15-projects.js       Project / framework / backend modal + CRUD
-16-presentation.js   Presentation mode (P key, ESC, arrows)
-17-install.js        PWA install banner + platform-manual fallback
-18-app.js            Orchestration: toolbar, reset, lock, help
-                     accordion, print, export/import, keyboard
-                     shortcuts, PWA manifest/SW setup, init
+00-bootstrap.js                Synchronous IIFE: theme + lang set before first paint
+01-i18n-strings.js             UI string dictionary (TR/EN), t() and tx() resolvers
+02-help-content.js             HTML content of the Help modal
+03a-data-01-idea-planning.js   Category 01 data (Project Idea and Planning)
+03b-data-02-design.js          Category 02 data (Design)
+03c-data-03-code-layout.js     Category 03 data (Code Layout)
+03d-data-04-git.js             Category 04 data (Git and Version Control)
+03e-data-05-api.js             Category 05 data (API)
+03f-data-06-backend.js         Category 06 data (Backend)
+03g-data-07-offline.js         Category 07 data (Offline and Cache)
+03h-data-08-testing.js         Category 08 data (Testing)
+03i-data-09-security.js        Category 09 data (Security)
+03j-data-10-a11y.js            Category 10 data (Accessibility)
+03k-data-11-release.js         Category 11 data (Release and Store Process)
+03l-data-12-monetization.js    Category 12 data (Monetization)
+03m-data-13-analytics.js       Category 13 data (Analytics)
+03n-data-14-cicd.js            Category 14 data (CI/CD)
+03-data.js                     Stub that exposes window.DATA as const DATA
+04-projects.js                 Multi-project storage (20-project limit, migrations)
+04-storage.js                  Mark / note / open-closed state wrapper
+05-framework.js                6 framework definitions + the four-axis resolver
+05-backend.js                  9 backend definitions + "No backend" hiding logic
+06-view-state.js               currentFramework / currentBackend / view mode
+07-ui-helpers.js               Theme, modal helpers, toast, escapeHtml, stripHtml
+08-i18n-dom.js                 Apply i18n to the DOM, switch languages
+09-ai-prompt.js                Markdown + JSON AI prompt generator
+10-clipboard.js                Clipboard helper
+11-render.js                   Main render loop, card template
+12-progress.js                 Percentage calculation, celebrations
+13-filters.js                  Search + 3×3 view filter
+14-welcome.js                  7-step welcome flow + welcome help
+15-projects.js                 Project / framework / backend modal + CRUD
+16-presentation.js             Presentation mode (P key, ESC, arrows)
+17-install.js                  PWA install banner + platform-manual fallback
+18-app.js                      Orchestration: toolbar, reset, lock, help
+                               accordion, print, export/import, keyboard
+                               shortcuts, PWA manifest/SW setup, init
 ```
+
+The content is split across 14 files (`03a..03n`), but at runtime it is still a single `window.DATA` array: each file pushes its own category onto it, and `js/03-data.js` (a 15-line stub) re-exports it as a const. The split exists to lower the merge-conflict surface for content contributors; the resolver, ESLint globals, tests, and em-dash check are all aware of the multi-file layout.
 
 No build tool, no transpilation, no runtime dependency. A new developer (or AI assistant) can grasp the project **in minutes**.
 
 ### PWA strategy
 
-- `manifest.webmanifest` enables standalone mode and defines the icons (inline SVG, both `any` and `maskable`).
-- `sw.js` uses a **network-first + cache fallback** strategy: every same-origin GET first goes to the network, successful responses are written to the `mobil-kontrol-v3` cache; when the network is unreachable, the last cached version is served instantly. Stale cache keys are cleaned up automatically on `activate`.
-- If `./sw.js` cannot be loaded (e.g. single-file scenarios opened over `file://`), JS attempts to register a **fallback Service Worker via a blob URL**; if Chromium rejects blob-URL SWs it fails silently.
+- `manifest.webmanifest` enables standalone mode; icons live under `assets/icons/` as four PNG files (`icon-192.png`, `icon-512.png`, and `*-maskable.png` variants of each). They are generated from the same orange-check-on-dark visual as `og-image.png`.
+- `sw.js` uses a **network-first + cache fallback** strategy: every same-origin GET first goes to the network, successful responses are written to the `mobil-kontrol-v{package-version}` cache; when the network is unreachable, the last cached version is served instantly. Stale cache keys are cleaned up automatically on `activate`. The cache key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump automatically invalidates every client's cache.
+- If `./sw.js` cannot be loaded (e.g. single-file scenarios opened over `file://`), JS attempts to register a **fallback Service Worker via a blob URL** and writes a small blob-manifest with an inline SVG icon for that path; if Chromium rejects blob-URL SWs it fails silently.
 - When served over HTTPS, Chrome / Edge / Safari automatically surface the "Install" prompt.
 
 ---
@@ -369,24 +386,47 @@ No build tool, no transpilation, no runtime dependency. A new developer (or AI a
 
 ```text
 Mobil_App_Check_List/
-├── index.html                Single page: modals + script loading order
-├── manifest.webmanifest      PWA manifest (name, icons, theme color, scope)
-├── sw.js                     Service Worker (network-first + offline fallback)
-├── og-image.png              1200×630 social media preview image
-├── .nojekyll                 Disables GitHub Pages Jekyll processing
-├── .gitignore                Local tool artifacts (OS / editor leftovers)
-├── LICENSE                   MIT
-├── README.md                 Turkish (primary)
-├── README.en.md              English
+├── index.html                    Single page: modals + script loading order
+├── manifest.webmanifest          PWA manifest (name, icons, theme color, scope)
+├── sw.js                         Service Worker (network-first + offline fallback)
+├── og-image.png                  1200×630 social media preview image (TR)
+├── og-image-en.png               1200×630 social media preview image (EN)
+├── .nojekyll                     Disables GitHub Pages Jekyll processing
+├── .gitignore                    Local tool artifacts (OS / editor leftovers)
+├── LICENSE                       MIT
+├── README.md                     Turkish (primary)
+├── README.en.md                  English
+├── CHANGELOG.md                  Version history in Keep a Changelog format
+├── assets/
+│   ├── icons/                    PWA install icons (192, 512; any + maskable)
+│   └── screenshots/              README screenshots (capture script output)
 ├── css/
-│   ├── 01-base.css           Reset, CSS custom properties, base typography
-│   ├── 02-layout.css         Hero, page layout, project pill
-│   ├── 03-categories.css     Category cards, item cards, flip
-│   ├── 04-presentation.css   Presentation mode (full-screen focus)
-│   ├── 05-modals.css         All modals, welcome flow, grids
-│   └── 06-responsive-print.css Mobile + tablet + desktop + print
-└── js/
-    └── 18 files (see the table above)
+│   ├── 01-base.css               Reset, CSS custom properties, base typography
+│   ├── 02-layout.css             Hero, page layout, project pill
+│   ├── 03-categories.css         Category cards, item cards, flip
+│   ├── 04-presentation.css       Presentation mode (full-screen focus)
+│   ├── 05-hero-pills.css         Hero pill (vertical card) + language/style pills
+│   ├── 05-modals-core.css        Modal skeleton + shared styles
+│   ├── 05-modals-welcome.css     7-step welcome flow
+│   ├── 05-modals-projects.css    Project / framework / backend tabs
+│   ├── 05-modals-install.css     PWA install guidance
+│   ├── 05-modals-feedback.css    Toast notifications + celebration modal
+│   └── 06-responsive-print.css   Mobile + tablet + desktop + print
+├── js/                           35 files (see "Modular file layout" above)
+├── scripts/
+│   ├── run-tests.mjs             node --test wrapper
+│   ├── check-em-dash.mjs         CI em-dash rule
+│   ├── check-sw-cache-version.mjs  sw.js cache key must match package.json
+│   ├── install-githooks.mjs      `prepare` script installs the pre-commit hook
+│   ├── generate-pwa-assets.py    Generates icons and OG image (optional)
+│   └── capture-screenshots.mjs   Playwright-driven README screenshots
+└── tests/
+    ├── _setup.js                 node:vm sandbox loader (extraFiles + seed)
+    ├── resolver.test.js          resolveLevel + tx
+    ├── data.test.js              DATA schema integrity, em-dash rule
+    ├── projects.test.js          Multi-project store: CRUD, limits, migration
+    ├── ui-helpers.test.js        escapeHtml + stripHtml (the XSS defense)
+    └── progress.test.js          countLevels (progress counting)
 ```
 
 ---
@@ -465,7 +505,26 @@ Technical (default) order:
 
 ### Adding a new item
 
-Add an object to the `features` array of the appropriate category in `js/03-data.js`:
+Content is split across 14 files. Edit the one that matches your category:
+
+| Category                     | File                              |
+| ---------------------------- | --------------------------------- |
+| 01 Project Idea and Planning | `js/03a-data-01-idea-planning.js` |
+| 02 Design                    | `js/03b-data-02-design.js`        |
+| 03 Code Layout               | `js/03c-data-03-code-layout.js`   |
+| 04 Git and Version Control   | `js/03d-data-04-git.js`           |
+| 05 API                       | `js/03e-data-05-api.js`           |
+| 06 Backend                   | `js/03f-data-06-backend.js`       |
+| 07 Offline and Cache         | `js/03g-data-07-offline.js`       |
+| 08 Testing                   | `js/03h-data-08-testing.js`       |
+| 09 Security                  | `js/03i-data-09-security.js`      |
+| 10 Accessibility             | `js/03j-data-10-a11y.js`          |
+| 11 Release and Store         | `js/03k-data-11-release.js`       |
+| 12 Monetization              | `js/03l-data-12-monetization.js`  |
+| 13 Analytics                 | `js/03m-data-13-analytics.js`     |
+| 14 CI/CD                     | `js/03n-data-14-cicd.js`          |
+
+Append a new object to the `features` array of that file:
 
 ```js
 {
@@ -482,7 +541,7 @@ Add an object to the `features` array of the appropriate category in `js/03-data
 }
 ```
 
-The item shows up immediately on both the front and the back (How-To) face of the card. If it depends on a backend, add `backendStep: true`: when "No backend" is selected it disappears automatically.
+The item shows up immediately on both the front and the back (How-To) face of the card. If it depends on a backend, add `backendStep: true`: when "No backend" is selected it disappears automatically. Because `tests/data.test.js` locks the count to the figure in README and CHANGELOG, you also need to bump `EXPECTED_FEATURE_COUNT` and the `55 items` line in both READMEs.
 
 ### Adding a new framework
 
@@ -499,7 +558,7 @@ Same pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + `BACKEN
 ### Adding a new language
 
 1. `js/01-i18n-strings.js` → add the new-language counterpart of every key to the `UI_STRINGS` object (e.g. `de` for German).
-2. `js/03-data.js` → next to every `{tr, en}` pair, add a `de` field.
+2. In all 14 data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), next to every `{tr, en}` pair, add a new locale key (e.g. `de`). This includes titles, descriptions, MVP / Release texts, and How-To steps inside the `simple`, `simpleBackend`, `variants`, and `backendVariants` blocks.
 3. Extend the language pill in the hero and `applyI18nToDom` to recognize the new key.
 
 Because the resolver simply returns `obj[currentLang]`, the addition is structurally risk-free.
@@ -571,23 +630,23 @@ The counter-argument: bundle size and performance. The entire static payload (HT
 - **Load time**: no framework overhead; the first render is instant.
 - **Nothing missing**: state management, rendering, event delegation, and history are all comfortably handled with vanilla code.
 
-The cost of this simple decision: the codebase is **lightly abstracted**; `index.html` is 1100 lines, the longest JS file is 3000 lines. In return, all the work is visible and readable.
+The cost of this simple decision: the codebase is **lightly abstracted**; `index.html` is ~1170 lines. In return, all the work is visible and readable. 1.0 carried a single 3079-line `js/03-data.js` and a 2392-line `js/14-app.js`; in 1.1.0 those were split into 14 per-category data files and 5 orchestration modules, so a contributor focusing on a single feature opens only the file that owns it.
 
 </details>
 
 <details>
-<summary><strong>Why all the data in a single <code>DATA</code> constant?</strong></summary>
+<summary><strong>Why all the data in a single <code>DATA</code> array?</strong></summary>
 
 <br />
 
-`js/03-data.js`, which carries 55 items × four-axis (language × style × framework × backend) variants, is ~835 KB raw. At first glance you might say "this should be lazy-loaded." We didn't, because:
+The content carries 55 items × four-axis (language × style × framework × backend) variants, which is ~835 KB raw. At first glance you might say "this should be lazy-loaded." We didn't, because:
 
 - Users come to see **the whole list**, not just **a few items**: search, filtering, and presentation mode only make sense with the full list in memory.
 - All assets are ~380 KB gzipped; most connections download it in sub-second time.
 - The Service Worker fills its cache after a single successful visit; the app opens even when the internet is gone.
-- A lazy-loading architecture (per-category files, dynamic imports, etc.) would require a build step, breaking the "vanilla JS" decision.
+- A lazy-loading architecture (dynamic imports) would require a build step, breaking the "vanilla JS" decision.
 
-If the data grows considerably (e.g. 200 items), this decision should be revisited.
+In 1.1.0 the content was split across **14 per-category files** (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). No build step was added: each file appends its own category to a `window.DATA` array, and `js/03-data.js` (a 15-line stub) exposes it as `const DATA`. At runtime the browser still sees one in-memory `DATA` array; only the writing side is split into 14 shards. The benefit is fewer merge conflicts plus a contributor saying "I only want to touch security items" can open just `03i-data-09-security.js`. If the data grows considerably (e.g. 200 items), revisiting real lazy loading (per-category async fetch) becomes worth the build-step trade-off.
 
 </details>
 
@@ -652,7 +711,7 @@ The same content is shown with **different wording** depending on the user's cho
 | Offline launch (SW cache)       | -        | Works                   |
 | Runtime dependency              | -        | Zero                    |
 
-> Most of the asset payload comes from `js/03-data.js`, the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+> Most of the asset payload comes from the 14 per-category data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 
@@ -712,7 +771,7 @@ Contributions are welcome. Suggested workflow:
 5. Stay consistent with the existing style:
    - JS: ES2020+, a short JSDoc-like comment at the top of each function.
    - CSS: into the relevant category file, using custom properties.
-   - Content (`js/03-data.js`): follow the shape and tone of existing items.
+   - Content (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`): follow the shape and tone of existing items. Do not edit the stub `js/03-data.js`; it only combines the 14 shards.
 6. **Do not use em dash characters (`—`)**: this is a written-style rule for the project. Use `:`, `;`, or parentheses instead.
 7. **Conventional commit messages**: `feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`.
 8. When opening a PR, include a **short description** + a **screenshot** (if the UI changes).

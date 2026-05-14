@@ -1,0 +1,113 @@
+name: "Feature request"
+description: Propose a new feature, item, framework, backend, or language.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea. Two things help maintainers a lot:
+
+        1. **A concrete problem statement.** "I cannot do X because Y" is
+           easier to evaluate than "it would be cool if".
+        2. **Which axis it touches.** The app has four axes (language,
+           explanation style, framework, backend); changes to one rarely
+           need changes to the others. Naming the affected axis up front
+           scopes the work.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem are you trying to solve? Who is affected? Be specific about the user and the situation.
+      placeholder: |
+        As a Flutter developer using Firebase, I cannot ...
+        Because of this I have to ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How do you think this should work? Sketch the user-facing behavior, not implementation details.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you think about? Why did you reject them? "I considered nothing" is a valid answer.
+
+  - type: checkboxes
+    id: axes
+    attributes:
+      label: Affected axes (check all that apply)
+      options:
+        - label: Language (TR / EN / new language)
+        - label: Explanation style (Simple / Technical)
+        - label: Framework (existing 6 or a new one)
+        - label: Backend (existing 9 or a new one)
+        - label: UI / UX (toolbar, modals, hero pill, welcome flow)
+        - label: Content (the 55 items, How-To steps, MVP / Release tiers)
+        - label: PWA behavior (install, offline, Service Worker)
+        - label: Build / CI / tooling
+        - label: Other (please describe below)
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Most relevant framework
+      description: If the feature is framework-specific. Leave at "All frameworks" for cross-cutting requests.
+      options:
+        - All frameworks (cross-cutting)
+        - Flutter
+        - React Native
+        - Swift (iOS)
+        - Kotlin (Android)
+        - Expo
+        - PWA
+        - A new framework (describe below)
+
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Most relevant backend
+      description: If the feature is backend-specific.
+      options:
+        - All backends (cross-cutting)
+        - Firebase
+        - Supabase
+        - Appwrite
+        - PocketBase
+        - AWS Amplify
+        - Convex
+        - Self-hosted server
+        - Local dev
+        - No backend
+        - A new backend (describe below)
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Mockups, references, or links to similar features in other apps
+      description: Optional. Drag and drop screenshots, attach links, or paste sketches here.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you like to contribute the implementation?
+      description: Maintainers can advise or pair on the PR. Marking "yes" does not commit you to anything; it just helps coordinate.
+      options:
+        - label: I would like to take a stab at the implementation.
+        - label: I would like to author or update the TR / EN content.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue you agree to follow the [Code of Conduct](../CODE_OF_CONDUCT.md).
+      options:
+        - label: I have read the Code of Conduct and agree to follow it.
+          required: true

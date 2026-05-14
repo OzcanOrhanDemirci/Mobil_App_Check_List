@@ -7,6 +7,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Open-source onboarding pass: the goal is that a contributor cloning the
+repo today reads accurate file-structure docs, finds the actual data
+shards on the first attempt, and has tests that demonstrate the
+XSS-defense and progress-counting code paths work as intended.
+
+### Added
+
+- `scripts/check-sw-cache-version.mjs`: enforces that the Service Worker
+  cache key in `sw.js` matches the version in `package.json`. Exits
+  non-zero when they differ; pass `--fix` to rewrite `sw.js` in place.
+  Wired into the pre-commit hook (`.githooks/pre-commit`) and CI (a new
+  `sw-cache-check` job in `.github/workflows/ci.yml`). Two new npm
+  scripts surface the same script: `npm run sw:check` and
+  `npm run sw:sync`.
+- `tests/ui-helpers.test.js`: unit tests for `escapeHtml` and
+  `stripHtml` (`js/07-ui-helpers.js`). Covers the five XSS-relevant
+  character escapes, double-escape idempotency for the round-trip
+  property, type coercion of `null` / `undefined` / numeric / object
+  inputs, common XSS attack-vector strings as defense-in-depth
+  fixtures, and the stripper's entity decode plus whitespace collapse.
+  Plugs the largest test-coverage gap flagged in the 1.1.0 audit (the
+  XSS defense had no direct test).
+- `tests/progress.test.js`: unit tests for `countLevels`
+  (`js/12-progress.js`). Covers empty state, partial state, all-done
+  state, MVP-only completion, Release-only completion, backend-gated
+  feature exclusion when `currentBackend === "noBackend"`, and the
+  per-category breakdown counts the UI reads.
+- `tests/_setup.js`: adapter mirror now exposes `escapeHtml`,
+  `stripHtml`, `countLevels`, and a `__setState(state)` helper so test
+  files can drive state-dependent paths without touching the realm
+  directly. The `extraFiles` option remains the canonical way to load
+  the helper files; the mirror is guarded by `typeof` so the legacy
+  resolver / projects / data tests do not need to change.
+- `.github/ISSUE_TEMPLATE/bug_report.yml` and
+  `.github/ISSUE_TEMPLATE/feature_request.yml`: GitHub form-based issue
+  templates replace the markdown versions. Dropdowns capture browser,
+  operating system, framework, backend, language, explanation style,
+  and PWA install status as structured fields, so triage no longer has
+  to re-parse free-text bodies. Required fields are enforced by the
+  form engine. The old markdown templates were removed.
+
+### Changed
+
+- `sw.js` cache key is now derived from the project version
+  (`mobil-kontrol-v1.1.0` at the time of this entry) so a release bump
+  automatically invalidates the old PWA cache. Manual cache bumps
+  (the old `mobil-kontrol-v3` constant) are no longer required.
+- `js/15-projects.js` row-button `title` attribute no longer leaks the
+  Turkish phrase "projesine geç" in English mode. A new
+  `proj.switch.rowTitle` UI string in `js/01-i18n-strings.js` carries
+  the bilingual wording "Switch to {name}" / "{name} projesine geç";
+  the row markup passes it through `t(...)` and `escapeHtml` so the
+  user-controlled name stays safe in the attribute context.
+- `js/18-app.js` import handler now validates the JSON payload before
+  applying it. State entries are coerced to booleans, notes entries
+  are coerced to strings and capped at 8 KB each, and both maps are
+  capped at reasonable entry counts (5000 / 1000). The catch block now
+  logs the underlying parse or shape failure via `console.warn` so a
+  contributor reviewing DevTools can diagnose the bad file without
+  re-opening it manually; the user-facing toast remains the same.
+  Defends against malformed exports replacing `state` or `notes` with
+  non-object values that would break `renderContent` or
+  `updateProgress`.
+
+### Fixed
+
+- README.md, README.en.md, and `.github/CONTRIBUTING.md` were out of
+  date after the 1.1.0 split: the modular file-layout sections still
+  described a single ~3000-line `js/03-data.js` and a six-file CSS
+  layout, while the actual repository carries 14 per-category data
+  shards (`js/03a-data-01-idea-planning.js` through
+  `js/03n-data-14-cicd.js`), a stub `js/03-data.js` that exposes the
+  combined `DATA` constant, and an 11-file CSS layout (the modal
+  split). The "Add a checklist item" guidance pointed at the wrong
+  file. All three documents now match the on-disk reality.
+- A new "Migrating local edits from 1.0 to 1.1" section in
+  `.github/CONTRIBUTING.md` tells fork holders which shard to apply
+  their old single-file diff against.
+- `.github/SECURITY.md` supported-version table updated from `1.0.x`
+  to `1.1.x`. Older `1.0.x` releases are no longer maintained;
+  reporters are pointed at the current `package.json` version and the
+  Releases page.
+- README.md "PWA strategy" section no longer claims the
+  `manifest.webmanifest` ships inline SVG icons. The 1.1.0 release
+  replaced those SVGs with real PNG icons under `assets/icons/`; the
+  inline SVG manifest now exists only in the `file://` blob fallback
+  inside `js/18-app.js`.
+- CHANGELOG 1.1.0 entry corrected: the per-category data shards are
+  named `*-idea-planning.js` (not `*-idea.js`), and the modal-split
+  CSS files use the plain `05-` numeric prefix (not `05a..05f`), with
+  the toast and celebration surface combined under
+  `05-modals-feedback.css` (not `05f-modals-celebration.css`).
+- Stale `js/14-app.js` references in `js/11-render.js` and
+  `js/12-progress.js` comments now point at `js/18-app.js`.
+
 ## [1.1.0] - 2026-05-14
 
 Second public release. Focused on open-source readiness: a tighter
@@ -91,16 +186,17 @@ documentation polish.
     PWA manifest + service worker setup IIFEs, hero level filter,
     hero style toggle, init sequence).
 - Split `js/03-data.js` (3079 lines, ~855 KB) into 14 per-category
-  files (`js/03a-data-01-idea.js` through `js/03n-data-14-cicd.js`).
-  Each file appends its category to a `window.DATA` array, lowering
-  the merge-conflict surface for content contributors. The resolver,
-  ESLint globals, tests, and the em-dash check were updated to match.
+  files (`js/03a-data-01-idea-planning.js` through
+  `js/03n-data-14-cicd.js`). Each file appends its category to a
+  `window.DATA` array, lowering the merge-conflict surface for content
+  contributors. The resolver, ESLint globals, tests, and the em-dash
+  check were updated to match.
 - Split `css/05-modals.css` (2132 lines, ~57 KB) into focused files
-  by surface (`05a-modals-core.css`, `05b-modals-welcome.css`,
-  `05c-modals-projects.css`, `05d-modals-install.css`,
-  `05e-hero-pills.css`, `05f-modals-celebration.css`). `index.html`
-  now links the parts in the same numeric load order; the visual
-  output is identical.
+  by surface (`05-modals-core.css`, `05-modals-welcome.css`,
+  `05-modals-projects.css`, `05-modals-install.css`,
+  `05-hero-pills.css`, `05-modals-feedback.css`). `index.html` now
+  links the parts in the same numeric load order; the visual output
+  is identical.
 - Replaced the four 26-byte SVG home-screen icons in
   `manifest.webmanifest` with full-resolution PNGs (192×192 and
   512×512, both `any` and `maskable`) generated from the same orange

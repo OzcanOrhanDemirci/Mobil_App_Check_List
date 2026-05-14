@@ -183,7 +183,7 @@ function flipFeatureCard(feature, willFlip, opts = {}) {
   inner.addEventListener("transitionend", onEnd);
 }
 
-/* Expose globally (used by 14-app.js / setAllCardsFlipped). */
+/* Expose globally (used by 18-app.js / setAllCardsFlipped). */
 window.flipFeatureCard = flipFeatureCard;
 
 /* Called after each render. If the user picked "review" in the welcome flow

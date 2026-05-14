@@ -4,11 +4,16 @@ The Mobile App Quality Checklist is a static, client-side PWA. We take security 
 
 ## Supported versions
 
-Security fixes are issued for the current `1.0.x` line. Older releases are not maintained.
+Security fixes are issued for the current `1.1.x` line. The `1.0.x` line is no
+longer maintained; please update to the latest `1.1.x` release before
+reporting a vulnerability. The current version is tracked in
+[`package.json`](../package.json) and on the
+[Releases page](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases).
 
 | Version | Supported |
 | ------- | --------- |
-| 1.0.x   | Yes       |
+| 1.1.x   | Yes       |
+| 1.0.x   | No        |
 | < 1.0   | No        |
 
 ## Reporting a vulnerability

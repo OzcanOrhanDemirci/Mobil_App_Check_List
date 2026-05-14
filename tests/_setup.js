@@ -110,6 +110,84 @@ function makeLocalStorageStub() {
   };
 }
 
+/* A no-op DOM element stub. The loaded source files attach top-level
+   event listeners (e.g. js/07-ui-helpers.js line 77 binds the confirm
+   modal's Yes button at module evaluation time), so loadAppContext
+   needs to return something with `addEventListener` from every
+   getElementById and querySelector call. The stub is deliberately
+   permissive: every common element property and method is a no-op or
+   returns another stub, so any unexpected DOM access during module
+   evaluation degrades silently instead of crashing the test. */
+function makeStubEl() {
+  return {
+    addEventListener() {},
+    removeEventListener() {},
+    appendChild() {},
+    removeChild() {},
+    remove() {},
+    setAttribute() {},
+    removeAttribute() {},
+    getAttribute() {
+      return null;
+    },
+    classList: {
+      add() {},
+      remove() {},
+      toggle() {},
+      contains() {
+        return false;
+      },
+      replace() {},
+    },
+    style: {},
+    dataset: {},
+    querySelector() {
+      return makeStubEl();
+    },
+    querySelectorAll() {
+      return [];
+    },
+    closest() {
+      return null;
+    },
+    matches() {
+      return false;
+    },
+    textContent: "",
+    innerHTML: "",
+    value: "",
+    hidden: false,
+    disabled: false,
+    focus() {},
+    blur() {},
+    click() {},
+  };
+}
+
+function makeDocStub() {
+  return {
+    addEventListener() {},
+    removeEventListener() {},
+    createElement() {
+      return makeStubEl();
+    },
+    createTextNode(text) {
+      return { textContent: String(text), nodeType: 3 };
+    },
+    getElementById() {
+      return makeStubEl();
+    },
+    querySelector() {
+      return makeStubEl();
+    },
+    querySelectorAll() {
+      return [];
+    },
+    body: makeStubEl(),
+    documentElement: makeStubEl(),
+  };
+}
+
 function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
   const localStorage = makeLocalStorageStub();
   if (localStorageSeed && typeof localStorageSeed === "object") {
@@ -121,7 +199,7 @@ function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
     /* Browser-ish globals the loaded scripts reference at evaluation time. */
     localStorage,
     window: {},
-    document: { addEventListener() {}, removeEventListener() {} },
+    document: makeDocStub(),
     console,
   };
   /* Make window self-referential and expose localStorage on window too,
@@ -169,6 +247,23 @@ function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
       globalThis.VALID_FRAMEWORKS = VALID_FRAMEWORKS;
       globalThis.VALID_BACKENDS   = VALID_BACKENDS;
       if (typeof DATA !== "undefined") globalThis.DATA = DATA;
+
+      /* UI helpers and progress: mirrored only when the caller loaded the
+         relevant source via extraFiles. Typeof guards keep this safe for
+         the legacy resolver / projects / data tests that do not need them. */
+      if (typeof escapeHtml   === "function") globalThis.escapeHtml   = escapeHtml;
+      if (typeof stripHtml    === "function") globalThis.stripHtml    = stripHtml;
+      if (typeof countLevels  === "function") globalThis.countLevels  = countLevels;
+
+      /* Test-only state setter. The script-mode "state" let binding is
+         declared in js/06-view-state.js (loaded by SCRIPT_FILES) and is
+         mutated cross-file in the real app via the JSON import handler
+         and the reset flows. Tests use this helper to seed state without
+         touching the realm directly. Non-object inputs are coerced to an
+         empty object so "wipe state" is trivial. */
+      globalThis.__setState = function (next) {
+        state = (next && typeof next === "object" && !Array.isArray(next)) ? next : {};
+      };
 
       /* Multi-project store: mirror the public API and constants. The
          private projectsStore binding is exposed through a getter so tests

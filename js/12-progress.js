@@ -144,7 +144,7 @@ function updateProgress() {
 /* ==================== COMPLETION CELEBRATIONS ====================
    The celebrations flag (mvp/release/total) is per-project, so each project
    triggers its own completion celebration independently. */
-// eslint-disable-next-line prefer-const -- reassigned cross-file in js/04-projects.js#reloadActive and js/14-app.js (reset flows)
+// eslint-disable-next-line prefer-const -- reassigned cross-file in js/04-projects.js#reloadActive and js/18-app.js (reset flows)
 let celebrations = loadCelebrations();
 function loadCelebrations() {
   const v = getProjectField("celebrations");

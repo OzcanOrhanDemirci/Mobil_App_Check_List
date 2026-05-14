@@ -331,6 +331,7 @@ const UI_STRINGS = {
   "proj.delete.confirmMsg": { tr: "<strong>{name}</strong> projesi ve tüm verisi (işaretler, notlar, ayarlar) kalıcı olarak silinecek. Bu işlem geri alınamaz.", en: "<strong>{name}</strong> and all its data (marks, notes, settings) will be permanently deleted. This cannot be undone." },
   "proj.delete.confirmYes": { tr: "Evet, sil", en: "Yes, delete" },
   "proj.delete.lastOne": { tr: "Son projeyi silemezsin. Önce yeni bir proje oluştur.", en: "You can't delete the last project. Create a new one first." },
+  "proj.switch.rowTitle": { tr: "{name} projesine geç", en: "Switch to {name}" },
   "proj.switch.toast": { tr: "{name} projesine geçildi", en: "Switched to {name}" },
   "proj.switch.confirmTitle": { tr: "Projeyi değiştir?", en: "Switch project?" },
   "proj.switch.intro": { tr: "Şu anki projeden başka bir projeye geçeceksin.", en: "You're about to switch from the current project to another." },

@@ -598,6 +598,49 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
+/* Validation helpers for JSON import. The browser file picker accepts
+   arbitrary JSON: a malformed or hand-edited export can carry non-object
+   values for `state` or `notes`, mismatched types, or pathologically
+   large payloads. The sanitizers below coerce values to the expected
+   primitive shape (boolean for state, string for notes), cap entry counts
+   so a huge file cannot exhaust memory before the user gets a clear
+   toast, and cap individual note length so localStorage stays well under
+   its origin quota. */
+function isPlainObject(v) {
+  return v !== null && typeof v === "object" && !Array.isArray(v);
+}
+function sanitizeImportState(raw) {
+  if (!isPlainObject(raw)) return {};
+  const out = {};
+  let kept = 0;
+  const MAX_ENTRIES = 5000;
+  const MAX_KEY_LEN = 64;
+  for (const key of Object.keys(raw)) {
+    if (kept >= MAX_ENTRIES) break;
+    if (typeof key !== "string" || key.length > MAX_KEY_LEN) continue;
+    out[key] = !!raw[key];
+    kept++;
+  }
+  return out;
+}
+function sanitizeImportNotes(raw) {
+  if (!isPlainObject(raw)) return {};
+  const out = {};
+  let kept = 0;
+  const MAX_ENTRIES = 1000;
+  const MAX_KEY_LEN = 64;
+  const MAX_VALUE_LEN = 8000;
+  for (const key of Object.keys(raw)) {
+    if (kept >= MAX_ENTRIES) break;
+    if (typeof key !== "string" || key.length > MAX_KEY_LEN) continue;
+    const v = raw[key];
+    if (typeof v !== "string") continue;
+    out[key] = v.slice(0, MAX_VALUE_LEN);
+    kept++;
+  }
+  return out;
+}
+
 /* Import: accepts the new format (state + notes) and the legacy format (state only). */
 const importFile = document.getElementById("importFile");
 document.getElementById("importBtn").addEventListener("click", () => {
@@ -611,21 +654,32 @@ importFile.addEventListener("change", e => {
   reader.onload = ev => {
     try {
       const data = JSON.parse(ev.target.result);
-      if (typeof data !== "object" || data === null) throw new Error(t("misc.invalidFormat"));
+      if (!isPlainObject(data)) throw new Error("import payload is not an object");
 
+      let nextState, nextNotes;
       if (data.version && data.state) {
-        state = data.state || {};
-        notes = data.notes || {};
+        /* v2 format: { version, state, notes, exportedAt } */
+        nextState = sanitizeImportState(data.state);
+        nextNotes = sanitizeImportNotes(data.notes);
       } else {
-        state = data;
+        /* v1 legacy: the file is the state object itself; notes did not exist. */
+        nextState = sanitizeImportState(data);
+        nextNotes = {};
       }
+
+      state = nextState;
+      notes = nextNotes;
       saveState();
       saveNotes();
       renderContent();
       attachClickHandlers();
       updateProgress();
       applyFilters();
-    } catch {
+    } catch (err) {
+      /* Log the underlying parse / shape failure so a contributor reviewing
+         the console can diagnose without re-opening the file in DevTools.
+         The toast keeps the user-facing message identical to before. */
+      console.warn("[import] discarded:", err && err.message ? err.message : err);
       showToast(t("misc.invalidFile"), "warn", 3200);
     }
   };

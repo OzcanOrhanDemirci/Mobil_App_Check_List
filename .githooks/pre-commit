@@ -23,6 +23,7 @@ fi
 npm run lint --silent
 npm run format:check --silent
 node scripts/check-em-dash.mjs
+node scripts/check-sw-cache-version.mjs
 npm test --silent
 
 echo "[pre-commit] ok"

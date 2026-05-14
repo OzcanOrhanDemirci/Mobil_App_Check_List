@@ -1,0 +1,228 @@
+name: "Bug report"
+description: Report a defect so it can be reproduced and fixed.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. The fields below help
+        triage the issue without follow-up questions. The framework /
+        backend / language / style dropdowns matter because the same item
+        can render differently across the four axes; capturing your
+        combination up front avoids a back-and-forth.
+
+        For security-sensitive vulnerabilities, please **do not** file
+        a public issue. Email the maintainer instead (see [SECURITY.md](../../SECURITY.md)).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear, concise description of the bug.
+      placeholder: When I do X, Y happens instead of Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps from a clean state. Include the smallest sequence that reliably triggers the bug.
+      value: |
+        1. Open ...
+        2. Click ...
+        3. Notice ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What you thought should happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What actually happened. Include any console errors verbatim.
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: The latest version in [CHANGELOG.md](../../CHANGELOG.md), or the commit SHA if you built from main.
+      placeholder: 1.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome (desktop)
+        - Chrome (Android)
+        - Edge (desktop)
+        - Safari (macOS)
+        - Safari (iOS)
+        - Firefox (desktop)
+        - Firefox (Android)
+        - Samsung Internet
+        - Opera
+        - Other (please describe in "Additional context")
+    validations:
+      required: true
+
+  - type: input
+    id: browser-version
+    attributes:
+      label: Browser version
+      description: Optional, but very helpful if the bug looks engine-specific.
+      placeholder: e.g. 131.0.6778
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS 14 (Sonoma) or later
+        - macOS 13 (Ventura)
+        - macOS 12 (Monterey) or older
+        - iOS 17 or later
+        - iOS 16
+        - iOS 15 or older
+        - Android 14 or later
+        - Android 13
+        - Android 12 or older
+        - Linux
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: form-factor
+    attributes:
+      label: Form factor
+      options:
+        - Desktop
+        - Mobile
+        - Tablet
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pwa-installed
+    attributes:
+      label: Installed as a PWA?
+      description: Reproduces only when the app is installed standalone, or also in a regular browser tab?
+      options:
+        - Installed as PWA (standalone)
+        - Regular browser tab
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Network state when the bug happened
+      options:
+        - Online
+        - Offline (Service Worker cache)
+        - Started online, then went offline mid-session
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Selected framework (per project)
+      description: The framework picked in the welcome flow or the project pill. Leave at "Not applicable" if the bug is in chrome (toolbar, modals, install) and not in item content.
+      options:
+        - Flutter
+        - React Native
+        - Swift (iOS)
+        - Kotlin (Android)
+        - Expo
+        - PWA
+        - Not applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Selected backend (per project)
+      description: The backend picked in the welcome flow or the project pill.
+      options:
+        - Firebase
+        - Supabase
+        - Appwrite
+        - PocketBase
+        - AWS Amplify
+        - Convex
+        - Self-hosted server
+        - Local dev
+        - No backend
+        - Not applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Interface language
+      options:
+        - Turkish (TR)
+        - English (EN)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: style
+    attributes:
+      label: Explanation style
+      description: The Simple / Technical toggle. If you have not switched it, the default is Technical.
+      options:
+        - Technical
+        - Simple
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or screen recording
+      description: Optional but encouraged. Drag and drop the file into this field.
+
+  - type: textarea
+    id: console
+    attributes:
+      label: DevTools console output
+      description: Optional. Open DevTools (F12 in most browsers) and paste any errors or warnings printed during reproduction.
+      render: text
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else worth knowing. Browser extensions, custom DNS, ad blockers, accessibility tooling, locale, time zone, etc.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue you agree to follow the [Code of Conduct](../CODE_OF_CONDUCT.md).
+      options:
+        - label: I have read the Code of Conduct and agree to follow it.
+          required: true

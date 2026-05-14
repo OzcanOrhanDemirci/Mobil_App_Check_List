@@ -276,14 +276,14 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 
 ### Teknoloji yığını
 
-| Katman         | Seçim                                   | Neden                                                                                                                                        |
-| -------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | Tek `index.html` (~1100 satır)          | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                            |
-| CSS            | 6 dosya, vanilla CSS                    | Build tool yok. CSS custom properties ile tema değişimi. Print stilleri ayrı dosya.                                                          |
-| JS             | 18 dosya, vanilla ES2020+               | Build/transpile/bundling yok. `<script>` etiketleri ile sıralı yüklenir (numaralı dosyalar sırayı belirler).                                 |
-| Veri           | Tek bir `DATA` sabiti (`js/03-data.js`) | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. Tamamı statik JS objesi; build veya fetch yok.                            |
-| Service Worker | Network-first + cache fallback          | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. |
-| Depolama       | `localStorage`                          | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                             |
+| Katman         | Seçim                                             | Neden                                                                                                                                                                                 |
+| -------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | Tek `index.html` (~1170 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                     |
+| CSS            | 11 dosya, vanilla CSS                             | Build tool yok. CSS custom properties ile tema değişimi. Modal yüzeyleri kendi dosyalarına bölük (`css/05-modals-*.css`). Print stilleri ayrı dosya.                                  |
+| JS             | 35 dosya, vanilla ES2020+                         | 20 mantıksal modül + 14 kategori veri parçası + 1 senkron bootstrap. Build/transpile/bundling yok; `<script defer>` etiketleri sıralı yüklenir (numaralı dosyalar sırayı belirler).   |
+| Veri           | `window.DATA` dizisi, 14 kategori dosyasına bölük | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` her biri kendi kategorisini `push` eder. Build yok. |
+| Service Worker | Network-first + cache fallback                    | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. Cache anahtarı `package.json` ile bağlı. |
+| Depolama       | `localStorage`                                    | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                                                                      |
 
 ### Dört eksenli içerik çözücü
 
@@ -327,40 +327,57 @@ Bu sayede bir madde sadece **bir kez** yazılır ve **gerektiği yerde** özelle
 
 ### Modüler dosya yapısı
 
-JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır:
+JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Numaralı önek (`00`, `01`, ..., `18`) hem `<script defer>` etiketlerinin sırasını hem de bağımlılık ilişkilerini görsel olarak verir:
 
 ```
-01-i18n-strings.js   UI dize sözlüğü (TR/EN), t() ve tx() çözücüler
-02-help-content.js   Yardım modalının HTML içeriği
-03-data.js           14 kategori, 55 madde, varyantlar (~3000 satır)
-04-projects.js       Çoklu proje depolama (20 limit, migration)
-04-storage.js        İşaret/not/açık-kapalı durum wrapper'ı
-05-framework.js      6 framework tanımı + dört eksenli resolver
-05-backend.js        9 backend tanımı + "Backend yok"da gizleme
-06-view-state.js     currentFramework / currentBackend / view modu
-07-ui-helpers.js     Tema, modal helper'ları, toast
-08-i18n-dom.js       DOM'a i18n uygula, dil değiştir
-09-ai-prompt.js      Markdown + JSON AI prompt üreticisi
-10-clipboard.js      Panoya kopyalama helper'ı
-11-render.js         Ana render döngüsü, kart şablonu
-12-progress.js       Yüzde hesabı, kutlamalar
-13-filters.js        Arama + 3×3 görünüm filtresi
-14-welcome.js        7 adımlı karşılama akışı + welcome yardım
-15-projects.js       Proje / framework / backend modal'ı + CRUD
-16-presentation.js   Sunum modu (P tuşu, ESC, ok tuşları)
-17-install.js        PWA install banner + platforma özel manuel
-18-app.js            Orkestrasyon: toolbar, sıfırlama, kilit, yardım
-                     accordion, yazdırma, dışa/içe aktarma, klavye
-                     kısayolları, PWA manifest/SW kurulumu, init
+00-bootstrap.js                Senkron IIFE: tema + dil ilk paint'ten önce ayarlanır
+01-i18n-strings.js             UI dize sözlüğü (TR/EN), t() ve tx() çözücüler
+02-help-content.js             Yardım modalının HTML içeriği
+03a-data-01-idea-planning.js   Kategori 01 verisi (Proje Fikri ve Planlama)
+03b-data-02-design.js          Kategori 02 verisi (Tasarım)
+03c-data-03-code-layout.js     Kategori 03 verisi (Kod Düzeni)
+03d-data-04-git.js             Kategori 04 verisi (Git ve Sürüm Kontrolü)
+03e-data-05-api.js             Kategori 05 verisi (API)
+03f-data-06-backend.js         Kategori 06 verisi (Backend)
+03g-data-07-offline.js         Kategori 07 verisi (Offline ve Önbellek)
+03h-data-08-testing.js         Kategori 08 verisi (Test)
+03i-data-09-security.js        Kategori 09 verisi (Güvenlik)
+03j-data-10-a11y.js            Kategori 10 verisi (Erişilebilirlik)
+03k-data-11-release.js         Kategori 11 verisi (Yayın ve Mağaza Süreci)
+03l-data-12-monetization.js    Kategori 12 verisi (Monetizasyon)
+03m-data-13-analytics.js       Kategori 13 verisi (Analitik)
+03n-data-14-cicd.js            Kategori 14 verisi (CI/CD)
+03-data.js                     window.DATA'yı const DATA olarak dışa veren stub
+04-projects.js                 Çoklu proje depolama (20 limit, migration)
+04-storage.js                  İşaret/not/açık-kapalı durum wrapper'ı
+05-framework.js                6 framework tanımı + dört eksenli resolver
+05-backend.js                  9 backend tanımı + "Backend yok"da gizleme
+06-view-state.js               currentFramework / currentBackend / view modu
+07-ui-helpers.js               Tema, modal helper'ları, toast, escapeHtml, stripHtml
+08-i18n-dom.js                 DOM'a i18n uygula, dil değiştir
+09-ai-prompt.js                Markdown + JSON AI prompt üreticisi
+10-clipboard.js                Panoya kopyalama helper'ı
+11-render.js                   Ana render döngüsü, kart şablonu
+12-progress.js                 Yüzde hesabı, kutlamalar
+13-filters.js                  Arama + 3×3 görünüm filtresi
+14-welcome.js                  7 adımlı karşılama akışı + welcome yardım
+15-projects.js                 Proje / framework / backend modal'ı + CRUD
+16-presentation.js             Sunum modu (P tuşu, ESC, ok tuşları)
+17-install.js                  PWA install banner + platforma özel manuel
+18-app.js                      Orkestrasyon: toolbar, sıfırlama, kilit, yardım
+                               accordion, yazdırma, dışa/içe aktarma, klavye
+                               kısayolları, PWA manifest/SW kurulumu, init
 ```
+
+İçerik 14 dosyaya bölünmüş (`03a..03n`) ama runtime'da hâlâ tek bir `window.DATA` dizisi: her dosya kendi kategorisini `push` eder, `js/03-data.js` (15 satırlık stub) onu const olarak dışa verir. Bu bölmenin amacı içerik katkıcılarının merge çatışma yüzeyini düşürmek; resolver, ESLint globalleri, testler ve em-dash kontrolü bu çoklu dosya yapısını biliyor.
 
 Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay zekâ asistanı) projeyi **dakikalar içinde** anlayabilir.
 
 ### PWA stratejisi
 
-- `manifest.webmanifest` standalone modu açar, ikonları (inline SVG, hem `any` hem `maskable`) tanımlar.
-- `sw.js` **network-first + cache fallback** stratejisi: her aynı-origin GET isteği önce ağdan denenir, başarılı yanıtlar `mobil-kontrol-v3` cache'ine yazılır; ağ erişimi koptuğunda son cache'lenmiş sürüm anlık servis edilir. Eski cache anahtarları `activate`'te otomatik temizlenir.
-- `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; Chromium blob URL'li SW'yi reddederse sessizce geçer.
+- `manifest.webmanifest` standalone modu açar; ikonlar `assets/icons/` altında dört PNG dosyası olarak (`icon-192.png`, `icon-512.png` ve aynı boyutların `*-maskable.png` versiyonları). Bu dosyalar `og-image.png` ile aynı turuncu-tik-koyu-zemin görselinden üretilir.
+- `sw.js` **network-first + cache fallback** stratejisi: her aynı-origin GET isteği önce ağdan denenir, başarılı yanıtlar `mobil-kontrol-v{paket-sürümü}` cache'ine yazılır; ağ erişimi koptuğunda son cache'lenmiş sürüm anlık servis edilir. Eski cache anahtarları `activate`'te otomatik temizlenir. Cache anahtarı `package.json` `version` alanından otomatik üretilir (`scripts/check-sw-cache-version.mjs`); sürüm bump ettiğinde tüm istemcilerin cache'i otomatik geçersizleşir.
+- `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; aynı blob'a inline SVG ikon içeren küçük bir manifest'i de yazar. Chromium blob URL'li SW'yi reddederse sessizce geçer.
 - HTTPS üzerinden servis edilince Chrome / Edge / Safari "Yükle" önerisini otomatik olarak gösterir.
 
 ---
@@ -369,24 +386,47 @@ Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay z
 
 ```text
 Mobil_App_Check_List/
-├── index.html                Tek sayfa: modaller + script yükleme sırası
-├── manifest.webmanifest      PWA manifesti (ad, ikon, tema rengi, scope)
-├── sw.js                     Service Worker (network-first + offline fallback)
-├── og-image.png              1200×630 sosyal medya önizleme görseli
-├── .nojekyll                 GitHub Pages Jekyll davranışını kapatır
-├── .gitignore                Yerel araç çıktıları (OS / editör artıkları)
-├── LICENSE                   MIT
-├── README.md                 Türkçe (ana dosya)
-├── README.en.md              İngilizce versiyon
+├── index.html                    Tek sayfa: modaller + script yükleme sırası
+├── manifest.webmanifest          PWA manifesti (ad, ikon, tema rengi, scope)
+├── sw.js                         Service Worker (network-first + offline fallback)
+├── og-image.png                  1200×630 sosyal medya önizleme görseli (TR)
+├── og-image-en.png               1200×630 sosyal medya önizleme görseli (EN)
+├── .nojekyll                     GitHub Pages Jekyll davranışını kapatır
+├── .gitignore                    Yerel araç çıktıları (OS / editör artıkları)
+├── LICENSE                       MIT
+├── README.md                     Türkçe (ana dosya)
+├── README.en.md                  İngilizce versiyon
+├── CHANGELOG.md                  Keep a Changelog formatında sürüm geçmişi
+├── assets/
+│   ├── icons/                    PWA install ikonları (192, 512; any + maskable)
+│   └── screenshots/              README görselleri (capture script çıktısı)
 ├── css/
-│   ├── 01-base.css           Reset, CSS custom properties, base tipografi
-│   ├── 02-layout.css         Hero, sayfa düzeni, proje pili
-│   ├── 03-categories.css     Kategori kartları, madde kartları, flip
-│   ├── 04-presentation.css   Sunum modu (tam ekran odak)
-│   ├── 05-modals.css         Tüm modaller, karşılama akışı, ızgaralar
-│   └── 06-responsive-print.css Mobil + tablet + masaüstü + yazdırma
-└── js/
-    └── 18 dosya (yukarıdaki tabloya bak)
+│   ├── 01-base.css               Reset, CSS custom properties, base tipografi
+│   ├── 02-layout.css             Hero, sayfa düzeni, proje pili
+│   ├── 03-categories.css         Kategori kartları, madde kartları, flip
+│   ├── 04-presentation.css       Sunum modu (tam ekran odak)
+│   ├── 05-hero-pills.css         Hero pili (dikey kart) + dil/stil pilleri
+│   ├── 05-modals-core.css        Modal iskeleti + ortak stiller
+│   ├── 05-modals-welcome.css     7 adımlı karşılama akışı
+│   ├── 05-modals-projects.css    Proje, framework, backend tab'ları
+│   ├── 05-modals-install.css     PWA install rehberi
+│   ├── 05-modals-feedback.css    Toast bildirimleri + kutlama modali
+│   └── 06-responsive-print.css   Mobil + tablet + masaüstü + yazdırma
+├── js/                           35 dosya (yukarıdaki "Modüler dosya yapısı"na bak)
+├── scripts/
+│   ├── run-tests.mjs             node --test wrapper
+│   ├── check-em-dash.mjs         CI em-dash kuralı
+│   ├── check-sw-cache-version.mjs  sw.js cache anahtarı paket sürümüyle eşleşmeli
+│   ├── install-githooks.mjs      `prepare` script ile pre-commit hook kurar
+│   ├── generate-pwa-assets.py    İkon ve OG görsellerini üretir (opsiyonel)
+│   └── capture-screenshots.mjs   Playwright ile README ekran görüntüleri
+└── tests/
+    ├── _setup.js                 node:vm sandbox loader (extraFiles + seed)
+    ├── resolver.test.js          resolveLevel + tx
+    ├── data.test.js              DATA şema bütünlüğü, em-dash kuralı
+    ├── projects.test.js          Çoklu proje store: CRUD, limit, migration
+    ├── ui-helpers.test.js        escapeHtml + stripHtml (XSS savunması)
+    └── progress.test.js          countLevels (ilerleme sayma)
 ```
 
 ---
@@ -465,7 +505,26 @@ Teknik (varsayılan) sıralama:
 
 ### Yeni madde eklemek
 
-`js/03-data.js` içinde uygun kategorinin `features` dizisine bir obje ekle:
+İçerik 14 dosyaya bölünmüştür. Hangi kategoriye eklemek istiyorsan o dosyaya git:
+
+| Kategori                   | Dosya                             |
+| -------------------------- | --------------------------------- |
+| 01 Proje Fikri ve Planlama | `js/03a-data-01-idea-planning.js` |
+| 02 Tasarım                 | `js/03b-data-02-design.js`        |
+| 03 Kod Düzeni              | `js/03c-data-03-code-layout.js`   |
+| 04 Git ve Sürüm Kontrolü   | `js/03d-data-04-git.js`           |
+| 05 API                     | `js/03e-data-05-api.js`           |
+| 06 Backend                 | `js/03f-data-06-backend.js`       |
+| 07 Offline ve Önbellek     | `js/03g-data-07-offline.js`       |
+| 08 Test                    | `js/03h-data-08-testing.js`       |
+| 09 Güvenlik                | `js/03i-data-09-security.js`      |
+| 10 Erişilebilirlik         | `js/03j-data-10-a11y.js`          |
+| 11 Yayın ve Mağaza         | `js/03k-data-11-release.js`       |
+| 12 Monetizasyon            | `js/03l-data-12-monetization.js`  |
+| 13 Analitik                | `js/03m-data-13-analytics.js`     |
+| 14 CI/CD                   | `js/03n-data-14-cicd.js`          |
+
+İlgili dosyanın `features` dizisine yeni bir obje ekle:
 
 ```js
 {
@@ -482,7 +541,7 @@ Teknik (varsayılan) sıralama:
 }
 ```
 
-Madde anında ön yüzde + arka yüzde (Nasıl?) çıkar. Backend'e bağlıysa `backendStep: true` ekle: backend "yok" seçildiğinde otomatik gizlenir.
+Madde anında ön yüzde + arka yüzde (Nasıl?) çıkar. Backend'e bağlıysa `backendStep: true` ekle: backend "yok" seçildiğinde otomatik gizlenir. `tests/data.test.js` sayıyı README ve CHANGELOG'a kilitlediği için, yeni bir madde eklediğinde `EXPECTED_FEATURE_COUNT` sabitini ve README'deki `55 madde` sayısını da güncellemen gerekir.
 
 ### Yeni framework eklemek
 
@@ -499,7 +558,7 @@ Aynı pattern: `js/05-backend.js` → `VALID_BACKENDS` + `BACKEND_META` + `BACKE
 ### Yeni dil eklemek
 
 1. `js/01-i18n-strings.js` → `UI_STRINGS` objesine her anahtarın yeni dildeki karşılığını ekle (örn. `de` için Almanca).
-2. `js/03-data.js` → her `{tr, en}` çiftinin yanına `de` alanı ekle.
+2. 14 veri dosyasının (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) tamamında, her `{tr, en}` çiftinin yanına `de` alanı ekle. `simple`, `simpleBackend`, `variants` ve `backendVariants` blokları da dahil.
 3. Hero'daki dil pilini ve `applyI18nToDom`'u yeni anahtara genişlet.
 
 Resolver otomatik olarak `obj[currentLang]` döndürdüğü için ekleme yapısal olarak risksizdir.
@@ -571,7 +630,7 @@ Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS 
 - **Yük süresi**: framework yükü yok; ilk render anlık.
 - **Eksiklik yok**: state yönetimi, render, event delegation, history hepsi vanilla ile rahatlıkla yapılır.
 
-Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` 1100 satır, en uzun JS dosyası 3000 satır. Bunun karşılığında işin tamamı görünür ve okunabilir.
+Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` ~1170 satır. Bunun karşılığında işin tamamı görünür ve okunabilir. 1.0'da tek bir 3079 satırlık `js/03-data.js` ve 2392 satırlık `js/14-app.js` vardı; 1.1.0'da bunlar 14 kategori dosyasına ve 5 yönlendirme modülüne bölündü, böylece bir contributor tek bir özelliğe odaklanırken yalnızca o dosyayı açar.
 
 </details>
 
@@ -580,14 +639,14 @@ Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` 11
 
 <br />
 
-55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan `js/03-data.js` ham hâliyle ~835 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
+55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan içerik ham hâliyle ~835 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
 
 - Kullanıcı **birkaç madde** değil, **tüm listeyi** görmek için geliyor: arama, filtre ve sunum modu listenin tamamı belleğe yüklenmişken anlamlı.
 - Tüm asset'ler gzip sonrası ~380 KB; çoğu bağlantıda saniyenin altında iniyor.
 - Service Worker ilk başarılı ziyaretten sonra cache'i dolduruyor; internet kopsa da uygulama açılıyor.
-- Lazy loading mimarisi (kategori başına dosya, dinamik import vb.) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
+- Lazy loading mimarisi (dinamik import) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
 
-Veri büyürse (örn. 200 madde) bu kararı yeniden düşünmek gerekir.
+  1.1.0'da içerik **14 kategori dosyasına** bölündü (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). Build adımı eklenmedi: her dosya kendi kategorisini `window.DATA` dizisine `push` eder, `js/03-data.js` (15 satırlık stub) onu `const DATA` olarak dışa verir. Tarayıcının runtime'ında hâlâ tek bir bellek-içi `DATA` dizisi var; sadece yazma tarafı 14 parçaya bölünmüş durumda. Bu hem merge çatışmalarını azaltır hem de bir contributor "ben sadece güvenlik maddelerine bakacağım" derken yalnızca `03i-data-09-security.js` dosyasını okumasına izin verir. Veri ~200 maddeye büyürse gerçek lazy loading'i (kategori başına async fetch) yeniden değerlendirmek gerekir.
 
 </details>
 
@@ -652,7 +711,7 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 | Çevrimdışı açılış (SW cache)    | -        | Çalışır                  |
 | Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
 
-> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan `js/03-data.js` içerik kütüphanesinden gelir; uygulama mantığı (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi birlikte gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan 14 kategori veri dosyasından (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) gelir; uygulama mantığı (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi birlikte gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
 
 ---
 
@@ -712,7 +771,7 @@ Katkılar memnuniyetle. Önerilen iş akışı:
 5. Var olan stille tutarlı kal:
    - JS: ES2020+, fonksiyon başlarında JSDoc-vari kısa yorum.
    - CSS: ilgili kategori dosyasına, custom property'leri kullanarak.
-   - İçerik (`js/03-data.js`): mevcut maddelerin şeklini ve tonunu takip et.
+   - İçerik (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`): mevcut maddelerin şeklini ve tonunu takip et. Stub `js/03-data.js`'i düzenleme; o sadece 14 parçayı birleştirir.
 6. **Em dash karakteri (`—`) kullanma**: bu projenin yazılı stili kuralıdır. Yerine `:`, `;` veya parantez.
 7. **Conventional commit mesajları**: `feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`.
 8. PR açarken **kısa açıklama** + **ekran görüntüsü** (UI değişiyorsa) ekle.
