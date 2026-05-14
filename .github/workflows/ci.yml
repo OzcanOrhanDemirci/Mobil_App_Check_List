@@ -15,7 +15,12 @@
 #   - workflow_dispatch (manual)
 #
 # Notes:
-#   - Static site, no build step. Single Node 20 version, Ubuntu only.
+#   - Static site, no build step. Lint and test run on a Node 20 + 22
+#     matrix so any version-specific regressions are caught before merge.
+#     The other jobs (validate-html, pwa-check, em-dash-check) are
+#     version-agnostic and use Node 20 only.
+#   - Ubuntu-only runners; the project does not ship platform-specific
+#     binaries and CI cost stays predictable.
 #   - Jobs run in parallel where independent.
 #   - Action major versions are pinned (checkout@v4, setup-node@v4).
 
@@ -38,8 +43,12 @@ permissions:
 
 jobs:
   lint:
-    name: Lint and format check
+    name: Lint and format check (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +56,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ matrix.node }}
           cache: "npm"
 
       - name: Install dependencies
@@ -60,8 +69,12 @@ jobs:
         run: npm run format:check
 
   test:
-    name: Unit tests (node --test)
+    name: Unit tests (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,7 +82,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ matrix.node }}
           cache: "npm"
 
       - name: Install dependencies

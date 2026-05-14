@@ -1,0 +1,578 @@
+/* Modals: core system, help accordion, reset / confirm / framework-switch dialogs.
+   Split out of css/05-modals.css in 1.1.0 to lower the merge-conflict surface
+   for contributors. Sibling files: 05-modals-feedback.css, 05-hero-pills.css,
+   05-modals-welcome.css, 05-modals-install.css, 05-modals-projects.css. */
+
+  /* Modal sistemi */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: modalFade 0.2s ease;
+  }
+  .modal[hidden] { display: none; }
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  [data-theme="light"] .modal-backdrop {
+    background: rgba(15, 23, 42, 0.45);
+  }
+  .modal-content {
+    position: relative;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    animation: modalSlide 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Yeni stacking context: ic z-index'ler buranın icinde calissin,
+       ust modal stacking context'ine kacmasin */
+    isolation: isolate;
+  }
+  @keyframes modalFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes modalSlide {
+    from { transform: translateY(20px) scale(0.96); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-radius: 14px 14px 0 0;
+  }
+  .modal-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .modal-close {
+    background: none;
+    border: 0;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .modal-close:hover {
+    color: var(--text);
+    background: var(--surface-3);
+  }
+
+  /* Yardım modalı başlığında, kapatma butonunun solunda anlık dil değiştirici.
+     Sadece ilk karşılama akışının 1. adımından (dil seçimi) açıldığında görünür.
+     Global currentLang'i değiştirmez; sadece help-modal içeriğini geçici olarak değiştirir. */
+  .modal-head-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .help-lang-switch {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px;
+    background: var(--surface-3);
+    gap: 0;
+  }
+  .help-lang-switch[hidden] {
+    display: none;
+  }
+  .help-lang-opt {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    color: var(--text-dim);
+    padding: 4px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .help-lang-opt:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .help-lang-opt.active {
+    background: var(--accent);
+    color: #0b0f17;
+    cursor: default;
+  }
+  .help-lang-opt.active:hover {
+    background: var(--accent);
+  }
+  .modal-body {
+    padding: 22px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .modal-body section {
+    margin-bottom: 22px;
+  }
+  .modal-body section:last-child { margin-bottom: 0; }
+  .modal-body h3 {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-2);
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+
+  /* ==================== YARDIM ACCORDION (açılır/kapanır bölümler) ====================
+     Yardım modal'ı section'lara bölünmüş; her section bağımsız açılıp kapanır.
+     Varsayılan: hepsi kapalı. Başlığa tıklama o section'ı toggle eder.
+     Modal başlığının altında "Tümünü Aç / Kapat" şerit kontrolleri vardır. */
+
+  /* Help modal'ında layout'u flex-column'a çevir ki header + controls sabit
+     kalsın, sadece body scroll olsun (iki sticky element çakışmasın). */
+  #helpModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #helpModal .modal-head,
+  #helpModal .help-accordion-controls {
+    flex-shrink: 0;
+    position: static;
+  }
+  #helpModal .modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .help-accordion-controls {
+    display: flex;
+    gap: 8px;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .help-accordion-btn {
+    font-size: 12.5px;
+    padding: 6px 12px;
+  }
+
+  /* Yardım section'ları accordion mantığında çalışır */
+  #helpModalBody section.help-section {
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+  }
+  #helpModalBody section.help-section:hover {
+    border-color: var(--accent);
+  }
+  /* Başlık (h3) tıklanabilir tetikleyici olur */
+  #helpModalBody section.help-section > h3 {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    user-select: none;
+  }
+  #helpModalBody section.help-section > h3:hover {
+    background: var(--surface-2);
+  }
+  /* Chevron, JS tarafında eklenir (.help-section-chevron) */
+  .help-section-chevron {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: var(--text-mute);
+    transition: transform 0.18s ease;
+  }
+  #helpModalBody section.help-section.collapsed .help-section-chevron {
+    transform: rotate(-90deg);
+  }
+  /* Collapsed iken h3 dışında her şey gizlenir */
+  #helpModalBody section.help-section.collapsed > *:not(h3) {
+    display: none;
+  }
+  /* Açıkken içerik için padding (h3 zaten kendi padding'ine sahip) */
+  #helpModalBody section.help-section > *:not(h3) {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  #helpModalBody section.help-section > *:not(h3):last-child {
+    padding-bottom: 12px;
+  }
+  .modal-body p, .modal-body ul {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+  .modal-body ul {
+    list-style: none;
+    padding: 0;
+  }
+  .modal-body li {
+    padding: 5px 0;
+    position: relative;
+    padding-left: 16px;
+  }
+  .modal-body li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--accent-2);
+  }
+  .modal-body ul.kbd-list li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-left: 0;
+  }
+  .modal-body ul.kbd-list li::before {
+    display: none;
+  }
+  .modal-body ul.kbd-list li > span {
+    color: var(--text-dim);
+    font-size: 13.5px;
+  }
+  .modal-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    min-width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Reset scope seçim modalı (2 aşamalı sıfırlama akışı, 1. adım) */
+  .modal-content.modal-reset-scope {
+    max-width: 520px;
+  }
+  .reset-scope-sub {
+    font-size: 13.5px !important;
+    color: var(--text-dim) !important;
+    margin: 0 0 16px !important;
+    line-height: 1.55 !important;
+  }
+  .reset-scope-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .reset-scope-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .reset-scope-option:hover {
+    background: var(--surface-3);
+    border-color: var(--text-mute);
+  }
+  .reset-scope-option:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.14);
+  }
+  .reset-scope-option.danger:has(input:checked) {
+    border-color: #dc2626;
+    background: rgba(239, 68, 68, 0.08);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16);
+  }
+  .reset-scope-option input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .reset-scope-option.danger input[type="checkbox"] {
+    accent-color: #dc2626;
+  }
+  /* Disabled durumda (system seçildiğinde diğer 2 disable olur) */
+  .reset-scope-option:has(input:disabled) {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .reset-scope-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .reset-scope-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .reset-scope-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .reset-scope-option.danger .reset-scope-title {
+    color: #dc2626;
+  }
+  [data-theme="light"] .reset-scope-option.danger .reset-scope-title {
+    color: #b91c1c;
+  }
+  .reset-scope-desc {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .reset-scope-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Confirm modalı */
+  .modal-content.modal-confirm {
+    max-width: 420px;
+    padding: 28px 24px 22px;
+    text-align: center;
+  }
+  .modal-confirm-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+  .modal-confirm h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: var(--text);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .modal-confirm p,
+  .modal-confirm #confirmMessage {
+    color: var(--text-dim);
+    margin: 0 0 22px;
+    font-size: 14px;
+  }
+  .modal-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  /* Framework switch confirm yüksek bilgi yoğunluğunda; daha geniş modal */
+  .modal-content.modal-confirm.modal-confirm--wide {
+    max-width: 520px;
+  }
+
+  /* Framework değişimi onay UI'ı: mevcut → yeni kart akışı + etki listesi */
+  .fw-switch-confirm {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .fw-switch-confirm .fw-switch-intro {
+    text-align: center;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+  }
+  .fw-switch-row {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 10px;
+  }
+  .fw-switch-card {
+    flex: 1 1 0;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .fw-switch-card.from {
+    opacity: 0.78;
+  }
+  .fw-switch-card.to {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .fw-switch-tag {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9.5px;
+    color: var(--text-mute);
+    font-weight: 700;
+  }
+  .fw-switch-card.to .fw-switch-tag {
+    color: var(--accent);
+  }
+  .fw-switch-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin: 2px 0;
+  }
+  .fw-switch-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .fw-switch-arrow {
+    align-self: center;
+    font-size: 20px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* Etki listesi: işaretleri sıfırlanır vs korunur (renk-kodlu) */
+  .fw-switch-effects {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .fw-switch-effects li {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px !important;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text);
+    margin: 0 !important;
+    line-height: 1.4;
+  }
+  .fw-switch-effects li::before {
+    display: none !important;
+  }
+  .fw-switch-effects li.effect-clear {
+    border-color: rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .fw-switch-effects li.effect-keep {
+    border-color: var(--mvp-border);
+    background: var(--mvp-bg);
+  }
+  .fw-switch-effects .effect-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .fw-switch-effects li.effect-clear .effect-icon {
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+  }
+  .fw-switch-effects li.effect-keep .effect-icon {
+    background: var(--mvp-strong);
+    color: var(--mvp);
+  }
+  [data-theme="light"] .fw-switch-effects li.effect-clear {
+    background: rgba(239, 68, 68, 0.07);
+  }
+
+  @media (max-width: 460px) {
+    .fw-switch-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fw-switch-arrow {
+      transform: rotate(90deg);
+      align-self: center;
+    }
+  }
+  .btn.danger-solid {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
+    font-weight: 600;
+  }
+  .btn.danger-solid:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    filter: none;
+  }
+

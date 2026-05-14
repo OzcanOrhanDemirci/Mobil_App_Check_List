@@ -1,0 +1,653 @@
+/* Project, framework, and backend modal: tab strip, project list, add/rename
+   forms, mini framework/backend grids; backend picker (welcome step 4 + proj
+   modal tab); print options modal. Split out of css/05-modals.css in 1.1.0. */
+
+  /* ==================== ÇOKLU PROJE — PROJ + FW MODAL ==================== */
+  .modal-content.modal-projfw {
+    max-width: 720px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-content.modal-projfw .modal-head {
+    padding: 18px 24px 12px;
+  }
+  .modal-content.modal-projfw .modal-body {
+    padding: 18px 24px 24px;
+    overflow-y: auto;
+  }
+
+  /* Sekme şeridi */
+  .projfw-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .projfw-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--text-mute);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .projfw-tab:hover { color: var(--text); }
+  .projfw-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ==================== PROJE LİSTESİ + EKLEME FORMU ==================== */
+  .proj-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .proj-header-text { flex: 1; min-width: 0; }
+  .proj-list-title {
+    margin: 0 0 2px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .proj-list-sub {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--text-mute);
+    line-height: 1.4;
+  }
+  .proj-count {
+    flex-shrink: 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-mute);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .proj-add-row {
+    margin: 12px 0 6px;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+  }
+  .proj-add-btn {
+    width: 100%;
+  }
+
+  /* Yeni proje oluşturma modalı */
+  .modal-content.modal-proj-create {
+    max-width: 560px;
+  }
+  .proj-create-sub {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--text-mute);
+    line-height: 1.5;
+  }
+
+  /* Aktif proje silindiğinde "hangi projeye geçeyim" seçim modalı */
+  .modal-content.modal-proj-pick {
+    max-width: 520px;
+  }
+  .proj-pick-sub {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    color: var(--text-mute);
+    line-height: 1.5;
+  }
+  .proj-pick-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .proj-pick-item { margin: 0; }
+  .proj-pick-btn {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.05s ease;
+  }
+  .proj-pick-btn:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+  .proj-pick-btn:active {
+    transform: scale(0.99);
+  }
+  .proj-pick-fw {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .proj-pick-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .proj-pick-arrow {
+    flex-shrink: 0;
+    color: var(--text-mute);
+    font-size: 18px;
+    line-height: 1;
+  }
+  .proj-pick-btn:hover .proj-pick-arrow { color: var(--accent); }
+
+  .proj-add-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 0;
+  }
+  .proj-add-form-row {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    justify-content: end;
+  }
+  @media (max-width: 540px) {
+    .proj-add-form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .proj-add-form-row .btn { width: 100%; }
+  }
+  .proj-add-form input {
+    appearance: none;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+  .proj-add-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .proj-add-error {
+    grid-column: 1 / -1;
+    color: #ef4444;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 0 4px;
+  }
+
+  /* Yeni proje formundaki mini framework grid (welcome step 3'ün kompakt versiyonu) */
+  .proj-add-fw-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .proj-add-fw-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  @media (max-width: 540px) {
+    .proj-add-fw-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .proj-add-fw {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    min-width: 0;
+    text-align: left;
+  }
+  .proj-add-fw:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-add-fw.selected {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-add-fw-icon { font-size: 14px; flex-shrink: 0; line-height: 1; }
+  .proj-add-fw-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .proj-list {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .proj-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .proj-item:hover { border-color: var(--accent); }
+  .proj-item.active {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-item.renaming .proj-row,
+  .proj-item.renaming .proj-row-actions { display: none; }
+  .proj-item.renaming .proj-row-rename { display: grid; }
+
+  .proj-row {
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    padding: 6px 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    font: inherit;
+  }
+  .proj-row-icon { font-size: 16px; flex-shrink: 0; }
+  .proj-row-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .proj-item.active .proj-row-name { color: var(--accent-2); }
+  .proj-row-fw {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-mute);
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: 2px;
+  }
+  @media (max-width: 480px) {
+    .proj-row-fw { display: none; }
+  }
+  .proj-row-active-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(249, 115, 22, 0.14);
+    border: 1px solid rgba(249, 115, 22, 0.32);
+    flex-shrink: 0;
+  }
+
+  .proj-row-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .proj-action {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    padding: 6px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: all 0.15s ease;
+  }
+  .proj-action:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-action-delete:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+  }
+  .proj-action:disabled, .proj-action[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .proj-row-rename {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .proj-row-rename input {
+    appearance: none;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--accent);
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+  .proj-row-rename input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  }
+  .proj-rename-error {
+    grid-column: 1 / -1;
+    color: #ef4444;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  @media (max-width: 540px) {
+    .proj-row-rename {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ==================== BACKEND SEÇİMİ (welcome step 4 + projfw modal sekmesi) ====================
+     Framework grid'i ile aynı 2-kolon kart düzeni, ancak "Backend yok" seçeneği
+     prominently first-row-full-width gösterilir; kullanıcı internet gerektirmeyen
+     bir uygulama için bunu kolayca seçebilsin. */
+  .backend-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* "Backend yok" kartı: ilk satırda tam genişlik + büyük tipografi + ayırt edici stil */
+  .backend-options > .backend-option--none {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(249, 115, 22, 0.05));
+    border: 2px dashed var(--border);
+    text-align: left;
+  }
+  .backend-options > .backend-option--none:hover {
+    border-color: var(--mvp);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.10), rgba(249, 115, 22, 0.08));
+  }
+  .backend-options > .backend-option--none.selected {
+    border-color: var(--mvp);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.20), rgba(34, 197, 94, 0.08));
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+  }
+  .backend-options > .backend-option--none .be-emoji {
+    font-size: 30px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .backend-options > .backend-option--none .be-title {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+  }
+  .backend-options > .backend-option--none .be-desc {
+    font-size: 12px;
+    margin-left: 0;
+  }
+  .backend-options > .backend-option--none .be-title,
+  .backend-options > .backend-option--none .be-desc {
+    text-align: left;
+  }
+
+  /* Normal backend kartları (framework-option stiliyle paralel) */
+  .backend-option {
+    appearance: none;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+  .backend-option:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .backend-option.selected {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .backend-option .be-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .backend-option .be-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .backend-option .be-desc {
+    font-size: 11.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+  }
+
+  /* Mobil: tek sütun düzeni; "Backend yok" zaten full-width olduğu için
+     görsel olarak en üstte ve büyük durmaya devam eder. */
+  @media (max-width: 480px) {
+    .backend-options { grid-template-columns: 1fr; }
+    .backend-options > .backend-option--none {
+      padding: 16px 14px;
+    }
+    .backend-options > .backend-option--none .be-emoji {
+      font-size: 26px;
+    }
+    .backend-options > .backend-option--none .be-title {
+      font-size: 15px;
+    }
+  }
+
+  /* ==================== PROJE OLUŞTUR MODALI — MINI BACKEND GRID ====================
+     Framework mini grid'i ile aynı pattern; noBackend için full-width + yeşil
+     aksanlı vurgu. */
+  .proj-add-be-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .proj-add-be-grid > .proj-add-be--none {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(249, 115, 22, 0.06));
+    border: 1.5px dashed var(--border);
+    justify-content: center;
+    padding: 10px 12px;
+  }
+  .proj-add-be-grid > .proj-add-be--none:hover {
+    border-color: var(--mvp);
+  }
+  .proj-add-be-grid > .proj-add-be--none.selected {
+    border-color: var(--mvp);
+    background: rgba(34, 197, 94, 0.16);
+    color: var(--mvp);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.20);
+  }
+  @media (max-width: 540px) {
+    .proj-add-be-grid { grid-template-columns: repeat(2, 1fr); }
+    .proj-add-be-grid > .proj-add-be--none { grid-column: 1 / -1; }
+  }
+  .proj-add-be {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    min-width: 0;
+    text-align: left;
+  }
+  .proj-add-be:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+  }
+  .proj-add-be.selected {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-2);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+  }
+  .proj-add-be-icon { font-size: 14px; flex-shrink: 0; line-height: 1; }
+  .proj-add-be-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ==================== YAZDIRMA SEÇENEKLERİ MODALI ====================
+     printBtn'a tıklayınca açılır; "Kontrol Listesi" veya "Nasıl Yapılır?
+     Rehberi" seçeneklerinden birini seç → window.print() o moda göre
+     tetiklenir. Visual olarak framework-option kartlarını andırır. */
+  .modal-content.modal-print-options {
+    max-width: 580px;
+  }
+  /* modal-head'in altındaki body içeriği için iç padding */
+  .modal-print-options > :not(.modal-head):not(.modal-backdrop) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .print-options-lead {
+    margin: 18px 0 18px;
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .print-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .print-option {
+    appearance: none;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px 18px;
+    cursor: pointer;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    transition: all 0.15s ease;
+    text-align: left;
+    font-family: inherit;
+  }
+  .print-option:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .print-option:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .print-option .po-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+  .print-option .po-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .print-option .po-desc {
+    font-size: 12.5px;
+    color: var(--text-mute);
+    line-height: 1.5;
+  }
+  .print-options-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 18px 0 22px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+  @media (max-width: 540px) {
+    .print-options { grid-template-columns: 1fr; }
+  }
+

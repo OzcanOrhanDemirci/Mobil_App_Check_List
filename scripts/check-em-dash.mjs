@@ -32,12 +32,21 @@
  *   node scripts/check-em-dash.mjs
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+
+/* The data file was split into 14 per-category files in 1.1.0; pick up
+   all `js/03*-data*.js` files plus the combiner stub `js/03-data.js`
+   dynamically so the target list stays correct even when a category is
+   added or renamed. Other targets (i18n strings, help, HTML) are fixed. */
+const dataTargets = readdirSync("js")
+  .filter((f) => /^03[a-z]?-data.*\.js$/.test(f))
+  .sort()
+  .map((f) => `js/${f}`);
 
 const TARGETS = [
   "js/01-i18n-strings.js",
   "js/02-help-content.js",
-  "js/03-data.js",
+  ...dataTargets,
   "index.html",
 ];
 

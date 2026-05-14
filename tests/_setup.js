@@ -59,6 +59,29 @@ const SCRIPT_FILES = [
   "js/06-view-state.js",
 ];
 
+/* Convenience: the full list of files that needs to be loaded for tests
+   that depend on the populated DATA array. Mirrors the load order in
+   index.html: each per-category file pushes its category onto
+   window.DATA, and js/03-data.js exposes the const DATA referencing it.
+   Pass this list as `extraFiles` to loadAppContext. */
+const DATA_FILES = [
+  "js/03a-data-01-idea-planning.js",
+  "js/03b-data-02-design.js",
+  "js/03c-data-03-code-layout.js",
+  "js/03d-data-04-git.js",
+  "js/03e-data-05-api.js",
+  "js/03f-data-06-backend.js",
+  "js/03g-data-07-offline.js",
+  "js/03h-data-08-testing.js",
+  "js/03i-data-09-security.js",
+  "js/03j-data-10-a11y.js",
+  "js/03k-data-11-release.js",
+  "js/03l-data-12-monetization.js",
+  "js/03m-data-13-analytics.js",
+  "js/03n-data-14-cicd.js",
+  "js/03-data.js",
+];
+
 /* In-memory localStorage stub. Tests start with no keys, so loadState /
    loadNotes / loadCollapsed / loadFramework / loadBackend all gracefully
    return defaults; currentFramework / currentBackend land as null and
@@ -177,4 +200,4 @@ function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
   return sandbox;
 }
 
-module.exports = { loadAppContext };
+module.exports = { loadAppContext, DATA_FILES };

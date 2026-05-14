@@ -7,50 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+## [1.1.0] - 2026-05-14
 
-- Split `js/14-app.js` (2392 lines, the post-1.0 orchestration / glue
-  layer) into five files so each concern is browsable on its own and a
-  newcomer is not asked to scroll through one mixed-purpose module:
-  - `js/14-welcome.js` (368 lines): 7-step welcome flow + the welcome
-    modal's inline help switcher.
-  - `js/15-projects.js` (888 lines): hero project pill,
-    `applyFrameworkUI` / `applyBackendUI`, the project / framework /
-    backend modal with its CRUD list, add / rename / delete flows,
-    the "pick which project to continue with" modal, and backend
-    switch confirmation.
-  - `js/16-presentation.js` (90 lines): presentation mode and its
-    toolbar buttons. The P / arrow / Esc keyboard handling stays
-    inside the global shortcut listener in `js/18-app.js`.
-  - `js/17-install.js` (389 lines): PWA install banner, platform-
-    specific manual instructions, and the deferredInstallPrompt
-    plumbing.
-  - `js/18-app.js` (839 lines, renamed from `js/14-app.js` via
-    `git mv` so history is preserved): the remaining orchestration
-    (toolbar wiring, reset UI, lock, mobile actions toggle, easter
-    eggs, help accordion, print, export / import, keyboard shortcuts,
-    PWA manifest + service worker setup IIFEs, hero level filter,
-    hero style toggle, init sequence).
-- `index.html` script tag order updated so the 14..18 scripts load
-  before any user interaction can fire (still `defer`, still in
-  document order).
-- `eslint.config.js` globals section regrouped to match the new five
-  files. One new global, `projfwResetUi`, is declared writable: it
-  is created in `js/18-app.js` (which loads after `js/15-projects.js`)
-  and read inside `setProjFwTab` only at user-click time, so the
-  cross-file lookup resolves correctly even though ESLint cannot
-  prove it lexically.
-- `README.md`, `README.en.md`, and `.github/CONTRIBUTING.md` file
-  listings now show the new layout. The performance note that
-  referenced `14-app.js` now lists the five files together.
-
-This change is behaviour-preserving: every function moved verbatim,
-no signatures changed, no side effects reordered. The split was
-performed via a one-shot helper script (`scripts/_split-app.mjs`,
-deleted after use) that extracted bottom-up by line range to keep
-earlier line numbers stable, then Prettier was applied to the new
-files. Verification: ESLint clean, Prettier clean, all 103 tests
-pass, em-dash check clean, html-validate clean.
+Second public release. Focused on open-source readiness: a tighter
+contributor experience (multi-Node CI matrix, cross-platform pre-commit
+hook, deploy workflow), a stricter content security policy, modular file
+splits to lower the bar for first-time contributions, and bilingual
+documentation polish.
 
 ### Added
 
@@ -79,16 +42,86 @@ pass, em-dash check clean, html-validate clean.
   metadata (license, security policy, CI definitions, dependabot config,
   core content surfaces, resolver and axis modules) is called out
   explicitly so reviews are routed correctly.
-- `.github/FUNDING.yml`: a template with every supported platform listed
-  as a commented-out line. The file is intentionally inert until a
-  platform is uncommented; no "Sponsor" button appears in its default
-  state.
+- `.github/FUNDING.yml`: GitHub Sponsors entry activated so the "Sponsor"
+  button surfaces on the repository page. Other platforms remain
+  commented out as templates ready to be uncommented if needed.
+- `.github/workflows/deploy-pages.yml`: a dedicated deployment workflow
+  uses `actions/configure-pages@v5` and `actions/deploy-pages@v4` to
+  publish a curated artifact (development-only paths excluded) on every
+  push to `main`, replacing the implicit Pages-from-branch setup.
+- `.gitattributes`: pins line endings to LF for every tracked text file
+  and marks images and font binaries explicitly, so cross-platform
+  contributors get identical working trees regardless of `core.autocrlf`.
+- `.githooks/pre-commit` plus `scripts/install-githooks.mjs`: an opt-in
+  local pre-commit hook that mirrors the CI gate (lint, format check,
+  em-dash check, tests). The install script wires `core.hooksPath` via
+  the `npm install` lifecycle and is a no-op outside Git working trees
+  or inside CI runners.
+- `og-image-en.png`: a dedicated English social-preview card; the
+  English README now embeds it via a `<picture>` switch so locale-
+  specific previews render on social platforms.
+- Inbound-equals-outbound license note in `.github/CONTRIBUTING.md`,
+  making the MIT contribution agreement explicit without a separate CLA.
+- Roadmap entries in both READMEs now carry quarterly target tags
+  (Q3 2026, Q4 2026, 2027 and beyond) so adoption signals are visible
+  to contributors and downstream users.
 
 ### Changed
 
+- Split `js/14-app.js` (2392 lines, the post-1.0 orchestration / glue
+  layer) into five files so each concern is browsable on its own and a
+  newcomer is not asked to scroll through one mixed-purpose module:
+  - `js/14-welcome.js` (368 lines): 7-step welcome flow + the welcome
+    modal's inline help switcher.
+  - `js/15-projects.js` (888 lines): hero project pill,
+    `applyFrameworkUI` / `applyBackendUI`, the project / framework /
+    backend modal with its CRUD list, add / rename / delete flows,
+    the "pick which project to continue with" modal, and backend
+    switch confirmation.
+  - `js/16-presentation.js` (90 lines): presentation mode and its
+    toolbar buttons. The P / arrow / Esc keyboard handling stays
+    inside the global shortcut listener in `js/18-app.js`.
+  - `js/17-install.js` (389 lines): PWA install banner, platform-
+    specific manual instructions, and the deferredInstallPrompt
+    plumbing.
+  - `js/18-app.js` (839 lines, renamed from `js/14-app.js` via
+    `git mv` so history is preserved): the remaining orchestration
+    (toolbar wiring, reset UI, lock, mobile actions toggle, easter
+    eggs, help accordion, print, export / import, keyboard shortcuts,
+    PWA manifest + service worker setup IIFEs, hero level filter,
+    hero style toggle, init sequence).
+- Split `js/03-data.js` (3079 lines, ~855 KB) into 14 per-category
+  files (`js/03a-data-01-idea.js` through `js/03n-data-14-cicd.js`).
+  Each file appends its category to a `window.DATA` array, lowering
+  the merge-conflict surface for content contributors. The resolver,
+  ESLint globals, tests, and the em-dash check were updated to match.
+- Split `css/05-modals.css` (2132 lines, ~57 KB) into focused files
+  by surface (`05a-modals-core.css`, `05b-modals-welcome.css`,
+  `05c-modals-projects.css`, `05d-modals-install.css`,
+  `05e-hero-pills.css`, `05f-modals-celebration.css`). `index.html`
+  now links the parts in the same numeric load order; the visual
+  output is identical.
+- Replaced the four 26-byte SVG home-screen icons in
+  `manifest.webmanifest` with full-resolution PNGs (192×192 and
+  512×512, both `any` and `maskable`) generated from the same orange
+  check-on-dark visual as `og-image.png`. The `apple-touch-icon` link
+  and the SVG `rel="icon"` in `index.html` now use real PNG assets,
+  too, so installed-app icons render crisply on iOS, Android, and
+  desktop launchers.
+- `index.html` Content Security Policy hardened: the
+  `script-src 'unsafe-inline'` allowance is removed and the inline
+  theme / language bootstrap is moved into `js/00-bootstrap.js`,
+  loaded synchronously before any other resource so the dark theme
+  applies on the first paint and prevents the light flash.
+- `js/07-ui-helpers.js#escapeHtml` now also escapes single quotes
+  (`'` → `&#39;`), closing a defensive gap in attributes that may
+  be quoted with single quotes in future markup.
+- `js/18-app.js` import-failure path no longer uses `alert()`; the
+  toast helper carries the same message with a longer linger time
+  for consistency with the rest of the UI.
 - `tests/_setup.js` now accepts options. The `extraFiles` option loads
   additional source files into the same realm (used by the data tests to
-  pull in `js/03-data.js`), and the `localStorageSeed` option
+  pull in the per-category data files), and the `localStorageSeed` option
   pre-populates the in-memory localStorage stub before the scripts run
   (used by the migration tests to simulate a returning v1 or
   pre-backend user). The adapter mirrors the project store's public API
@@ -100,8 +133,22 @@ pass, em-dash check clean, html-validate clean.
   global in `eslint.config.js`, the three test suites that live under
   `tests/`, the loader options on `tests/_setup.js`, and the cross-realm
   caveat for `assert.deepStrictEqual` against sandbox-realm values.
-- `.github/workflows/ci.yml`: the header comment lists every job the
-  workflow runs, now including `em-dash-check`.
+- `.github/workflows/ci.yml`: the lint and test jobs now run on a Node
+  20 + 22 matrix, the header comment lists every job the workflow runs
+  (including `em-dash-check`), and the documentation block reflects the
+  multi-version coverage.
+- `package.json` bumps the version to `1.1.0`, registers the new
+  `prepare` script for the local hook installer, and updates the
+  `keywords` list with `open-source` and `pwa-checklist` for better
+  discoverability.
+- README and CONTRIBUTING file listings now reflect the post-split
+  layout (`js/` carries 18 files, the per-category data files are
+  documented separately, the modular CSS layout is referenced where
+  relevant). Issue and PR templates are cross-linked from both READMEs
+  so contributors do not need to discover them by accident.
+- README.en.md received a light linguistic pass for native-near
+  fluency (lead paragraphs and the screenshots section primarily);
+  no factual changes.
 
 ### Fixed
 
@@ -114,6 +161,31 @@ pass, em-dash check clean, html-validate clean.
   strings inside `js/03-data.js`, which represent intentionally-empty
   cells in the resolver, were left in place; the new CI check explicitly
   allows them.
+- README and README.en.md no longer contradict the actual repository
+  layout: the screenshot section now matches the committed PNGs (the
+  obsolete "placeholders" wording is gone), the issue-template
+  references match the real bug / feature templates, the JS file count
+  is corrected to 18, and the "no template required" sentence is
+  replaced with a pointer to the issue chooser.
+- The stale `js/14-app.js` reference inside the prefer-const eslint
+  override comment in `js/06-view-state.js` now points at `js/18-app.js`
+  (the file the orchestration code was renamed to in this release).
+- `scripts/capture-screenshots.mjs` no longer captures full-page rolls
+  for the desktop shots; the visible viewport is shot instead, and the
+  help-modal capture now waits for the modal to appear before the
+  screenshot fires so `04-help.png` actually shows the help modal.
+
+### Security
+
+- Content Security Policy in `index.html` now disallows inline scripts
+  (`script-src 'self' blob:` only, `'unsafe-inline'` removed) by moving
+  the bootstrap IIFE into `js/00-bootstrap.js`. Defense-in-depth: any
+  future innerHTML sink that escapes its data through `escapeHtml`
+  (now single-quote-safe) is doubly protected from injected `<script>`
+  tags.
+- The local pre-commit hook runs the em-dash content check on every
+  commit, ensuring that user-facing strings cannot regress to em-dash
+  punctuation in the absence of CI.
 
 ## [1.0.0] - 2026-05-12
 
@@ -216,5 +288,6 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/tag/v1.0.0

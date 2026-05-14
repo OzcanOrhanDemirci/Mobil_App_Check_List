@@ -1,0 +1,93 @@
+# GitHub Pages deployment for the Mobile App Quality Checklist PWA.
+#
+# What this does:
+#   - On every push to `main`, packages the repository as a Pages artifact
+#     (the site is fully static; there is no build step) and deploys it to
+#     the configured GitHub Pages environment.
+#   - Excludes development-only files (node_modules, tests, scripts, dot
+#     files) from the artifact so the deployed bundle stays minimal.
+#
+# Manual trigger: workflow_dispatch is also enabled so a maintainer can
+# re-run the deploy without pushing a new commit.
+#
+# Prerequisite (one-time, in Settings → Pages):
+#   Source: "GitHub Actions"
+# Without that setting the deploy-pages action will fail with a clear
+# error pointing to the same place.
+#
+# Permissions: scoped to the minimum required by actions/deploy-pages@v4.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between an
+# in-progress run and the latest commit so we always publish HEAD.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Package site artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Stage publishable files
+        # Copy the site into a clean directory so the upload artifact does
+        # not include development-only paths (node_modules, tests/, scripts/,
+        # .github/, .git, dotfiles). We use rsync with explicit excludes to
+        # keep this transparent and reproducible.
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.husky/' \
+            --exclude='.githooks/' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='scripts/' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='eslint.config.js' \
+            --exclude='.prettierrc.json' \
+            --exclude='.prettierignore' \
+            --exclude='.htmlvalidate.json' \
+            --exclude='.editorconfig' \
+            --exclude='.gitignore' \
+            --exclude='.gitattributes' \
+            --exclude='CHANGELOG.md' \
+            --exclude='_site/' \
+            ./ _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy artifact
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

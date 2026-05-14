@@ -19,15 +19,17 @@
  *        BASE_URL=http://localhost:5500 node scripts/capture-screenshots.mjs
  *
  * Output:
- *   assets/screenshots/01-welcome.png
- *   assets/screenshots/02-checklist.png
- *   assets/screenshots/03-card-flip.png
- *   assets/screenshots/04-help.png
+ *   assets/screenshots/01-welcome.png       mobile, viewport-sized
+ *   assets/screenshots/02-checklist.png     desktop, viewport-sized
+ *   assets/screenshots/03-card-flip.png     desktop, viewport-sized
+ *   assets/screenshots/04-help.png          desktop, viewport-sized (modal open)
  *
- * The generated PNG files override the placeholder SVGs referenced from the
- * READMEs. Update the README markdown image links from `.svg` to `.png`
- * after you have captured real shots, or keep the placeholders if you do
- * not want to ship binary assets yet.
+ * Each shot captures the visible viewport (fullPage: false). The prepare()
+ * step for each shot positions the relevant UI inside the viewport before
+ * the screenshot fires, so the resulting PNG is readable inline.
+ *
+ * The generated PNGs overwrite the previously committed copies under
+ * assets/screenshots/, which the READMEs reference directly.
  */
 
 import { chromium } from 'playwright';
@@ -89,28 +91,48 @@ const SHOTS = [
   {
     name: "01-welcome",
     viewport: "mobile",
+    fullPage: false,
     seedStorage: null, // empty storage triggers the first-run welcome modal
-    prepare: async () => {},
+    prepare: async page => {
+      // Welcome modal is the entire visible surface on first launch; just
+      // let it animate in.
+      await page.waitForSelector("#welcomeModal", { timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(300);
+    },
   },
   {
     name: "02-checklist",
     viewport: "desktop",
+    fullPage: false,
     seedStorage: seedActiveProject,
     prepare: async page => {
+      // The welcome modal is opened from a 350 ms setTimeout in
+      // showWelcomeIfFirstVisit(); wait long enough that the timer has
+      // fired, then dismiss it. Seeded state means we should not see it,
+      // but the migration path can re-trigger it; this is defensive.
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
       await page.waitForSelector(".feature, .category", { timeout: 5000 }).catch(() => {});
+      await page.evaluate(() => window.scrollTo(0, 0));
       await page.waitForTimeout(300);
     },
   },
   {
     name: "03-card-flip",
     viewport: "desktop",
+    fullPage: false,
     seedStorage: seedActiveProject,
     prepare: async page => {
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
       await page.waitForSelector("[data-flip-toggle]", { timeout: 5000 }).catch(() => {});
-      // Flip the first card via its dedicated trigger.
+      // Find the first flippable card, scroll it into view, then flip it.
       await page.evaluate(() => {
         const btn = document.querySelector("[data-flip-toggle]");
-        if (btn) btn.click();
+        if (!btn) return;
+        const card = btn.closest(".feature") || btn;
+        card.scrollIntoView({ behavior: "instant", block: "center" });
+        btn.click();
       });
       await page.waitForTimeout(700);
     },
@@ -118,17 +140,43 @@ const SHOTS = [
   {
     name: "04-help",
     viewport: "desktop",
+    fullPage: false,
     seedStorage: seedActiveProject,
     prepare: async page => {
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
       await page.waitForSelector("#helpBtn", { timeout: 5000 }).catch(() => {});
+      // Scroll back to the top so the modal opens over the hero rather than
+      // an arbitrary mid-page scroll position.
+      await page.evaluate(() => window.scrollTo(0, 0));
       await page.evaluate(() => {
         const btn = document.getElementById("helpBtn");
         if (btn) btn.click();
       });
-      await page.waitForTimeout(500);
+      // Wait for the modal to actually become visible (it toggles a hidden
+      // attribute rather than removing the element from the DOM).
+      await page.waitForFunction(
+        () => {
+          const m = document.getElementById("helpModal");
+          return m && !m.hidden && m.offsetParent !== null;
+        },
+        { timeout: 5000 }
+      ).catch(() => {});
+      await page.waitForTimeout(400);
     },
   },
 ];
+
+/* Ensures the welcome modal is dismissed before downstream interaction. The
+   modal toggles its `hidden` attribute rather than removing itself; flipping
+   the attribute is enough to make it disappear without triggering any of the
+   step-validation flows. */
+async function dismissWelcomeModal(page) {
+  await page.evaluate(() => {
+    const m = document.getElementById("welcomeModal");
+    if (m && !m.hidden) m.hidden = true;
+  });
+}
 
 async function main() {
   await mkdir(outDir, { recursive: true });
@@ -167,7 +215,11 @@ async function main() {
       }
 
       const outPath = resolve(outDir, `${shot.name}.png`);
-      await page.screenshot({ path: outPath, fullPage: shot.viewport === 'desktop' });
+      // Always shoot the viewport (not the full scrollable page) so the
+      // resulting PNG is readable inline in the README and on social cards.
+      // Each shot's prepare() positions the page so the relevant UI is
+      // already inside the viewport.
+      await page.screenshot({ path: outPath, fullPage: shot.fullPage === true });
       console.log(`[capture] wrote ${outPath}`);
 
       await context.close();

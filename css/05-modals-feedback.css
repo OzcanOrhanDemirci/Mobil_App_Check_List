@@ -1,0 +1,97 @@
+/* Modals: lightweight feedback surfaces (toast notifications, celebration
+   modal). Split out of css/05-modals.css in 1.1.0. */
+
+  /* Toast bildirimleri */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10001;
+    pointer-events: none;
+    max-width: 360px;
+  }
+  .toast {
+    background: var(--surface-2);
+    color: var(--text);
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: auto;
+  }
+  .toast .toast-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .toast.success .toast-icon { background: var(--mvp); }
+  .toast.info .toast-icon { background: var(--release); }
+  .toast.warn .toast-icon { background: var(--accent); }
+  @keyframes toastIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .toast.fade-out {
+    animation: toastOut 0.25s ease forwards;
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateY(-6px); }
+  }
+
+
+  /* Tamamlama kutlama modalı */
+  .modal-content.modal-celebration {
+    max-width: 460px;
+    padding: 36px 28px 28px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    border: 2px solid var(--accent);
+    overflow: visible;
+  }
+  .celebration-emoji {
+    font-size: 64px;
+    margin-bottom: 14px;
+    animation: celebrate 0.65s cubic-bezier(0.25, 1.5, 0.5, 1);
+    display: inline-block;
+  }
+  @keyframes celebrate {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .modal-celebration h3 {
+    font-size: 24px !important;
+    margin: 0 0 12px !important;
+    background: linear-gradient(120deg, var(--accent-2), var(--accent), var(--mvp));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent !important;
+    letter-spacing: -0.01em !important;
+    font-weight: 700;
+  }
+  .modal-celebration p {
+    margin: 0 0 22px !important;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .modal-celebration .btn.primary {
+    min-width: 140px;
+  }
+

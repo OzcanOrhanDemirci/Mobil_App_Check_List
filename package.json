@@ -1,6 +1,6 @@
 {
   "name": "mobil-app-check-list",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mobile app quality checklist PWA (Turkish/English) with 4-axis content resolution",
   "main": "index.html",
   "private": true,
@@ -11,7 +11,8 @@
     "format": "prettier --write \"**/*.{js,css,html,md,json,yml}\"",
     "format:check": "prettier --check \"**/*.{js,css,html,md,json,yml}\"",
     "test": "node scripts/run-tests.mjs",
-    "serve": "python -m http.server 8000"
+    "serve": "python -m http.server 8000",
+    "prepare": "node scripts/install-githooks.mjs"
   },
   "keywords": [
     "pwa",

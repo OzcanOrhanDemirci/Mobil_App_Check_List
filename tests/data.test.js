@@ -21,7 +21,7 @@
 
 const { describe, it, before } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadAppContext } = require("./_setup.js");
+const { loadAppContext, DATA_FILES } = require("./_setup.js");
 
 /* Expected counts, in lockstep with README.md and CHANGELOG.md.
    Changing the data file SHOULD force a docs update; this test makes
@@ -59,7 +59,10 @@ let VALID_FRAMEWORKS;
 let VALID_BACKENDS;
 
 before(() => {
-  const ctx = loadAppContext({ extraFiles: ["js/03-data.js"] });
+  /* Load every per-category file plus the combining stub. DATA_FILES is
+     exported from _setup.js so the file list stays in one place if a new
+     category is added or renamed. */
+  const ctx = loadAppContext({ extraFiles: DATA_FILES });
   DATA = ctx.DATA;
   VALID_FRAMEWORKS = ctx.VALID_FRAMEWORKS;
   VALID_BACKENDS = ctx.VALID_BACKENDS;

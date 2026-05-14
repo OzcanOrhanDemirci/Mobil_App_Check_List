@@ -1,0 +1,392 @@
+/* Welcome flow: 7-step modal (lang, mode, style, project name, framework,
+   backend, summary) plus the multi-project welcome name step. Split out of
+   css/05-modals.css in 1.1.0. */
+
+  /* Karşılama (welcome) modalı */
+  .modal-content.modal-welcome {
+    max-width: 540px;
+    padding: 32px 30px 28px;
+    text-align: center;
+    position: relative;
+  }
+  /* Sağ üst köşede sabit yardım butonu (her iki adımda da görünür) */
+  .welcome-help-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    z-index: 2;
+  }
+  .welcome-help-btn:hover {
+    background: var(--surface-3);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .welcome-help-btn > span:first-child {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0b0f17;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  @media (max-width: 420px) {
+    .welcome-help-btn .welcome-help-label { display: none; }
+    .welcome-help-btn { padding: 6px; }
+  }
+
+  /* 1. adımda (dil seçimi) yardım butonu sadece "?" simgesi olarak görünsün
+     — kullanıcı henüz dil seçmediği için yazı iki dilde de yer kaplamasın. */
+  #welcomeModal[data-step="1"] .welcome-help-btn .welcome-help-label {
+    display: none;
+  }
+  #welcomeModal[data-step="1"] .welcome-help-btn {
+    padding: 6px;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+  }
+
+  /* Eyebrow + başlık: 1. adımda iki dilde, 2/3. adımda sadece seçilen dilde.
+     Default: mono (tek dil) görünür, bilingual gizli. 1. adımda tersine çevir. */
+  .welcome-bilingual { display: none; }
+  .welcome-mono { display: inline; }
+  #welcomeModal[data-step="1"] .welcome-bilingual { display: inline; }
+  #welcomeModal[data-step="1"] .welcome-mono { display: none; }
+  .welcome-icon-wrap {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+  }
+  .modal-welcome h2 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(120deg, var(--accent-2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -0.01em;
+  }
+  .welcome-lead {
+    font-size: 15px !important;
+    color: var(--text) !important;
+    margin: 0 0 18px !important;
+    line-height: 1.55 !important;
+    font-weight: 500;
+  }
+  .modal-welcome p {
+    text-align: left;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .welcome-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+  }
+  .welcome-features li {
+    padding: 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .welcome-features li::before { display: none; }
+  .welcome-features strong {
+    color: var(--text);
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .welcome-tip {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px !important;
+    margin: 0 0 20px !important;
+    color: var(--text-dim) !important;
+    text-align: left;
+  }
+  .welcome-tip kbd {
+    margin: 0 2px;
+  }
+  .welcome-cta {
+    min-width: 200px;
+    padding: 11px 18px;
+    font-size: 14px;
+  }
+  .welcome-cta:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.4);
+  }
+  /* Margin'i butona değil, butonu içeren konteynerlere ver — böylece step 2'de
+     welcomeBack + welcomeStart aynı yatay hizada kalır (welcome-actions üzerinde tek margin) */
+  .welcome-pane > .welcome-cta { margin-top: 22px; }
+  .welcome-actions { margin-top: 22px; }
+
+  /* 2 kademeli karşılama: adım göstergesi + pane geçişleri */
+  .welcome-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0 18px;
+  }
+  .welcome-step-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-mute);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+  .welcome-step-dot.active {
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: #0b0f17;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18);
+  }
+  .welcome-step-dot.done {
+    background: var(--mvp);
+    color: #0b0f17;
+    border-color: var(--mvp);
+  }
+  .welcome-step-line {
+    width: 36px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    transition: background 0.2s ease;
+  }
+  .welcome-step-line.done {
+    background: var(--mvp);
+  }
+
+  .welcome-pane[hidden] { display: none; }
+
+  .welcome-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #welcomeBack {
+    min-width: auto;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 540px) {
+    .welcome-features {
+      grid-template-columns: 1fr;
+    }
+    .welcome-actions {
+      flex-direction: column-reverse;
+    }
+    .welcome-actions > .btn {
+      width: 100%;
+    }
+  }
+
+  /* Framework picker (welcome modalı içinde + framework switch modalı) */
+  .framework-pick {
+    text-align: left;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 16px 14px;
+    margin: 0 0 18px;
+  }
+  .framework-pick-q {
+    font-size: 14px !important;
+    font-weight: 600;
+    color: var(--text) !important;
+    margin: 0 0 4px !important;
+  }
+  .framework-pick-sub,
+  .framework-modal-sub {
+    font-size: 12.5px !important;
+    color: var(--text-dim) !important;
+    margin: 0 0 12px !important;
+    line-height: 1.5 !important;
+  }
+  .framework-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* Tek başına kalan 5. seçenek son satırda tam genişlik + yatay düzen
+     (yalnızca tek kalan tek-numaralı son element için, 4'lü grid'de etki yok) */
+  .framework-options > .framework-option:nth-child(odd):last-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-emoji {
+    font-size: 22px;
+    margin-bottom: 0;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-title {
+    font-size: 14px;
+  }
+  .framework-options > .framework-option:nth-child(odd):last-child .fw-desc {
+    font-size: 11.5px;
+    margin-left: 4px;
+  }
+  .framework-option {
+    appearance: none;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+  .framework-option:hover {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .framework-option.selected {
+    border-color: var(--accent);
+    background: var(--hero-grad);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .framework-option .fw-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .framework-option .fw-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .framework-option .fw-desc {
+    font-size: 11.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 420px) {
+    .framework-options { grid-template-columns: 1fr; }
+  }
+
+  /* Dil seçimi: 2 seçenekli, sade metin tabanlı kartlar (bayrak yok) */
+  .framework-options--lang {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .framework-options--lang .framework-option {
+    padding: 22px 14px 18px;
+    gap: 6px;
+  }
+  .framework-options--lang .framework-option .fw-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .framework-options--lang .framework-option .fw-desc {
+    font-size: 12px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  @media (max-width: 420px) {
+    .framework-options--lang { grid-template-columns: 1fr 1fr; }
+  }
+
+  .modal-content.modal-framework {
+    max-width: 520px;
+  }
+  .modal-content.modal-framework .modal-body {
+    padding-top: 4px;
+  }
+
+
+  /* ==================== ÇOKLU PROJE — WELCOME PROJE ADI ADIMI ==================== */
+  .welcome-projname-wrap {
+    margin: 18px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .welcome-projname-input {
+    appearance: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .welcome-projname-input::placeholder {
+    color: var(--text-mute);
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .welcome-projname-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+  .welcome-projname-error {
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 4px;
+  }
+

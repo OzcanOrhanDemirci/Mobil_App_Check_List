@@ -18,6 +18,20 @@ assets/
 js/01-i18n-strings.js
 js/02-help-content.js
 js/03-data.js
+js/03a-data-01-idea-planning.js
+js/03b-data-02-design.js
+js/03c-data-03-code-layout.js
+js/03d-data-04-git.js
+js/03e-data-05-api.js
+js/03f-data-06-backend.js
+js/03g-data-07-offline.js
+js/03h-data-08-testing.js
+js/03i-data-09-security.js
+js/03j-data-10-a11y.js
+js/03k-data-11-release.js
+js/03l-data-12-monetization.js
+js/03m-data-13-analytics.js
+js/03n-data-14-cicd.js
 js/04-projects.js
 js/04-storage.js
 js/05-backend.js
@@ -30,14 +44,23 @@ js/10-clipboard.js
 js/11-render.js
 js/12-progress.js
 js/13-filters.js
-js/14-app.js
+js/14-welcome.js
+js/15-projects.js
+js/16-presentation.js
+js/17-install.js
+js/18-app.js
 sw.js
 
 css/01-base.css
 css/02-layout.css
 css/03-categories.css
 css/04-presentation.css
-css/05-modals.css
+css/05-modals-core.css
+css/05-modals-feedback.css
+css/05-hero-pills.css
+css/05-modals-welcome.css
+css/05-modals-install.css
+css/05-modals-projects.css
 css/06-responsive-print.css
 
 index.html

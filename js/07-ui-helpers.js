@@ -1,9 +1,14 @@
 function escapeHtml(str) {
+  /* Escapes the five characters that can break out of HTML text or
+     attribute contexts. The single-quote escape (&#39;) protects
+     attribute values quoted with single quotes; named entity &apos;
+     is HTML5-only and not honored in all XML-mode renderers. */
   return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 function stripHtml(str) {
   return String(str || "")

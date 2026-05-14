@@ -615,7 +615,7 @@ importFile.addEventListener("change", e => {
       updateProgress();
       applyFilters();
     } catch {
-      alert(t("misc.invalidFile"));
+      showToast(t("misc.invalidFile"), "warn", 3200);
     }
   };
   reader.readAsText(file);

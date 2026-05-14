@@ -196,3 +196,7 @@ Conventional commit prefixes (`feat:`, `fix:`, `docs:`, `refactor:`) are welcome
 ## Code of Conduct
 
 Participation in this project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By contributing, you agree to abide by its terms.
+
+## License of contributions
+
+This project is released under the [MIT License](../LICENSE). By submitting a pull request, you confirm that your contribution is your own work (or that you have the right to submit it) and you agree that it will be licensed to the project and its users under the same MIT License, without any additional terms or conditions. No separate Contributor License Agreement is required; the inbound license matches the outbound license.

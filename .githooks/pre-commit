@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# Local pre-commit guard for the Mobile App Quality Checklist PWA.
+#
+# Mirrors the CI gate so contributors catch lint, format, em-dash, and
+# test failures before pushing. Cross-platform: Git for Windows ships a
+# POSIX sh that runs this file on Windows checkouts identically to macOS
+# and Linux. No husky, no lefthook, no extra dependency: a contributor
+# opts in by running `npm install` once, which sets `core.hooksPath` to
+# this folder via the `prepare` script in package.json.
+#
+# Skip with `git commit --no-verify` when you intentionally want to
+# bypass these checks (e.g. work-in-progress branches).
+
+set -eu
+
+echo "[pre-commit] running lint, format check, em-dash check, and tests..."
+
+if [ ! -d node_modules ]; then
+  echo "[pre-commit] node_modules missing; running 'npm ci' first" >&2
+  npm ci --silent
+fi
+
+npm run lint --silent
+npm run format:check --silent
+node scripts/check-em-dash.mjs
+npm test --silent
+
+echo "[pre-commit] ok"

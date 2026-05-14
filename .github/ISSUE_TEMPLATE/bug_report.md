@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: "\U0001F41E Bug report"
 about: Report a bug to help improve the app
 title: "[Bug]: "
 labels: ["bug"]

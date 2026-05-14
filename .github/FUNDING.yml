@@ -6,7 +6,7 @@
 #
 # Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 
-# github: [OzcanOrhanDemirci]                          # GitHub Sponsors username or list
+github: [OzcanOrhanDemirci] # GitHub Sponsors username or list
 # patreon: your-patreon-username                       # Patreon page slug
 # open_collective: your-opencollective-name            # Open Collective page slug
 # ko_fi: your-ko-fi-username                           # Ko-fi username

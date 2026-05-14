@@ -1,0 +1,46 @@
+# Line ending normalization for cross-platform contributors.
+#
+# Git auto-detects text files and stores them with LF in the repository,
+# while honoring the platform's native line endings in the working tree
+# only when `core.autocrlf` is set on the contributor's machine. We pin
+# the working-tree endings to LF here so the repo matches `.editorconfig`
+# (`end_of_line = lf`) and `.prettierrc.json` (`"endOfLine": "lf"`).
+
+* text=auto eol=lf
+
+# Source and configuration files: always LF.
+*.js       text eol=lf
+*.mjs      text eol=lf
+*.cjs      text eol=lf
+*.json     text eol=lf
+*.html     text eol=lf
+*.css      text eol=lf
+*.md       text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.webmanifest text eol=lf
+*.txt      text eol=lf
+
+# Shell-style scripts under scripts/ should keep LF even on Windows
+# checkouts so they remain executable on contributor CI runners.
+*.sh       text eol=lf
+
+# Treat the following as binary so Git does not attempt diff or
+# end-of-line conversion (would corrupt them).
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.webp     binary
+*.ico      binary
+*.pdf      binary
+*.woff     binary
+*.woff2    binary
+*.ttf      binary
+*.otf      binary
+*.eot      binary
+*.mp4      binary
+*.webm     binary
+
+# Hide generated or vendored files from diff noise in pull requests.
+package-lock.json linguist-generated=true
