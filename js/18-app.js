@@ -5,7 +5,9 @@ document.getElementById("expandAllBtn").addEventListener("click", () => {
     collapsedCats.delete(c.id);
   });
   saveCollapsed();
-  /* collapsedCats artık boş, "Tümünü Aç" turuncu, "Tümünü Kapat" pasif */
+  /* Kullanıcı collapse pair'ine bilinçli dokundu; ilk-açılış sönük durumundan
+     çık, vurgu artık DOM ile eşleşmeyle çalışır. */
+  if (typeof markCollapseTouched === "function") markCollapseTouched();
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
@@ -16,7 +18,8 @@ document.getElementById("collapseAllBtn").addEventListener("click", () => {
     collapsedCats.add(c.id);
   });
   saveCollapsed();
-  /* collapsedCats artık tüm kategorileri içeriyor, "Tümünü Kapat" turuncu */
+  /* Aynı sebep, mark collapse touched bayrağı; collapse vurgusu artık aktif. */
+  if (typeof markCollapseTouched === "function") markCollapseTouched();
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 });
 
@@ -47,6 +50,9 @@ function setAllCardsFlipped(flipped) {
 const flipAllHowBtn = document.getElementById("flipAllHowBtn");
 if (flipAllHowBtn) {
   flipAllHowBtn.addEventListener("click", () => {
+    /* Bilinçli toolbar tıklaması: flip vurgu bayrağını set et (welcome'da
+       mode seçimi MARK ETMEZ, sadece doğrudan UI etkileşimi). */
+    if (typeof markFlipTouched === "function") markFlipTouched();
     if (typeof applyMode === "function") applyMode("review");
     setAllCardsFlipped(true);
     showToast(t("flipAll.toastHow"), "info", 1400);
@@ -57,6 +63,8 @@ if (flipAllHowBtn) {
 const flipAllChecklistBtn = document.getElementById("flipAllChecklistBtn");
 if (flipAllChecklistBtn) {
   flipAllChecklistBtn.addEventListener("click", () => {
+    /* Aynı şekilde bilinçli toolbar tıklaması: flip vurgu bayrağını set et. */
+    if (typeof markFlipTouched === "function") markFlipTouched();
     if (typeof applyMode === "function") applyMode("build");
     setAllCardsFlipped(false);
     showToast(t("flipAll.toastChecklist"), "info", 1400);
@@ -236,7 +244,10 @@ function performReset(scope) {
     });
   }
 
-  /* Ayarlar: kategori collapse + tema + anlatım dili + view + lock */
+  /* Ayarlar: kategori collapse + tema + anlatım dili + view + lock.
+     Ek olarak toolbar pair'lerinin "kullanıcı seçti mi?" bayrakları
+     temizlenir; kullanıcı varsayılana döndüğü için collapse ve flip
+     vurguları yeniden ilk-açılış sönük durumuna iner. */
   if (scope.settings) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
@@ -245,6 +256,7 @@ function performReset(scope) {
     saveViewMode("both");
     saveViewFilter("all");
     saveLockState(false);
+    if (typeof clearCollapseFlipTouchFlags === "function") clearCollapseFlipTouchFlags();
   }
 
   /* UI'ı yenile */

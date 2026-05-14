@@ -122,6 +122,64 @@ function setView(mode, filter) {
   applyView();
 }
 
+/* ==================== TOOLBAR TOGGLE "USER CHOSE" BAYRAKLARI ====================
+   "Tümünü Aç / Kapat" ve "Tümü Nasıl / Liste" toolbar pair'leri DOM state'i
+   ile eşleşince turuncu vurgu (".active") alır. Ancak ilk açılışta state
+   varsayılan ayarlarla (tüm kategoriler kapalı, mod "build") başlar; bu
+   varsayılanlar kullanıcının BİLİNÇLİ seçimi değil. Bu yüzden kullanıcı
+   ilgili kontrole gerçekten dokunana kadar vurguyu göstermiyoruz.
+
+   Bayrak set edilir:
+     - Toolbar butonuna tıklanınca (expandAll, collapseAll, flipAllHow,
+       flipAllChecklist), VEYA
+     - Tek tek (kategori başlığı tıklama, kategori nav linki ile auto-open,
+       madde kartı flip butonu) state'i değiştirince.
+
+   Bayrak set edilmez:
+     - Welcome akışında kullanım biçimi seçilince (build/review): bu hâlâ
+       "ilk açılış" sayılır.
+     - applyInitialCardMode renderdan sonra kartları çevirince: kullanıcı
+       seçimini DOM'a uygulamak, yeni bir seçim değil.
+
+   Bayrak temizlenir:
+     - "Sıfırla > Tüm Sistem" zaten localStorage.clear() yapar.
+     - "Sıfırla > Ayarlar" scope'u clearCollapseFlipTouchFlags ile siler;
+       kullanıcı varsayılana dönmüş gibi hisseder. */
+
+const COLLAPSE_TOUCHED_KEY = "mobil_kontrol_user_chose_collapse_v1";
+const FLIP_TOUCHED_KEY = "mobil_kontrol_user_chose_flip_v1";
+
+function userChoseCollapseExplicitly() {
+  try {
+    return localStorage.getItem(COLLAPSE_TOUCHED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function userChoseFlipExplicitly() {
+  try {
+    return localStorage.getItem(FLIP_TOUCHED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function markCollapseTouched() {
+  try {
+    localStorage.setItem(COLLAPSE_TOUCHED_KEY, "1");
+  } catch {}
+}
+function markFlipTouched() {
+  try {
+    localStorage.setItem(FLIP_TOUCHED_KEY, "1");
+  } catch {}
+}
+function clearCollapseFlipTouchFlags() {
+  try {
+    localStorage.removeItem(COLLAPSE_TOUCHED_KEY);
+    localStorage.removeItem(FLIP_TOUCHED_KEY);
+  } catch {}
+}
+
 /* Hero dropdown'larındaki opsiyonların ve toolbar yan butonlarının disabled state'i:
    - Pending opsiyonu: ilgili seviyede hiç işaret yoksa devre dışı (filtre tüm maddeyi gösterir = gereksiz).
    - Done opsiyonu: ilgili seviyede hiç işaret yoksa devre dışı (gösterecek bir şey yok).
@@ -194,24 +252,34 @@ function updateToolbarButtonStates() {
      butonu aktif; karışık durumda ikisi de pasif. Sonuç olarak "şu an tümü
      açık" veya "şu an tümü kapalı" hissi anında görülebiliyor. Toplam
      kategori sayısını DATA'dan alıyoruz; DATA henüz yüklenmemişse (test
-     ortamı, edge case) DOM'daki .category sayısına düşüyoruz. */
+     ortamı, edge case) DOM'daki .category sayısına düşüyoruz.
+
+     Ek koşul: kullanıcı bu kontrole henüz dokunmadıysa state default ile
+     eşleşse bile vurgu uygulanmaz (userChoseCollapseExplicitly false).
+     Detay için dosyanın başındaki bayrak yorum bloğuna bak. */
   const totalCats = (typeof DATA !== "undefined" && Array.isArray(DATA))
     ? DATA.length
     : document.querySelectorAll(".category").length;
   const collapsedCount = collapsedCats ? collapsedCats.size : 0;
   const allOpen   = totalCats > 0 && collapsedCount === 0;
   const allClosed = totalCats > 0 && collapsedCount === totalCats;
-  expandBtn.classList.toggle("active", allOpen);
-  expandBtn.setAttribute("aria-pressed", allOpen ? "true" : "false");
-  collapseBtn.classList.toggle("active", allClosed);
-  collapseBtn.setAttribute("aria-pressed", allClosed ? "true" : "false");
+  const collapseExplicit = userChoseCollapseExplicitly();
+  const expandActive   = collapseExplicit && allOpen;
+  const collapseActive = collapseExplicit && allClosed;
+  expandBtn.classList.toggle("active", expandActive);
+  expandBtn.setAttribute("aria-pressed", expandActive ? "true" : "false");
+  collapseBtn.classList.toggle("active", collapseActive);
+  collapseBtn.setAttribute("aria-pressed", collapseActive ? "true" : "false");
 
   /* "Tümü Nasıl" / "Tümü Liste" seçili-durum vurgusu. currentMode'u kaynak
      olarak almak yetmiyor: kullanıcı bulk butona bastıktan sonra tek tek
      kartları kendisi çevirebilir; o anda DOM "karışık" duruma düşer ve hiç
      buton aktif olmamalı (Tümünü Aç / Tümünü Kapat pair'iyle simetrik
      davranış). Bu yüzden state'i .feature ve .feature.flipped DOM
-     sayılarından canlı türetiyoruz. */
+     sayılarından canlı türetiyoruz.
+
+     Ek koşul: collapse pair'iyle aynı mantıkla, kullanıcı henüz bir flip
+     etkileşimi yapmadıysa (welcome'da mode seçimi haric) vurgu uygulanmaz. */
   const howBtn  = document.getElementById("flipAllHowBtn");
   const listBtn = document.getElementById("flipAllChecklistBtn");
   if (howBtn && listBtn) {
@@ -219,10 +287,13 @@ function updateToolbarButtonStates() {
     const flippedFeatures = document.querySelectorAll(".feature.flipped").length;
     const allFlipped  = totalFeatures > 0 && flippedFeatures === totalFeatures;
     const noneFlipped = totalFeatures > 0 && flippedFeatures === 0;
-    howBtn.classList.toggle("active", allFlipped);
-    howBtn.setAttribute("aria-pressed", allFlipped ? "true" : "false");
-    listBtn.classList.toggle("active", noneFlipped);
-    listBtn.setAttribute("aria-pressed", noneFlipped ? "true" : "false");
+    const flipExplicit = userChoseFlipExplicitly();
+    const howActive  = flipExplicit && allFlipped;
+    const listActive = flipExplicit && noneFlipped;
+    howBtn.classList.toggle("active", howActive);
+    howBtn.setAttribute("aria-pressed", howActive ? "true" : "false");
+    listBtn.classList.toggle("active", listActive);
+    listBtn.setAttribute("aria-pressed", listActive ? "true" : "false");
   }
 
   /* Kilit butonu: hiç işaret yoksa gri */

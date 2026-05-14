@@ -252,6 +252,9 @@ function navigateToCategorySmart(catId) {
     catEl.classList.remove("collapsed");
     collapsedCats.delete(catSelector);
     saveCollapsed();
+    /* Kullanıcı kategori nav linki ile auto-open tetikledi: bu da
+       bilinçli bir collapse-state etkileşimi sayılır. */
+    if (typeof markCollapseTouched === "function") markCollapseTouched();
     /* Bir kategori daha açıldı; Tümünü Aç / Kapat butonlarının aktif
        vurgusu hâlâ doğru durumda mı kontrol et. */
     if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
@@ -604,6 +607,9 @@ function attachClickHandlers() {
       if (isCollapsed) collapsedCats.add(catId);
       else collapsedCats.delete(catId);
       saveCollapsed();
+      /* Doğrudan collapse-state etkileşimi: kullanıcı bilinçli olarak
+         bir kategoriyi açtı veya kapattı. */
+      if (typeof markCollapseTouched === "function") markCollapseTouched();
       /* Tek kategori değişti, artık "tümü açık" / "tümü kapalı" durumu
          koruyor mu yoksa karışığa mı düştü? Toolbar pair'ini senkronla. */
       if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
@@ -716,6 +722,10 @@ function attachClickHandlers() {
       if (!feature) return;
       const willFlip = !feature.classList.contains("flipped");
       flipFeatureCard(feature, willFlip);
+      /* Doğrudan flip-state etkileşimi: kullanıcı bilinçli olarak tek bir
+         kartı çevirdi. Flip vurgu bayrağı set edilir, böylece ilk-açılış
+         sönük durumundan çıkılır. */
+      if (typeof markFlipTouched === "function") markFlipTouched();
       /* Tek kart çevrildi: artık DOM'daki .flipped sayısı toplamla eşit
          veya sıfır olabilir veya karışık. Toolbar pair'inin .active
          vurgusunu yeniden hesaplat. */

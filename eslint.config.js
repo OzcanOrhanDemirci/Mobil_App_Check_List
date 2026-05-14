@@ -107,6 +107,13 @@ const projectGlobals = {
   applyView: "writable",
   setView: "writable",
   updateToolbarButtonStates: "writable",
+  /* Toolbar "user chose" bayrak yardımcıları. ilk-açılış sönük durumunu
+     kullanıcı bilinçli toolbar tıklaması veya doğrudan UI etkileşimine
+     kadar koruyan kontrol; "Sıfırla > Ayarlar" scope'u temizler. Detay
+     için js/06-view-state.js başındaki yorum bloğuna bak. */
+  markCollapseTouched: "writable",
+  markFlipTouched: "writable",
+  clearCollapseFlipTouchFlags: "writable",
 
   // js/07-ui-helpers.js
   escapeHtml: "writable",
