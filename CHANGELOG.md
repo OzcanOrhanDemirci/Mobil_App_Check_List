@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Open-source onboarding pass: the goal is that a contributor cloning the
-repo today reads accurate file-structure docs, finds the actual data
-shards on the first attempt, and has tests that demonstrate the
-XSS-defense and progress-counting code paths work as intended.
+## [1.2.0] - 2026-05-14
+
+Public release. This is the first version tagged for the world: the
+1.0 and 1.1 entries below were internal milestones (feature freeze on
+2026-05-12, then a hardening round on 2026-05-14) that prepared the
+codebase. The 1.2 pass focused on what an external contributor would
+actually see when they land on the repository: documentation that
+matches the on-disk reality, a default README in English with
+language-keyed screenshots, automated Service Worker cache versioning,
+a tripled test surface (151 to 241 tests), form-based issue templates
+with dropdowns for framework / backend / language / style, and
+explicit XSS-safety invariants on the content data.
 
 ### Added
 
@@ -120,7 +128,7 @@ XSS-defense and progress-counting code paths work as intended.
   extracted form is unit-testable without constructing a DOM;
   `tests/filters.test.js` exercises the full filter matrix.
 - `sw.js` cache key is now derived from the project version
-  (`mobil-kontrol-v1.1.0` at the time of this entry) so a release bump
+  (`mobil-kontrol-v1.2.0` for this release) so a release bump
   automatically invalidates the old PWA cache. Manual cache bumps
   (the old `mobil-kontrol-v3` constant) are no longer required.
 - `js/15-projects.js` row-button `title` attribute no longer leaks the
@@ -453,6 +461,7 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/tag/v1.0.0

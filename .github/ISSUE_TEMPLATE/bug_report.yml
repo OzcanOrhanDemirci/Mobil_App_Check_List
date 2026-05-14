@@ -57,7 +57,7 @@ body:
     attributes:
       label: App version
       description: The latest version in [CHANGELOG.md](../../CHANGELOG.md), or the commit SHA if you built from main.
-      placeholder: 1.1.0
+      placeholder: 1.2.0
     validations:
       required: true
 
