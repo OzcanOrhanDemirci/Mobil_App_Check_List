@@ -206,21 +206,23 @@ function updateToolbarButtonStates() {
   collapseBtn.classList.toggle("active", allClosed);
   collapseBtn.setAttribute("aria-pressed", allClosed ? "true" : "false");
 
-  /* "Tümü Nasıl" / "Tümü Liste" seçili-durum vurgusu. currentMode aktif kart
-     görsel modunu tanımlar (review = arka yüz / Nasıl Yapılır?, build = ön
-     yüz / kontrol listesi). Buton, kendisinin temsil ettiği mod aktif iken
-     turuncu görünür. */
+  /* "Tümü Nasıl" / "Tümü Liste" seçili-durum vurgusu. currentMode'u kaynak
+     olarak almak yetmiyor: kullanıcı bulk butona bastıktan sonra tek tek
+     kartları kendisi çevirebilir; o anda DOM "karışık" duruma düşer ve hiç
+     buton aktif olmamalı (Tümünü Aç / Tümünü Kapat pair'iyle simetrik
+     davranış). Bu yüzden state'i .feature ve .feature.flipped DOM
+     sayılarından canlı türetiyoruz. */
   const howBtn  = document.getElementById("flipAllHowBtn");
   const listBtn = document.getElementById("flipAllChecklistBtn");
-  if (howBtn) {
-    const isReview = currentMode === "review";
-    howBtn.classList.toggle("active", isReview);
-    howBtn.setAttribute("aria-pressed", isReview ? "true" : "false");
-  }
-  if (listBtn) {
-    const isBuild = currentMode === "build";
-    listBtn.classList.toggle("active", isBuild);
-    listBtn.setAttribute("aria-pressed", isBuild ? "true" : "false");
+  if (howBtn && listBtn) {
+    const totalFeatures   = document.querySelectorAll(".feature").length;
+    const flippedFeatures = document.querySelectorAll(".feature.flipped").length;
+    const allFlipped  = totalFeatures > 0 && flippedFeatures === totalFeatures;
+    const noneFlipped = totalFeatures > 0 && flippedFeatures === 0;
+    howBtn.classList.toggle("active", allFlipped);
+    howBtn.setAttribute("aria-pressed", allFlipped ? "true" : "false");
+    listBtn.classList.toggle("active", noneFlipped);
+    listBtn.setAttribute("aria-pressed", noneFlipped ? "true" : "false");
   }
 
   /* Kilit butonu: hiç işaret yoksa gri */

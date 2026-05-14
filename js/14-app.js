@@ -36,6 +36,9 @@ function setAllCardsFlipped(flipped) {
       f.classList.toggle("flipped", flipped);
     }
   });
+  /* Tüm kartlar artık aynı yüzde; "Tümü Nasıl" veya "Tümü Liste"
+     turuncu olmalı (DOM sayısından türetilir). */
+  if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
 }
 
 /* "❔ Tümü Nasıl?" — toolbar'dan tüm kartları arka yüze çevirir VE kullanım

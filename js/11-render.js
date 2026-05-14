@@ -716,6 +716,10 @@ function attachClickHandlers() {
       if (!feature) return;
       const willFlip = !feature.classList.contains("flipped");
       flipFeatureCard(feature, willFlip);
+      /* Tek kart çevrildi: artık DOM'daki .flipped sayısı toplamla eşit
+         veya sıfır olabilir veya karışık. Toolbar pair'inin .active
+         vurgusunu yeniden hesaplat. */
+      if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
     });
   });
 
