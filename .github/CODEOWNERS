@@ -1,0 +1,31 @@
+# Code owners for the Mobile App Quality Checklist PWA.
+#
+# The owners listed below are automatically requested for review when a pull
+# request modifies code they own. The last matching pattern in this file
+# takes precedence, so place specific rules after broader ones.
+#
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repository.
+* @OzcanOrhanDemirci
+
+# Sensitive metadata: license, security policy, CI definitions, dependency
+# update bot configuration. Listed explicitly so the maintainer is notified
+# even if a future contributor's PR happens to also touch broader paths.
+/LICENSE                                @OzcanOrhanDemirci
+/.github/SECURITY.md                    @OzcanOrhanDemirci
+/.github/workflows/                     @OzcanOrhanDemirci
+/.github/dependabot.yml                 @OzcanOrhanDemirci
+/.well-known/security.txt               @OzcanOrhanDemirci
+
+# Core content surface: any change to UI strings, item content, or help text
+# touches what users read directly. These files carry the em-dash rule and
+# the bilingual TR/EN contract documented in CONTRIBUTING.md.
+/js/01-i18n-strings.js                  @OzcanOrhanDemirci
+/js/02-help-content.js                  @OzcanOrhanDemirci
+/js/03-data.js                          @OzcanOrhanDemirci
+
+# Resolver and axis definitions. Touching these affects how every item is
+# rendered for every framework, backend, language, and explanation style.
+/js/05-framework.js                     @OzcanOrhanDemirci
+/js/05-backend.js                       @OzcanOrhanDemirci

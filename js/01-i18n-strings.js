@@ -14,7 +14,7 @@ let currentLang = (() => {
 })();
 
 /* ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
-   Global tercih; localStorage'da tema gibi saklanır. Default "technical" —
+   Global tercih; localStorage'da tema gibi saklanır. Default "technical",
    eski kullanıcı içerikleri olduğu gibi görsün diye. Yeni kullanıcılar
    welcome akışının 3. adımında seçer. */
 const STYLE_KEY = "mobil_kontrol_style_v1";
@@ -27,7 +27,7 @@ let currentStyle = (() => {
 
 /* ==================== KULLANIM BİÇİMİ (GELİŞTİRME / İNCELEME) ====================
    Global tercih; localStorage'da saklanır. Welcome akışının 2. adımında seçilir.
-   Default "build" — kart ön yüzü (checklist) ile başlar.
+   Default "build": kart ön yüzü (checklist) ile başlar.
    "review" seçilirse renderdan hemen sonra tüm kartlar sessizce arka yüze
    (Nasıl Yapılır? rehberi) çevrilir. Kullanıcı toolbar'daki "❔ Tümü Nasıl?" /
    "📋 Tümü Liste" butonlarıyla seans içinde modu değiştirebilir; bu butonlar
@@ -247,7 +247,7 @@ const UI_STRINGS = {
   "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
   "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
 
-  // welcome — kullanım biçimi (2. adım: Geliştirme vs İnceleme)
+  // welcome: kullanım biçimi (2. adım: Geliştirme vs İnceleme)
   "welcome.modeQuestion": { tr: "Neye odaklanmak istersin?", en: "What would you like to focus on?" },
   "welcome.modeSub": { tr: "Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için \"nasıl yapılır?\" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.", en: "This app can be used in two ways: as a step-by-step checklist while building a new app; or as a \"how to\" guide for each item while auditing an app you already have. You can switch any time from the top buttons." },
   "welcome.modeAria": { tr: "Kullanım biçimi seçimi", en: "Usage mode selection" },
@@ -256,7 +256,7 @@ const UI_STRINGS = {
      ETİKETLER tam tersine eşlenir:
        - welcome.mode.build.*  → "❔ Geliştirme" butonu (data-welcome-mode="review")
        - welcome.mode.review.* → "📋 İnceleme" butonu (data-welcome-mode="build")
-     Sebep: kullanıcı niyeti ile kart görsel durumu farklı kavramlar — yeni
+     Sebep: kullanıcı niyeti ile kart görsel durumu farklı kavramlar; yeni
      uygulama geliştirirken Nasıl Yapılır? rehberi, mevcut uygulamayı kontrol
      ederken sade checklist daha kullanışlı. */
   "welcome.mode.build.title": { tr: "❔ Geliştirme", en: "❔ Building" },
@@ -289,7 +289,7 @@ const UI_STRINGS = {
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
   "welcome.start": { tr: "Tamam, Başlayalım", en: "OK, Let's Start" },
 
-  // welcome — project name (yeni adım: dil → proje adı → framework → karşılama)
+  // welcome: project name (yeni adım: dil → proje adı → framework → karşılama)
   "welcome.projNameQuestion": { tr: "Bu listeyle hangi projenin kontrolünü yapacaksın?", en: "Which project will you check with this list?" },
   "welcome.projNameSub": { tr: "Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.", en: "Give your project a name. You can rename it later or add new projects any time." },
   "welcome.projNameAria": { tr: "Proje adı", en: "Project name" },
@@ -460,7 +460,7 @@ const UI_STRINGS = {
   "howto.back":       { tr: "Geri",   en: "Back" },
   "howto.flipTitle":  { tr: "Bu maddeyi nasıl tamamlayacağını öğren", en: "Learn how to complete this item" },
   "howto.flipAria":   { tr: "Nasıl yapılır rehberini aç/kapat", en: "Toggle how-to guide" },
-  "howto.intro":      { tr: "Aşağıdaki adımları takip et — ön yüzdeki hedefe ulaşmanı sağlar. <em>Bu sayfada işaretleme kutusu yoktur; tamamlandığında üst-sağ köşedeki butonla kartı geri çevirip ön yüzde işaretle.</em>", en: "Follow the steps below to reach the goal on the front. <em>There are no checkboxes on this side; once you're done, flip the card back via the top-right button and check it off on the front.</em>" },
+  "howto.intro":      { tr: "Aşağıdaki adımları takip et: ön yüzdeki hedefe ulaşmanı sağlar. <em>Bu sayfada işaretleme kutusu yoktur; tamamlandığında üst-sağ köşedeki butonla kartı geri çevirip ön yüzde işaretle.</em>", en: "Follow the steps below to reach the goal on the front. <em>There are no checkboxes on this side; once you're done, flip the card back via the top-right button and check it off on the front.</em>" },
   "howto.empty":      { tr: "Bu madde için ayrı bir nasıl-yapılır rehberi yok; ön yüzdeki açıklama yeterince yönlendirici. AI'a sor butonu ile de daha derin yardım alabilirsin.", en: "There is no separate how-to guide for this item; the front-face description is self-explanatory. You can also use the Ask AI button for deeper help." },
 
   // ==================== ANLATIM DİLİ (BASİT / TEKNİK) ====================
@@ -488,7 +488,7 @@ const UI_STRINGS = {
   "welcome.beHint.noBackend": { tr: "İnternete bağlanmayan bir uygulama. Hiçbir backend adımı listede görünmez.", en: "An app that never goes online. No backend items appear in the list." },
 
   // hero pill: backend leg
-  "be.pill.title": { tr: "Aktif backend — değiştirmek için tıkla", en: "Active backend — click to change" },
+  "be.pill.title": { tr: "Aktif backend: değiştirmek için tıkla", en: "Active backend: click to change" },
 
   // backend modal tab (in projfwModal)
   "proj.tab.backend": { tr: "Backend", en: "Backend" },

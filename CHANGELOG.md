@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `tests/data.test.js`: schema integrity tests for `js/03-data.js`. Locks
+  category and feature counts to the figures in the README and this
+  CHANGELOG, validates feature id uniqueness and category-prefix matching,
+  rejects unknown framework or backend keys inside `variants` /
+  `backendVariants` / `simpleBackend`, and asserts every required TR / EN
+  translation is non-empty.
+- `tests/projects.test.js`: coverage for the multi-project store
+  (`js/04-projects.js`). Exercises `createProject`, `renameProject`,
+  `deleteProject`, `setActiveProjectId`, and `setProjectField`, the
+  20-project cap and 60-character name cap, case- and trim-insensitive
+  duplicate detection, the legacy v1 to v2 migration that runs at module
+  load (including backend backfill and stale `activeId` repair), and the
+  `localStorage` round-trip.
+- `scripts/check-em-dash.mjs`: a Node script that scans
+  `js/01-i18n-strings.js`, `js/02-help-content.js`, `js/03-data.js`, and
+  `index.html` for em-dash characters in user-facing strings. The
+  standalone placeholder string `"—"` used in the data file for empty
+  cells is explicitly allowed; anything else fails the check.
+- New CI job `em-dash-check` runs `scripts/check-em-dash.mjs` on every
+  push and pull request, so the project's em-dash content rule documented
+  in `.github/CONTRIBUTING.md` is now enforced automatically.
+- `.github/CODEOWNERS`: every path is owned by the maintainer; sensitive
+  metadata (license, security policy, CI definitions, dependabot config,
+  core content surfaces, resolver and axis modules) is called out
+  explicitly so reviews are routed correctly.
+- `.github/FUNDING.yml`: a template with every supported platform listed
+  as a commented-out line. The file is intentionally inert until a
+  platform is uncommented; no "Sponsor" button appears in its default
+  state.
+
+### Changed
+
+- `tests/_setup.js` now accepts options. The `extraFiles` option loads
+  additional source files into the same realm (used by the data tests to
+  pull in `js/03-data.js`), and the `localStorageSeed` option
+  pre-populates the in-memory localStorage stub before the scripts run
+  (used by the migration tests to simulate a returning v1 or
+  pre-backend user). The adapter mirrors the project store's public API
+  onto the sandbox so tests can drive `createProject`,
+  `setActiveProjectId`, and the rest directly. Existing callers using
+  `loadAppContext()` with no arguments are unaffected.
+- `.github/CONTRIBUTING.md` now documents the em-dash CI check and its
+  placeholder exemption, the requirement to declare every new top-level
+  global in `eslint.config.js`, the three test suites that live under
+  `tests/`, the loader options on `tests/_setup.js`, and the cross-realm
+  caveat for `assert.deepStrictEqual` against sandbox-realm values.
+- `.github/workflows/ci.yml`: the header comment lists every job the
+  workflow runs, now including `em-dash-check`.
+
+### Fixed
+
+- Replaced 104 prose em-dash characters across 65 lines with
+  context-appropriate punctuation (comma, colon, semicolon, or
+  parentheses) in `js/01-i18n-strings.js` (7 lines: 2 UI strings and 5
+  internal comments), `js/03-data.js` (55 lines, holding 93 em-dashes
+  spread across feature content and How-To steps in both TR and EN), and
+  `index.html` (3 lines, all HTML comments). The placeholder `"—"`
+  strings inside `js/03-data.js`, which represent intentionally-empty
+  cells in the resolver, were left in place; the new CI check explicitly
+  allows them.
+
 ## [1.0.0] - 2026-05-12
 
 First public release. The application reached feature completeness as a static,

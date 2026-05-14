@@ -1,0 +1,17 @@
+# Funding sources for the Mobile App Quality Checklist PWA.
+#
+# Every entry below is commented out, so this file currently produces no
+# "Sponsor" button on the repository page. Uncomment a single line to
+# advertise an active platform. You can list more than one.
+#
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# github: [OzcanOrhanDemirci]                          # GitHub Sponsors username or list
+# patreon: your-patreon-username                       # Patreon page slug
+# open_collective: your-opencollective-name            # Open Collective page slug
+# ko_fi: your-ko-fi-username                           # Ko-fi username
+# buy_me_a_coffee: your-buymeacoffee-username          # Buy Me A Coffee username
+# liberapay: your-liberapay-username                   # Liberapay username
+# polar: your-polar-username                           # Polar username
+# tidelift: npm/mobil-app-check-list                   # platform-name/package-name
+# custom: ["https://example.com/donate"]               # Up to four custom URLs

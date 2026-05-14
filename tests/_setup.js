@@ -6,17 +6,32 @@
    browser-style globals stubbed (localStorage, window, document).
 
    Public surface:
-     loadAppContext()   returns a fresh sandbox object whose properties
-                        are the script-mode globals of the loaded files,
-                        e.g. ctx.tx, ctx.resolveLevel, ctx.currentLang,
-                        ctx.currentStyle, ctx.currentFramework,
-                        ctx.currentBackend.
+     loadAppContext()                       returns a fresh sandbox object
+                                            whose properties are the script-
+                                            mode globals of the loaded
+                                            files (tx, resolveLevel, ...).
+
+     loadAppContext({ extraFiles: [...] })  same but also loads the listed
+                                            extra files into the same realm,
+                                            useful for data-driven tests
+                                            that need js/03-data.js.
+
+     loadAppContext({ localStorageSeed:     pre-populates the in-memory
+       { key: "value", ... } })             localStorage stub BEFORE the
+                                            script files run, so migration
+                                            tests can simulate a returning
+                                            user with legacy data.
 
    The script-mode globals (`let currentLang` etc.) live in the realm's
    script lexical scope, not on the sandbox object. To mutate them from
    tests, the setup injects an adapter script that exposes
    ctx.__setAxes({lang, style, framework, backend}) and
    ctx.__getAxes() functions on the sandbox. Tests should use those.
+
+   The adapter also mirrors a few common script-mode bindings onto the
+   sandbox so tests can read them directly: tx, resolveLevel,
+   VALID_FRAMEWORKS, VALID_BACKENDS, and DATA when it has been loaded
+   via extraFiles.
 
    No file under js/ is modified. No network, no real localStorage, no
    timing. The context is fresh per loadAppContext() call so tests are
@@ -72,8 +87,13 @@ function makeLocalStorageStub() {
   };
 }
 
-function loadAppContext() {
+function loadAppContext({ extraFiles = [], localStorageSeed = null } = {}) {
   const localStorage = makeLocalStorageStub();
+  if (localStorageSeed && typeof localStorageSeed === "object") {
+    for (const key of Object.keys(localStorageSeed)) {
+      localStorage.setItem(key, localStorageSeed[key]);
+    }
+  }
   const sandbox = {
     /* Browser-ish globals the loaded scripts reference at evaluation time. */
     localStorage,
@@ -89,17 +109,19 @@ function loadAppContext() {
 
   const ctx = vm.createContext(sandbox);
 
-  for (const rel of SCRIPT_FILES) {
+  /* Load the default minimal set of files first, then any caller-requested
+     extras. The order matters: extras may depend on earlier definitions
+     (e.g. js/03-data.js relies on no earlier file but may grow to). */
+  for (const rel of [...SCRIPT_FILES, ...extraFiles]) {
     const abs = path.join(REPO_ROOT, rel);
     const src = fs.readFileSync(abs, "utf8");
     vm.runInContext(src, ctx, { filename: rel });
   }
 
-  /* Adapter: script-scoped let bindings (currentLang, currentStyle,
-     currentFramework, currentBackend) are shared across runInContext
-     calls in the same realm, but not visible as sandbox properties.
-     We inject setter / getter functions that DO close over the same
-     lexical scope, then attach them to the sandbox. */
+  /* Adapter: script-scoped let / const bindings (currentLang, DATA, ...)
+     are shared across runInContext calls in the same realm, but not
+     visible as sandbox properties. We inject setter / getter functions
+     and selective mirrors that close over the same lexical scope. */
   const adapterSrc = `
     (function () {
       globalThis.__setAxes = function (opts) {
@@ -116,9 +138,38 @@ function loadAppContext() {
           backend:   currentBackend
         };
       };
-      /* Mirror tx / resolveLevel onto the sandbox so tests can call them. */
-      globalThis.tx           = tx;
-      globalThis.resolveLevel = resolveLevel;
+      /* Mirror commonly-tested script bindings onto the sandbox. The DATA
+         constant is only defined when the caller loaded js/03-data.js via
+         extraFiles, so guard with typeof to avoid a ReferenceError. */
+      globalThis.tx               = tx;
+      globalThis.resolveLevel     = resolveLevel;
+      globalThis.VALID_FRAMEWORKS = VALID_FRAMEWORKS;
+      globalThis.VALID_BACKENDS   = VALID_BACKENDS;
+      if (typeof DATA !== "undefined") globalThis.DATA = DATA;
+
+      /* Multi-project store: mirror the public API and constants. The
+         private projectsStore binding is exposed through a getter so tests
+         can inspect raw state without being able to clobber it accidentally. */
+      globalThis.createProject          = createProject;
+      globalThis.renameProject          = renameProject;
+      globalThis.deleteProject          = deleteProject;
+      globalThis.listProjects           = listProjects;
+      globalThis.projectsCount          = projectsCount;
+      globalThis.findProjectById        = findProjectById;
+      globalThis.projectExistsByName    = projectExistsByName;
+      globalThis.getActiveProject       = getActiveProject;
+      globalThis.getActiveProjectData   = getActiveProjectData;
+      globalThis.getActiveProjectId     = getActiveProjectId;
+      globalThis.getProjectField        = getProjectField;
+      globalThis.setProjectField        = setProjectField;
+      globalThis.setActiveProjectId     = setActiveProjectId;
+      globalThis.resetAllProjects       = resetAllProjects;
+      globalThis.emptyProjectData       = emptyProjectData;
+      globalThis.PROJECTS_KEY           = PROJECTS_KEY;
+      globalThis.PROJECTS_LIMIT         = PROJECTS_LIMIT;
+      globalThis.PROJECT_NAME_MAX       = PROJECT_NAME_MAX;
+      globalThis.LEGACY_KEYS            = LEGACY_KEYS;
+      globalThis.__getProjectsStore     = function () { return projectsStore; };
     })();
   `;
   vm.runInContext(adapterSrc, ctx, { filename: "tests/_adapter.js" });

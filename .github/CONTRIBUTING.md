@@ -128,28 +128,46 @@ Mirror the framework process:
 
 ## Coding standards
 
-- **Never use the em dash character (`—`) in any user-facing text or data.** Use commas, colons, semicolons, parentheses, or hyphens (`-`) instead. This rule applies to translation strings, item content, How-To steps, and anything a user might read.
+- **Never use the em dash character (`—`) in any user-facing text or data.** Use commas, colons, semicolons, parentheses, or hyphens (`-`) instead. This rule applies to translation strings, item content, How-To steps, and anything a user might read. CI runs `node scripts/check-em-dash.mjs` against `js/01-i18n-strings.js`, `js/02-help-content.js`, `js/03-data.js`, and `index.html` to enforce it. The standalone placeholder string `"—"` used inside `js/03-data.js` for empty cells is explicitly allowed; anything else that contains an em-dash is rejected.
 - 2-space indentation, semicolons at end of statements, double quotes (`"..."`) in all `js/` files. The sole exception is `sw.js`, which uses single quotes by historical convention.
-- Plain `<script>`-loaded JavaScript, not ES modules. Functions and constants are intentionally global so files can share state without an import graph. Preserve this pattern.
+- Plain `<script>`-loaded JavaScript, not ES modules. Functions and constants are intentionally global so files can share state without an import graph. Preserve this pattern. **When you add a new top-level function or constant in any `js/*.js` file, also add its name to the matching `projectGlobals` block in `eslint.config.js`.** ESLint's flat config tracks the project's globals explicitly because there is no module system; a missing entry shows up as a `no-undef` error in the file that consumes it.
 - ES2020+ syntax is fine. No transpilation runs, so avoid features that are not supported by the [browsers we target](../README.en.md#browser-support).
 - CSS: edit the category file that owns the affected area. Use existing custom properties (`var(--...)`) for colors, radii, spacing.
 
 ## Tests and linting
 
-The project uses ESLint (flat config) and the Node built-in test runner. Install dev tooling once:
+The project uses ESLint (flat config), Prettier, and the Node built-in test runner. Install dev tooling once:
 
 ```bash
 npm install
 ```
 
-Before opening a PR, run:
+Before opening a PR, run all of the following locally:
 
 ```bash
-npm run lint
-npm test
+npm run lint                       # ESLint with --max-warnings=0
+npm run format:check               # Prettier check; run `npm run format` to auto-fix
+npm test                           # node --test against tests/*.test.js
+node scripts/check-em-dash.mjs     # content rule: no em-dash in user-facing files
 ```
 
-Both must pass with zero warnings. Tests live under `tests/`. Lint rules live in `eslint.config.js`.
+Each must exit cleanly (no warnings, no failures). CI runs the same commands plus an HTML validator (`npx html-validate index.html`) and a JS syntax check on every `js/*.js` file. Lint rules live in `eslint.config.js`.
+
+### Test suites
+
+Three suites live under `tests/`. All of them load the real `js/*.js` files into a fresh `node:vm` sandbox via `tests/_setup.js`, so the tests exercise production code paths without any fixture duplication.
+
+- `tests/resolver.test.js` covers the four-axis resolver (`resolveLevel`) and the i18n picker (`tx`).
+- `tests/data.test.js` covers `js/03-data.js` schema integrity: category and feature counts (locked to the figures in README and CHANGELOG), id uniqueness, axis variant key validity, non-empty TR / EN translations on every required field, and the em-dash content rule (with the placeholder exemption).
+- `tests/projects.test.js` covers the multi-project store (`js/04-projects.js`): create / rename / delete validation, the 20-project cap, legacy v1 to v2 migration, the localStorage round-trip, and active-project re-selection on delete.
+
+When adding a new test file, follow the existing patterns:
+
+- `loadAppContext()` returns a sandbox with the default minimal set of files loaded.
+- `loadAppContext({ extraFiles: ["js/03-data.js"] })` also loads extra source files, useful when tests need DATA.
+- `loadAppContext({ localStorageSeed: { key: "value" } })` pre-populates the in-memory localStorage stub before the scripts run, useful for migration tests.
+
+Cross-realm note: objects constructed inside the sandbox carry the sandbox realm's `Object.prototype`. `assert.deepStrictEqual` from `node:assert/strict` rejects them as not-equal even when the structure matches a main-realm literal. Use a JSON round-trip helper (see `plain()` in `tests/projects.test.js`) before comparing complex sandbox-realm values.
 
 ## Commit message convention
 
