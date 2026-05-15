@@ -36,7 +36,7 @@
     "url": "https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/issues"
   },
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.3.0",
     "globals": "^17.6.0",
     "prettier": "^3.4.0"
