@@ -206,7 +206,7 @@ function updateToolbarButtonStates() {
     const items = group.querySelectorAll(".lv-menu button");
     items.forEach(btn => {
       const filt = btn.dataset.viewFilter; // all | pending | done
-      let disabled = false;
+      let disabled;
       if (filt === "all") {
         disabled = false;
       } else if (mode === "mvp") {
