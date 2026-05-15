@@ -1,6 +1,6 @@
 {
   "name": "mobil-app-check-list",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Mobile app quality checklist PWA (Turkish/English) with 4-axis content resolution",
   "main": "index.html",
   "private": true,

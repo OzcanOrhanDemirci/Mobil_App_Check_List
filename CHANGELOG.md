@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-05-15
+
+Maintenance release: dependency bumps, ESLint 10 migration, branch
+protection on `main`, and documentation cleanup. No runtime behavior
+changes.
+
 ### Changed
 
 - Branch protection enabled on `main`: every change must arrive
@@ -14,6 +20,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   20 and 22, unit tests on Node 20 and 22, HTML validation, PWA
   sanity, em-dash rule, Service Worker cache version) pass before
   merge. Force pushes and branch deletion are blocked.
+- GitHub Actions bumped: `actions/checkout` 4 → 6 and
+  `actions/setup-node` 4 → 6 across `.github/workflows/ci.yml` and
+  `.github/workflows/deploy-pages.yml`. Picks up Node 24 support and
+  the move to a separate credential file under `$RUNNER_TEMP`.
+- Dev dependencies bumped: `eslint` 9.39.4 → 10.3.0, `@eslint/js`
+  9.39.4 → 10.0.1, `globals` 15.15.0 → 17.6.0. ESLint 10 raises the
+  development Node floor to 20.19+ or 22.13+; the CI matrix
+  (`["20", "22"]`) already runs on patch versions above that floor.
+- `.github/CONTRIBUTING.md` updated in two places: the Tests and
+  linting section calls out the new Node floor, and the Pull request
+  process section documents the branch-protection flow.
+- `.github/CODEOWNERS` now covers the 14 per-category data shards
+  (`03a-data-*.js` through `03n-data-*.js`) introduced in 1.1.0, so
+  shard PRs route to the maintainer by an explicit rule rather than
+  the `*` catch-all. The comment block reflects the post-split
+  layout.
+
+### Fixed
+
+- `updateToolbarButtonStates` in `js/06-view-state.js`: dropped the
+  dead initializer `let disabled = false;`. Every branch of the
+  following if/else unconditionally overwrote the value, so the
+  initial assignment was never read. Caught by the new
+  `no-useless-assignment` rule in `@eslint/js` 10's recommended set.
+  No behavior change.
 
 ## [1.2.0] - 2026-05-14
 
@@ -469,7 +500,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/tag/v1.0.0
