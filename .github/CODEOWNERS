@@ -20,10 +20,14 @@
 
 # Core content surface: any change to UI strings, item content, or help text
 # touches what users read directly. These files carry the em-dash rule and
-# the bilingual TR/EN contract documented in CONTRIBUTING.md.
+# the bilingual TR/EN contract documented in CONTRIBUTING.md. The 14
+# per-category data shards (03a-data-* through 03n-data-*) were split out
+# of the old monolithic 03-data.js in 1.1.0; the stub remains as a
+# re-export and the actual content lives in the shards.
 /js/01-i18n-strings.js                  @OzcanOrhanDemirci
 /js/02-help-content.js                  @OzcanOrhanDemirci
 /js/03-data.js                          @OzcanOrhanDemirci
+/js/03[a-n]-data-*.js                   @OzcanOrhanDemirci
 
 # Resolver and axis definitions. Touching these affects how every item is
 # rendered for every framework, backend, language, and explanation style.

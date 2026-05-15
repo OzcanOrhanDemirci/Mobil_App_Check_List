@@ -216,7 +216,7 @@ If your diff also touched the orchestration layer that was split out of `js/14-a
 
 ## Tests and linting
 
-The project uses ESLint (flat config), Prettier, and the Node built-in test runner. Install dev tooling once:
+The project uses ESLint (flat config), Prettier, and the Node built-in test runner. ESLint 10 requires **Node 20.19+ or 22.13+** (the same versions CI runs against); a 20.0-20.18 install will warn and may fail to install. Install dev tooling once:
 
 ```bash
 npm install
@@ -263,6 +263,8 @@ Cross-realm note: objects constructed inside the sandbox carry the sandbox realm
 Conventional commit prefixes (`feat:`, `fix:`, `docs:`, `refactor:`) are welcome but not required.
 
 ## Pull request process
+
+The `main` branch is protected: direct pushes are blocked and every change must arrive through a pull request whose CI status checks pass. The required checks are the eight jobs in `.github/workflows/ci.yml` (lint and unit tests on Node 20 and 22, HTML validation, PWA sanity, em-dash rule, Service Worker cache version).
 
 1. Fork the repository.
 2. Cut a feature branch off `main`: `git checkout -b feat/short-description`.
