@@ -1,10 +1,10 @@
 /* The cache key is auto-derived from `package.json` `version` by
-   `scripts/check-sw-cache-version.mjs`. A release bump (e.g. 1.1.0 to
-   1.2.0) therefore invalidates the old PWA cache automatically; clients
+   `scripts/check-sw-cache-version.mjs`. A release bump (e.g. 1.2.0 to
+   1.2.1) therefore invalidates the old PWA cache automatically; clients
    refetch the new assets on next visit. Manual edits to this line are
    overwritten by `npm run sw:sync` and rejected by CI / pre-commit if
    they go out of sync with package.json. */
-const CACHE_NAME = 'mobil-kontrol-v1.2.0';
+const CACHE_NAME = 'mobil-kontrol-v1.2.1';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
