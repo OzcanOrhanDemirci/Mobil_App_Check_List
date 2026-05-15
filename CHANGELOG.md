@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Branch protection enabled on `main`: every change must arrive
+  through a pull request whose eight CI status checks (lint on Node
+  20 and 22, unit tests on Node 20 and 22, HTML validation, PWA
+  sanity, em-dash rule, Service Worker cache version) pass before
+  merge. Force pushes and branch deletion are blocked.
+
 ## [1.2.0] - 2026-05-14
 
 Public release. This is the first version tagged for the world: the
