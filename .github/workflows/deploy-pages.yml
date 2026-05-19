@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Stage publishable files
         # Copy the site into a clean directory so the upload artifact does
