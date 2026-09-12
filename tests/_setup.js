@@ -119,16 +119,25 @@ function makeLocalStorageStub() {
    returns another stub, so any unexpected DOM access during module
    evaluation degrades silently instead of crashing the test. */
 function makeStubEl() {
+  /* Attributes are remembered rather than swallowed. js/19-design.js round
+     trips through documentElement's data-design (write, then read back to
+     work out whether the design actually changed), so a stub that always
+     returned null would make every applyDesign call look like a change. */
+  const attrs = new Map();
   return {
     addEventListener() {},
     removeEventListener() {},
     appendChild() {},
     removeChild() {},
     remove() {},
-    setAttribute() {},
-    removeAttribute() {},
-    getAttribute() {
-      return null;
+    setAttribute(name, value) {
+      attrs.set(String(name), String(value));
+    },
+    removeAttribute(name) {
+      attrs.delete(String(name));
+    },
+    getAttribute(name) {
+      return attrs.has(String(name)) ? attrs.get(String(name)) : null;
     },
     classList: {
       add() {},

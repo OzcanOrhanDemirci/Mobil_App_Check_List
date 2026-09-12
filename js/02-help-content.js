@@ -63,7 +63,7 @@ const HELP_HTML = {
           <li>Kilit durumu</li>
           <li>Kutlama bayrakları (kutlamayı bir kez gördüğünü hatırlar)</li>
         </ul>
-        <p><strong>Projeler arasında paylaşılan ayarlar:</strong> Tema (koyu/açık) ve dil (TR/EN) tüm projelerde ortaktır.</p>
+        <p><strong>Projeler arasında paylaşılan ayarlar:</strong> Tema (Klasik / Sade / Vitrin), renk modu (koyu / açık) ve dil (TR / EN) tüm projelerde ortaktır.</p>
 
         <p><strong>Proje pill'ine tıklayınca "Proje ve Framework" modal'ı açılır ve üç sekmesi vardır:</strong></p>
         <ul>
@@ -370,13 +370,26 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🌙 Tema (Koyu / Açık)</h3>
-        <p>Toolbar'daki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
+        <h3>🎨 Tema (Klasik / Sade / Vitrin)</h3>
+        <p>Toolbar'daki <strong>Tema</strong> butonu (ya da <kbd>T</kbd> tuşu) üç görünüm arasında geçiş yapar. <strong>Üçü de aynı içeriği ve aynı özellikleri taşır</strong>: 14 kategori, 55 madde, notlar, AI prompt'ları, sunum modu, yazdırma, proje yönetimi. Değişen yalnızca yerleşim, tipografi ve hareket.</p>
         <ul>
-          <li><strong>Koyu tema</strong>: gece veya az ışıklı ortamda gözü daha az yorar (varsayılan).</li>
-          <li><strong>Açık tema</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. Tüm renkler (MVP yeşil, Release mavi, accent turuncu) açık temada da koruma altında.</li>
+          <li><strong>Klasik</strong>: uygulamanın ilk sürümünden beri gelen görünüm. Renkli başlık, yuvarlak hatlar, kart yapısı.</li>
+          <li><strong>Sade</strong>: süsü kaldırıp içeriği bırakır. Nötr renkler, ince ayırıcı çizgiler, daha yoğun bir liste; ekrana daha çok madde sığar. 1140 pikselden geniş ekranlarda kategori listesi sol kenara sabitlenir, dokümantasyon sitesi gibi.</li>
+          <li><strong>Vitrin</strong>: birine göstermek için. Büyük tipografi, üstte üç ilerleme halkası, kaydırdıkça yerine oturan bölümler, okuma konumunu gösteren ince çizgi ve sağ kenarda bölüm noktaları.</li>
         </ul>
-        <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Tema değişikliği toast bildirimiyle onaylanır.</p>
+        <p><strong>Seçim pencere açıkken anında uygulanır</strong>, böylece arkadaki gerçek sayfada karşılaştırabilirsin. Tercih tarayıcına kaydedilir.</p>
+        <p><strong>Yazdırma çıktısı üç temada da aynıdır.</strong> Tema kuralları yalnızca ekrana uygulanır; teslim ettiğin PDF hangi temada çalıştığına bağlı değildir.</p>
+        <p>İşletim sisteminde <strong>"hareketi azalt"</strong> ayarı açıksa Vitrin temasındaki animasyonlar kapanır; yerleşim ve tipografi aynı kalır.</p>
+      </section>
+
+      <section>
+        <h3>🌙 Açık / Koyu Mod</h3>
+        <p>Toolbar'daki <strong>🌙 Koyu / ☀ Açık</strong> butonu renk modunu değiştirir. Bu, temadan <strong>ayrı bir ayardır</strong>: üç tema da hem açık hem koyu modda çalışır, yani altı kombinasyon vardır.</p>
+        <ul>
+          <li><strong>Koyu mod</strong>: gece veya az ışıklı ortamda gözü daha az yorar (varsayılan).</li>
+          <li><strong>Açık mod</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. MVP yeşili ve Release mavisi her iki modda da okunaklı kalacak şekilde ayarlandı.</li>
+        </ul>
+        <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Mod değişikliği toast bildirimiyle onaylanır.</p>
       </section>
 
       <section>
@@ -402,13 +415,14 @@ const HELP_HTML = {
           <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
           <li><kbd>/</kbd><span>Arama kutusuna odaklan (anında yazmaya başla)</span></li>
           <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
+          <li><kbd>T</kbd><span>Tema seçiciyi aç (Klasik / Sade / Vitrin)</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda önceki / sonraki kategori</span></li>
           <li><kbd>Boşluk</kbd> / <kbd>PageDown</kbd><span>Sunumda sonraki kategori (alternatif)</span></li>
           <li><kbd>PageUp</kbd><span>Sunumda önceki kategori (alternatif)</span></li>
           <li><kbd>Esc</kbd><span>Açık modal / dropdown / sunum modundan çık</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Tarayıcı yazdır (PDF kaydet de mümkün)</span></li>
         </ul>
-        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) tetiklenmez; yazdığın metni bozmaz.</em></p>
+        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>, <kbd>T</kbd>) tetiklenmez; yazdığın metni bozmaz.</em></p>
       </section>
   `,
   en: `
@@ -474,7 +488,7 @@ const HELP_HTML = {
           <li>Lock state</li>
           <li>Celebration flags (so you only see each celebration once)</li>
         </ul>
-        <p><strong>Settings shared across projects:</strong> Theme (dark/light) and language (TR/EN) are global; switching them in any project applies to all.</p>
+        <p><strong>Settings shared across projects:</strong> Theme (Classic / Minimal / Showcase), color mode (dark / light) and language (TR / EN) are global; switching them in any project applies to all.</p>
 
         <p><strong>Click the project pill to open the "Project and Framework" modal; it has three tabs:</strong></p>
         <ul>
@@ -781,11 +795,24 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🌙 Theme (Dark / Light)</h3>
-        <p>The toolbar's <strong>🌙 Dark / ☀ Light</strong> button toggles theme.</p>
+        <h3>🎨 Theme (Classic / Minimal / Showcase)</h3>
+        <p>The <strong>Theme</strong> button in the toolbar (or the <kbd>T</kbd> key) switches between three looks. <strong>All three carry the same content and the same features</strong>: 14 categories, 55 items, notes, AI prompts, presentation mode, printing, project management. Only layout, typography and motion change.</p>
+        <ul>
+          <li><strong>Classic</strong>: the look the project shipped with. Colored headline, rounded chrome, card surfaces.</li>
+          <li><strong>Minimal</strong>: strips the decoration and leaves the content. Neutral palette, hairline rules, a denser list so more items fit on screen. Above 1140px the category index becomes a sidebar, like a documentation site.</li>
+          <li><strong>Showcase</strong>: for showing someone. Display typography, three progress rings at the top, sections that settle into place as you scroll, a hairline tracking your reading position, and chapter dots down the right edge.</li>
+        </ul>
+        <p><strong>A pick applies instantly while the dialog is open</strong>, so you can compare against the real page behind it. Your choice is saved in the browser.</p>
+        <p><strong>The printed output is identical in all three.</strong> Theme rules apply to the screen only, so a PDF you hand over never depends on which theme you happened to be using.</p>
+        <p>If your operating system has <strong>reduce motion</strong> enabled, Showcase drops its animations; the layout and typography stay the same.</p>
+      </section>
+
+      <section>
+        <h3>🌙 Light / Dark Mode</h3>
+        <p>The toolbar's <strong>🌙 Dark / ☀ Light</strong> button switches the color mode. It is a <strong>separate setting from the theme</strong>: all three themes work in both modes, so there are six combinations.</p>
         <ul>
           <li><strong>Dark</strong>: easier on the eyes at night or in low light (default).</li>
-          <li><strong>Light</strong>: classic white look for daytime / well-lit environments. All accent colors (MVP green, Release blue, accent orange) hold up in light mode too.</li>
+          <li><strong>Light</strong>: classic white look for daytime / well-lit environments. MVP green and Release blue are tuned to stay readable in both modes.</li>
         </ul>
         <p>Your preference is <strong>saved in the browser</strong>. A toast confirms each change.</p>
       </section>
@@ -813,13 +840,14 @@ const HELP_HTML = {
           <li><kbd>?</kbd><span>Open this help dialog</span></li>
           <li><kbd>/</kbd><span>Focus the search box (start typing immediately)</span></li>
           <li><kbd>P</kbd><span>Open presentation mode</span></li>
+          <li><kbd>T</kbd><span>Open the theme picker (Classic / Minimal / Showcase)</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Previous / next category in presentation</span></li>
           <li><kbd>Space</kbd> / <kbd>PageDown</kbd><span>Next category in presentation (alternative)</span></li>
           <li><kbd>PageUp</kbd><span>Previous category in presentation (alternative)</span></li>
           <li><kbd>Esc</kbd><span>Close open modal / dropdown / exit presentation</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Browser print (also Save as PDF)</span></li>
         </ul>
-        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) won't fire while typing inside an input/textarea; your text stays intact.</em></p>
+        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>, <kbd>T</kbd>) won't fire while typing inside an input/textarea; your text stays intact.</em></p>
       </section>
   `
 };

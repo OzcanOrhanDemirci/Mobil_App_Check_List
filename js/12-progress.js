@@ -139,6 +139,8 @@ function updateProgress() {
   checkCelebrations(c);
   /* Check counts have changed, so refresh the disabled state of filter buttons. */
   if (typeof updateToolbarButtonStates === "function") updateToolbarButtonStates();
+  /* Showcase's progress rings read the same numbers the bars just used. */
+  if (typeof emitAppEvent === "function") emitAppEvent("checklist:progress", c);
 }
 
 /* ==================== COMPLETION CELEBRATIONS ====================

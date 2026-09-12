@@ -7,6 +7,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-09-12
+
+Three design themes, switchable at runtime. Feedback on the public demo
+was that the interface read as machine-generated: gradient headline,
+orange glow, pill-shaped everything, an emoji on every control. Rather
+than trade one opinion for another, the visual system became an axis of
+its own, alongside the existing light / dark color mode:
+
+```
+data-design   classic | minimal | showcase   layout, shape, typography, motion
+data-theme    dark | light                   color mode
+```
+
+Six combinations over one DOM, one data set and one feature set. Every
+theme carries the full application; a theme changes how the page looks,
+never what it can do. The printed page is identical in all three.
+
+### Added
+
+- `js/19-design.js`: the design axis. `applyDesign()`, the picker dialog,
+  persistence under `mobil_kontrol_design_v1`, the toolbar button label,
+  the `T` shortcut, and `resolveInitialDesign()`. A saved choice always
+  wins; anyone who has never opened the picker gets the default.
+- `css/07-design-minimal.css`: the **Minimal** theme, and the new
+  default. Neutral palette, hairline rules instead of card chrome, one
+  non-chromatic accent, decorative emoji hidden, a denser toolbar and
+  list. From 1140px the category index becomes a fixed rail in a
+  reserved left gutter and the page reads like documentation.
+- `css/08-design-showcase.css` + `js/20-showcase-motion.js`: the
+  **Showcase** theme. Display typography, a layered background, glass
+  surfaces, a hero stage with three animated progress rings,
+  reveal-on-scroll for chapters and cards, a reading-progress hairline,
+  and a chapter rail with scroll-spy from 1320px. The motion layer is an
+  IIFE that attaches only while Showcase is active and removes every
+  node and class it added when the theme changes.
+- `css/09-design-picker.css`: the picker dialog. Each theme's preview is
+  drawn in CSS rather than shipped as a screenshot, so the three
+  miniatures follow the reader's color mode and cannot go stale against
+  the real page.
+- `emitAppEvent()` in `js/07-ui-helpers.js`, plus the
+  `checklist:rendered`, `checklist:progress` and `design:changed` events.
+  Enhancement layers subscribe instead of patching the render path.
+- `tests/design.test.js`: 34 tests (suite 243 to 277). `normalizeDesign`
+  including the near misses, the full `resolveInitialDesign` decision
+  table, and `applyDesign` persistence including the `persist: false`
+  path. It also locks three cross-file invariants: that `DEFAULT_DESIGN`
+  and the design list match the copies inlined in `js/00-bootstrap.js`,
+  that every design rule sits inside `@media screen` (the mechanism
+  behind print parity), and that the Showcase layer's `detach()` clears
+  each class and node its `attach()` adds.
+- `.btn-emoji`: the emoji that used to sit inside four translated button
+  labels now live in their own `aria-hidden` span.
+
+### Changed
+
+- `js/00-bootstrap.js` resolves and applies the design before first
+  paint, next to the color mode and language it already handled.
+- The default look for a first visit is **Minimal**. A saved choice is
+  always honored, so nobody who has picked a theme is moved off it.
+- Wording in both languages: the light / dark switch is now a "mode",
+  and "theme" names the design. The help modal gained a Theme section
+  and a rewritten Light / Dark Mode section; `T` joined the shortcut
+  table.
+- `.btn-icon-text` was a marker class with no rules, so the icon in the
+  theme, lock and design buttons was spaced only by the emoji glyph's own
+  side bearing. It is now a flex row with a gap, which is what a drawn
+  SVG icon needs.
+- The two new designs restate the three surfaces the base sheets
+  hardcode a color for (the "MVP + Release" pill, the install banner and
+  its call to action) in their own palettes, rather than those values
+  being changed in the base sheets, which would alter Classic.
+- `README.md`, `README.tr.md`: a Design themes section, an updated
+  feature list, refreshed tech-stack rows and file counts (14 CSS, 37
+  JS), a new FAQ entry, and the design files in the project tree.
+- `.github/CONTRIBUTING.md`: the file layout covers the three new
+  stylesheets and the two new modules; a "Working with the three
+  designs" section states the four rules that keep the arrangement
+  honest; the test section documents the seventh suite and notes that
+  the behavioral half needs a browser.
+- `tests/_setup.js`: the DOM element stub remembers attributes instead of
+  swallowing them. `js/19-design.js` round-trips through
+  `documentElement`'s `data-design`, so a stub that always returned null
+  made every `applyDesign` call look like a change.
+
 ## [1.2.2] - 2026-09-12
 
 Content refresh. The 1.2.0 freeze was in May 2026; four months of
@@ -581,7 +665,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0

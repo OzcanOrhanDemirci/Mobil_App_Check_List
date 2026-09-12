@@ -433,6 +433,22 @@
     pointer-events: none;
     filter: grayscale(0.6);
   }
+  /* Emoji that used to sit inside translated button labels. Kept in their
+     own aria-hidden span so a design can restyle or drop them (Minimal
+     does) without touching the label text. */
+  .btn-emoji {
+    margin-right: 5px;
+  }
+
+  /* Buttons whose label is preceded by an icon (theme, lock, design).
+     Previously a bare marker class: the spacing came from the emoji glyph's
+     own side bearing, so a drawn SVG icon sat flush against its label. */
+  .btn-icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   .btn.primary {
     background: linear-gradient(180deg, var(--accent-2), var(--accent));
     color: #0b0f17;

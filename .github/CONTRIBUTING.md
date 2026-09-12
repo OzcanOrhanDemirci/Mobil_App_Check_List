@@ -49,8 +49,11 @@ css/
   05-modals-install.css          PWA install guidance
   05-modals-feedback.css         Toast notifications + celebration modal
   06-responsive-print.css        Mobile, tablet, desktop, print
+  07-design-minimal.css          Design: Minimal (neutral, hairline-ruled)
+  08-design-showcase.css         Design: Showcase (display type, motion)
+  09-design-picker.css           The theme picker dialog and its previews
 js/
-  00-bootstrap.js                Sync IIFE: theme + lang before first paint
+  00-bootstrap.js                Sync IIFE: design + mode + lang before first paint
   01-i18n-strings.js             UI strings dictionary (TR/EN) + t() / tx()
   02-help-content.js             Help modal content
   03a-data-01-idea-planning.js   Category 01 data
@@ -73,7 +76,8 @@ js/
   05-framework.js                Framework definitions + resolveLevel
   05-backend.js                  Backend definitions + hiding logic
   06-view-state.js               Current framework / backend / view mode
-  07-ui-helpers.js               Theme, modal helpers, toast, escapeHtml, stripHtml
+  07-ui-helpers.js               Color mode, modal helpers, toast, app events,
+                                 escapeHtml, stripHtml
   08-i18n-dom.js                 Apply i18n to DOM, switch language
   09-ai-prompt.js                AI prompt generator (markdown + JSON)
   10-clipboard.js                Clipboard helper
@@ -87,11 +91,14 @@ js/
   18-app.js                      Orchestration: toolbar, reset, lock, help
                                  accordion, print, export/import, keyboard
                                  shortcuts, PWA manifest/SW setup, init
+  19-design.js                   Design axis: apply, persist, picker, T key
+  20-showcase-motion.js          Showcase-only motion layer (IIFE, detachable)
 scripts/                         Build-less utility scripts (em-dash check,
                                  sw cache version check, githooks installer)
 tests/                           Unit tests for resolver, data schema, the
                                  multi-project store, the XSS-defense
-                                 helpers, and the progress counter
+                                 helpers, the progress counter, filters,
+                                 the AI prompt builder, and the design axis
 ```
 
 **Content lives in the 14 per-category data files** (`js/03a-data-01-idea-planning.js` through `js/03n-data-14-cicd.js`). At runtime each file appends its category onto `window.DATA`, and the 15-line stub `js/03-data.js` re-exports the populated array as `const DATA`. Do not put new items in the stub; pick the file that matches your category. UI strings live in `js/01-i18n-strings.js`. Everything else is logic and presentation.
@@ -212,7 +219,16 @@ If your diff also touched the orchestration layer that was split out of `js/14-a
 - 2-space indentation, semicolons at end of statements, double quotes (`"..."`) in all `js/` files. The sole exception is `sw.js`, which uses single quotes by historical convention.
 - Plain `<script>`-loaded JavaScript, not ES modules. Functions and constants are intentionally global so files can share state without an import graph. Preserve this pattern. **When you add a new top-level function or constant in any `js/*.js` file, also add its name to the matching `projectGlobals` block in `eslint.config.js`.** ESLint's flat config tracks the project's globals explicitly because there is no module system; a missing entry shows up as a `no-undef` error in the file that consumes it.
 - ES2020+ syntax is fine. No transpilation runs, so avoid features that are not supported by the [browsers we target](../README.md#browser-support).
-- CSS: edit the category file that owns the affected area. Use existing custom properties (`var(--...)`) for colors, radii, spacing.
+- CSS: edit the category file that owns the affected area. Use existing custom properties (`var(--...)`) for colors, radii, spacing. Never hardcode a color in the base sheets: a literal there cannot be retuned by a design, and the two new designs have to restate it, which is how it drifts.
+
+### Working with the three designs
+
+The app ships three designs (`classic`, `minimal`, `showcase`) on one DOM, orthogonal to the light / dark color mode. `data-design` on `<html>` selects one; `css/07-design-minimal.css` and `css/08-design-showcase.css` hold the overrides, and Classic is the unstyled baseline the base sheets already produce. Four rules keep that arrangement honest:
+
+1. **Check new UI in all three designs and both color modes.** Six combinations, and the picker (`T`) makes the round trip quick. A component that reads `var(--surface)`, `var(--border)` and `var(--radius)` usually needs no per-design work; one that hardcodes a value needs three.
+2. **Keep design rules inside `@media screen`.** The printed page is deliberately identical in all three designs, and `tests/design.test.js` fails if a rule escapes the block.
+3. **Do not patch the render path from a design.** Enhancement layers subscribe to the `checklist:rendered`, `checklist:progress` and `design:changed` events that `emitAppEvent()` publishes (`js/07-ui-helpers.js`). `js/20-showcase-motion.js` is the worked example.
+4. **Whatever a design's layer attaches, it must detach.** Switching away has to leave zero injected nodes and zero added classes behind; a card left with `sc-reveal` and no `sc-in` would be invisible in another design. `tests/design.test.js` asserts `detach()` clears each marker it adds.
 
 ## Tests and linting
 
@@ -236,13 +252,16 @@ Each must exit cleanly (no warnings, no failures). CI runs the same commands plu
 
 ### Test suites
 
-Five suites live under `tests/`. All of them load the real `js/*.js` files into a fresh `node:vm` sandbox via `tests/_setup.js`, so the tests exercise production code paths without any fixture duplication.
+Seven suites live under `tests/`. All of them load the real `js/*.js` files into a fresh `node:vm` sandbox via `tests/_setup.js`, so the tests exercise production code paths without any fixture duplication.
 
 - `tests/resolver.test.js` covers the four-axis resolver (`resolveLevel`) and the i18n picker (`tx`).
 - `tests/data.test.js` covers the DATA schema integrity: category and feature counts (locked to the figures in README and CHANGELOG), id uniqueness, axis variant key validity, non-empty TR / EN translations on every required field, and the em-dash content rule (with the placeholder exemption). The DATA array is loaded by passing the `DATA_FILES` list from `_setup.js` as `extraFiles`; tests do not need to re-list the per-category files.
 - `tests/projects.test.js` covers the multi-project store (`js/04-projects.js`): create / rename / delete validation, the 20-project cap, legacy v1 to v2 migration, the `localStorage` round-trip, and active-project re-selection on delete.
 - `tests/ui-helpers.test.js` covers the HTML escape / strip pair in `js/07-ui-helpers.js`: the five XSS-relevant character escapes, idempotency of double-escaping, type coercion of null / undefined / number / object inputs, common XSS attack-vector strings, and the stripper's entity decoding plus whitespace collapse.
 - `tests/progress.test.js` covers `countLevels` in `js/12-progress.js`: empty state, partial state, all-done state, MVP-only completion, Release-only completion, backend-gated feature exclusion when `currentBackend === "noBackend"`, and the per-category breakdown counts.
+- `tests/design.test.js` covers the design axis in `js/19-design.js`: `normalizeDesign` including the near misses, the full `resolveInitialDesign` decision table (a valid saved value, an invalid one, none at all, and storage that throws), and `applyDesign` persistence including the `persist: false` path used for live preview and relabeling. It also asserts three cross-file invariants that no unit test would otherwise catch: that `DEFAULT_DESIGN` and the design list agree with the copies inlined in `js/00-bootstrap.js`, that every design rule sits inside `@media screen`, and that the Showcase motion layer's `detach()` clears each class and node its `attach()` adds.
+
+The behavioral half of the design axis (live switching, detach hygiene in a real DOM, reduced motion, the hero gauges agreeing with the progress card) needs a browser. It is not part of `npm test`; run it with Playwright against a local server when you touch the axis, the same way the screenshot script does.
 
 When adding a new test file, follow the existing patterns:
 

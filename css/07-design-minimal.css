@@ -1,0 +1,793 @@
+/* ==========================================================================
+   DESIGN: MINIMAL
+   ==========================================================================
+
+   The quiet design. It assumes the reader came to answer one question,
+   "what have I not done yet?", and wants to leave once they know. So it
+   removes decoration rather than adding any: no gradients, no glow, no
+   pill chrome, no colored surfaces, no decorative emoji. What is left is
+   type, hairlines and whitespace, which is what the content needed.
+
+   Rules of the design:
+
+     1. One accent, used only to mean "interactive" or "here you are".
+        Status keeps its own two colors (MVP green, Release blue) because
+        those carry meaning; nothing else is allowed to be chromatic.
+     2. Hairlines instead of cards. A 1px rule separates; a shadow does not.
+     3. Radii are 6px, never pills, except where a shape is genuinely a
+        toggle or a badge.
+     4. Density over air: the list is a reference document, and a reader
+        scanning 55 items should see more of them per screen.
+     5. From 1140px up, the category index becomes a sticky sidebar and
+        the page reads like documentation.
+
+   Everything here is inside `@media screen`. Print output must not depend
+   on which design happened to be active; css/06-responsive-print.css owns
+   the printed page for all three designs. */
+
+@media screen {
+  /* ---------------------------------------------------------------- tokens */
+
+  [data-design="minimal"],
+  [data-design="minimal"][data-theme="dark"] {
+    --bg: #0a0a0b;
+    --surface: #121214;
+    --surface-2: #17171a;
+    --surface-3: #1e1e22;
+    --border: #2a2a30;
+    --text: #f2f2f3;
+    --text-dim: #a1a1aa;
+    --text-mute: #71717a;
+    --accent: #7c9cff;
+    --accent-2: #a3b8ff;
+
+    --mvp: #4ade80;
+    --mvp-bg: rgba(74, 222, 128, 0.07);
+    --mvp-border: rgba(74, 222, 128, 0.28);
+    --mvp-strong: rgba(74, 222, 128, 0.14);
+
+    --release: #7dd3fc;
+    --release-bg: rgba(125, 211, 252, 0.07);
+    --release-border: rgba(125, 211, 252, 0.28);
+    --release-strong: rgba(125, 211, 252, 0.14);
+
+    --shadow: none;
+    --radius: 6px;
+    --radius-sm: 4px;
+
+    /* The body background is a flat ground in this design: the two radial
+       washes and the hero gradient are switched off by zeroing their alpha
+       rather than by rewriting the body rule. */
+    --bg-grad-1: transparent;
+    --bg-grad-2: transparent;
+    --hero-grad: transparent;
+    --toolbar-bg: rgba(10, 10, 11, 0.92);
+
+    /* Design-local tokens, referenced only by this file. */
+    --m-rule: 1px solid var(--border);
+    --m-hover: rgba(255, 255, 255, 0.035);
+    --m-selected: rgba(124, 156, 255, 0.1);
+  }
+
+  [data-design="minimal"][data-theme="light"] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #fafafa;
+    --surface-3: #f4f4f5;
+    --border: #e4e4e7;
+    --text: #18181b;
+    --text-dim: #52525b;
+    --text-mute: #71717a;
+    --accent: #2c5ce0;
+    --accent-2: #1e40af;
+
+    --mvp: #15803d;
+    --mvp-bg: rgba(21, 128, 61, 0.06);
+    --mvp-border: rgba(21, 128, 61, 0.3);
+    --mvp-strong: rgba(21, 128, 61, 0.12);
+
+    --release: #0369a1;
+    --release-bg: rgba(3, 105, 161, 0.06);
+    --release-border: rgba(3, 105, 161, 0.3);
+    --release-strong: rgba(3, 105, 161, 0.12);
+
+    --shadow: none;
+    --toolbar-bg: rgba(255, 255, 255, 0.94);
+
+    --m-hover: rgba(0, 0, 0, 0.03);
+    --m-selected: rgba(44, 92, 224, 0.07);
+  }
+
+  /* ------------------------------------------------------------ foundation */
+
+  [data-design="minimal"] body {
+    /* Flat ground. The tokens above already zeroed the two radial washes,
+       but restating the background keeps the intent readable. */
+    background: var(--bg);
+    font-family:
+      ui-sans-serif,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Inter,
+      system-ui,
+      sans-serif;
+    line-height: 1.5;
+    letter-spacing: -0.006em;
+  }
+
+  [data-design="minimal"] .wrap {
+    max-width: 1000px;
+    padding: 20px 24px 88px;
+  }
+
+  /* Decorative emoji are hidden, not deleted: the markup keeps them so the
+     other two designs can show them, and so a label never loses its text. */
+  [data-design="minimal"] .lang-icon,
+  [data-design="minimal"] .style-icon,
+  [data-design="minimal"] .theme-icon,
+  [data-design="minimal"] .lock-icon,
+  [data-design="minimal"] .proj-pill-icon,
+  [data-design="minimal"] .install-banner-icon,
+  [data-design="minimal"] .pres-context-emoji,
+  [data-design="minimal"] .flip-icon,
+  [data-design="minimal"] .note-icon,
+  [data-design="minimal"] .btn-emoji,
+  [data-design="minimal"] .ai-icon {
+    display: none;
+  }
+
+  /* ------------------------------------------------------------------ hero */
+
+  [data-design="minimal"] header.hero {
+    border: 0;
+    border-bottom: var(--m-rule);
+    border-radius: 0;
+    background: none;
+    padding: 28px 0 20px;
+    margin-bottom: 20px;
+    overflow: visible;
+  }
+
+  [data-design="minimal"] header.hero::before {
+    display: none;
+  }
+
+  [data-design="minimal"] .eyebrow {
+    color: var(--text-mute);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  [data-design="minimal"] h1 {
+    font-size: clamp(26px, 3.2vw, 34px);
+    font-weight: 600;
+    letter-spacing: -0.028em;
+    margin-bottom: 10px;
+  }
+
+  /* No gradient text. The emphasis is carried by the type, not by paint. */
+  [data-design="minimal"] h1 em {
+    font-style: normal;
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  [data-design="minimal"] .instructor {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  [data-design="minimal"] .instructor:hover {
+    background: none;
+    border: 0;
+    transform: none;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .instructor:hover .instructor-name {
+    color: var(--accent);
+  }
+
+  [data-design="minimal"] .instructor-label {
+    background: none;
+    color: var(--text-mute);
+    padding: 0;
+    font-size: 10.5px;
+    font-weight: 500;
+  }
+
+  [data-design="minimal"] .instructor-name {
+    font-weight: 500;
+    color: var(--text-dim);
+    transition: color 0.15s ease;
+  }
+
+  [data-design="minimal"] .instructor::after {
+    background: linear-gradient(90deg, transparent, var(--m-selected));
+  }
+
+  /* ------------------------------------------------------- hero controls */
+
+  [data-design="minimal"] .level-filter-pill,
+  [data-design="minimal"] .hero-lang-pill,
+  [data-design="minimal"] .hero-style-pill,
+  [data-design="minimal"] .hero-project-pill {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .level-filter-pill {
+    background: transparent;
+    border: var(--m-rule);
+    font-weight: 500;
+  }
+
+  [data-design="minimal"] .level-filter-pill:hover {
+    background: var(--m-hover);
+    transform: none;
+  }
+
+  [data-design="minimal"] .level-filter-pill.active.mvp,
+  [data-design="minimal"] .level-filter-pill.active.release,
+  [data-design="minimal"] .level-filter-pill.active.both {
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .hero-project-pill {
+    background: var(--surface-2);
+    border: var(--m-rule);
+  }
+
+  [data-design="minimal"] .hero-project-pill:hover {
+    background: var(--surface-3);
+    transform: none;
+  }
+
+  /* --------------------------------------------------------- sticky + tools */
+
+  [data-design="minimal"] .sticky-bar {
+    background: var(--toolbar-bg);
+    backdrop-filter: saturate(1.4) blur(8px);
+    -webkit-backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: var(--m-rule);
+    padding-bottom: 10px;
+  }
+
+  [data-design="minimal"] .toolbar {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 10px 0;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .search {
+    background: var(--surface-2);
+    border: var(--m-rule);
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .search:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--m-selected);
+  }
+
+  [data-design="minimal"] .btn {
+    border-radius: var(--radius-sm);
+    border: var(--m-rule);
+    background: transparent;
+    font-weight: 500;
+    box-shadow: none;
+    transition:
+      background-color 0.14s ease,
+      border-color 0.14s ease,
+      color 0.14s ease;
+  }
+
+  [data-design="minimal"] .btn:hover {
+    background: var(--m-hover);
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Denser than the other designs on purpose: the sidebar takes 236px off
+     the content column from 1140px up, and a toolbar that wraps to three
+     rows pushes the first item below the fold. */
+  [data-design="minimal"] .btn {
+    padding: 6px 11px;
+    font-size: 12.5px;
+  }
+
+  [data-design="minimal"] .action-group {
+    gap: 5px;
+  }
+
+  [data-design="minimal"] .actions {
+    gap: 6px;
+  }
+
+  [data-design="minimal"] .search input {
+    font-size: 13px;
+  }
+
+  [data-design="minimal"] .btn.primary {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+
+  [data-design="minimal"] .btn.primary:hover {
+    background: var(--text-dim);
+    border-color: var(--text-dim);
+    color: var(--bg);
+  }
+
+  [data-design="minimal"] .btn.ghost.active {
+    background: var(--m-selected);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  [data-design="minimal"] .btn.danger {
+    color: #f87171;
+    border-color: var(--border);
+    background: transparent;
+  }
+
+  [data-design="minimal"] .btn.danger:hover {
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.08);
+  }
+
+  [data-design="minimal"][data-theme="light"] .btn.danger {
+    color: #b91c1c;
+  }
+
+  [data-design="minimal"][data-theme="light"] .btn.danger:hover {
+    border-color: #b91c1c;
+  }
+
+  /* ------------------------------------------------------------- progress */
+
+  [data-design="minimal"] .progress-card {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 4px 0 0;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .progress-label {
+    font-size: 11.5px;
+    letter-spacing: 0.01em;
+    color: var(--text-mute);
+  }
+
+  [data-design="minimal"] .progress-label .num {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  [data-design="minimal"] .bar {
+    height: 3px;
+    border-radius: 999px;
+    background: var(--surface-3);
+  }
+
+  [data-design="minimal"] .bar > span {
+    border-radius: 999px;
+  }
+
+  [data-design="minimal"] .bar.total > span {
+    background: var(--text-dim);
+  }
+
+  [data-design="minimal"] .bar.mvp-bar > span {
+    background: var(--mvp);
+  }
+
+  [data-design="minimal"] .bar.release-bar > span {
+    background: var(--release);
+  }
+
+  /* ------------------------------------------------------ category index */
+
+  [data-design="minimal"] .cat-nav {
+    gap: 4px;
+    margin: 18px 0 8px;
+  }
+
+  [data-design="minimal"] .cat-nav a {
+    background: transparent;
+    border: var(--m-rule);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 450;
+    color: var(--text-dim);
+    padding: 5px 9px;
+  }
+
+  [data-design="minimal"] .cat-nav a:hover {
+    background: var(--m-hover);
+    border-color: var(--text-mute);
+    color: var(--text);
+  }
+
+  /* ----------------------------------------------------------- categories */
+
+  [data-design="minimal"] section.category {
+    background: none;
+    border: 0;
+    border-top: var(--m-rule);
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  [data-design="minimal"] .cat-header {
+    background: none;
+    padding: 22px 2px 14px;
+    gap: 14px;
+    align-items: baseline;
+  }
+
+  [data-design="minimal"] .cat-header:hover {
+    background: var(--m-hover);
+  }
+
+  [data-design="minimal"] .cat-header .num {
+    background: none;
+    border: 0;
+    color: var(--text-mute);
+    font-size: 12px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    width: auto;
+    min-width: 22px;
+    height: auto;
+    line-height: inherit;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .cat-header .title h2 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+  }
+
+  [data-design="minimal"] .cat-header .title p {
+    font-size: 12.5px;
+    color: var(--text-mute);
+  }
+
+  [data-design="minimal"] .cat-progress {
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-mute);
+  }
+
+  [data-design="minimal"] .cat-progress .pct {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  /* Completion is a text-weight change plus one restrained tint, not a
+     repainted header. */
+  [data-design="minimal"] section.category.completed .cat-header,
+  [data-design="minimal"] section.category.completed-mvp .cat-header,
+  [data-design="minimal"] section.category.completed-release .cat-header {
+    background: none;
+    border-left: 2px solid var(--mvp);
+    padding-left: 12px;
+  }
+
+  [data-design="minimal"] section.category.completed-release .cat-header {
+    border-left-color: var(--release);
+  }
+
+  [data-design="minimal"] section.category.completed .cat-header .title h2::after {
+    background: none;
+    border: 1px solid var(--mvp-border);
+    color: var(--mvp);
+    box-shadow: none;
+  }
+
+  /* -------------------------------------------------------------- features */
+
+  [data-design="minimal"] .feature-list {
+    padding: 0 2px 14px;
+  }
+
+  [data-design="minimal"] .feature {
+    background: none;
+    border: 0;
+    border-top: var(--m-rule);
+    border-radius: 0;
+    padding: 16px 0;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .feature:hover {
+    background: none;
+    transform: none;
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .feature-head .id {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--text-mute);
+    font-size: 11.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-design="minimal"] .feature-head h3 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.014em;
+  }
+
+  [data-design="minimal"] .feature-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* The level row is the only thing on the page that can be "on", so it is
+     the only thing allowed a filled background. */
+  [data-design="minimal"] .level {
+    border-radius: var(--radius-sm);
+    border-width: 1px;
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+  [data-design="minimal"] .level:hover {
+    transform: none;
+  }
+
+  [data-design="minimal"] .level-tag {
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    font-weight: 600;
+  }
+
+  [data-design="minimal"] .check {
+    border-radius: 3px;
+  }
+
+  [data-design="minimal"] .level-progress-badge {
+    border-radius: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-design="minimal"] .feature-flip-btn,
+  [data-design="minimal"] .feature-note-toggle,
+  [data-design="minimal"] .feature-ai-copy,
+  [data-design="minimal"] .feature-ai-option {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    font-weight: 500;
+  }
+
+  [data-design="minimal"] .feature-flip-btn:hover,
+  [data-design="minimal"] .feature-note-toggle:hover {
+    transform: none;
+    background: var(--m-hover);
+  }
+
+  [data-design="minimal"] .howto-tag {
+    border-radius: 3px;
+    letter-spacing: 0.07em;
+  }
+
+  [data-design="minimal"] .howto-text code,
+  [data-design="minimal"] .welcome-mono {
+    border-radius: 3px;
+  }
+
+  [data-design="minimal"] .howto-steps > li[data-step-key]:hover {
+    background: var(--m-hover);
+  }
+
+  /* ----------------------------------------------------------- modals */
+
+  [data-design="minimal"] .modal-content {
+    border-radius: 10px;
+    border: var(--m-rule);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  }
+
+  [data-design="minimal"][data-theme="light"] .modal-content {
+    box-shadow: 0 24px 64px rgba(24, 24, 27, 0.14);
+  }
+
+  [data-design="minimal"] .modal-head {
+    border-bottom: var(--m-rule);
+  }
+
+  [data-design="minimal"] .modal-head h2 {
+    font-weight: 600;
+    letter-spacing: -0.018em;
+  }
+
+  [data-design="minimal"] .framework-option,
+  [data-design="minimal"] .backend-option,
+  [data-design="minimal"] .proj-add-fw,
+  [data-design="minimal"] .proj-add-be,
+  [data-design="minimal"] .print-option,
+  [data-design="minimal"] .reset-scope-option,
+  [data-design="minimal"] .proj-row,
+  [data-design="minimal"] .install-platform-card {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .framework-option:hover,
+  [data-design="minimal"] .backend-option:hover,
+  [data-design="minimal"] .print-option:hover,
+  [data-design="minimal"] .reset-scope-option:hover {
+    transform: none;
+  }
+
+  [data-design="minimal"] .projfw-tab {
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+
+  [data-design="minimal"] .toast {
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  /* --------------------------------------- surfaces the base sheet paints
+
+     Three places in the base stylesheet hardcode a color instead of
+     reading a token: the "MVP + Release" pill (red), the install banner
+     (orange gradient) and its call to action. They are re-stated here in
+     the design's own terms rather than patched in the base sheet, which
+     would change Classic. */
+
+  [data-design="minimal"] .level-filter-pill.active.both {
+    background: var(--m-selected);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: none;
+  }
+
+  [data-design="minimal"] .install-banner {
+    background: var(--surface-2);
+    border: var(--m-rule);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    padding: 14px 52px 14px 18px;
+  }
+
+  [data-design="minimal"] .install-banner::before {
+    display: none;
+  }
+
+  [data-design="minimal"] .btn.btn-install-cta {
+    background: var(--text);
+    color: var(--bg);
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    font-weight: 600;
+  }
+
+  [data-design="minimal"] .btn.btn-install-cta:hover {
+    filter: none;
+    background: var(--text-dim);
+    transform: none;
+  }
+
+  [data-design="minimal"] .install-floating-btn {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+  }
+
+  /* ---------------------------------------------------------------- footer */
+
+  [data-design="minimal"] footer {
+    border-top: var(--m-rule);
+    margin-top: 48px;
+    padding-top: 24px;
+  }
+
+  [data-design="minimal"] footer .foot-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+  }
+
+  [data-design="minimal"] footer .foot-title::after {
+    display: none;
+  }
+
+  /* ------------------------------------------------- documentation layout
+
+     From 1140px the category index leaves the flow and becomes a rail in
+     the page's left gutter, which is the shape a reference document wants:
+     the table of contents stays put while the body scrolls.
+
+     The gutter is reserved by padding `.wrap`, not by offsetting `main`.
+     That matters: every block on the page (hero, sticky toolbar, content,
+     footer) is a child of `.wrap`, so padding moves all of them together
+     and the fixed rail can never be covered by the sticky toolbar. An
+     earlier version offset only `main` and the rail ended up underneath
+     the hero.
+
+     Below 1140px the rail falls back to the horizontal chip row that
+     every design uses. */
+
+  @media (min-width: 1140px) {
+    [data-design="minimal"] .wrap {
+      max-width: 1220px;
+      /* 188px rail + 48px gutter. */
+      padding-left: 236px;
+    }
+
+    [data-design="minimal"] .cat-nav {
+      position: fixed;
+      top: 28px;
+      /* Align to the wrap's left padding edge; clamp so the rail does not
+         slide off screen between 1140px and 1220px, where `.wrap` is not
+         yet centered. */
+      left: max(24px, calc(50vw - 610px + 24px));
+      width: 188px;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin: 0;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+
+    [data-design="minimal"] .cat-nav a {
+      border: 0;
+      border-left: 2px solid transparent;
+      border-radius: 0;
+      padding: 5px 10px;
+      text-align: left;
+      white-space: normal;
+      line-height: 1.35;
+    }
+
+    [data-design="minimal"] .cat-nav a:hover {
+      background: none;
+      border-left-color: var(--text-mute);
+      color: var(--text);
+    }
+  }
+
+  /* ------------------------------------------------------- reduced motion */
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-design="minimal"] * {
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

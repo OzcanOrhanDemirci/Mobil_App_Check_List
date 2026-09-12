@@ -1,0 +1,762 @@
+/* ==========================================================================
+   DESIGN: SHOWCASE
+   ==========================================================================
+
+   The presented design. It assumes the page is being shown to someone: a
+   client, a jury, a team on a projector, a visitor landing on the demo for
+   the first time. So it spends effort on arrival and on rhythm, and none
+   on decoration that does not carry information.
+
+   What "impressive" means here, and what it deliberately does not mean:
+
+     - Scale, not glare. The impact comes from display-size typography,
+       generous whitespace and layered depth, not from neon, saturated
+       glow or animated light. Nothing on the page pulses.
+     - Motion that reports progress. The hero gauges draw the real
+       completion numbers. Sections rise into place once, as you reach
+       them, and then stay still. A hairline at the top of the viewport
+       tracks reading position.
+     - Reading first. Every animation is opacity plus a small translate,
+       nothing reflows, nothing moves after it has arrived, and content is
+       readable at full contrast the moment it lands. Under
+       `prefers-reduced-motion: reduce` every reveal resolves instantly and
+       the gauges jump straight to their value.
+
+   The motion is driven by js/20-showcase-motion.js, which only attaches
+   while this design is active. The classes it adds (`sc-reveal`, `sc-in`,
+   `sc-active`) and the nodes it injects (`.sc-stage`, `.sc-scrollline`)
+   are styled here; with the script absent the page still renders, just
+   without the reveal.
+
+   Everything is inside `@media screen`: the printed page is identical in
+   all three designs. */
+
+@media screen {
+  /* ---------------------------------------------------------------- tokens */
+
+  [data-design="showcase"],
+  [data-design="showcase"][data-theme="dark"] {
+    --bg: #07070e;
+    --surface: rgba(255, 255, 255, 0.038);
+    --surface-2: rgba(255, 255, 255, 0.055);
+    --surface-3: rgba(255, 255, 255, 0.082);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f4f4f8;
+    --text-dim: #b4b4c6;
+    --text-mute: #82829a;
+    --accent: #a5b4fc;
+    --accent-2: #c7d2fe;
+
+    --mvp: #6ee7b7;
+    --mvp-bg: rgba(110, 231, 183, 0.08);
+    --mvp-border: rgba(110, 231, 183, 0.3);
+    --mvp-strong: rgba(110, 231, 183, 0.16);
+
+    --release: #7dd3fc;
+    --release-bg: rgba(125, 211, 252, 0.08);
+    --release-border: rgba(125, 211, 252, 0.3);
+    --release-strong: rgba(125, 211, 252, 0.16);
+
+    --shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+    --radius: 18px;
+    --radius-sm: 11px;
+
+    --bg-grad-1: transparent;
+    --bg-grad-2: transparent;
+    --hero-grad: transparent;
+    --toolbar-bg: rgba(7, 7, 14, 0.72);
+
+    /* Design-local. The mesh is three wide, low-opacity radials; at these
+       alphas it reads as depth rather than as color. */
+    --s-mesh-1: rgba(99, 102, 241, 0.3);
+    --s-mesh-2: rgba(236, 72, 153, 0.16);
+    --s-mesh-3: rgba(45, 212, 191, 0.13);
+    --s-glass: rgba(255, 255, 255, 0.05);
+    --s-glass-strong: rgba(255, 255, 255, 0.09);
+    --s-hairline: rgba(255, 255, 255, 0.12);
+    --s-ring-track: rgba(255, 255, 255, 0.1);
+    --s-ease: cubic-bezier(0.22, 0.68, 0.24, 1);
+  }
+
+  [data-design="showcase"][data-theme="light"] {
+    --bg: #f6f5fb;
+    --surface: rgba(255, 255, 255, 0.72);
+    --surface-2: rgba(255, 255, 255, 0.88);
+    --surface-3: rgba(255, 255, 255, 1);
+    --border: rgba(23, 20, 48, 0.1);
+    --text: #14122b;
+    --text-dim: #4b4767;
+    --text-mute: #6e6a8a;
+    --accent: #4f46e5;
+    --accent-2: #4338ca;
+
+    --mvp: #047857;
+    --mvp-bg: rgba(4, 120, 87, 0.07);
+    --mvp-border: rgba(4, 120, 87, 0.28);
+    --mvp-strong: rgba(4, 120, 87, 0.14);
+
+    --release: #0369a1;
+    --release-bg: rgba(3, 105, 161, 0.07);
+    --release-border: rgba(3, 105, 161, 0.28);
+    --release-strong: rgba(3, 105, 161, 0.14);
+
+    --shadow: 0 20px 56px rgba(23, 20, 48, 0.1);
+    --toolbar-bg: rgba(246, 245, 251, 0.78);
+
+    --s-mesh-1: rgba(99, 102, 241, 0.16);
+    --s-mesh-2: rgba(236, 72, 153, 0.1);
+    --s-mesh-3: rgba(45, 212, 191, 0.09);
+    --s-glass: rgba(255, 255, 255, 0.7);
+    --s-glass-strong: rgba(255, 255, 255, 0.92);
+    --s-hairline: rgba(23, 20, 48, 0.09);
+    --s-ring-track: rgba(23, 20, 48, 0.1);
+  }
+
+  /* ------------------------------------------------------------ foundation */
+
+  [data-design="showcase"] body {
+    background:
+      radial-gradient(120vw 70vh at 8% -8%, var(--s-mesh-1), transparent 58%),
+      radial-gradient(90vw 60vh at 100% 4%, var(--s-mesh-2), transparent 56%),
+      radial-gradient(90vw 70vh at 42% 100%, var(--s-mesh-3), transparent 60%), var(--bg);
+    background-attachment: fixed;
+    font-family:
+      ui-sans-serif,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Inter,
+      system-ui,
+      sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  [data-design="showcase"] .wrap {
+    max-width: 1180px;
+    padding: 28px 28px 120px;
+  }
+
+  /* -------------------------------------------------- reading-progress line */
+
+  .sc-scrollline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 60;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .sc-scrollline > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    transform-origin: left center;
+    background: linear-gradient(90deg, var(--accent), var(--mvp) 60%, var(--release));
+  }
+
+  /* ------------------------------------------------------------------ hero */
+
+  [data-design="showcase"] header.hero {
+    border: 1px solid var(--s-hairline);
+    border-radius: 26px;
+    padding: 56px 44px 40px;
+    margin-bottom: 34px;
+    background: var(--s-glass);
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    box-shadow: var(--shadow);
+  }
+
+  /* One soft sweep across the top edge, fixed in place: it gives the panel
+     an light source without becoming a light show. */
+  [data-design="showcase"] header.hero::before {
+    background: radial-gradient(80% 120% at 12% -20%, rgba(255, 255, 255, 0.1), transparent 60%);
+    border-radius: inherit;
+  }
+
+  [data-design="showcase"] .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    margin-bottom: 18px;
+  }
+
+  [data-design="showcase"] .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  [data-design="showcase"] h1 {
+    font-size: clamp(34px, 5.6vw, 64px);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    max-width: 15ch;
+    margin-bottom: 16px;
+  }
+
+  [data-design="showcase"] h1 em {
+    font-style: normal;
+    background: linear-gradient(105deg, var(--accent) 0%, var(--release) 45%, var(--mvp) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  [data-design="showcase"] .instructor {
+    background: var(--s-glass-strong);
+    border-color: var(--s-hairline);
+    padding: 7px 16px 7px 7px;
+    margin-bottom: 30px;
+  }
+
+  [data-design="showcase"] .instructor:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.22);
+  }
+
+  [data-design="showcase"] .instructor-label {
+    background: var(--accent);
+    color: #0b0b16;
+  }
+
+  /* ---------------------------------------------------- hero stage (gauges)
+
+     Injected by js/20-showcase-motion.js and aria-hidden: the same three
+     numbers already exist as accessible text in .progress-card, so the
+     gauges are a second, visual rendering of data the page states in
+     words. Nothing is announced twice. */
+
+  .sc-stage {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 32px 0 4px;
+    padding-top: 28px;
+    border-top: 1px solid var(--s-hairline);
+  }
+
+  .sc-gauge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .sc-ring {
+    flex: none;
+    width: 58px;
+    height: 58px;
+    transform: rotate(-90deg);
+  }
+
+  .sc-ring circle {
+    fill: none;
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+
+  .sc-ring-track {
+    stroke: var(--s-ring-track);
+  }
+
+  .sc-ring-fill {
+    /* 2 * pi * r, r = 44. Set once here so the script only has to move the
+       offset; see js/20-showcase-motion.js. */
+    stroke-dasharray: 276.46;
+    stroke-dashoffset: 276.46;
+    transition: stroke-dashoffset 1.1s var(--s-ease);
+  }
+
+  .sc-gauge[data-gauge="total"] .sc-ring-fill {
+    stroke: var(--accent);
+  }
+
+  .sc-gauge[data-gauge="mvp"] .sc-ring-fill {
+    stroke: var(--mvp);
+  }
+
+  .sc-gauge[data-gauge="release"] .sc-ring-fill {
+    stroke: var(--release);
+  }
+
+  .sc-gauge-text {
+    min-width: 0;
+  }
+
+  .sc-gauge-value {
+    display: block;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sc-gauge-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    margin-top: 3px;
+  }
+
+  .sc-gauge-sub {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+
+  @media (max-width: 760px) {
+    .sc-stage {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    [data-design="showcase"] header.hero {
+      padding: 34px 22px 26px;
+      border-radius: 20px;
+    }
+
+    [data-design="showcase"] .wrap {
+      padding: 16px 16px 90px;
+    }
+  }
+
+  /* ------------------------------------------------------ controls and chrome */
+
+  [data-design="showcase"] .level-filter-pill,
+  [data-design="showcase"] .hero-lang-pill,
+  [data-design="showcase"] .hero-style-pill,
+  [data-design="showcase"] .hero-project-pill,
+  [data-design="showcase"] .btn {
+    background: var(--s-glass-strong);
+    border-color: var(--s-hairline);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  [data-design="showcase"] .btn {
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-weight: 550;
+    transition:
+      transform 0.18s var(--s-ease),
+      background-color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  [data-design="showcase"] .btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  [data-design="showcase"] .btn.primary {
+    background: var(--accent);
+    border-color: transparent;
+    color: #0b0b16;
+    font-weight: 650;
+  }
+
+  [data-design="showcase"][data-theme="light"] .btn.primary {
+    color: #ffffff;
+  }
+
+  [data-design="showcase"] .sticky-bar {
+    background: var(--toolbar-bg);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  }
+
+  [data-design="showcase"] .toolbar,
+  [data-design="showcase"] .progress-card,
+  [data-design="showcase"] .search {
+    background: var(--s-glass);
+    border-color: var(--s-hairline);
+    border-radius: var(--radius);
+  }
+
+  [data-design="showcase"] .search {
+    border-radius: 999px;
+  }
+
+  [data-design="showcase"] .bar {
+    height: 5px;
+    background: var(--s-ring-track);
+  }
+
+  [data-design="showcase"] .bar > span {
+    transition: width 0.9s var(--s-ease);
+  }
+
+  /* -------------------------------------------------------- chapter index */
+
+  [data-design="showcase"] .cat-nav a {
+    background: var(--s-glass);
+    border: 1px solid var(--s-hairline);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:
+      transform 0.18s var(--s-ease),
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  [data-design="showcase"] .cat-nav a:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  [data-design="showcase"] .cat-nav a.sc-active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--s-glass-strong);
+  }
+
+  /* ------------------------------------------------------------- chapters */
+
+  [data-design="showcase"] section.category {
+    position: relative;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    margin: 0 0 26px;
+    overflow: visible;
+  }
+
+  [data-design="showcase"] .cat-header {
+    position: relative;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 4px 20px;
+    background: none;
+    border-bottom: 1px solid var(--s-hairline);
+  }
+
+  [data-design="showcase"] .cat-header:hover {
+    background: none;
+  }
+
+  [data-design="showcase"] .cat-header:hover .title h2 {
+    color: var(--accent);
+  }
+
+  /* The chapter number is set at display scale and dropped to a low
+     opacity: it reads as a landmark while scrolling without competing
+     with the title for attention. */
+  [data-design="showcase"] .cat-header .num {
+    width: auto;
+    min-width: 0;
+    height: auto;
+    line-height: 0.82;
+    border-radius: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    color: var(--text);
+    opacity: 0.14;
+    font-size: clamp(38px, 5vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-design="showcase"] .cat-header .title h2 {
+    font-size: clamp(20px, 2.4vw, 27px);
+    font-weight: 650;
+    letter-spacing: -0.028em;
+    transition: color 0.18s ease;
+  }
+
+  [data-design="showcase"] .cat-header .title p {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    max-width: 62ch;
+  }
+
+  [data-design="showcase"] .cat-progress .pct {
+    background: var(--s-glass-strong);
+    border: 1px solid var(--s-hairline);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-design="showcase"] section.category.completed .cat-header,
+  [data-design="showcase"] section.category.completed-mvp .cat-header,
+  [data-design="showcase"] section.category.completed-release .cat-header {
+    background: none;
+  }
+
+  [data-design="showcase"] section.category.completed .cat-header .num {
+    color: var(--mvp);
+    opacity: 0.3;
+  }
+
+  [data-design="showcase"] section.category.completed-release .cat-header .num {
+    color: var(--release);
+    opacity: 0.3;
+  }
+
+  /* ---------------------------------------------------------------- cards */
+
+  [data-design="showcase"] .feature-list {
+    padding: 22px 4px 8px;
+    gap: 14px;
+  }
+
+  [data-design="showcase"] .feature {
+    background: var(--s-glass);
+    border: 1px solid var(--s-hairline);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition:
+      transform 0.22s var(--s-ease),
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+  [data-design="showcase"] .feature:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26);
+  }
+
+  [data-design="showcase"][data-theme="light"] .feature:hover {
+    box-shadow: 0 18px 44px rgba(23, 20, 48, 0.12);
+  }
+
+  [data-design="showcase"] .feature-head h3 {
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -0.022em;
+  }
+
+  [data-design="showcase"] .feature-head .id {
+    background: var(--s-glass-strong);
+    border: 1px solid var(--s-hairline);
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-design="showcase"] .feature-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  [data-design="showcase"] .level {
+    border-radius: 14px;
+    padding: 13px 15px;
+    transition:
+      transform 0.18s var(--s-ease),
+      background-color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  [data-design="showcase"] .level:hover {
+    transform: translateX(3px);
+  }
+
+  [data-design="showcase"] .modal-content {
+    border-radius: 22px;
+    border: 1px solid var(--s-hairline);
+    background: var(--s-glass-strong);
+    backdrop-filter: blur(26px) saturate(1.5);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5);
+  }
+
+  [data-design="showcase"] footer {
+    margin-top: 70px;
+    border-top: 1px solid var(--s-hairline);
+    padding-top: 34px;
+  }
+
+  /* --------------------------------------- surfaces the base sheet paints
+
+     The base sheet hardcodes red for the "MVP + Release" pill and an
+     orange gradient for the install banner. Both are restated here in the
+     design's palette instead of being changed in the base sheet, which
+     would alter Classic. */
+
+  [data-design="showcase"] .level-filter-pill.active.both {
+    background: var(--s-glass-strong);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+  }
+
+  [data-design="showcase"] .install-banner {
+    background: var(--s-glass);
+    border: 1px solid var(--s-hairline);
+    border-radius: var(--radius);
+    box-shadow: none;
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  [data-design="showcase"] .install-banner::before {
+    background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.16), transparent 60%);
+  }
+
+  [data-design="showcase"] .install-banner-icon {
+    background: linear-gradient(135deg, var(--accent), var(--release));
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.3);
+  }
+
+  [data-design="showcase"] .btn.btn-install-cta {
+    background: var(--accent);
+    color: #0b0b16;
+    border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.28);
+  }
+
+  [data-design="showcase"][data-theme="light"] .btn.btn-install-cta {
+    color: #ffffff;
+  }
+
+  /* ----------------------------------------------------- reveal on scroll
+
+     The script tags candidates with `sc-reveal` before they enter the
+     viewport and adds `sc-in` once they do. The class is removed entirely
+     when the design changes, so nothing here can leave an element stuck
+     at opacity 0 in another design. */
+
+  [data-design="showcase"] .sc-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.6s var(--s-ease),
+      transform 0.6s var(--s-ease);
+  }
+
+  [data-design="showcase"] .sc-reveal.sc-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Cards in a list arrive in sequence rather than all at once. Six steps
+     is enough to read as a cascade and short enough that the last card is
+     never noticeably late. */
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 1) {
+    transition-delay: 0ms;
+  }
+
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 2) {
+    transition-delay: 55ms;
+  }
+
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 3) {
+    transition-delay: 110ms;
+  }
+
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 4) {
+    transition-delay: 165ms;
+  }
+
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 5) {
+    transition-delay: 220ms;
+  }
+
+  [data-design="showcase"] .feature.sc-reveal:nth-child(6n + 6) {
+    transition-delay: 275ms;
+  }
+
+  /* --------------------------------------------------------- chapter rail
+
+     From 1320px a fixed rail marks the chapters as dots and tracks the one
+     being read. It sits in the margin, so it costs the content nothing. */
+
+  @media (min-width: 1320px) {
+    [data-design="showcase"] .cat-nav {
+      position: fixed;
+      top: 50%;
+      right: max(18px, calc(50vw - 640px - 34px));
+      transform: translateY(-50%);
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 9px;
+      margin: 0;
+      z-index: 20;
+    }
+
+    [data-design="showcase"] .cat-nav a {
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--s-ring-track);
+      border: 0;
+      overflow: hidden;
+      text-indent: -999em;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition:
+        background-color 0.2s ease,
+        transform 0.2s var(--s-ease);
+    }
+
+    [data-design="showcase"] .cat-nav a:hover {
+      background: var(--text-dim);
+      transform: scale(1.35);
+    }
+
+    [data-design="showcase"] .cat-nav a.sc-active {
+      background: var(--accent);
+      transform: scale(1.5);
+    }
+  }
+
+  /* ------------------------------------------------------- reduced motion
+
+     Reveals resolve immediately, the gauges snap to their value, and the
+     hover transforms are dropped. The layout, depth and typography are
+     untouched: someone who turns motion off should still get the design
+     they picked, minus the movement. */
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-design="showcase"] .sc-reveal,
+    [data-design="showcase"] .sc-reveal.sc-in {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    [data-design="showcase"] .sc-ring-fill,
+    [data-design="showcase"] .bar > span {
+      transition: none;
+    }
+
+    [data-design="showcase"] .feature:hover,
+    [data-design="showcase"] .btn:hover,
+    [data-design="showcase"] .cat-nav a:hover {
+      transform: none;
+    }
+
+    .sc-scrollline {
+      display: none;
+    }
+  }
+}

@@ -69,6 +69,13 @@
 <link rel="stylesheet" href="css/05-modals-install.css" />
 <link rel="stylesheet" href="css/05-modals-projects.css" />
 <link rel="stylesheet" href="css/06-responsive-print.css" />
+<!-- Design axis (data-design on <html>). Loaded after the base sheets so the
+     active design overrides them; the inactive designs match nothing and cost
+     only their parse time. css/09-design-picker.css styles the picker itself
+     and is design-agnostic. -->
+<link rel="stylesheet" href="css/07-design-minimal.css" />
+<link rel="stylesheet" href="css/08-design-showcase.css" />
+<link rel="stylesheet" href="css/09-design-picker.css" />
 </head>
 <body>
 
@@ -174,7 +181,7 @@
       <strong data-i18n="install.bannerTitle">Bu uygulamayı tek tıkla cihazına yükle</strong>
       <span data-i18n="install.bannerDesc">Mobilde ana ekrana, masaüstünde başlat menüsüne kısayol olarak eklenir. İnternet olmadan da kullanabilirsin.</span>
     </div>
-    <button class="btn btn-install-cta" id="installBannerBtn" type="button" data-i18n="install.bannerBtn">📲 Yükle</button>
+    <button class="btn btn-install-cta" id="installBannerBtn" type="button"><span class="btn-emoji" aria-hidden="true">📲</span><span data-i18n="install.bannerBtn">Yükle</span></button>
     <button class="install-banner-close" id="installBannerClose" type="button" aria-label="Bu bildirimi kapat" title="Kapat" data-i18n-title="common.close" data-i18n-aria-label="install.bannerClose">×</button>
   </div>
 
@@ -195,12 +202,18 @@
         <button class="btn ghost" id="collapseAllBtn" title="Tüm kategorileri kapat" data-i18n-title="btn.collapseAll.title" data-i18n="btn.collapseAll">Tümünü Kapat</button>
       </div>
       <div class="action-group" role="group" aria-label="Kart çevirme" data-i18n-aria-label="group.flip">
-        <button class="btn ghost" id="flipAllHowBtn" title="Tüm maddelerin arka yüzünü (Nasıl Yapılır?) aç" data-i18n-title="btn.flipAll.title" data-i18n="btn.flipAll">❔ Tümü Nasıl?</button>
-        <button class="btn ghost" id="flipAllChecklistBtn" title="Tüm maddelerin ön yüzüne (kontrol listesi) dön" data-i18n-title="btn.unflipAll.title" data-i18n="btn.unflipAll">📋 Tümü Liste</button>
+        <button class="btn ghost" id="flipAllHowBtn" title="Tüm maddelerin arka yüzünü (Nasıl Yapılır?) aç" data-i18n-title="btn.flipAll.title"><span class="btn-emoji" aria-hidden="true">❔</span><span data-i18n="btn.flipAll">Tümü Nasıl?</span></button>
+        <button class="btn ghost" id="flipAllChecklistBtn" title="Tüm maddelerin ön yüzüne (kontrol listesi) dön" data-i18n-title="btn.unflipAll.title"><span class="btn-emoji" aria-hidden="true">📋</span><span data-i18n="btn.unflipAll">Tümü Liste</span></button>
       </div>
       <div class="action-group" role="group" aria-label="Görünüm" data-i18n-aria-label="group.view">
         <button class="btn ghost" id="presentBtn" title="Sunum modu (P / Esc)" data-i18n-title="btn.present.title" data-i18n="btn.present">Sunum</button>
-        <button class="btn ghost btn-icon-text" id="themeToggle" title="Açık / Koyu tema" data-i18n-title="btn.theme.title"><span class="theme-icon">🌙</span><span class="theme-label">Koyu</span></button>
+        <button class="btn ghost btn-icon-text" id="designToggle" title="Tema seç (T)" data-i18n-title="btn.design.title" aria-haspopup="dialog">
+          <svg class="design-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="18" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="8" rx="1.5"></rect>
+            <rect x="14" y="15" width="7" height="6" rx="1.5"></rect>
+          </svg><span class="design-label">Sade</span></button>
+        <button class="btn ghost btn-icon-text" id="themeToggle" title="Açık / Koyu mod" data-i18n-title="btn.theme.title"><span class="theme-icon">🌙</span><span class="theme-label">Koyu</span></button>
       </div>
       <div class="action-group" role="group" aria-label="Veri" data-i18n-aria-label="group.data">
         <button class="btn ghost btn-icon-text" id="lockBtn" title="Listeyi kilitle (işaretler/framework değişemez)" data-i18n-title="btn.lock.title"><span class="lock-icon">🔒</span><span class="lock-label">Kilit</span></button>
@@ -209,7 +222,7 @@
         <button class="btn danger" id="resetBtn" title="Tüm işaretleri temizle (notlar korunur)" data-i18n-title="btn.reset.title" data-i18n="btn.reset">Sıfırla</button>
       </div>
       <div class="action-group" role="group" aria-label="Yardım ve yazdır" data-i18n-aria-label="group.helpPrint">
-        <button class="btn ghost" id="helpBtn" title="Nasıl kullanılır? (?)" data-i18n-title="btn.help.title" data-i18n="btn.help">? Yardım</button>
+        <button class="btn ghost" id="helpBtn" title="Nasıl kullanılır? (?)" data-i18n-title="btn.help.title"><span class="btn-emoji" aria-hidden="true">?</span><span data-i18n="btn.help">Yardım</span></button>
         <button class="btn primary" id="printBtn" title="Yazdır / PDF" data-i18n-title="btn.print.title" data-i18n="btn.print">Yazdır</button>
       </div>
     </div>
@@ -257,7 +270,7 @@
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
     </button>
-    <p class="foot-version" id="footVersion"><span>v1.2.2</span><span class="version-dot">·</span><span data-i18n="footer.date">Eylül 2026</span></p>
+    <p class="foot-version" id="footVersion"><span>v1.2.3</span><span class="version-dot">·</span><span data-i18n="footer.date">Eylül 2026</span></p>
   </footer>
 </div>
 
@@ -541,7 +554,7 @@
         <li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li>
         <li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li>
         <li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li>
-        <li><strong>🎨 Tema</strong>koyu ve açık mod</li>
+        <li><strong>🎨 Tema</strong>üç görünüm: Klasik, Sade, Vitrin (artı koyu / açık mod)</li>
         <li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li>
         <li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li>
         <li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>
@@ -848,6 +861,60 @@
   </div>
 </div>
 
+<!-- Design picker: the three designs share one DOM and one feature set, so
+     picking is a single data-design attribute write (js/19-design.js). Each card
+     carries a CSS-drawn miniature rather than a screenshot, so the previews
+     follow the active color mode and never go stale against the real page. -->
+<div class="modal" id="designModal" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-content modal-design" role="dialog" aria-modal="true" aria-labelledby="designTitle">
+    <header class="modal-head">
+      <h2 id="designTitle" data-i18n="design.modal.title">Tema</h2>
+      <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
+    </header>
+    <p class="design-lead" data-i18n="design.modal.lead">Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin tema bu tarayıcıda hatırlanır. Yazdırma çıktısı her temada aynıdır.</p>
+    <div class="design-options" role="group" aria-label="Tema seçenekleri" data-i18n-aria-label="design.modal.aria">
+      <button type="button" class="design-option" data-design-option="classic" aria-pressed="false">
+        <span class="design-preview design-preview--classic" aria-hidden="true">
+          <span class="dp-hero"></span>
+          <span class="dp-row"></span>
+          <span class="dp-card"></span>
+          <span class="dp-card"></span>
+        </span>
+        <span class="design-name" data-i18n="design.classic">Klasik</span>
+        <span class="design-desc" data-i18n="design.classic.desc">İlk sürümden beri gelen görünüm: renkli başlık, yuvarlak hatlar, kart yapısı.</span>
+      </button>
+      <button type="button" class="design-option" data-design-option="minimal" aria-pressed="false">
+        <span class="design-preview design-preview--minimal" aria-hidden="true">
+          <span class="dp-title"></span>
+          <span class="dp-rule"></span>
+          <span class="dp-line"></span>
+          <span class="dp-line dp-line--short"></span>
+          <span class="dp-rule"></span>
+          <span class="dp-line"></span>
+        </span>
+        <span class="design-name" data-i18n="design.minimal">Sade</span>
+        <span class="design-desc" data-i18n="design.minimal.desc">Süsü kaldırır, içeriği bırakır: nötr renkler, ince çizgiler, yoğun liste. Geniş ekranda kategori kenar çubuğu.</span>
+      </button>
+      <button type="button" class="design-option" data-design-option="showcase" aria-pressed="false">
+        <span class="design-preview design-preview--showcase" aria-hidden="true">
+          <span class="dp-stage"></span>
+          <span class="dp-ring"></span>
+          <span class="dp-ring"></span>
+          <span class="dp-ring"></span>
+          <span class="dp-panel"></span>
+        </span>
+        <span class="design-name" data-i18n="design.showcase">Vitrin</span>
+        <span class="design-desc" data-i18n="design.showcase.desc">Sunum için: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler. Hareketi azalt ayarına uyar.</span>
+      </button>
+    </div>
+    <p class="design-note" data-i18n="design.modal.note">İpucu: bu pencere açıkken seçim anında uygulanır, arkadaki sayfada karşılaştırabilirsin. Açık / koyu mod ayrı bir ayardır ve her temada çalışır.</p>
+    <div class="design-actions">
+      <button class="btn primary" data-modal-close data-i18n="common.done">Tamam</button>
+    </div>
+  </div>
+</div>
+
 <!-- Print-options modal: choose between the checklist or the How-To guide -->
 <div class="modal" id="printOptionsModal" hidden>
   <div class="modal-backdrop" data-modal-close></div>
@@ -934,5 +1001,7 @@
 <script src="js/16-presentation.js" defer></script>
 <script src="js/17-install.js" defer></script>
 <script src="js/18-app.js" defer></script>
+<script src="js/19-design.js" defer></script>
+<script src="js/20-showcase-motion.js" defer></script>
 </body>
 </html>
