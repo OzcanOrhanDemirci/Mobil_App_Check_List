@@ -8,6 +8,7 @@
 before you submit your mobile app to the App Store or Play Store.**
 _Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework and per-backend guidance · installable PWA._
 
+[![Latest release](https://img.shields.io/github/v/release/OzcanOrhanDemirci/Mobil_App_Check_List?label=release&color=success)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/badge/demo-live-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
@@ -831,11 +832,11 @@ Improvements that may be worth picking up (_all open to contribution; everything
 
 - [ ] **Markdown export**: deliverable as a report
 - [ ] **More frameworks**: Ionic, NativeScript, .NET MAUI, Tauri
+- [ ] **More backends**: Hasura, Strapi, Directus, Nhost
 
-**Q4 2026**
+**2027**
 
 - [ ] **More languages**: German, Spanish, French, Arabic (with RTL)
-- [ ] **More backends**: Hasura, Strapi, Directus, Nhost
 - [ ] **Industry packs**: regional compliance items for e-commerce, healthcare, gaming, fintech (GDPR / HIPAA / PCI DSS / KVKK)
 
 **2027 and beyond**

@@ -299,8 +299,9 @@
   /* Surface does not. `.btn.primary`, `.btn.danger-solid` and
      `.btn-install-cta` carry a background and a matching text color as a
      pair; a blanket `background: transparent` strips the background, leaves
-     the color, and produces a white label on a white button. That shipped in
-     1.2.3 and made the reset confirmation's "Evet, devam et" invisible.
+     the color, and produces a white label on a white button, which is how
+     the reset confirmation's "Evet, devam et" went invisible during 1.3.0
+     development.
      Excluding them here also means a variant added later keeps working
      instead of silently losing its surface. */
   [data-design="minimal"] .btn:not(.primary):not(.danger-solid):not(.btn-install-cta) {

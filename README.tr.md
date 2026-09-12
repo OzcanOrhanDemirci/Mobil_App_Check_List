@@ -8,6 +8,7 @@
 14 kategori ve 55 maddelik etkileşimli kalite kontrol listesi.**
 _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
+[![Son sürüm](https://img.shields.io/github/v/release/OzcanOrhanDemirci/Mobil_App_Check_List?label=s%C3%BCr%C3%BCm&color=success)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/latest)
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
 [![Canlı demo](https://img.shields.io/badge/demo-canl%C4%B1-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
@@ -827,15 +828,15 @@ GitHub Issues üzerinden bildirin: bug için "🐞 Bug report", öneri için "�
 
 İleride değerlendirilebilecek geliştirmeler (_katkıya açık, hepsi pull request olarak gelebilir_). Çeyrek etiketleri yaklaşık hedeftir ve katkı temposuna göre öne / geriye kayabilir.
 
-**Q3 2026**
+**Q4 2026**
 
 - [ ] **Markdown dışa aktarma**: rapor olarak teslim edilebilir
 - [ ] **Daha fazla framework**: Ionic, NativeScript, .NET MAUI, Tauri
+- [ ] **Daha fazla backend**: Hasura, Strapi, Directus, Nhost
 
-**Q4 2026**
+**2027**
 
 - [ ] **Daha fazla dil**: Almanca, İspanyolca, Fransızca, Arapça (RTL ile)
-- [ ] **Daha fazla backend**: Hasura, Strapi, Directus, Nhost
 - [ ] **Sektör paketleri**: e-ticaret, sağlık, oyun, fintech için bölgesel uyum maddeleri (KVKK / GDPR / HIPAA / PCI DSS)
 
 **2027 ve sonrası**

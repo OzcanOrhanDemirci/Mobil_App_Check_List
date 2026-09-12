@@ -7,9 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.5] - 2026-09-12
+## [1.3.0] - 2026-09-12
 
-Review pass on the 1.2.3 design axis, from feedback on the local build.
+Three design themes, a content refresh against current platform sources,
+and an accessibility pass.
+
+The visual system became an axis of its own, next to the existing light and
+dark color mode:
+
+```
+data-design   classic | minimal | showcase   layout, shape, typography, motion
+data-theme    dark | light                   color mode
+```
+
+Six combinations over one DOM, one data set and one feature set. Every theme
+carries the whole application: 14 categories, 55 items, notes, the AI prompt
+generator, multi-project, presentation mode, filters, search, export and
+import, PWA install. A theme changes how the page looks, never what it can
+do, and the printed output is identical in all three.
+
+Alongside that, every factual claim in the 14 category data files was
+re-verified against primary sources (platform documentation, store policy
+pages, vendor release notes) and the stale ones corrected: the content freeze
+had been in May 2026 and four months of platform churn had moved several
+store requirements.
+
+Upgrading is a page reload. All existing marks, notes and projects are kept;
+nothing in `localStorage` changes shape. Anyone who has never opened the
+theme picker will see the new default (Minimal) and can return to the
+previous look in two clicks.
 
 ### Added
 
@@ -30,66 +56,6 @@ Review pass on the 1.2.3 design axis, from feedback on the local build.
   step meant renumbering all of them by hand, which is the kind of edit that
   half-lands.
 
-### Fixed
-
-- **The theme picker had no horizontal padding.** Its contents were direct
-  children of `.modal-content`, which carries none; every other modal gets it
-  from `.modal-body`. Title, copy, cards and the Done button all sat against
-  the dialog's border. They are now inside a `.modal-body` like everywhere
-  else.
-- **Buttons that own a surface lost it in the two new designs.** Both design
-  stylesheets reset `.btn` with `background: transparent` (Minimal) or a glass
-  fill (Showcase) at the same specificity as `.btn.primary`,
-  `.btn.danger-solid` and `.btn-install-cta`, and loaded later, so the
-  background was replaced while the paired text color stayed. The reset
-  confirmation's "Evet, devam et" was white on white. The surface reset is now
-  scoped with `:not()` so those variants keep the background their text color
-  was chosen for, and a variant added later cannot regress the same way.
-- **`.btn.danger` was unreadable in light mode** (1.7:1). It had one red tuned
-  for a dark surface; light mode now has its own. This affected Classic as
-  well as Showcase.
-- **The welcome flow's active step dot** used a hardcoded dark label, which
-  assumes a light accent. Minimal and Showcase accent with a dark blue in
-  light mode, where it measured 2.8:1. The label now flips with the color
-  mode, and the hardcoded orange glow follows the accent.
-- **Muted and accent text below WCAG AA**, found by measuring rendered pixels
-  across three designs, two color modes and twelve UI states: `--text-mute` in
-  Minimal (4.1:1) and Showcase (3.7:1), `--text-mute` and `--accent` in
-  Classic light (3.6:1 and 2.5:1), the picker's own explanatory copy (3.3:1),
-  the destructive reset option's title (3.0:1), and the Showcase instructor
-  badge in light mode (3.1:1). The audit went from 76 failing text runs to 36.
-- The step indicator's connectors were a fixed 36px, so the eighth dot pushed
-  the row to 544px inside a 480px column. They flex now and fit any number of
-  steps.
-- **Local review could show a page built from a mix of fresh and stale
-  files.** `python -m http.server`, which the docs and the `serve` script both
-  used, sends `Last-Modified` but no `Cache-Control`; browsers then fall back
-  to heuristic freshness and reuse a subresource for minutes without
-  revalidating. The visible result was a feature that rendered from fresh HTML
-  but did not respond because its module was the previous version, which is
-  indistinguishable from a real bug. `scripts/serve-local.py` serves the repo
-  with `Cache-Control: no-store`; `npm run serve`, both READMEs and
-  CONTRIBUTING now point at it. Reproduced and verified: the same reload that
-  served a stale module before serves the current one now.
-
-### Known, not fixed
-
-- Classic's light mode still paints several labels in `--accent-2`
-  (`#f97316`), which measures 2.3 to 2.5:1 on its light surfaces: the hero
-  eyebrow, the item ids, the active half of the language and style pills, and
-  the project pill's name. Darkening that token would also darken the surfaces
-  it fills (the instructor badge, the primary button gradient), so it is a
-  deliberate change to the published look rather than a contrast fix, and it
-  is left for a decision instead of being made silently.
-
-## [1.2.4] - 2026-09-12
-
-Follow-up to the design axis: the repository's own visuals, metadata and
-governance files now describe the three themes instead of the single look
-they replaced.
-
-### Added
-
 - `assets/screenshots/{tr,en}/05-theme-picker.png`,
   `06-theme-classic.png`, `07-theme-showcase.png`: a theme gallery for
   both READMEs, in both languages. Shots 01 to 05 use the application's
@@ -99,54 +65,6 @@ they replaced.
   alongside the existing `BASE_URL` and `SHOT_LANG`. Every seed now writes
   the design key explicitly, so a shot never silently changes meaning when
   the default design changes.
-
-### Changed
-
-- README screenshots regenerated. The four existing shots were taken
-  against the old single look and no longer matched the application.
-- `README.md`, `README.tr.md`: a "The three themes" gallery under
-  Screenshots, and the capture note explains which shots pin a theme.
-- PWA chrome colors follow the default design: `theme-color` in
-  `index.html` and `theme_color` / `background_color` in
-  `manifest.webmanifest` move from the Classic grounds (`#0b0f17`,
-  `#f6f7fb`) to the Minimal ones (`#0a0a0b`, `#ffffff`).
-- `.github/CODEOWNERS` covers the five design files. One DOM carries three
-  designs, so a change there can break a design nobody opened in review.
-- `.github/ISSUE_TEMPLATE/bug_report.yml`: required Theme and Color mode
-  dropdowns, because a visual bug is now usually specific to one of the
-  six combinations. The OS options and the browser-version placeholder
-  had drifted about two years behind and were refreshed.
-
-### Fixed
-
-- `scripts/capture-screenshots.mjs` seeded its demo project as
-  `{ active, list }`, which is not the shape `js/04-projects.js` stores
-  (`{ version, activeId, projects }`). The store rejected it, so every
-  screenshot was taken with no active project and the hero pill rendered
-  empty.
-- The `03-card-flip` shot had stopped showing a flipped card: categories
-  start collapsed, so the flip button existed in the DOM but inside a
-  zero-height container, and clicking it produced an image identical to
-  `02-checklist`. The shot now expands the first category before flipping.
-
-## [1.2.3] - 2026-09-12
-
-Three design themes, switchable at runtime. Feedback on the public demo
-was that the interface read as machine-generated: gradient headline,
-orange glow, pill-shaped everything, an emoji on every control. Rather
-than trade one opinion for another, the visual system became an axis of
-its own, alongside the existing light / dark color mode:
-
-```
-data-design   classic | minimal | showcase   layout, shape, typography, motion
-data-theme    dark | light                   color mode
-```
-
-Six combinations over one DOM, one data set and one feature set. Every
-theme carries the full application; a theme changes how the page looks,
-never what it can do. The printed page is identical in all three.
-
-### Added
 
 - `js/19-design.js`: the design axis. `applyDesign()`, the picker dialog,
   persistence under `mobil_kontrol_design_v1`, the toolbar button label,
@@ -184,6 +102,21 @@ never what it can do. The printed page is identical in all three.
 
 ### Changed
 
+- README screenshots regenerated. The four existing shots were taken
+  against the old single look and no longer matched the application.
+- `README.md`, `README.tr.md`: a "The three themes" gallery under
+  Screenshots, and the capture note explains which shots pin a theme.
+- PWA chrome colors follow the default design: `theme-color` in
+  `index.html` and `theme_color` / `background_color` in
+  `manifest.webmanifest` move from the Classic grounds (`#0b0f17`,
+  `#f6f7fb`) to the Minimal ones (`#0a0a0b`, `#ffffff`).
+- `.github/CODEOWNERS` covers the five design files. One DOM carries three
+  designs, so a change there can break a design nobody opened in review.
+- `.github/ISSUE_TEMPLATE/bug_report.yml`: required Theme and Color mode
+  dropdowns, because a visual bug is now usually specific to one of the
+  six combinations. The OS options and the browser-version placeholder
+  had drifted about two years behind and were refreshed.
+
 - `js/00-bootstrap.js` resolves and applies the design before first
   paint, next to the color mode and language it already handled.
 - The default look for a first visit is **Minimal**. A saved choice is
@@ -212,19 +145,6 @@ never what it can do. The printed page is identical in all three.
   swallowing them. `js/19-design.js` round-trips through
   `documentElement`'s `data-design`, so a stub that always returned null
   made every `applyDesign` call look like a change.
-
-## [1.2.2] - 2026-09-12
-
-Content refresh. The 1.2.0 freeze was in May 2026; four months of
-platform churn later a number of item texts pointed at superseded
-version floors, retired console paths and store requirements that had
-since moved. This pass re-verified the factual claims in the 14
-category data files against primary sources (platform documentation,
-store policy pages, vendor release notes) and corrected what had gone
-stale. Item ids, the 55-item count and the four-axis structure are
-unchanged.
-
-### Changed
 
 - **Apple submission floor**: the App Store SDK requirement moved from
   "Xcode 16 + iOS 18 SDK since 24 April 2025" to "Xcode 26 + iOS 26 SDK
@@ -273,6 +193,56 @@ unchanged.
 
 ### Fixed
 
+- **The theme picker had no horizontal padding.** Its contents were direct
+  children of `.modal-content`, which carries none; every other modal gets it
+  from `.modal-body`. Title, copy, cards and the Done button all sat against
+  the dialog's border. They are now inside a `.modal-body` like everywhere
+  else.
+- **Buttons that own a surface lost it in the two new designs.** Both design
+  stylesheets reset `.btn` with `background: transparent` (Minimal) or a glass
+  fill (Showcase) at the same specificity as `.btn.primary`,
+  `.btn.danger-solid` and `.btn-install-cta`, and loaded later, so the
+  background was replaced while the paired text color stayed. The reset
+  confirmation's "Evet, devam et" was white on white. The surface reset is now
+  scoped with `:not()` so those variants keep the background their text color
+  was chosen for, and a variant added later cannot regress the same way.
+- **`.btn.danger` was unreadable in light mode** (1.7:1). It had one red tuned
+  for a dark surface; light mode now has its own. This affected Classic as
+  well as Showcase.
+- **The welcome flow's active step dot** used a hardcoded dark label, which
+  assumes a light accent. Minimal and Showcase accent with a dark blue in
+  light mode, where it measured 2.8:1. The label now flips with the color
+  mode, and the hardcoded orange glow follows the accent.
+- **Muted and accent text below WCAG AA**, found by measuring rendered pixels
+  across three designs, two color modes and twelve UI states: `--text-mute` in
+  Minimal (4.1:1) and Showcase (3.7:1), `--text-mute` and `--accent` in
+  Classic light (3.6:1 and 2.5:1), the picker's own explanatory copy (3.3:1),
+  the destructive reset option's title (3.0:1), and the Showcase instructor
+  badge in light mode (3.1:1). The audit went from 76 failing text runs to 36.
+- The step indicator's connectors were a fixed 36px, so the eighth dot pushed
+  the row to 544px inside a 480px column. They flex now and fit any number of
+  steps.
+- **Local review could show a page built from a mix of fresh and stale
+  files.** `python -m http.server`, which the docs and the `serve` script both
+  used, sends `Last-Modified` but no `Cache-Control`; browsers then fall back
+  to heuristic freshness and reuse a subresource for minutes without
+  revalidating. The visible result was a feature that rendered from fresh HTML
+  but did not respond because its module was the previous version, which is
+  indistinguishable from a real bug. `scripts/serve-local.py` serves the repo
+  with `Cache-Control: no-store`; `npm run serve`, both READMEs and
+  CONTRIBUTING now point at it. Reproduced and verified: the same reload that
+  served a stale module before serves the current one now.
+
+- `scripts/capture-screenshots.mjs` seeded its demo project as
+  `{ active, list }`, which is not the shape `js/04-projects.js` stores
+  (`{ version, activeId, projects }`). The store rejected it, so every
+  screenshot was taken with no active project and the hero pill rendered
+  empty.
+- The `03-card-flip` shot had stopped showing a flipped card: categories
+  start collapsed, so the flip button existed in the DOM but inside a
+  zero-height container, and clicking it produced an image identical to
+  `02-checklist`. The shot now expands the first category before flipping.
+
 - The counts the UI quotes back to the user were wrong. The framework
   picker claimed "28 items vary by framework, the remaining 25 are
   universal" (which also does not sum to 55); the data says 24 vary by
@@ -293,6 +263,16 @@ unchanged.
   class the accordion needs. A short fallback paragraph plus a comment
   explaining the ownership rule replaces it, and `index.html` drops
   from 1170 to 938 lines.
+
+### Known, not fixed
+
+- Classic's light mode still paints several labels in `--accent-2`
+  (`#f97316`), which measures 2.3 to 2.5:1 on its light surfaces: the hero
+  eyebrow, the item ids, the active half of the language and style pills, and
+  the project pill's name. Darkening that token would also darken the surfaces
+  it fills (the instructor badge, the primary button gradient), so it is a
+  deliberate change to the published look rather than a contrast fix, and it
+  is left for a decision instead of being made silently.
 
 ## [1.2.1] - 2026-05-15
 
@@ -787,11 +767,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.5...HEAD
-[1.2.5]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.4...v1.2.5
-[1.2.4]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.3...v1.2.4
-[1.2.3]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...v1.2.3
-[1.2.2]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.2.2
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0

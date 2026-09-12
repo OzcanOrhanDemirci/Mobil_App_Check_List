@@ -30,7 +30,7 @@ const EXPECTED_CATEGORY_COUNT = 14;
 const EXPECTED_FEATURE_COUNT = 55;
 
 /* The UI quotes these splits back to the user ("24 items vary by framework",
-   "30 items adapt to your stack"). Before 1.2.5 they were free-text numbers in
+   "30 items adapt to your stack"). Until 1.3.0 they were free-text numbers in
    js/01-i18n-strings.js and js/02-help-content.js that nobody recomputed when a
    variant was added, so they had drifted away from the data. They are asserted
    here so the next drift fails CI instead of shipping. */
