@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-09-12
+
+Follow-up to the design axis: the repository's own visuals, metadata and
+governance files now describe the three themes instead of the single look
+they replaced.
+
+### Added
+
+- `assets/screenshots/{tr,en}/05-theme-picker.png`,
+  `06-theme-classic.png`, `07-theme-showcase.png`: a theme gallery for
+  both READMEs, in both languages. Shots 01 to 05 use the application's
+  default theme; 06 and 07 pin their own, so the gallery always shows all
+  three regardless of what the default is on the day it is regenerated.
+- `SHOT_DESIGN` environment override in `scripts/capture-screenshots.mjs`,
+  alongside the existing `BASE_URL` and `SHOT_LANG`. Every seed now writes
+  the design key explicitly, so a shot never silently changes meaning when
+  the default design changes.
+
+### Changed
+
+- README screenshots regenerated. The four existing shots were taken
+  against the old single look and no longer matched the application.
+- `README.md`, `README.tr.md`: a "The three themes" gallery under
+  Screenshots, and the capture note explains which shots pin a theme.
+- PWA chrome colors follow the default design: `theme-color` in
+  `index.html` and `theme_color` / `background_color` in
+  `manifest.webmanifest` move from the Classic grounds (`#0b0f17`,
+  `#f6f7fb`) to the Minimal ones (`#0a0a0b`, `#ffffff`).
+- `.github/CODEOWNERS` covers the five design files. One DOM carries three
+  designs, so a change there can break a design nobody opened in review.
+- `.github/ISSUE_TEMPLATE/bug_report.yml`: required Theme and Color mode
+  dropdowns, because a visual bug is now usually specific to one of the
+  six combinations. The OS options and the browser-version placeholder
+  had drifted about two years behind and were refreshed.
+
+### Fixed
+
+- `scripts/capture-screenshots.mjs` seeded its demo project as
+  `{ active, list }`, which is not the shape `js/04-projects.js` stores
+  (`{ version, activeId, projects }`). The store rejected it, so every
+  screenshot was taken with no active project and the hero pill rendered
+  empty.
+- The `03-card-flip` shot had stopped showing a flipped card: categories
+  start collapsed, so the flip button existed in the DOM but inside a
+  zero-height container, and clicking it produced an image identical to
+  `02-checklist`. The shot now expands the first category before flipping.
+
 ## [1.2.3] - 2026-09-12
 
 Three design themes, switchable at runtime. Feedback on the public demo
@@ -665,7 +712,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.4...HEAD
+[1.2.4]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1

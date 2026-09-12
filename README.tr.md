@@ -151,7 +151,7 @@ Bu uygulama o boşluğu doldurur:
   <em>Sosyal önizleme görseli (Open Graph, 1200x630).</em>
 </p>
 
-> Görseller `scripts/capture-screenshots.mjs` script'i ile Playwright üzerinden üretilir. Mevcut PNG'ler `assets/screenshots/` altında commit'lenmiştir; arayüz değişince script'i yeniden çalıştırarak güncelleyebilirsiniz (kullanım aşağıda).
+> Görseller `scripts/capture-screenshots.mjs` script'i ile Playwright üzerinden üretilir. Mevcut PNG'ler `assets/screenshots/` altında commit'lenmiştir; arayüz değişince script'i yeniden çalıştırarak güncelleyebilirsiniz (kullanım aşağıda). 1-5 arası görüntüler varsayılan temayı kullanır; 6 ve 7 kendi temasını sabitler, böylece galeri her zaman üçünü de gösterir.
 
 <table>
   <tr>
@@ -187,6 +187,44 @@ Bu uygulama o boşluğu doldurur:
     </td>
   </tr>
 </table>
+
+### Üç tema
+
+Tek DOM, tek veri kümesi, tek özellik kümesi. Tema yerleşimi, tipografiyi ve hareketi değiştirir; içerik ve onunla yapabildiklerin aynı kalır. Ayrıntı: [Tasarım temaları](#tasarım-temaları).
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/02-checklist.png">
+        <img src="assets/screenshots/tr/02-checklist.png" alt="Sade tema: nötr palet, ince çizgiler, kategori kenar çubuğu" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Sade (varsayılan)</strong>: nötr palet, ince ayırıcı çizgiler, geniş ekranda kategori kenar çubuğu.</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/06-theme-classic.png">
+        <img src="assets/screenshots/tr/06-theme-classic.png" alt="Klasik tema: renkli başlık, yuvarlak hatlar, kart yüzeyleri" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Klasik</strong>: projenin ilk sürümünden beri gelen görünüm, süreklilik için korundu.</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/07-theme-showcase.png">
+        <img src="assets/screenshots/tr/07-theme-showcase.png" alt="Vitrin teması: büyük tipografi ve üç ilerleme halkası" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Vitrin</strong>: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="3">
+      <a href="assets/screenshots/tr/05-theme-picker.png">
+        <img src="assets/screenshots/tr/05-theme-picker.png" alt="Üç CSS önizlemesiyle tema seçici penceresi" width="70%" />
+      </a>
+      <br />
+      <sub><strong>Seçici</strong> (toolbar butonu ya da <kbd>T</kbd> tuşu): seçim anında uygulanır, üçü arkadaki gerçek sayfa üzerinde karşılaştırılabilir.</sub>
+    </td>
+  </tr>
 
 ### Ekran görüntülerini yeniden üretmek (opsiyonel)
 
