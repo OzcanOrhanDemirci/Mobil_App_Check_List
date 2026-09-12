@@ -100,7 +100,9 @@
 .design-desc {
   font-size: 12px;
   line-height: 1.5;
-  color: var(--text-mute);
+  /* Was --text-mute, which measured 3.3:1. This is copy the reader is meant
+     to read before choosing, not a caption. */
+  color: var(--text-dim);
 }
 
 .design-note {
@@ -109,7 +111,7 @@
   border-top: 1px solid var(--border);
   font-size: 12px;
   line-height: 1.55;
-  color: var(--text-mute);
+  color: var(--text-dim);
 }
 
 .design-actions {

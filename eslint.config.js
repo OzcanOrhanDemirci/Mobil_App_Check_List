@@ -187,6 +187,8 @@ const projectGlobals = {
   pendingMode: "writable",
   pendingStyle: "writable",
   pendingProjName: "writable",
+  pendingDesign: "writable",
+  markWelcomeDesign: "writable",
   setWelcomeStep: "writable",
   updateWelcomeProjNameCta: "writable",
   setHelpLangSwitchVisible: "writable",

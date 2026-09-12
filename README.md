@@ -258,7 +258,7 @@ The easiest path: open the live demo.
 
 > [https://ozcanorhandemirci.github.io/Mobil_App_Check_List/](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 
-On first launch, a **7-step welcome flow** asks for language, usage mode, explanation style, project name, framework, and backend. You're off in a few clicks.
+On first launch, an **8-step welcome flow** asks for language, theme, usage mode, explanation style, project name, framework, and backend. The theme step applies your pick live behind the dialog, so you choose by looking. You're off in a few clicks.
 
 ### 2. Install on your device (PWA)
 
@@ -281,7 +281,7 @@ git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
 # Start a local server (Service Worker won't run over file://)
-python -m http.server 8080
+python scripts/serve-local.py 8080   # or: npm run serve
 # or
 npx serve .
 
@@ -434,7 +434,7 @@ JS files load in order; each file has a **single responsibility**. The numeric p
 11-render.js                   Main render loop, card template
 12-progress.js                 Percentage calculation, celebrations
 13-filters.js                  Search + 3×3 view filter
-14-welcome.js                  7-step welcome flow + welcome help
+14-welcome.js                  8-step welcome flow + welcome help
 15-projects.js                 Project / framework / backend modal + CRUD
 16-presentation.js             Presentation mode (P key, ESC, arrows)
 17-install.js                  PWA install banner + platform-manual fallback
@@ -483,7 +483,7 @@ Mobil_App_Check_List/
 │   ├── 04-presentation.css       Presentation mode (full-screen focus)
 │   ├── 05-hero-pills.css         Hero pill (vertical card) + language/style pills
 │   ├── 05-modals-core.css        Modal skeleton + shared styles
-│   ├── 05-modals-welcome.css     7-step welcome flow
+│   ├── 05-modals-welcome.css     8-step welcome flow
 │   ├── 05-modals-projects.css    Project / framework / backend tabs
 │   ├── 05-modals-install.css     PWA install guidance
 │   ├── 05-modals-feedback.css    Toast notifications + celebration modal
@@ -494,6 +494,7 @@ Mobil_App_Check_List/
 ├── js/                           37 files (see "Modular file layout" above)
 ├── scripts/
 │   ├── run-tests.mjs             node --test wrapper
+│   ├── serve-local.py            Dev server with caching disabled (npm run serve)
 │   ├── check-em-dash.mjs         CI em-dash rule
 │   ├── check-sw-cache-version.mjs  sw.js cache key must match package.json
 │   ├── install-githooks.mjs      `prepare` script installs the pre-commit hook

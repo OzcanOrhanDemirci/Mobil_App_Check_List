@@ -43,7 +43,7 @@
     --border: rgba(255, 255, 255, 0.1);
     --text: #f4f4f8;
     --text-dim: #b4b4c6;
-    --text-mute: #82829a;
+    --text-mute: #9c9cb4;
     --accent: #a5b4fc;
     --accent-2: #c7d2fe;
 
@@ -230,6 +230,11 @@
     color: #0b0b16;
   }
 
+  /* Light mode accents with a dark indigo, so the dark label has to flip. */
+  [data-design="showcase"][data-theme="light"] .instructor-label {
+    color: #ffffff;
+  }
+
   /* ---------------------------------------------------- hero stage (gauges)
 
      Injected by js/20-showcase-motion.js and aria-hidden: the same three
@@ -341,17 +346,22 @@
 
   /* ------------------------------------------------------ controls and chrome */
 
+  /* Glass surface for the chrome. Buttons that own a surface are excluded
+     for the reason documented in css/07-design-minimal.css: replacing the
+     background without replacing the paired text color is how a label
+     disappears. */
   [data-design="showcase"] .level-filter-pill,
   [data-design="showcase"] .hero-lang-pill,
   [data-design="showcase"] .hero-style-pill,
   [data-design="showcase"] .hero-project-pill,
-  [data-design="showcase"] .btn {
+  [data-design="showcase"] .btn:not(.primary):not(.danger-solid):not(.btn-install-cta) {
     background: var(--s-glass-strong);
     border-color: var(--s-hairline);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
 
+  /* Shape applies to every button. */
   [data-design="showcase"] .btn {
     border-radius: 999px;
     padding: 9px 16px;

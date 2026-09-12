@@ -382,8 +382,10 @@
     color: var(--text);
     letter-spacing: -0.005em;
   }
+  /* #dc2626 measured 3.0:1 on the dark modal surface. The lighter red is
+     the same one .btn.danger uses in dark mode. */
   .reset-scope-option.danger .reset-scope-title {
-    color: #dc2626;
+    color: #f87171;
   }
   [data-theme="light"] .reset-scope-option.danger .reset-scope-title {
     color: #b91c1c;

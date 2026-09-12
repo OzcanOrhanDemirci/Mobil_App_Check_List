@@ -1,7 +1,7 @@
 /* ==================== WELCOME FLOW ====================
    On first visit, if there is no active project + framework + backend, show
-   the welcome modal in 7 steps: language, usage mode, explanation style,
-   project name, framework, backend, get-started. Each step is held in a
+   the welcome modal in 8 steps: language, theme, usage mode, explanation
+   style, project name, framework, backend, get-started. Each step is held in a
    pending* variable (mirrored to window.pending* so 08-i18n-dom.js applyLang
    can read the welcome CTAs across modules); the final step persists the
    selections via createProject. The welcome modal's Help button (with its
@@ -10,9 +10,9 @@
 
 /* ==================== WELCOME MODAL ==================== */
 /* If there is no active project + framework + backend, show the welcome modal
-   in 7 steps:
-   1) Language  2) Usage Mode  3) Explanation Style  4) Project Name
-   5) Framework  6) Backend  7) Get Started */
+   in 8 steps:
+   1) Language  2) Theme  3) Usage Mode  4) Explanation Style
+   5) Project Name  6) Framework  7) Backend  8) Get Started */
 function showWelcomeIfFirstVisit() {
   if (getActiveProjectId() && currentFramework && currentBackend) return;
   setTimeout(() => {
@@ -29,14 +29,18 @@ let pendingLang = null;
 let pendingMode = null;
 let pendingStyle = null;
 let pendingProjName = null;
+/* The design is applied live as the reader picks it (so the rest of the flow
+   is shown in it) but not written to storage until "Get Started", like every
+   other choice in this modal. */
+let pendingDesign = null;
 
 function setWelcomeStep(n) {
-  /* 1 = language, 2 = usage mode, 3 = explanation style, 4 = project name,
-     5 = framework, 6 = backend, 7 = get-started. */
+  /* 1 = language, 2 = theme, 3 = usage mode, 4 = explanation style,
+     5 = project name, 6 = framework, 7 = backend, 8 = get-started. */
   document.querySelectorAll(".welcome-pane").forEach(p => {
     p.hidden = String(p.dataset.pane) !== String(n);
   });
-  /* Update the step indicator (7 dots + 6 connecting lines). */
+  /* Update the step indicator (8 dots + 7 connecting lines). */
   document.querySelectorAll("[data-step-dot]").forEach(d => {
     const idx = Number(d.dataset.stepDot);
     d.classList.toggle("active", idx === n);
@@ -51,9 +55,20 @@ function setWelcomeStep(n) {
      not take up space in both languages before the user has picked one. */
   const modal = document.getElementById("welcomeModal");
   if (modal) modal.setAttribute("data-step", String(n));
-  /* When entering the project-name step (now step 4): auto-focus the input
+  /* Entering the theme step: show which design is currently active so the
+     reader sees a selection rather than an empty choice. */
+  if (n === 2) {
+    const active =
+      pendingDesign ||
+      document.documentElement.getAttribute("data-design") ||
+      (typeof DEFAULT_DESIGN === "string" ? DEFAULT_DESIGN : "minimal");
+    pendingDesign = active;
+    window.pendingDesign = active;
+    markWelcomeDesign(active);
+  }
+  /* When entering the project-name step (now step 5): auto-focus the input
      and update the CTA label. */
-  if (n === 4) {
+  if (n === 5) {
     const input = document.getElementById("welcomeProjName");
     if (input) {
       setTimeout(() => input.focus(), 80);
@@ -118,7 +133,39 @@ document.getElementById("welcomeLangNext").addEventListener("click", () => {
   setWelcomeStep(2);
 });
 
-/* STEP 2: Usage Mode (Build / Review).
+/* STEP 2: Theme (Classic / Minimal / Showcase).
+   Unlike the other steps this one previews: picking a card applies the design
+   to the page behind the dialog immediately, with persist:false, so the
+   reader judges by looking instead of by reading. The choice is written to
+   storage in welcomeStart along with everything else. The step opens with the
+   active design already selected, so a reader with no opinion can press Next. */
+function markWelcomeDesign(design) {
+  document.querySelectorAll("[data-welcome-design]").forEach(b => {
+    const on = b.dataset.welcomeDesign === design;
+    b.classList.toggle("selected", on);
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+document.querySelectorAll("[data-welcome-design]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    pendingDesign = btn.dataset.welcomeDesign;
+    window.pendingDesign = pendingDesign;
+    markWelcomeDesign(pendingDesign);
+    if (typeof applyDesign === "function") applyDesign(pendingDesign, { persist: false });
+  });
+});
+
+document.getElementById("welcomeThemeNext")?.addEventListener("click", () => {
+  setWelcomeStep(3);
+});
+
+document.getElementById("welcomeThemeBack")?.addEventListener("click", () => {
+  setWelcomeStep(1);
+});
+
+/* STEP 3: Usage Mode (Build / Review).
    The choice is persisted in welcomeStart via applyMode; until then it lives
    in pendingMode. */
 document.querySelectorAll("[data-welcome-mode]").forEach(btn => {
@@ -138,14 +185,14 @@ document.querySelectorAll("[data-welcome-mode]").forEach(btn => {
 
 document.getElementById("welcomeModeNext").addEventListener("click", () => {
   if (!pendingMode) return;
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
 document.getElementById("welcomeModeBack").addEventListener("click", () => {
-  setWelcomeStep(1);
+  setWelcomeStep(2);
 });
 
-/* STEP 3: Explanation style (Simple / Technical). */
+/* STEP 4: Explanation style (Simple / Technical). */
 document.querySelectorAll("[data-welcome-style]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingStyle = btn.dataset.welcomeStyle;
@@ -168,14 +215,14 @@ document.getElementById("welcomeStyleNext").addEventListener("click", () => {
      while the welcome modal is open, the list is already kept in sync by
      other renderContent calls.) */
   if (typeof applyStyle === "function") applyStyle(pendingStyle);
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
 document.getElementById("welcomeStyleBack").addEventListener("click", () => {
-  setWelcomeStep(2);
+  setWelcomeStep(3);
 });
 
-/* STEP 4: Project name. */
+/* STEP 5: Project name. */
 const welcomeProjNameInput = document.getElementById("welcomeProjName");
 if (welcomeProjNameInput) {
   welcomeProjNameInput.addEventListener("input", () => {
@@ -195,14 +242,14 @@ document.getElementById("welcomeProjNameNext").addEventListener("click", () => {
   const val = (welcomeProjNameInput?.value || "").trim();
   if (!val || val.length > 60) return;
   pendingProjName = val;
-  setWelcomeStep(5);
+  setWelcomeStep(6);
 });
 
 document.getElementById("welcomeProjNameBack").addEventListener("click", () => {
-  setWelcomeStep(3);
+  setWelcomeStep(4);
 });
 
-/* STEP 5: Framework selection. */
+/* STEP 6: Framework selection. */
 document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingFramework = btn.dataset.welcomeFw;
@@ -218,14 +265,14 @@ document.querySelectorAll("[data-welcome-fw]").forEach(btn => {
 
 document.getElementById("welcomeNext").addEventListener("click", () => {
   if (!pendingFramework) return;
-  setWelcomeStep(6);
+  setWelcomeStep(7);
 });
 
 document.getElementById("welcomeFwBack").addEventListener("click", () => {
-  setWelcomeStep(4);
+  setWelcomeStep(5);
 });
 
-/* STEP 6: Backend selection. */
+/* STEP 7: Backend selection. */
 document.querySelectorAll("[data-welcome-be]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingBackend = btn.dataset.welcomeBe;
@@ -243,16 +290,16 @@ document.querySelectorAll("[data-welcome-be]").forEach(btn => {
 
 document.getElementById("welcomeBeNext").addEventListener("click", () => {
   if (!pendingBackend) return;
-  setWelcomeStep(7);
+  setWelcomeStep(8);
 });
 
 document.getElementById("welcomeBeBack").addEventListener("click", () => {
-  setWelcomeStep(5);
+  setWelcomeStep(6);
 });
 
-/* STEP 7: Get started. */
+/* STEP 8: Get started. */
 document.getElementById("welcomeBack").addEventListener("click", () => {
-  setWelcomeStep(6);
+  setWelcomeStep(7);
 });
 
 /* Help button inside the welcome modal: opens the help modal on top without
@@ -332,7 +379,12 @@ function closeHelpModal() {
 
 document.getElementById("welcomeStart").addEventListener("click", () => {
   if (!pendingFramework || !pendingProjName || !pendingBackend) return;
-  /* Persist the explanation style. It was already applied live in step 3;
+  /* Persist the design. It was already applied live in step 2 with
+     persist:false so the reader could see it; this is the write. */
+  if (pendingDesign && typeof applyDesign === "function") {
+    applyDesign(pendingDesign);
+  }
+  /* Persist the explanation style. It was already applied live in step 4;
      this call guarantees it is also written to localStorage. */
   if (pendingStyle && typeof applyStyle === "function") {
     applyStyle(pendingStyle);

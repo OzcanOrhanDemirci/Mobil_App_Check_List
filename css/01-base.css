@@ -7,7 +7,9 @@
     --border: #232b3a;
     --text: #e7ecf3;
     --text-dim: #94a3b8;
-    --text-mute: #64748b;
+    /* Tuned to clear 4.5:1 against --surface-3, the lightest surface it is
+       used on. The slate-500 this was measured 3.6:1 there. */
+    --text-mute: #838d9f;
     --accent: #f97316;
     --accent-2: #fb923c;
 
@@ -39,8 +41,11 @@
     --border: #d8dde7;
     --text: #0f172a;
     --text-dim: #475569;
-    --text-mute: #64748b;
-    --accent: #ea580c;
+    --text-mute: #5b6878;
+    /* Darker than the dark mode's orange on purpose: as text on white
+       #ea580c measures 2.5:1. This clears 4.5:1 on --surface and --surface-2
+       while staying the same hue. */
+    --accent: #c2410c;
     --accent-2: #f97316;
 
     --mvp: #15803d;

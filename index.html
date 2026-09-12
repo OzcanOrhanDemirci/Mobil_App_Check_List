@@ -275,7 +275,7 @@
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
     </button>
-    <p class="foot-version" id="footVersion"><span>v1.2.4</span><span class="version-dot">·</span><span data-i18n="footer.date">Eylül 2026</span></p>
+    <p class="foot-version" id="footVersion"><span>v1.2.5</span><span class="version-dot">·</span><span data-i18n="footer.date">Eylül 2026</span></p>
   </footer>
 </div>
 
@@ -331,7 +331,7 @@
   </div>
 </div>
 
-<!-- Welcome modal (shown on first launch); 7-step flow: language, usage mode, explanation style, project name, framework, backend, and a closing how-to overview. -->
+<!-- Welcome modal (shown on first launch); 8-step flow: language, theme, usage mode, explanation style, project name, framework, backend, and a closing how-to overview. -->
 <div class="modal" id="welcomeModal" hidden>
   <div class="modal-backdrop"></div>
   <div class="modal-content modal-welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
@@ -345,7 +345,7 @@
       <span class="welcome-mono" data-i18n="welcome.title">Hoş Geldin!</span>
     </h2>
 
-    <!-- Step indicator (7 steps: Language, Usage mode, Explanation style, Project name, Framework, Backend, Welcome) -->
+    <!-- Step indicator (8 steps: Language, Theme, Usage mode, Explanation style, Project name, Framework, Backend, Welcome) -->
     <div class="welcome-steps" aria-hidden="true">
       <span class="welcome-step-dot active" data-step-dot="1">1</span>
       <span class="welcome-step-line" data-step-line="1"></span>
@@ -360,6 +360,8 @@
       <span class="welcome-step-dot" data-step-dot="6">6</span>
       <span class="welcome-step-line" data-step-line="6"></span>
       <span class="welcome-step-dot" data-step-dot="7">7</span>
+      <span class="welcome-step-line" data-step-line="7"></span>
+      <span class="welcome-step-dot" data-step-dot="8">8</span>
     </div>
 
     <!-- Step 1: Language selection (bilingual labels until the user picks a language) -->
@@ -379,11 +381,60 @@
       <button class="btn primary welcome-cta" id="welcomeLangNext" disabled data-i18n="welcome.cta.pickLang">Devam etmek için dil seç · Pick a language to continue</button>
     </div>
 
-    <!-- Step 2: Usage mode (Build / Review).
+    <!-- Step 2: Theme. Asked this early because it changes how every later
+         step looks: the choice applies live behind the dialog, so the reader
+         picks by seeing rather than by reading a description. The three cards
+         reuse the picker's CSS-drawn previews (css/09-design-picker.css). -->
+    <div class="welcome-pane" data-pane="2" hidden>
+      <p class="framework-pick-q" data-i18n="welcome.themeQuestion">Uygulama sana nasıl görünsün?</p>
+      <p class="framework-pick-sub" data-i18n-html="welcome.themeSub">Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin an arkadaki sayfaya uygulanır, hemen görürsün. Sonradan üstteki <strong>Tema</strong> butonundan ya da <kbd>T</kbd> tuşundan değiştirebilirsin.</p>
+      <div class="design-options welcome-design-options" role="group" aria-label="Tema seçimi" data-i18n-aria-label="welcome.themeAria">
+        <button type="button" class="design-option" data-welcome-design="minimal" aria-pressed="false">
+          <span class="design-preview design-preview--minimal" aria-hidden="true">
+            <span class="dp-title"></span>
+            <span class="dp-rule"></span>
+            <span class="dp-line"></span>
+            <span class="dp-line dp-line--short"></span>
+            <span class="dp-rule"></span>
+            <span class="dp-line"></span>
+          </span>
+          <span class="design-name" data-i18n="design.minimal">Sade</span>
+          <span class="design-desc" data-i18n="welcome.theme.minimal.desc">Sakin ve yoğun. İşini görüp çıkmak istiyorsan bu.</span>
+        </button>
+        <button type="button" class="design-option" data-welcome-design="classic" aria-pressed="false">
+          <span class="design-preview design-preview--classic" aria-hidden="true">
+            <span class="dp-hero"></span>
+            <span class="dp-row"></span>
+            <span class="dp-card"></span>
+            <span class="dp-card"></span>
+          </span>
+          <span class="design-name" data-i18n="design.classic">Klasik</span>
+          <span class="design-desc" data-i18n="welcome.theme.classic.desc">Renkli ve kart yapılı. Uygulamanın ilk günden beri gelen hâli.</span>
+        </button>
+        <button type="button" class="design-option" data-welcome-design="showcase" aria-pressed="false">
+          <span class="design-preview design-preview--showcase" aria-hidden="true">
+            <span class="dp-stage"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-panel"></span>
+          </span>
+          <span class="design-name" data-i18n="design.showcase">Vitrin</span>
+          <span class="design-desc" data-i18n="welcome.theme.showcase.desc">Büyük ve hareketli. Birine gösterecek ya da sunacaksan bu.</span>
+        </button>
+      </div>
+      <p class="welcome-theme-hint" data-i18n="welcome.themeHint">Açık / koyu mod ayrı bir ayardır ve her temada çalışır.</p>
+      <div class="welcome-actions">
+        <button class="btn ghost" id="welcomeThemeBack" data-i18n="welcome.back">‹ Geri</button>
+        <button class="btn primary welcome-cta" id="welcomeThemeNext" data-i18n="welcome.cta.next">İleri ›</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Usage mode (Build / Review).
          "Geliştirme" (Build, in UI) opens with the How-To guide face-up for
          every item, suited to building a new app. "İnceleme" (Review, in UI)
          shows the plain checklist face, suited to auditing an existing app. -->
-    <div class="welcome-pane" data-pane="2" hidden>
+    <div class="welcome-pane" data-pane="3" hidden>
       <p class="framework-pick-q" data-i18n="welcome.modeQuestion">Neye odaklanmak istersin?</p>
       <p class="framework-pick-sub" data-i18n="welcome.modeSub">Uygulama iki farklı şekilde kullanılabilir: yeni bir uygulama geliştirirken adım adım yapılacaklar listesi olarak; ya da geliştirdiğin uygulamayı kontrol ederken her madde için "nasıl yapılır?" rehberi olarak. İstediğin zaman üstteki butonlardan geçiş yapabilirsin.</p>
       <div class="framework-options framework-options--lang" role="group" aria-label="Kullanım biçimi seçimi" data-i18n-aria-label="welcome.modeAria">
@@ -409,8 +460,8 @@
       </div>
     </div>
 
-    <!-- Step 3: Explanation style (Simple / Technical) -->
-    <div class="welcome-pane" data-pane="3" hidden>
+    <!-- Step 4: Explanation style (Simple / Technical) -->
+    <div class="welcome-pane" data-pane="4" hidden>
       <p class="framework-pick-q" data-i18n="welcome.styleQuestion">Anlatım dili: Basit mi, Teknik mi?</p>
       <p class="framework-pick-sub" data-i18n-html="welcome.styleSub">Maddeleri nasıl okumak istersin? Yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan <strong>Basit</strong> en rahatı; paket adı, sürüm, fonksiyon gibi teknik detayları görmek istersen <strong>Teknik</strong> daha verimli. İstediğin zaman üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options framework-options--lang" role="group" aria-label="Anlatım dili seçimi" data-i18n-aria-label="welcome.styleAria">
@@ -429,8 +480,8 @@
       </div>
     </div>
 
-    <!-- Step 4: Project name -->
-    <div class="welcome-pane" data-pane="4" hidden>
+    <!-- Step 5: Project name -->
+    <div class="welcome-pane" data-pane="5" hidden>
       <p class="framework-pick-q" data-i18n="welcome.projNameQuestion">Bu listeyle hangi projenin kontrolünü yapacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.projNameSub">Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.</p>
       <div class="welcome-projname-wrap">
@@ -444,7 +495,7 @@
     </div>
 
     <!-- Step 5: Framework selection -->
-    <div class="welcome-pane" data-pane="5" hidden>
+    <div class="welcome-pane" data-pane="6" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
       <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 24 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 31 madde her framework'te aynıdır. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
@@ -486,7 +537,7 @@
     </div>
 
     <!-- Step 6: Backend selection -->
-    <div class="welcome-pane" data-pane="6" hidden>
+    <div class="welcome-pane" data-pane="7" hidden>
       <p class="framework-pick-q" data-i18n="welcome.beQuestion">Hangi backend ile çalışacaksın?</p>
       <p class="framework-pick-sub" data-i18n="welcome.beSub">Backend, uygulamanın internetteki sunucu tarafıdır (kullanıcı kaydı, veritabanı, dosya yükleme). Listedeki backend kategorisi seçtiğin backend'e göre özelleşir. Bağlantısız bir uygulama yapacaksan 'Backend yok' seç; backend ile ilgili tüm maddeler listeden kaldırılır.</p>
       <div class="backend-options" role="group" aria-label="Backend seçimi" data-i18n-aria-label="welcome.beAria">
@@ -543,7 +594,7 @@
     </div>
 
     <!-- Step 7: Welcome / How to use -->
-    <div class="welcome-pane" data-pane="7" hidden>
+    <div class="welcome-pane" data-pane="8" hidden>
       <p class="welcome-lead" data-i18n="welcome.lead">Bu web uygulaması, geliştirdiğin mobil uygulamanın kalite durumunu kontrol etmen için hazırlandı.</p>
       <p data-i18n-html="welcome.body">14 kategoride 55 özellik var. Her özelliğin <strong style="color: var(--mvp);">MVP (yeşil, olmazsa olmaz)</strong> ve <strong style="color: var(--release);">Release (mavi, yayınlanabilir profesyonel kalite)</strong> seviyelerini işaretleyerek ilerleyişini takip edebilirsin. Her maddenin arka yüzünde adım adım <strong>Nasıl Yapılır?</strong> rehberi var; adımları tek tek tikleyerek de ilerleyebilirsin. İşaretlemen tarayıcına otomatik kaydedilir.</p>
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
@@ -877,45 +928,47 @@
       <h2 id="designTitle" data-i18n="design.modal.title">Tema</h2>
       <button class="modal-close" data-modal-close aria-label="Kapat" data-i18n-aria-label="common.close">×</button>
     </header>
-    <p class="design-lead" data-i18n="design.modal.lead">Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin tema bu tarayıcıda hatırlanır. Yazdırma çıktısı her temada aynıdır.</p>
-    <div class="design-options" role="group" aria-label="Tema seçenekleri" data-i18n-aria-label="design.modal.aria">
-      <button type="button" class="design-option" data-design-option="classic" aria-pressed="false">
-        <span class="design-preview design-preview--classic" aria-hidden="true">
-          <span class="dp-hero"></span>
-          <span class="dp-row"></span>
-          <span class="dp-card"></span>
-          <span class="dp-card"></span>
-        </span>
-        <span class="design-name" data-i18n="design.classic">Klasik</span>
-        <span class="design-desc" data-i18n="design.classic.desc">İlk sürümden beri gelen görünüm: renkli başlık, yuvarlak hatlar, kart yapısı.</span>
-      </button>
-      <button type="button" class="design-option" data-design-option="minimal" aria-pressed="false">
-        <span class="design-preview design-preview--minimal" aria-hidden="true">
-          <span class="dp-title"></span>
-          <span class="dp-rule"></span>
-          <span class="dp-line"></span>
-          <span class="dp-line dp-line--short"></span>
-          <span class="dp-rule"></span>
-          <span class="dp-line"></span>
-        </span>
-        <span class="design-name" data-i18n="design.minimal">Sade</span>
-        <span class="design-desc" data-i18n="design.minimal.desc">Süsü kaldırır, içeriği bırakır: nötr renkler, ince çizgiler, yoğun liste. Geniş ekranda kategori kenar çubuğu.</span>
-      </button>
-      <button type="button" class="design-option" data-design-option="showcase" aria-pressed="false">
-        <span class="design-preview design-preview--showcase" aria-hidden="true">
-          <span class="dp-stage"></span>
-          <span class="dp-ring"></span>
-          <span class="dp-ring"></span>
-          <span class="dp-ring"></span>
-          <span class="dp-panel"></span>
-        </span>
-        <span class="design-name" data-i18n="design.showcase">Vitrin</span>
-        <span class="design-desc" data-i18n="design.showcase.desc">Sunum için: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler. Hareketi azalt ayarına uyar.</span>
-      </button>
-    </div>
-    <p class="design-note" data-i18n="design.modal.note">İpucu: bu pencere açıkken seçim anında uygulanır, arkadaki sayfada karşılaştırabilirsin. Açık / koyu mod ayrı bir ayardır ve her temada çalışır.</p>
-    <div class="design-actions">
-      <button class="btn primary" data-modal-close data-i18n="common.done">Tamam</button>
+    <div class="modal-body">
+      <p class="design-lead" data-i18n="design.modal.lead">Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin tema bu tarayıcıda hatırlanır. Yazdırma çıktısı her temada aynıdır.</p>
+      <div class="design-options" role="group" aria-label="Tema seçenekleri" data-i18n-aria-label="design.modal.aria">
+        <button type="button" class="design-option" data-design-option="classic" aria-pressed="false">
+          <span class="design-preview design-preview--classic" aria-hidden="true">
+            <span class="dp-hero"></span>
+            <span class="dp-row"></span>
+            <span class="dp-card"></span>
+            <span class="dp-card"></span>
+          </span>
+          <span class="design-name" data-i18n="design.classic">Klasik</span>
+          <span class="design-desc" data-i18n="design.classic.desc">İlk sürümden beri gelen görünüm: renkli başlık, yuvarlak hatlar, kart yapısı.</span>
+        </button>
+        <button type="button" class="design-option" data-design-option="minimal" aria-pressed="false">
+          <span class="design-preview design-preview--minimal" aria-hidden="true">
+            <span class="dp-title"></span>
+            <span class="dp-rule"></span>
+            <span class="dp-line"></span>
+            <span class="dp-line dp-line--short"></span>
+            <span class="dp-rule"></span>
+            <span class="dp-line"></span>
+          </span>
+          <span class="design-name" data-i18n="design.minimal">Sade</span>
+          <span class="design-desc" data-i18n="design.minimal.desc">Süsü kaldırır, içeriği bırakır: nötr renkler, ince çizgiler, yoğun liste. Geniş ekranda kategori kenar çubuğu.</span>
+        </button>
+        <button type="button" class="design-option" data-design-option="showcase" aria-pressed="false">
+          <span class="design-preview design-preview--showcase" aria-hidden="true">
+            <span class="dp-stage"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-ring"></span>
+            <span class="dp-panel"></span>
+          </span>
+          <span class="design-name" data-i18n="design.showcase">Vitrin</span>
+          <span class="design-desc" data-i18n="design.showcase.desc">Sunum için: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler. Hareketi azalt ayarına uyar.</span>
+        </button>
+      </div>
+      <p class="design-note" data-i18n="design.modal.note">İpucu: bu pencere açıkken seçim anında uygulanır, arkadaki sayfada karşılaştırabilirsin. Açık / koyu mod ayrı bir ayardır ve her temada çalışır.</p>
+      <div class="design-actions">
+        <button class="btn primary" data-modal-close data-i18n="common.done">Tamam</button>
+      </div>
     </div>
   </div>
 </div>

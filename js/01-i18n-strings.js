@@ -271,6 +271,17 @@ const UI_STRINGS = {
   "welcome.langQuestion": { tr: "Hangi dilde devam etmek istersin? · Which language would you like to continue in?", en: "Which language would you like to continue in? · Hangi dilde devam etmek istersin?" },
   "welcome.langSub": { tr: "Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.", en: "All texts will appear in your chosen language. You can change it any time from the 🌐 button on top. · Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin." },
   "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
+
+  /* welcome step 2: theme. The descriptions are shorter than the picker's
+     because the reader is choosing by looking at the live page behind the
+     dialog, not by reading. */
+  "welcome.themeQuestion": { tr: "Uygulama sana nasıl görünsün?", en: "How should the app look?" },
+  "welcome.themeSub": { tr: "Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin an arkadaki sayfaya uygulanır, hemen görürsün. Sonradan üstteki <strong>Tema</strong> butonundan ya da <kbd>T</kbd> tuşundan değiştirebilirsin.", en: "All three themes carry the same content and the same features; only layout, typography and motion change. Your pick applies to the page behind this dialog straight away, so you can see it. You can change it later from the <strong>Theme</strong> button on top or the <kbd>T</kbd> key." },
+  "welcome.themeAria": { tr: "Tema seçimi", en: "Theme selection" },
+  "welcome.themeHint": { tr: "Açık / koyu mod ayrı bir ayardır ve her temada çalışır.", en: "Light / dark is a separate setting and works in every theme." },
+  "welcome.theme.minimal.desc": { tr: "Sakin ve yoğun. İşini görüp çıkmak istiyorsan bu.", en: "Quiet and dense. Pick this to get in, get it done and get out." },
+  "welcome.theme.classic.desc": { tr: "Renkli ve kart yapılı. Uygulamanın ilk günden beri gelen hâli.", en: "Colorful, card-based. The look the app has had since day one." },
+  "welcome.theme.showcase.desc": { tr: "Büyük ve hareketli. Birine gösterecek ya da sunacaksan bu.", en: "Large and animated. Pick this if you are showing or presenting it." },
   "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
 
   // welcome: usage mode (step 2: Build vs Review)
@@ -317,7 +328,7 @@ const UI_STRINGS = {
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
   "welcome.start": { tr: "Tamam, Başlayalım", en: "OK, Let's Start" },
 
-  // welcome: project name (step in the 7-step flow: language -> project name -> framework -> welcome)
+  // welcome: project name (step 5 of the 8-step flow: language -> theme -> usage mode -> style -> project name -> framework -> backend -> welcome)
   "welcome.projNameQuestion": { tr: "Bu listeyle hangi projenin kontrolünü yapacaksın?", en: "Which project will you check with this list?" },
   "welcome.projNameSub": { tr: "Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.", en: "Give your project a name. You can rename it later or add new projects any time." },
   "welcome.projNameAria": { tr: "Proje adı", en: "Project name" },

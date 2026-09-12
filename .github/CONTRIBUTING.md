@@ -18,8 +18,8 @@ The app is a static PWA with **zero runtime dependencies**. There is no build st
 2. Start a local web server. Pick one:
 
    ```bash
-   # Option A: Python (preinstalled on most systems)
-   python -m http.server 8000
+   # Option A: the repo's dev server (Python, no extra install)
+   python scripts/serve-local.py 8000        # same as: npm run serve
 
    # Option B: Node (requires Node 22.13+)
    npx serve .
@@ -44,7 +44,7 @@ css/
   04-presentation.css            Presentation mode
   05-hero-pills.css              Hero pill (vertical card) + lang/style pills
   05-modals-core.css             Modal skeleton + shared styles
-  05-modals-welcome.css          7-step welcome flow
+  05-modals-welcome.css          8-step welcome flow
   05-modals-projects.css         Project / framework / backend tabs
   05-modals-install.css          PWA install guidance
   05-modals-feedback.css         Toast notifications + celebration modal
@@ -84,7 +84,7 @@ js/
   11-render.js                   Main render loop, card template
   12-progress.js                 Percentage, celebrations, countLevels
   13-filters.js                  Search + 3x3 view filter
-  14-welcome.js                  7-step welcome flow + welcome help
+  14-welcome.js                  8-step welcome flow + welcome help
   15-projects.js                 Project / framework / backend modal + CRUD
   16-presentation.js             Presentation mode (P key, ESC, arrows)
   17-install.js                  PWA install banner + platform-manual fallback

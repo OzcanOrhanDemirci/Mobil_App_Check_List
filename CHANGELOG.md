@@ -7,6 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2026-09-12
+
+Review pass on the 1.2.3 design axis, from feedback on the local build.
+
+### Added
+
+- `scripts/serve-local.py`: a development server that disables caching, for
+  the reason in Fixed below. `npm run serve` uses it.
+- A **theme step** in the welcome flow, immediately after the language step,
+  taking it from seven steps to eight. It applies the pick to the page behind
+  the dialog straight away (`persist: false`) so the reader chooses by looking
+  rather than by reading a description, and opens with the active design
+  already selected so anyone without an opinion can press Next. The choice is
+  written to storage in `welcomeStart`, like every other answer in the flow.
+  The three cards reuse the picker's CSS-drawn previews.
+- `tests/design.test.js` grew a "Welcome flow theme step" suite (suite 277 to
+  281): the panes, the indicator dots and the connectors must agree on the
+  step count, the step must offer exactly `VALID_DESIGNS`, the preview and the
+  persist halves must both be present, and every `setWelcomeStep` target must
+  land on a step that exists. The step count lives in six files; inserting a
+  step meant renumbering all of them by hand, which is the kind of edit that
+  half-lands.
+
+### Fixed
+
+- **The theme picker had no horizontal padding.** Its contents were direct
+  children of `.modal-content`, which carries none; every other modal gets it
+  from `.modal-body`. Title, copy, cards and the Done button all sat against
+  the dialog's border. They are now inside a `.modal-body` like everywhere
+  else.
+- **Buttons that own a surface lost it in the two new designs.** Both design
+  stylesheets reset `.btn` with `background: transparent` (Minimal) or a glass
+  fill (Showcase) at the same specificity as `.btn.primary`,
+  `.btn.danger-solid` and `.btn-install-cta`, and loaded later, so the
+  background was replaced while the paired text color stayed. The reset
+  confirmation's "Evet, devam et" was white on white. The surface reset is now
+  scoped with `:not()` so those variants keep the background their text color
+  was chosen for, and a variant added later cannot regress the same way.
+- **`.btn.danger` was unreadable in light mode** (1.7:1). It had one red tuned
+  for a dark surface; light mode now has its own. This affected Classic as
+  well as Showcase.
+- **The welcome flow's active step dot** used a hardcoded dark label, which
+  assumes a light accent. Minimal and Showcase accent with a dark blue in
+  light mode, where it measured 2.8:1. The label now flips with the color
+  mode, and the hardcoded orange glow follows the accent.
+- **Muted and accent text below WCAG AA**, found by measuring rendered pixels
+  across three designs, two color modes and twelve UI states: `--text-mute` in
+  Minimal (4.1:1) and Showcase (3.7:1), `--text-mute` and `--accent` in
+  Classic light (3.6:1 and 2.5:1), the picker's own explanatory copy (3.3:1),
+  the destructive reset option's title (3.0:1), and the Showcase instructor
+  badge in light mode (3.1:1). The audit went from 76 failing text runs to 36.
+- The step indicator's connectors were a fixed 36px, so the eighth dot pushed
+  the row to 544px inside a 480px column. They flex now and fit any number of
+  steps.
+- **Local review could show a page built from a mix of fresh and stale
+  files.** `python -m http.server`, which the docs and the `serve` script both
+  used, sends `Last-Modified` but no `Cache-Control`; browsers then fall back
+  to heuristic freshness and reuse a subresource for minutes without
+  revalidating. The visible result was a feature that rendered from fresh HTML
+  but did not respond because its module was the previous version, which is
+  indistinguishable from a real bug. `scripts/serve-local.py` serves the repo
+  with `Cache-Control: no-store`; `npm run serve`, both READMEs and
+  CONTRIBUTING now point at it. Reproduced and verified: the same reload that
+  served a stale module before serves the current one now.
+
+### Known, not fixed
+
+- Classic's light mode still paints several labels in `--accent-2`
+  (`#f97316`), which measures 2.3 to 2.5:1 on its light surfaces: the hero
+  eyebrow, the item ids, the active half of the language and style pills, and
+  the project pill's name. Darkening that token would also darken the surfaces
+  it fills (the instructor badge, the primary button gradient), so it is a
+  deliberate change to the published look rather than a contrast fix, and it
+  is left for a decision instead of being made silently.
+
 ## [1.2.4] - 2026-09-12
 
 Follow-up to the design axis: the repository's own visuals, metadata and
@@ -712,7 +787,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.4...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.5...HEAD
+[1.2.5]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.4...v1.2.5
 [1.2.4]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.2.2

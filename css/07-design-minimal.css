@@ -37,7 +37,9 @@
     --border: #2a2a30;
     --text: #f2f2f3;
     --text-dim: #a1a1aa;
-    --text-mute: #71717a;
+    /* 4.5:1 against --bg. The zinc-500 this started as measured 4.1:1 and
+       carried the category numbers, subtitles and progress labels with it. */
+    --text-mute: #8b8b95;
     --accent: #7c9cff;
     --accent-2: #a3b8ff;
 
@@ -77,7 +79,7 @@
     --border: #e4e4e7;
     --text: #18181b;
     --text-dim: #52525b;
-    --text-mute: #71717a;
+    --text-mute: #6b6b73;
     --accent: #2c5ce0;
     --accent-2: #1e40af;
 
@@ -283,10 +285,9 @@
     box-shadow: 0 0 0 3px var(--m-selected);
   }
 
+  /* Shape applies to every button. */
   [data-design="minimal"] .btn {
     border-radius: var(--radius-sm);
-    border: var(--m-rule);
-    background: transparent;
     font-weight: 500;
     box-shadow: none;
     transition:
@@ -295,7 +296,19 @@
       color 0.14s ease;
   }
 
-  [data-design="minimal"] .btn:hover {
+  /* Surface does not. `.btn.primary`, `.btn.danger-solid` and
+     `.btn-install-cta` carry a background and a matching text color as a
+     pair; a blanket `background: transparent` strips the background, leaves
+     the color, and produces a white label on a white button. That shipped in
+     1.2.3 and made the reset confirmation's "Evet, devam et" invisible.
+     Excluding them here also means a variant added later keeps working
+     instead of silently losing its surface. */
+  [data-design="minimal"] .btn:not(.primary):not(.danger-solid):not(.btn-install-cta) {
+    border: var(--m-rule);
+    background: transparent;
+  }
+
+  [data-design="minimal"] .btn:not(.primary):not(.danger-solid):not(.btn-install-cta):hover {
     background: var(--m-hover);
     transform: none;
     box-shadow: none;

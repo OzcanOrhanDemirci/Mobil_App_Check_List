@@ -289,3 +289,67 @@ describe("Showcase motion layer", () => {
     assert.ok(detach.includes("disconnect"), "detach() does not disconnect its observers");
   });
 });
+
+describe("Welcome flow theme step", () => {
+  /* The step count lives in six places: the panes and the dots in
+     index.html, the transitions in js/14-welcome.js, the help text in two
+     languages, and both READMEs. Inserting the theme step meant renumbering
+     all of them by hand, which is exactly the kind of edit that half-lands.
+     These assertions catch the half. */
+  const HTML = "index.html";
+  const WELCOME_JS = "js/14-welcome.js";
+  const EXPECTED_STEPS = 8;
+
+  it(`declares ${EXPECTED_STEPS} panes, ${EXPECTED_STEPS} dots and ${EXPECTED_STEPS - 1} connectors`, () => {
+    const html = read(HTML);
+    const panes = [...html.matchAll(/data-pane="(\d+)"/g)].map(m => Number(m[1])).sort((a, b) => a - b);
+    const dots = [...html.matchAll(/data-step-dot="(\d+)"/g)].map(m => Number(m[1])).sort((a, b) => a - b);
+    const lines = [...html.matchAll(/data-step-line="(\d+)"/g)].map(m => Number(m[1])).sort((a, b) => a - b);
+
+    const range = n => Array.from({ length: n }, (_, i) => i + 1);
+    assert.deepEqual(panes, range(EXPECTED_STEPS), "welcome panes are not 1..N without gaps");
+    assert.deepEqual(dots, range(EXPECTED_STEPS), "step indicator dots do not match the panes");
+    assert.deepEqual(lines, range(EXPECTED_STEPS - 1), "there must be one connector between each pair of dots");
+  });
+
+  it("offers exactly the three shipped designs on the theme step", () => {
+    const html = read(HTML);
+    const offered = [...html.matchAll(/data-welcome-design="([a-z]+)"/g)].map(m => m[1]);
+    assert.deepEqual(
+      offered.slice().sort(),
+      EXPECTED_DESIGNS.slice().sort(),
+      "the welcome theme step and VALID_DESIGNS disagree"
+    );
+  });
+
+  it("previews the design without persisting it until the flow finishes", () => {
+    const js = read(WELCOME_JS);
+    /* Picking previews (persist:false); welcomeStart writes it. Both halves
+       have to be present: preview without the write loses the choice on
+       reload, and the write without preview makes the step guesswork. */
+    assert.match(
+      js,
+      /applyDesign\(pendingDesign,\s*\{\s*persist:\s*false\s*\}\)/,
+      "the theme step should apply with persist:false so the reader can see it"
+    );
+    const start = js.indexOf('getElementById("welcomeStart")');
+    assert.ok(start !== -1, "welcomeStart handler not found");
+    assert.ok(
+      js.slice(start).includes("applyDesign(pendingDesign)"),
+      "welcomeStart should persist the previewed design"
+    );
+  });
+
+  it("every step transition lands inside the flow", () => {
+    const js = read(WELCOME_JS);
+    const targets = [...js.matchAll(/setWelcomeStep\((\d+)\)/g)].map(m => Number(m[1]));
+    assert.ok(targets.length >= EXPECTED_STEPS, "fewer transitions than steps");
+    for (const t of targets) {
+      assert.ok(t >= 1 && t <= EXPECTED_STEPS, `setWelcomeStep(${t}) is outside 1..${EXPECTED_STEPS}`);
+    }
+    /* Every step must be reachable, or a pane exists that nothing opens. */
+    for (const n of Array.from({ length: EXPECTED_STEPS }, (_, i) => i + 1)) {
+      assert.ok(targets.includes(n), `no transition ever opens step ${n}`);
+    }
+  });
+});

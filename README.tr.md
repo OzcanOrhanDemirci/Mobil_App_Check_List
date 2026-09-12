@@ -258,7 +258,7 @@ En kolay yol: canlı demo'yu aç.
 
 > [https://ozcanorhandemirci.github.io/Mobil_App_Check_List/](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 
-İlk açılışta seni karşılayan **7 adımlık karşılama akışı** dil, kullanım biçimi, anlatım stili, proje adı, framework ve backend tercihini sorar. Birkaç tıkla başlarsın.
+İlk açılışta seni karşılayan **8 adımlık karşılama akışı** dil, tema, kullanım biçimi, anlatım stili, proje adı, framework ve backend tercihini sorar. Tema adımında seçtiğin arkadaki sayfaya anında uygulanır, yani okuyarak değil görerek seçersin. Birkaç tıkla başlarsın.
 
 ### 2. Cihaza kurmak (PWA)
 
@@ -281,8 +281,8 @@ git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
 # Yerel sunucu başlat (Service Worker file:// üzerinde çalışmaz)
-python -m http.server 8080
-# veya
+python scripts/serve-local.py 8080   # veya: npm run serve
+# ya da
 npx serve .
 
 # Sonra tarayıcıda:
@@ -434,7 +434,7 @@ JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Nu
 11-render.js                   Ana render döngüsü, kart şablonu
 12-progress.js                 Yüzde hesabı, kutlamalar
 13-filters.js                  Arama + 3×3 görünüm filtresi
-14-welcome.js                  7 adımlı karşılama akışı + welcome yardım
+14-welcome.js                  8 adımlı karşılama akışı + welcome yardım
 15-projects.js                 Proje / framework / backend modal'ı + CRUD
 16-presentation.js             Sunum modu (P tuşu, ESC, ok tuşları)
 17-install.js                  PWA install banner + platforma özel manuel
@@ -483,7 +483,7 @@ Mobil_App_Check_List/
 │   ├── 04-presentation.css       Sunum modu (tam ekran odak)
 │   ├── 05-hero-pills.css         Hero pili (dikey kart) + dil/stil pilleri
 │   ├── 05-modals-core.css        Modal iskeleti + ortak stiller
-│   ├── 05-modals-welcome.css     7 adımlı karşılama akışı
+│   ├── 05-modals-welcome.css     8 adımlı karşılama akışı
 │   ├── 05-modals-projects.css    Proje, framework, backend tab'ları
 │   ├── 05-modals-install.css     PWA install rehberi
 │   ├── 05-modals-feedback.css    Toast bildirimleri + kutlama modali
@@ -494,6 +494,7 @@ Mobil_App_Check_List/
 ├── js/                           37 dosya (yukarıdaki "Modüler dosya yapısı"na bak)
 ├── scripts/
 │   ├── run-tests.mjs             node --test wrapper
+│   ├── serve-local.py            Önbelleksiz yerel sunucu (npm run serve)
 │   ├── check-em-dash.mjs         CI em-dash kuralı
 │   ├── check-sw-cache-version.mjs  sw.js cache anahtarı paket sürümüyle eşleşmeli
 │   ├── install-githooks.mjs      `prepare` script ile pre-commit hook kurar
