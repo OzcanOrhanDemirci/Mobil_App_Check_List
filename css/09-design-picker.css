@@ -1,0 +1,342 @@
+/* ==========================================================================
+   DESIGN PICKER
+   ==========================================================================
+
+   The dialog that switches the data-design axis, plus the toolbar button
+   that opens it. Deliberately design-agnostic: it reads the same tokens
+   every design defines, so it looks native inside all three and needs no
+   per-design overrides.
+
+   The three previews are drawn in CSS rather than shipped as screenshots.
+   A screenshot would be four files (three designs x two color modes), it
+   would go stale the moment a design is touched, and it would not follow
+   the reader's light / dark choice. The miniatures below are abstract on
+   purpose: they show the shape of each design (a colored hero and cards,
+   hairline rules, a stage with gauges), which is the part a reader is
+   actually choosing between. */
+
+/* ----------------------------------------------------------- toolbar button */
+
+#designToggle .design-icon {
+  flex: none;
+  opacity: 0.8;
+}
+
+#designToggle:hover .design-icon {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ dialog */
+
+.modal-design {
+  max-width: 760px;
+}
+
+.design-lead {
+  margin: 0 0 18px;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.design-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.design-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.design-option:hover {
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+
+.design-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.design-option.active {
+  border-color: var(--accent);
+  background: var(--surface-3);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.design-name {
+  font-weight: 650;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A check mark on the active card, drawn from the name row so the label
+   text itself is never rewritten (it is translated content). */
+.design-option.active .design-name::after {
+  content: "✓";
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.design-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  /* Was --text-mute, which measured 3.3:1. This is copy the reader is meant
+     to read before choosing, not a caption. */
+  color: var(--text-dim);
+}
+
+.design-note {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.design-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* -------------------------------------------------------------- miniatures */
+
+.design-preview {
+  position: relative;
+  display: block;
+  height: 104px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  padding: 9px;
+  background: var(--surface);
+}
+
+.design-preview > span {
+  display: block;
+  border-radius: 3px;
+}
+
+/* Classic: a warm gradient hero over two rounded cards. */
+.design-preview--classic {
+  background: linear-gradient(160deg, rgba(249, 115, 22, 0.1), rgba(59, 130, 246, 0.08)), #0f141d;
+}
+
+.design-preview--classic .dp-hero {
+  height: 26px;
+  margin-bottom: 7px;
+  border-radius: 5px;
+  background: linear-gradient(120deg, #fb923c, #f97316 55%, #22c55e);
+  opacity: 0.85;
+}
+
+.design-preview--classic .dp-row {
+  height: 7px;
+  width: 62%;
+  margin-bottom: 8px;
+  background: rgba(148, 163, 184, 0.45);
+  border-radius: 999px;
+}
+
+.design-preview--classic .dp-card {
+  height: 18px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  background: #1a2030;
+  border: 1px solid #2a3246;
+}
+
+/* Minimal: type and hairlines on a flat ground. */
+.design-preview--minimal {
+  background: #0d0d0f;
+}
+
+.design-preview--minimal .dp-title {
+  height: 9px;
+  width: 54%;
+  margin-bottom: 10px;
+  background: #e8e8ea;
+  border-radius: 2px;
+}
+
+.design-preview--minimal .dp-rule {
+  height: 1px;
+  margin: 9px 0;
+  background: #2c2c33;
+  border-radius: 0;
+}
+
+.design-preview--minimal .dp-line {
+  height: 6px;
+  background: #55555e;
+  border-radius: 2px;
+}
+
+.design-preview--minimal .dp-line--short {
+  width: 68%;
+  margin-top: 5px;
+  background: #3a3a42;
+}
+
+/* Showcase: a display stage with three gauges over a panel. */
+.design-preview--showcase {
+  background:
+    radial-gradient(60% 80% at 18% 0%, rgba(99, 102, 241, 0.35), transparent 62%),
+    radial-gradient(50% 70% at 92% 12%, rgba(236, 72, 153, 0.22), transparent 60%), #0a0a14;
+}
+
+.design-preview--showcase .dp-stage {
+  height: 11px;
+  width: 74%;
+  margin-bottom: 12px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #f4f4f8, rgba(244, 244, 248, 0.35));
+}
+
+.design-preview--showcase .dp-ring {
+  position: absolute;
+  top: 38px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.16);
+  border-top-color: #a5b4fc;
+  border-right-color: #a5b4fc;
+}
+
+.design-preview--showcase .dp-ring:nth-of-type(2) {
+  left: 9px;
+}
+
+.design-preview--showcase .dp-ring:nth-of-type(3) {
+  left: 44px;
+  border-top-color: #6ee7b7;
+  border-right-color: transparent;
+}
+
+.design-preview--showcase .dp-ring:nth-of-type(4) {
+  left: 79px;
+  border-top-color: #7dd3fc;
+  border-right-color: #7dd3fc;
+  border-bottom-color: #7dd3fc;
+}
+
+.design-preview--showcase .dp-panel {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 9px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* The miniatures are literal renderings of each design's dark mode. In
+   light mode they are inverted to the light equivalent so the card shows
+   what the reader will actually get. */
+[data-theme="light"] .design-preview--classic {
+  background: linear-gradient(160deg, rgba(249, 115, 22, 0.09), rgba(59, 130, 246, 0.06)), #ffffff;
+}
+
+[data-theme="light"] .design-preview--classic .dp-row {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+[data-theme="light"] .design-preview--classic .dp-card {
+  background: #f5f6fa;
+  border-color: #dee2ea;
+}
+
+[data-theme="light"] .design-preview--minimal {
+  background: #ffffff;
+}
+
+[data-theme="light"] .design-preview--minimal .dp-title {
+  background: #18181b;
+}
+
+[data-theme="light"] .design-preview--minimal .dp-rule {
+  background: #e4e4e7;
+}
+
+[data-theme="light"] .design-preview--minimal .dp-line {
+  background: #a1a1aa;
+}
+
+[data-theme="light"] .design-preview--minimal .dp-line--short {
+  background: #d4d4d8;
+}
+
+[data-theme="light"] .design-preview--showcase {
+  background:
+    radial-gradient(60% 80% at 18% 0%, rgba(99, 102, 241, 0.18), transparent 62%),
+    radial-gradient(50% 70% at 92% 12%, rgba(236, 72, 153, 0.12), transparent 60%), #f7f7fb;
+}
+
+[data-theme="light"] .design-preview--showcase .dp-stage {
+  background: linear-gradient(90deg, #1e1b32, rgba(30, 27, 50, 0.3));
+}
+
+[data-theme="light"] .design-preview--showcase .dp-ring {
+  border-color: rgba(30, 27, 50, 0.14);
+  border-top-color: #4f46e5;
+  border-right-color: #4f46e5;
+}
+
+[data-theme="light"] .design-preview--showcase .dp-ring:nth-of-type(3) {
+  border-top-color: #059669;
+  border-right-color: transparent;
+}
+
+[data-theme="light"] .design-preview--showcase .dp-ring:nth-of-type(4) {
+  border-top-color: #0284c7;
+  border-right-color: #0284c7;
+  border-bottom-color: #0284c7;
+}
+
+[data-theme="light"] .design-preview--showcase .dp-panel {
+  background: rgba(30, 27, 50, 0.05);
+  border-color: rgba(30, 27, 50, 0.1);
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 700px) {
+  .design-options {
+    grid-template-columns: 1fr;
+  }
+
+  .design-preview {
+    height: 88px;
+  }
+}
+
+/* The picker has no reason to exist on paper. */
+@media print {
+  #designToggle,
+  #designModal {
+    display: none !important;
+  }
+}

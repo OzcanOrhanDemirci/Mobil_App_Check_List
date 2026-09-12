@@ -76,8 +76,13 @@ function applyLang() {
   if (typeof attachClickHandlers === "function") attachClickHandlers();
   if (typeof updateProgress === "function") updateProgress();
   if (typeof applyFilters === "function") applyFilters();
-  /* Theme button label must follow the current language. */
+  /* Light / dark button label must follow the current language. */
   applyTheme(document.documentElement.getAttribute("data-theme") || "dark");
+  /* Design button label ("Klasik" / "Sade" / "Vitrin") likewise. Passing
+     persist:false keeps this a relabel, not a preference write. */
+  if (typeof applyDesign === "function") {
+    applyDesign(document.documentElement.getAttribute("data-design"), { persist: false });
+  }
   /* The explanation-style pill label (Simple / Technical) must follow the
      current language. applyStyle always writes the pill's inner text via t()
      against currentLang, so re-applying the current style is enough to

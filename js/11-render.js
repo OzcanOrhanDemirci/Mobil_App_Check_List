@@ -465,6 +465,10 @@ function renderContent() {
         <div class="feature-list">${features}</div>
       </section>`;
   }).join("");
+
+  /* Optional enhancement layers (currently the Showcase design's motion
+     layer) rebind to the new nodes here instead of wrapping this function. */
+  if (typeof emitAppEvent === "function") emitAppEvent("checklist:rendered");
 }
 
 /* Update the "partial progress" visuals on the front-face .level row:

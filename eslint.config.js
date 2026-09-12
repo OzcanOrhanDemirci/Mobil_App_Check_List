@@ -130,6 +130,7 @@ const projectGlobals = {
   applyMode: "writable",
   THEME_KEY: "writable",
   applyTheme: "writable",
+  emitAppEvent: "writable",
 
   // js/08-i18n-dom.js
   applyI18nToDom: "writable",
@@ -186,6 +187,8 @@ const projectGlobals = {
   pendingMode: "writable",
   pendingStyle: "writable",
   pendingProjName: "writable",
+  pendingDesign: "writable",
+  markWelcomeDesign: "writable",
   setWelcomeStep: "writable",
   updateWelcomeProjNameCta: "writable",
   setHelpLangSwitchVisible: "writable",
@@ -251,6 +254,21 @@ const projectGlobals = {
   isPlainObject: "writable",
   sanitizeImportState: "writable",
   sanitizeImportNotes: "writable",
+
+  // js/19-design.js (the design axis: classic / minimal / showcase)
+  DESIGN_KEY: "writable",
+  VALID_DESIGNS: "writable",
+  DEFAULT_DESIGN: "writable",
+  DESIGN_META: "writable",
+  normalizeDesign: "writable",
+  resolveInitialDesign: "writable",
+  applyDesign: "writable",
+  syncDesignButton: "writable",
+  syncDesignPicker: "writable",
+  openDesignPicker: "writable",
+
+  /* js/20-showcase-motion.js is a single IIFE and declares nothing at file
+     scope, so it contributes no globals. */
 };
 
 module.exports = [

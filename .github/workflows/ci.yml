@@ -18,14 +18,17 @@
 #   - workflow_dispatch (manual)
 #
 # Notes:
-#   - Static site, no build step. Lint and test run on a Node 20 + 22
+#   - Static site, no build step. Lint and test run on a Node 22 + 24
 #     matrix so any version-specific regressions are caught before merge.
-#     The other jobs (validate-html, pwa-check, em-dash-check) are
-#     version-agnostic and use Node 20 only.
+#     Node 22 is the maintenance LTS and Node 24 the active LTS; Node 20
+#     reached end-of-life on 2026-04-30 and was dropped. The other jobs
+#     (validate-html, pwa-check, em-dash-check) are version-agnostic and
+#     run on Node 24 only.
 #   - Ubuntu-only runners; the project does not ship platform-specific
 #     binaries and CI cost stays predictable.
 #   - Jobs run in parallel where independent.
-#   - Action major versions are pinned (checkout@v4, setup-node@v4).
+#   - Action major versions are pinned (checkout@v7, setup-node@v7) and
+#     bumped by Dependabot.
 
 name: CI
 
@@ -51,13 +54,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["20", "22"]
+        node: ["22", "24"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: "npm"
@@ -77,13 +80,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["20", "22"]
+        node: ["22", "24"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: "npm"
@@ -101,12 +104,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       # Pin the major version of html-validate for reproducibility.
       # Failures on index.html will fail this job, which is the intent.
@@ -118,12 +121,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Validate manifest.webmanifest is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8')); console.log('manifest.webmanifest is valid JSON');"
@@ -151,12 +154,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       # Project content rule: no em-dash ("—", U+2014) in user-facing files.
       # The standalone placeholder string "—" used in js/03-data.js for
@@ -169,12 +172,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       # Ensures sw.js's CACHE_NAME constant tracks package.json `version`.
       # Mismatches fail this job; locally a contributor fixes it with

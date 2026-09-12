@@ -15,13 +15,14 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>yedi adımda</strong> yardım eder:</p>
+        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>sekiz adımda</strong> yardım eder:</p>
         <ul>
           <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
-          <li><strong>2. Adım: Kullanım Biçimi (Geliştirme / İnceleme).</strong> Uygulamayı iki farklı şekilde kullanabilirsin. <strong>❔ Geliştirme</strong> modunu seçersen, yeni bir uygulama geliştiriyorsundur ve her madde için "nasıl yapılır?" rehberini başlangıçta açık görmek istersindir; kartlar arka yüzü (How-To) açık halde başlar. <strong>📋 İnceleme</strong> modunu seçersen, mevcut uygulamanı kontrol ediyorsundur ve sade kontrol listesini görmek istersindir; kartlar ön yüzü (checklist) açık halde başlar. Tercih kalıcı; sayfayı yenilediğinde veya tekrar girdiğinde aynı modda açılırsın. İstediğin zaman toolbar'daki <strong>❔ Tümü Nasıl?</strong> veya <strong>📋 Tümü Liste</strong> butonlarıyla seansta toplu geçiş yapabilirsin (bu butonlar aynı zamanda tercihi de günceller).</li>
-          <li><strong>3. Adım: Anlatım Dili (Basit / Teknik).</strong> Maddeleri nasıl okumak istersin? <strong>📖 Basit</strong> modda metinler gündelik dilde, paket adı veya sürüm gibi teknik detaylar olmadan anlatılır; yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan bu en rahatı. <strong>🛠️ Teknik</strong> modda paket isimleri, sürüm numaraları, fonksiyon adları ve kod örnekleri tam haliyle gözükür; yazılımcılar için daha verimli. Bazı maddeler her iki modda da aynı kalır (planlama, SWOT, tasarım vb.); yalnızca teknik detay içeren maddelerin iki versiyonu vardır. Sonradan üstteki <strong>📖 Basit / Teknik</strong> butonu ile her zaman değiştirebilirsin.</li>
-          <li><strong>4. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
-          <li><strong>5. Adım: Framework Seçimi.</strong> Bu proje hangi yazılım dili / çerçevesi ile geliştirilecek? 6 seçenek arasından birini seç:
+          <li><strong>2. Adım: Tema.</strong> Uygulamanın görünümünü seçersin: <strong>Sade</strong> (sakin, yoğun, işini görüp çıkmak için), <strong>Klasik</strong> (renkli, kart yapılı, uygulamanın ilk günden beri gelen hâli) veya <strong>Vitrin</strong> (büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler; birine gösterecek ya da sunacaksan). <em>Seçtiğin an arkadaki sayfaya uygulanır</em>, yani okuyarak değil görerek seçersin. Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Sonradan üstteki <strong>Tema</strong> butonundan ya da <kbd>T</kbd> tuşundan değiştirebilirsin. <span class="hint">Açık / koyu mod bundan ayrı bir ayardır ve her temada çalışır.</span></li>
+          <li><strong>3. Adım: Kullanım Biçimi (Geliştirme / İnceleme).</strong> Uygulamayı iki farklı şekilde kullanabilirsin. <strong>❔ Geliştirme</strong> modunu seçersen, yeni bir uygulama geliştiriyorsundur ve her madde için "nasıl yapılır?" rehberini başlangıçta açık görmek istersindir; kartlar arka yüzü (How-To) açık halde başlar. <strong>📋 İnceleme</strong> modunu seçersen, mevcut uygulamanı kontrol ediyorsundur ve sade kontrol listesini görmek istersindir; kartlar ön yüzü (checklist) açık halde başlar. Tercih kalıcı; sayfayı yenilediğinde veya tekrar girdiğinde aynı modda açılırsın. İstediğin zaman toolbar'daki <strong>❔ Tümü Nasıl?</strong> veya <strong>📋 Tümü Liste</strong> butonlarıyla seansta toplu geçiş yapabilirsin (bu butonlar aynı zamanda tercihi de günceller).</li>
+          <li><strong>4. Adım: Anlatım Dili (Basit / Teknik).</strong> Maddeleri nasıl okumak istersin? <strong>📖 Basit</strong> modda metinler gündelik dilde, paket adı veya sürüm gibi teknik detaylar olmadan anlatılır; yazılım dünyasına uzaksan veya AI asistanlarla uygulama geliştiriyorsan bu en rahatı. <strong>🛠️ Teknik</strong> modda paket isimleri, sürüm numaraları, fonksiyon adları ve kod örnekleri tam haliyle gözükür; yazılımcılar için daha verimli. Bazı maddeler her iki modda da aynı kalır (planlama, SWOT, tasarım vb.); yalnızca teknik detay içeren maddelerin iki versiyonu vardır. Sonradan üstteki <strong>📖 Basit / Teknik</strong> butonu ile her zaman değiştirebilirsin.</li>
+          <li><strong>5. Adım: Proje Adı.</strong> Bu listeyle hangi projenin kontrolünü yapacaksın? Projene bir isim ver (örn. "ChefOl iOS", "Liman Takibi"). Aynı uygulamada <strong>en fazla 20 ayrı proje</strong> tutabilir, her birinin işaretlerini ve notlarını ayrı saklayabilirsin. İsmi sonradan istediğin zaman değiştirebilirsin.</li>
+          <li><strong>6. Adım: Framework Seçimi.</strong> Bu proje hangi yazılım dili / çerçevesi ile geliştirilecek? 6 seçenek arasından birini seç:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
@@ -31,7 +32,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
             </ul>
           </li>
-          <li><strong>6. Adım: Backend Seçimi.</strong> Uygulamanın sunucu tarafı hangisi olacak? Backend; kullanıcı kaydı, veritabanı, dosya yükleme gibi internetteki tüm işleri yapan tarafır. Listede backend'e bağlı maddeler seçtiğin değere göre özelleşir:
+          <li><strong>7. Adım: Backend Seçimi.</strong> Uygulamanın sunucu tarafı hangisi olacak? Backend; kullanıcı kaydı, veritabanı, dosya yükleme gibi internetteki tüm işleri yapan tarafır. Listede backend'e bağlı maddeler seçtiğin değere göre özelleşir:
             <ul>
               <li><strong>🚫 Backend yok</strong>: Uygulaman internete bağlanmıyor (sadece cihaz üstü). Tüm backend maddeleri listeden tamamen gizlenir. Bu seçenek diğerlerinin üstünde, daha büyük ve daha belirgin gösterilir.</li>
               <li><strong>🔥 Firebase</strong>: Google'ın kolay ve hızlı sunucu çözümü.</li>
@@ -44,7 +45,7 @@ const HELP_HTML = {
               <li><strong>💻 Yerel geliştirme</strong>: Bilgisayarında çalışan test sunucusu.</li>
             </ul>
           </li>
-          <li><strong>7. Adım: Hoş Geldin.</strong> Backend'i seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
+          <li><strong>8. Adım: Hoş Geldin.</strong> Backend'i seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
         </ul>
         <p>Seçtiğin framework + backend kombinasyonu, listedeki maddelerin nasıl gözükeceğini belirler (paket adları, build komutları, kurulum adımları farklılaşır). "Backend yok" seçersen backend kategorisindeki tüm maddeler listeden çıkar.</p>
       </section>
@@ -63,7 +64,7 @@ const HELP_HTML = {
           <li>Kilit durumu</li>
           <li>Kutlama bayrakları (kutlamayı bir kez gördüğünü hatırlar)</li>
         </ul>
-        <p><strong>Projeler arasında paylaşılan ayarlar:</strong> Tema (koyu/açık) ve dil (TR/EN) tüm projelerde ortaktır.</p>
+        <p><strong>Projeler arasında paylaşılan ayarlar:</strong> Tema (Klasik / Sade / Vitrin), renk modu (koyu / açık) ve dil (TR / EN) tüm projelerde ortaktır.</p>
 
         <p><strong>Proje pill'ine tıklayınca "Proje ve Framework" modal'ı açılır ve üç sekmesi vardır:</strong></p>
         <ul>
@@ -119,7 +120,7 @@ const HELP_HTML = {
         <h3>🌐 Dil Değiştirme (TR / EN)</h3>
         <p>Sayfanın üst başlık alanında, proje pill'inin solunda <strong>🌐 TR / EN</strong> butonu vardır. Tıkladığında uygulama anında <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında geçiş yapar.</p>
         <ul>
-          <li>Tüm metinler tercüme edilir: kategoriler, 53 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
+          <li>Tüm metinler tercüme edilir: kategoriler, 55 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
           <li>Hangi framework'ü seçtiysen, onun varyant metinleri de seçilen dilde gösterilir.</li>
           <li><strong>Dil tüm projelerde ortaktır</strong> (tema gibi global ayar). Bir projede dili değiştirirsen tüm projelerde aynı dil olur.</li>
           <li>Tercihin <strong>tarayıcına kaydedilir</strong>; sonraki açılışta seçtiğin dil aktif gelir.</li>
@@ -150,7 +151,7 @@ const HELP_HTML = {
         <p>Aktif projenin framework'ünü dilediğin zaman değiştirebilirsin. Üst başlıktaki <strong>📁 proje pill</strong>'ine tıkla → açılan modalın <strong>"Framework" sekmesine</strong> geç → 6 seçenekten birine tıkla → onay penceresi gelir, "Geçiş yap" de.</p>
         <p>Geçiş yaptığında:</p>
         <ul>
-          <li>İlgili 28 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
+          <li>Framework'e bağlı 24 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
           <li><strong>İşaretlemelerin ve notların kaybolmaz</strong>: aynı kalır. Sadece anlatım dili / paket adları değişir.</li>
           <li>Değişiklik sadece <strong>aktif projeye</strong> etki eder; diğer projelerin framework'ü değişmez.</li>
           <li>İstediğin zaman tekrar değiştirebilirsin.</li>
@@ -370,13 +371,26 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🌙 Tema (Koyu / Açık)</h3>
-        <p>Toolbar'daki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
+        <h3>🎨 Tema (Klasik / Sade / Vitrin)</h3>
+        <p>Tema, ilk açılıştaki karşılama akışının <strong>2. adımında</strong> sorulur; sonradan toolbar'daki <strong>Tema</strong> butonu (ya da <kbd>T</kbd> tuşu) üç görünüm arasında geçiş yapar. <strong>Üçü de aynı içeriği ve aynı özellikleri taşır</strong>: 14 kategori, 55 madde, notlar, AI prompt'ları, sunum modu, yazdırma, proje yönetimi. Değişen yalnızca yerleşim, tipografi ve hareket.</p>
         <ul>
-          <li><strong>Koyu tema</strong>: gece veya az ışıklı ortamda gözü daha az yorar (varsayılan).</li>
-          <li><strong>Açık tema</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. Tüm renkler (MVP yeşil, Release mavi, accent turuncu) açık temada da koruma altında.</li>
+          <li><strong>Klasik</strong>: uygulamanın ilk sürümünden beri gelen görünüm. Renkli başlık, yuvarlak hatlar, kart yapısı.</li>
+          <li><strong>Sade</strong>: süsü kaldırıp içeriği bırakır. Nötr renkler, ince ayırıcı çizgiler, daha yoğun bir liste; ekrana daha çok madde sığar. 1140 pikselden geniş ekranlarda kategori listesi sol kenara sabitlenir, dokümantasyon sitesi gibi.</li>
+          <li><strong>Vitrin</strong>: birine göstermek için. Büyük tipografi, üstte üç ilerleme halkası, kaydırdıkça yerine oturan bölümler, okuma konumunu gösteren ince çizgi ve sağ kenarda bölüm noktaları.</li>
         </ul>
-        <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Tema değişikliği toast bildirimiyle onaylanır.</p>
+        <p><strong>Seçim pencere açıkken anında uygulanır</strong>, böylece arkadaki gerçek sayfada karşılaştırabilirsin. Tercih tarayıcına kaydedilir.</p>
+        <p><strong>Yazdırma çıktısı üç temada da aynıdır.</strong> Tema kuralları yalnızca ekrana uygulanır; teslim ettiğin PDF hangi temada çalıştığına bağlı değildir.</p>
+        <p>İşletim sisteminde <strong>"hareketi azalt"</strong> ayarı açıksa Vitrin temasındaki animasyonlar kapanır; yerleşim ve tipografi aynı kalır.</p>
+      </section>
+
+      <section>
+        <h3>🌙 Açık / Koyu Mod</h3>
+        <p>Toolbar'daki <strong>🌙 Koyu / ☀ Açık</strong> butonu renk modunu değiştirir. Bu, temadan <strong>ayrı bir ayardır</strong>: üç tema da hem açık hem koyu modda çalışır, yani altı kombinasyon vardır.</p>
+        <ul>
+          <li><strong>Koyu mod</strong>: gece veya az ışıklı ortamda gözü daha az yorar (varsayılan).</li>
+          <li><strong>Açık mod</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. MVP yeşili ve Release mavisi her iki modda da okunaklı kalacak şekilde ayarlandı.</li>
+        </ul>
+        <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Mod değişikliği toast bildirimiyle onaylanır.</p>
       </section>
 
       <section>
@@ -402,13 +416,14 @@ const HELP_HTML = {
           <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
           <li><kbd>/</kbd><span>Arama kutusuna odaklan (anında yazmaya başla)</span></li>
           <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
+          <li><kbd>T</kbd><span>Tema seçiciyi aç (Klasik / Sade / Vitrin)</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda önceki / sonraki kategori</span></li>
           <li><kbd>Boşluk</kbd> / <kbd>PageDown</kbd><span>Sunumda sonraki kategori (alternatif)</span></li>
           <li><kbd>PageUp</kbd><span>Sunumda önceki kategori (alternatif)</span></li>
           <li><kbd>Esc</kbd><span>Açık modal / dropdown / sunum modundan çık</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Tarayıcı yazdır (PDF kaydet de mümkün)</span></li>
         </ul>
-        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) tetiklenmez; yazdığın metni bozmaz.</em></p>
+        <p><em>Not: Bir input/textarea içinde yazıyorken kısayollar (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>, <kbd>T</kbd>) tetiklenmez; yazdığın metni bozmaz.</em></p>
       </section>
   `,
   en: `
@@ -426,13 +441,14 @@ const HELP_HTML = {
 
       <section>
         <h3>🚀 First Run: Welcome Flow</h3>
-        <p>The first time you open the app a welcome dialog appears and guides you through <strong>seven steps</strong>:</p>
+        <p>The first time you open the app a welcome dialog appears and guides you through <strong>eight steps</strong>:</p>
         <ul>
           <li><strong>Step 1: Pick a language.</strong> Turkish or English? This screen is bilingual; once you pick, every text and the next steps switch to your chosen language. You can change it any time later via the <strong>🌐 TR / EN</strong> button on top. <em>If you press the "?" help button on this step, the help modal opens with a special in-modal <strong>TR / EN switcher</strong>, so you can read the help in either language (momentary, not saved).</em></li>
-          <li><strong>Step 2: Usage mode (Building / Reviewing).</strong> The app can be used in two ways. Pick <strong>❔ Building</strong> if you are building a new app and want to see the "how to" guide for each item from the start; cards open with the back face (How-To) visible. Pick <strong>📋 Reviewing</strong> if you are auditing an existing app and want the clean checklist; cards open with the front face (checklist) visible. The preference is persistent; reloading the page or returning later starts you in the same mode. You can switch any time via the toolbar buttons <strong>❔ Show All How-To</strong> and <strong>📋 Show All Checklist</strong> (these buttons also update the preference).</li>
-          <li><strong>Step 3: Explanation style (Simple / Technical).</strong> How do you want to read the items? In <strong>📖 Simple</strong> mode, items are written in everyday language without package names, version numbers or other jargon; this is the most comfortable mode if software jargon isn't your world or you build apps with AI assistants. In <strong>🛠️ Technical</strong> mode, package names, version numbers, function names and code snippets are shown in full; that mode is more efficient for software people. Some items read the same in both modes (planning, SWOT, design, etc.); only items with real technical detail get two versions. You can switch any time via the <strong>📖 Simple / Technical</strong> button on top.</li>
-          <li><strong>Step 4: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
-          <li><strong>Step 5: Pick a framework.</strong> Which language / framework will this project use? Pick one of 6 options:
+          <li><strong>Step 2: Theme.</strong> Choose how the app looks: <strong>Minimal</strong> (quiet and dense, for getting in and out), <strong>Classic</strong> (colorful, card-based, the look the app has had since day one) or <strong>Showcase</strong> (display typography, progress rings, sections that arrive as you scroll; for showing or presenting it). <em>Your pick applies to the page behind the dialog straight away</em>, so you choose by looking rather than by reading. All three carry the same content and the same features; only layout, typography and motion change. You can change it later from the <strong>Theme</strong> button on top or the <kbd>T</kbd> key. <span class="hint">Light / dark mode is a separate setting and works in every theme.</span></li>
+          <li><strong>Step 3: Usage mode (Building / Reviewing).</strong> The app can be used in two ways. Pick <strong>❔ Building</strong> if you are building a new app and want to see the "how to" guide for each item from the start; cards open with the back face (How-To) visible. Pick <strong>📋 Reviewing</strong> if you are auditing an existing app and want the clean checklist; cards open with the front face (checklist) visible. The preference is persistent; reloading the page or returning later starts you in the same mode. You can switch any time via the toolbar buttons <strong>❔ Show All How-To</strong> and <strong>📋 Show All Checklist</strong> (these buttons also update the preference).</li>
+          <li><strong>Step 4: Explanation style (Simple / Technical).</strong> How do you want to read the items? In <strong>📖 Simple</strong> mode, items are written in everyday language without package names, version numbers or other jargon; this is the most comfortable mode if software jargon isn't your world or you build apps with AI assistants. In <strong>🛠️ Technical</strong> mode, package names, version numbers, function names and code snippets are shown in full; that mode is more efficient for software people. Some items read the same in both modes (planning, SWOT, design, etc.); only items with real technical detail get two versions. You can switch any time via the <strong>📖 Simple / Technical</strong> button on top.</li>
+          <li><strong>Step 5: Project name.</strong> Which project will you check with this list? Give your project a name (e.g. "ChefOl iOS", "Port Tracker"). You can keep <strong>up to 20 separate projects</strong> in the same app, each with its own marks and notes. You can rename a project any time later.</li>
+          <li><strong>Step 6: Pick a framework.</strong> Which language / framework will this project use? Pick one of 6 options:
             <ul>
               <li><strong>🐦 Flutter</strong>: Google's framework that builds Android + iOS from one codebase (<em>Dart</em>).</li>
               <li><strong>⚛ React Native</strong>: Meta's cross-platform framework written in JavaScript / TypeScript (bare CLI).</li>
@@ -442,7 +458,7 @@ const HELP_HTML = {
               <li><strong>🌐 PWA</strong>: Web technologies (HTML/CSS/JS) installable on phones via "Add to Home Screen".</li>
             </ul>
           </li>
-          <li><strong>Step 6: Pick a backend.</strong> Which server side will your app use? The backend handles sign-up, database, file uploads and anything online. Backend-related items in the list adapt to your choice:
+          <li><strong>Step 7: Pick a backend.</strong> Which server side will your app use? The backend handles sign-up, database, file uploads and anything online. Backend-related items in the list adapt to your choice:
             <ul>
               <li><strong>🚫 No backend</strong>: Your app never connects to the internet (on-device only). All backend items are removed from the list. This option appears prominently above the others, larger and more visible.</li>
               <li><strong>🔥 Firebase</strong>: Google's quick and easy server solution.</li>
@@ -455,7 +471,7 @@ const HELP_HTML = {
               <li><strong>💻 Local dev backend</strong>: Test server running on your computer.</li>
             </ul>
           </li>
-          <li><strong>Step 7: Welcome.</strong> After picking the backend, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
+          <li><strong>Step 8: Welcome.</strong> After picking the backend, press <strong>"Next ›"</strong>. You'll get a quick tour (Notes, Ask AI, Theme, etc.). Press <strong>"OK, Let's Start"</strong> to open the list. If you picked the wrong one, use <strong>"‹ Back"</strong> from any step to go to the previous one.</li>
         </ul>
         <p>Your framework + backend combination drives how items appear (package names, build commands, install steps differ). Picking "No backend" removes every backend item from the list entirely.</p>
       </section>
@@ -474,7 +490,7 @@ const HELP_HTML = {
           <li>Lock state</li>
           <li>Celebration flags (so you only see each celebration once)</li>
         </ul>
-        <p><strong>Settings shared across projects:</strong> Theme (dark/light) and language (TR/EN) are global; switching them in any project applies to all.</p>
+        <p><strong>Settings shared across projects:</strong> Theme (Classic / Minimal / Showcase), color mode (dark / light) and language (TR / EN) are global; switching them in any project applies to all.</p>
 
         <p><strong>Click the project pill to open the "Project and Framework" modal; it has three tabs:</strong></p>
         <ul>
@@ -530,7 +546,7 @@ const HELP_HTML = {
         <h3>🌐 Switch Language (TR / EN)</h3>
         <p>In the page header, just left of the project pill, there is a <strong>🌐 TR / EN</strong> button. Click it to switch instantly between <strong>Turkish</strong> and <strong>English</strong>.</p>
         <ul>
-          <li>Every text is translated: categories, the 53 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
+          <li>Every text is translated: categories, the 55 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
           <li>Whichever framework you picked, its variant texts also appear in the chosen language.</li>
           <li><strong>Language is global across all projects</strong> (like theme). Switching it in one project switches it everywhere.</li>
           <li>Your preference is <strong>saved in the browser</strong>; the chosen language is active on next open.</li>
@@ -561,7 +577,7 @@ const HELP_HTML = {
         <p>You can change the active project's framework any time. Click the <strong>📁 project pill</strong> in the header → switch to the <strong>"Framework" tab</strong> in the modal → click one of the 6 options → a confirmation appears, click "Switch".</p>
         <p>When you switch:</p>
         <ul>
-          <li>The 28 framework-specific items <strong>change instantly</strong> (e.g. "<code>flutter build apk</code>" becomes "<code>eas build --platform android</code>").</li>
+          <li>The 24 framework-specific items <strong>change instantly</strong> (e.g. "<code>flutter build apk</code>" becomes "<code>eas build --platform android</code>").</li>
           <li><strong>Your marks and notes are NOT lost</strong>: they stay. Only wording / package names change.</li>
           <li>The change affects only the <strong>active project</strong>; other projects' frameworks stay the same.</li>
           <li>You can switch back any time.</li>
@@ -781,11 +797,24 @@ const HELP_HTML = {
       </section>
 
       <section>
-        <h3>🌙 Theme (Dark / Light)</h3>
-        <p>The toolbar's <strong>🌙 Dark / ☀ Light</strong> button toggles theme.</p>
+        <h3>🎨 Theme (Classic / Minimal / Showcase)</h3>
+        <p>The theme is asked on <strong>step 2</strong> of the first-run welcome flow; afterwards the <strong>Theme</strong> button in the toolbar (or the <kbd>T</kbd> key) switches between the three looks. <strong>All three carry the same content and the same features</strong>: 14 categories, 55 items, notes, AI prompts, presentation mode, printing, project management. Only layout, typography and motion change.</p>
+        <ul>
+          <li><strong>Classic</strong>: the look the project shipped with. Colored headline, rounded chrome, card surfaces.</li>
+          <li><strong>Minimal</strong>: strips the decoration and leaves the content. Neutral palette, hairline rules, a denser list so more items fit on screen. Above 1140px the category index becomes a sidebar, like a documentation site.</li>
+          <li><strong>Showcase</strong>: for showing someone. Display typography, three progress rings at the top, sections that settle into place as you scroll, a hairline tracking your reading position, and chapter dots down the right edge.</li>
+        </ul>
+        <p><strong>A pick applies instantly while the dialog is open</strong>, so you can compare against the real page behind it. Your choice is saved in the browser.</p>
+        <p><strong>The printed output is identical in all three.</strong> Theme rules apply to the screen only, so a PDF you hand over never depends on which theme you happened to be using.</p>
+        <p>If your operating system has <strong>reduce motion</strong> enabled, Showcase drops its animations; the layout and typography stay the same.</p>
+      </section>
+
+      <section>
+        <h3>🌙 Light / Dark Mode</h3>
+        <p>The toolbar's <strong>🌙 Dark / ☀ Light</strong> button switches the color mode. It is a <strong>separate setting from the theme</strong>: all three themes work in both modes, so there are six combinations.</p>
         <ul>
           <li><strong>Dark</strong>: easier on the eyes at night or in low light (default).</li>
-          <li><strong>Light</strong>: classic white look for daytime / well-lit environments. All accent colors (MVP green, Release blue, accent orange) hold up in light mode too.</li>
+          <li><strong>Light</strong>: classic white look for daytime / well-lit environments. MVP green and Release blue are tuned to stay readable in both modes.</li>
         </ul>
         <p>Your preference is <strong>saved in the browser</strong>. A toast confirms each change.</p>
       </section>
@@ -813,13 +842,14 @@ const HELP_HTML = {
           <li><kbd>?</kbd><span>Open this help dialog</span></li>
           <li><kbd>/</kbd><span>Focus the search box (start typing immediately)</span></li>
           <li><kbd>P</kbd><span>Open presentation mode</span></li>
+          <li><kbd>T</kbd><span>Open the theme picker (Classic / Minimal / Showcase)</span></li>
           <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Previous / next category in presentation</span></li>
           <li><kbd>Space</kbd> / <kbd>PageDown</kbd><span>Next category in presentation (alternative)</span></li>
           <li><kbd>PageUp</kbd><span>Previous category in presentation (alternative)</span></li>
           <li><kbd>Esc</kbd><span>Close open modal / dropdown / exit presentation</span></li>
           <li><kbd>Ctrl</kbd>+<kbd>P</kbd><span>Browser print (also Save as PDF)</span></li>
         </ul>
-        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>) won't fire while typing inside an input/textarea; your text stays intact.</em></p>
+        <p><em>Note: Shortcuts (<kbd>?</kbd>, <kbd>/</kbd>, <kbd>P</kbd>, <kbd>T</kbd>) won't fire while typing inside an input/textarea; your text stays intact.</em></p>
       </section>
   `
 };

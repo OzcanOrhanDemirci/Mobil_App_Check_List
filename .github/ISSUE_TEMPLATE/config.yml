@@ -1,1 +1,23 @@
+# Issue template chooser.
+#
+# Blank issues are disabled on purpose: the two forms below ask for the
+# framework, backend, language, explanation style, theme and color mode, and
+# a bug report without those is usually unreproducible.
+#
+# The links route the two things that are not bug reports away from the
+# tracker: open-ended questions belong in Discussions, and vulnerabilities
+# must not be filed in public at all.
 blank_issues_enabled: false
+
+contact_links:
+  - name: 💬 Question or idea (Discussions)
+    url: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/discussions
+    about: Usage questions, content suggestions and open-ended ideas. Faster than an issue and easier for others to find later.
+
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/blob/main/.github/SECURITY.md
+    about: Do not open a public issue. The security policy explains the private channel and what to expect.
+
+  - name: 📖 Contributing guide
+    url: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/blob/main/.github/CONTRIBUTING.md
+    about: Local setup, the content style rules, how to add an item, a framework or a backend, and what CI checks before merge.

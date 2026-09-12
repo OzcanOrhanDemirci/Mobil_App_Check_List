@@ -257,6 +257,10 @@ function performReset(scope) {
     collapsedCats = new Set(DATA.map(c => `cat-${c.id}`));
     saveCollapsed();
     applyTheme("dark");
+    /* Appearance defaults include the design, not just the color mode. */
+    if (typeof applyDesign === "function" && typeof DEFAULT_DESIGN === "string") {
+      applyDesign(DEFAULT_DESIGN);
+    }
     if (typeof applyStyle === "function") applyStyle("technical");
     saveViewMode("both");
     saveViewFilter("all");
@@ -745,6 +749,10 @@ document.addEventListener("keydown", e => {
   } else if (e.key.toLowerCase() === "p" && !e.ctrlKey && !e.metaKey) {
     e.preventDefault();
     enterPresentation();
+  } else if (e.key.toLowerCase() === "t" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    /* T opens the theme picker (Classic / Minimal / Showcase). */
+    e.preventDefault();
+    if (typeof openDesignPicker === "function") openDesignPicker();
   }
 });
 

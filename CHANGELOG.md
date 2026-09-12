@@ -7,6 +7,273 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-12
+
+Three design themes, a content refresh against current platform sources,
+and an accessibility pass.
+
+The visual system became an axis of its own, next to the existing light and
+dark color mode:
+
+```
+data-design   classic | minimal | showcase   layout, shape, typography, motion
+data-theme    dark | light                   color mode
+```
+
+Six combinations over one DOM, one data set and one feature set. Every theme
+carries the whole application: 14 categories, 55 items, notes, the AI prompt
+generator, multi-project, presentation mode, filters, search, export and
+import, PWA install. A theme changes how the page looks, never what it can
+do, and the printed output is identical in all three.
+
+Alongside that, every factual claim in the 14 category data files was
+re-verified against primary sources (platform documentation, store policy
+pages, vendor release notes) and the stale ones corrected: the content freeze
+had been in May 2026 and four months of platform churn had moved several
+store requirements.
+
+Upgrading is a page reload. All existing marks, notes and projects are kept;
+nothing in `localStorage` changes shape. Anyone who has never opened the
+theme picker will see the new default (Minimal) and can return to the
+previous look in two clicks.
+
+### Added
+
+- `scripts/serve-local.py`: a development server that disables caching, for
+  the reason in Fixed below. `npm run serve` uses it.
+- A **theme step** in the welcome flow, immediately after the language step,
+  taking it from seven steps to eight. It applies the pick to the page behind
+  the dialog straight away (`persist: false`) so the reader chooses by looking
+  rather than by reading a description, and opens with the active design
+  already selected so anyone without an opinion can press Next. The choice is
+  written to storage in `welcomeStart`, like every other answer in the flow.
+  The three cards reuse the picker's CSS-drawn previews.
+- `tests/design.test.js` grew a "Welcome flow theme step" suite (suite 277 to
+  281): the panes, the indicator dots and the connectors must agree on the
+  step count, the step must offer exactly `VALID_DESIGNS`, the preview and the
+  persist halves must both be present, and every `setWelcomeStep` target must
+  land on a step that exists. The step count lives in six files; inserting a
+  step meant renumbering all of them by hand, which is the kind of edit that
+  half-lands.
+
+- `assets/screenshots/{tr,en}/05-theme-picker.png`,
+  `06-theme-classic.png`, `07-theme-showcase.png`: a theme gallery for
+  both READMEs, in both languages. Shots 01 to 05 use the application's
+  default theme; 06 and 07 pin their own, so the gallery always shows all
+  three regardless of what the default is on the day it is regenerated.
+- `SHOT_DESIGN` environment override in `scripts/capture-screenshots.mjs`,
+  alongside the existing `BASE_URL` and `SHOT_LANG`. Every seed now writes
+  the design key explicitly, so a shot never silently changes meaning when
+  the default design changes.
+
+- `js/19-design.js`: the design axis. `applyDesign()`, the picker dialog,
+  persistence under `mobil_kontrol_design_v1`, the toolbar button label,
+  the `T` shortcut, and `resolveInitialDesign()`. A saved choice always
+  wins; anyone who has never opened the picker gets the default.
+- `css/07-design-minimal.css`: the **Minimal** theme, and the new
+  default. Neutral palette, hairline rules instead of card chrome, one
+  non-chromatic accent, decorative emoji hidden, a denser toolbar and
+  list. From 1140px the category index becomes a fixed rail in a
+  reserved left gutter and the page reads like documentation.
+- `css/08-design-showcase.css` + `js/20-showcase-motion.js`: the
+  **Showcase** theme. Display typography, a layered background, glass
+  surfaces, a hero stage with three animated progress rings,
+  reveal-on-scroll for chapters and cards, a reading-progress hairline,
+  and a chapter rail with scroll-spy from 1320px. The motion layer is an
+  IIFE that attaches only while Showcase is active and removes every
+  node and class it added when the theme changes.
+- `css/09-design-picker.css`: the picker dialog. Each theme's preview is
+  drawn in CSS rather than shipped as a screenshot, so the three
+  miniatures follow the reader's color mode and cannot go stale against
+  the real page.
+- `emitAppEvent()` in `js/07-ui-helpers.js`, plus the
+  `checklist:rendered`, `checklist:progress` and `design:changed` events.
+  Enhancement layers subscribe instead of patching the render path.
+- `tests/design.test.js`: 34 tests (suite 243 to 277). `normalizeDesign`
+  including the near misses, the full `resolveInitialDesign` decision
+  table, and `applyDesign` persistence including the `persist: false`
+  path. It also locks three cross-file invariants: that `DEFAULT_DESIGN`
+  and the design list match the copies inlined in `js/00-bootstrap.js`,
+  that every design rule sits inside `@media screen` (the mechanism
+  behind print parity), and that the Showcase layer's `detach()` clears
+  each class and node its `attach()` adds.
+- `.btn-emoji`: the emoji that used to sit inside four translated button
+  labels now live in their own `aria-hidden` span.
+
+### Changed
+
+- README screenshots regenerated. The four existing shots were taken
+  against the old single look and no longer matched the application.
+- `README.md`, `README.tr.md`: a "The three themes" gallery under
+  Screenshots, and the capture note explains which shots pin a theme.
+- PWA chrome colors follow the default design: `theme-color` in
+  `index.html` and `theme_color` / `background_color` in
+  `manifest.webmanifest` move from the Classic grounds (`#0b0f17`,
+  `#f6f7fb`) to the Minimal ones (`#0a0a0b`, `#ffffff`).
+- `.github/CODEOWNERS` covers the five design files. One DOM carries three
+  designs, so a change there can break a design nobody opened in review.
+- `.github/ISSUE_TEMPLATE/bug_report.yml`: required Theme and Color mode
+  dropdowns, because a visual bug is now usually specific to one of the
+  six combinations. The OS options and the browser-version placeholder
+  had drifted about two years behind and were refreshed.
+
+- `js/00-bootstrap.js` resolves and applies the design before first
+  paint, next to the color mode and language it already handled.
+- The default look for a first visit is **Minimal**. A saved choice is
+  always honored, so nobody who has picked a theme is moved off it.
+- Wording in both languages: the light / dark switch is now a "mode",
+  and "theme" names the design. The help modal gained a Theme section
+  and a rewritten Light / Dark Mode section; `T` joined the shortcut
+  table.
+- `.btn-icon-text` was a marker class with no rules, so the icon in the
+  theme, lock and design buttons was spaced only by the emoji glyph's own
+  side bearing. It is now a flex row with a gap, which is what a drawn
+  SVG icon needs.
+- The two new designs restate the three surfaces the base sheets
+  hardcode a color for (the "MVP + Release" pill, the install banner and
+  its call to action) in their own palettes, rather than those values
+  being changed in the base sheets, which would alter Classic.
+- `README.md`, `README.tr.md`: a Design themes section, an updated
+  feature list, refreshed tech-stack rows and file counts (14 CSS, 37
+  JS), a new FAQ entry, and the design files in the project tree.
+- `.github/CONTRIBUTING.md`: the file layout covers the three new
+  stylesheets and the two new modules; a "Working with the three
+  designs" section states the four rules that keep the arrangement
+  honest; the test section documents the seventh suite and notes that
+  the behavioral half needs a browser.
+- `tests/_setup.js`: the DOM element stub remembers attributes instead of
+  swallowing them. `js/19-design.js` round-trips through
+  `documentElement`'s `data-design`, so a stub that always returned null
+  made every `applyDesign` call look like a change.
+
+- **Apple submission floor**: the App Store SDK requirement moved from
+  "Xcode 16 + iOS 18 SDK since 24 April 2025" to "Xcode 26 + iOS 26 SDK
+  since 28 April 2026" in `js/03k-data-11-release.js` and
+  `js/03c-data-03-code-layout.js`.
+- **Play Store target API floor**: `targetSdk 35` (Android 15) became
+  `targetSdk 36` (Android 16), required for new apps and updates since
+  31 August 2026, with the extension window to 1 November 2026 and the
+  separate Wear OS / Automotive (35) and TV / XR (34) floors spelled
+  out. The `windowOptOutEdgeToEdgeEnforcement` note now says the flag
+  is honored only at `targetSdk 35`.
+- **App Store screenshots**: the requirement is a 6.9" set, or a 6.5"
+  set when 6.9" is not uploaded; the retired 6.7" slot was removed, the
+  other dimensions accepted into the 6.9" slot (1290x2796, 1260x2736)
+  were added, and the 13" iPad set is now correctly described as
+  required when the app runs on iPad rather than optional. Simulator
+  examples no longer name a single 2024 device.
+- **React Native**: the New Architecture note moved from "RN 0.76+" to
+  "RN 0.82+", which removed the legacy architecture outright.
+- **Flutter rendering**: Impeller is now described as the only renderer
+  on iOS (no Skia opt-out) and the default on desktop since Flutter
+  3.47, alongside the existing Android API 29+ note.
+- **Lighthouse**: the PWA category was removed in Lighthouse 12 (April
+  2024, shipped in Chrome 126 DevTools). The previous text credited the
+  removal to Chrome 117, which only deprecated it.
+- **GitHub**: branch protection steps now point at repository rulesets
+  (Settings > Rules > Rulesets), which is where GitHub steers new
+  repositories, with a note that an existing classic rule can be
+  converted. Secret scanning moved to Settings > Advanced Security >
+  Secret Protection, and the text records that it is free on public
+  repositories. History rewriting recommends `git filter-repo` instead
+  of the discouraged `git filter-branch`.
+- **Accessibility**: the contrast item now cites WCAG 2.2 AA, adds the
+  2.2 Target Size (Minimum) criterion with the Apple and Android
+  equivalents, and notes that the European Accessibility Act has been
+  enforceable since 28 June 2025 with EN 301 549 v4.1.1 (published 2
+  September 2026) as the technical yardstick.
+- **Node floor**: React Native's own setup guide asks for Node 22.11+;
+  Node 20 reached end-of-life on 30 April 2026. The tooling followed:
+  `package.json` `engines` is now `>=22.13.0`, the CI lint and test
+  matrix runs Node 22 and 24 instead of 20 and 22, the single-version
+  jobs run Node 24, and `.github/CONTRIBUTING.md` matches.
+- **AI model examples** in the fallback-ladder item refreshed to
+  current model identifiers.
+- Footer content date moved from May 2026 to September 2026.
+
+### Fixed
+
+- **The theme picker had no horizontal padding.** Its contents were direct
+  children of `.modal-content`, which carries none; every other modal gets it
+  from `.modal-body`. Title, copy, cards and the Done button all sat against
+  the dialog's border. They are now inside a `.modal-body` like everywhere
+  else.
+- **Buttons that own a surface lost it in the two new designs.** Both design
+  stylesheets reset `.btn` with `background: transparent` (Minimal) or a glass
+  fill (Showcase) at the same specificity as `.btn.primary`,
+  `.btn.danger-solid` and `.btn-install-cta`, and loaded later, so the
+  background was replaced while the paired text color stayed. The reset
+  confirmation's "Evet, devam et" was white on white. The surface reset is now
+  scoped with `:not()` so those variants keep the background their text color
+  was chosen for, and a variant added later cannot regress the same way.
+- **`.btn.danger` was unreadable in light mode** (1.7:1). It had one red tuned
+  for a dark surface; light mode now has its own. This affected Classic as
+  well as Showcase.
+- **The welcome flow's active step dot** used a hardcoded dark label, which
+  assumes a light accent. Minimal and Showcase accent with a dark blue in
+  light mode, where it measured 2.8:1. The label now flips with the color
+  mode, and the hardcoded orange glow follows the accent.
+- **Muted and accent text below WCAG AA**, found by measuring rendered pixels
+  across three designs, two color modes and twelve UI states: `--text-mute` in
+  Minimal (4.1:1) and Showcase (3.7:1), `--text-mute` and `--accent` in
+  Classic light (3.6:1 and 2.5:1), the picker's own explanatory copy (3.3:1),
+  the destructive reset option's title (3.0:1), and the Showcase instructor
+  badge in light mode (3.1:1). The audit went from 76 failing text runs to 36.
+- The step indicator's connectors were a fixed 36px, so the eighth dot pushed
+  the row to 544px inside a 480px column. They flex now and fit any number of
+  steps.
+- **Local review could show a page built from a mix of fresh and stale
+  files.** `python -m http.server`, which the docs and the `serve` script both
+  used, sends `Last-Modified` but no `Cache-Control`; browsers then fall back
+  to heuristic freshness and reuse a subresource for minutes without
+  revalidating. The visible result was a feature that rendered from fresh HTML
+  but did not respond because its module was the previous version, which is
+  indistinguishable from a real bug. `scripts/serve-local.py` serves the repo
+  with `Cache-Control: no-store`; `npm run serve`, both READMEs and
+  CONTRIBUTING now point at it. Reproduced and verified: the same reload that
+  served a stale module before serves the current one now.
+
+- `scripts/capture-screenshots.mjs` seeded its demo project as
+  `{ active, list }`, which is not the shape `js/04-projects.js` stores
+  (`{ version, activeId, projects }`). The store rejected it, so every
+  screenshot was taken with no active project and the hero pill rendered
+  empty.
+- The `03-card-flip` shot had stopped showing a flipped card: categories
+  start collapsed, so the flip button existed in the DOM but inside a
+  zero-height container, and clicking it produced an image identical to
+  `02-checklist`. The shot now expands the first category before flipping.
+
+- The counts the UI quotes back to the user were wrong. The framework
+  picker claimed "28 items vary by framework, the remaining 25 are
+  universal" (which also does not sum to 55); the data says 24 vary by
+  framework and 30 adapt to the stack once backend variants count. All
+  five places that quoted a number, in both languages, now match the
+  data, and `tests/data.test.js` asserts both splits so the next drift
+  fails CI instead of shipping.
+- The help modal said the list has "53 features" in the overview and
+  "53 items" in the language section. It has 55.
+
+### Removed
+
+- The 239-line static copy of the Turkish help text inside
+  `index.html`. `applyI18nToDom()` overwrites `#helpModalBody` with
+  `HELP_HTML` from `js/02-help-content.js` on every init, so the inline
+  copy was never rendered; it had silently drifted (53 features, a
+  three-step welcome flow) and its sections lacked the `.help-section`
+  class the accordion needs. A short fallback paragraph plus a comment
+  explaining the ownership rule replaces it, and `index.html` drops
+  from 1170 to 938 lines.
+
+### Known, not fixed
+
+- Classic's light mode still paints several labels in `--accent-2`
+  (`#f97316`), which measures 2.3 to 2.5:1 on its light surfaces: the hero
+  eyebrow, the item ids, the active half of the language and style pills, and
+  the project pill's name. Darkening that token would also darken the surfaces
+  it fills (the instructor badge, the primary button gradient), so it is a
+  deliberate change to the published look rather than a contrast fix, and it
+  is left for a decision instead of being made silently.
+
 ## [1.2.1] - 2026-05-15
 
 Maintenance release: dependency bumps, ESLint 10 migration, branch
@@ -500,7 +767,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0

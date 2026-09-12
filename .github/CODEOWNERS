@@ -33,3 +33,13 @@
 # rendered for every framework, backend, language, and explanation style.
 /js/05-framework.js                     @OzcanOrhanDemirci
 /js/05-backend.js                       @OzcanOrhanDemirci
+
+# Design axis (added in 1.3.0). One DOM carries three designs, so a change
+# here can silently break a design nobody looked at in review, and the
+# Showcase motion layer is the one file that can leave state behind in
+# another design if its detach path regresses.
+/js/19-design.js                        @OzcanOrhanDemirci
+/js/20-showcase-motion.js               @OzcanOrhanDemirci
+/css/07-design-minimal.css              @OzcanOrhanDemirci
+/css/08-design-showcase.css             @OzcanOrhanDemirci
+/css/09-design-picker.css               @OzcanOrhanDemirci

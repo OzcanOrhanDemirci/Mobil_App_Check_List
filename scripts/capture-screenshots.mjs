@@ -22,15 +22,25 @@
  *        python -m http.server 5500      # http://localhost:5500
  *
  *   2. Run this script (override URL via BASE_URL, restrict to one
- *      language via SHOT_LANG):
+ *      language via SHOT_LANG, override the design the main shots use
+ *      via SHOT_DESIGN):
  *        BASE_URL=http://localhost:5500 node scripts/capture-screenshots.mjs
  *        SHOT_LANG=en node scripts/capture-screenshots.mjs
+ *        SHOT_DESIGN=classic node scripts/capture-screenshots.mjs
  *
  * Output:
- *   assets/screenshots/{tr,en}/01-welcome.png       mobile, viewport-sized
- *   assets/screenshots/{tr,en}/02-checklist.png     desktop, viewport-sized
- *   assets/screenshots/{tr,en}/03-card-flip.png     desktop, viewport-sized
- *   assets/screenshots/{tr,en}/04-help.png          desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/01-welcome.png          mobile, viewport-sized
+ *   assets/screenshots/{tr,en}/02-checklist.png        desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/03-card-flip.png        desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/04-help.png             desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/05-theme-picker.png     desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/06-theme-classic.png    desktop, viewport-sized
+ *   assets/screenshots/{tr,en}/07-theme-showcase.png   desktop, viewport-sized
+ *
+ * Shots 01-05 use MAIN_DESIGN (the application's default unless SHOT_DESIGN
+ * says otherwise); 06 and 07 pin their own design so the README can show
+ * all three. Every seed writes the design key explicitly, so a shot never
+ * depends on what the default happened to be the day it was taken.
  *
  * Each shot captures the visible viewport (fullPage: false). The prepare()
  * step for each shot positions the relevant UI inside the viewport before
@@ -58,6 +68,13 @@ const ALL_LANGS = ["tr", "en"];
 const REQUESTED_LANG = (process.env.SHOT_LANG || "").toLowerCase();
 const LANGS = ALL_LANGS.includes(REQUESTED_LANG) ? [REQUESTED_LANG] : ALL_LANGS;
 
+/* Design used by the main shots (01-05). Defaults to the application's own
+   default; SHOT_DESIGN overrides it. Shots 06 and 07 pin their design
+   regardless, so the README gallery always shows all three. */
+const ALL_DESIGNS = ["classic", "minimal", "showcase"];
+const REQUESTED_DESIGN = (process.env.SHOT_DESIGN || "").toLowerCase();
+const MAIN_DESIGN = ALL_DESIGNS.includes(REQUESTED_DESIGN) ? REQUESTED_DESIGN : "minimal";
+
 const VIEWPORTS = {
   mobile: { width: 375, height: 812, deviceScaleFactor: 2 },
   desktop: { width: 1280, height: 800, deviceScaleFactor: 1 },
@@ -71,15 +88,22 @@ const VIEWPORTS = {
 function seedLangOnly(args) {
   // eslint-disable-next-line no-undef -- runs inside the browser page
   localStorage.setItem("mobil_kontrol_lang_v1", args.lang);
+  // eslint-disable-next-line no-undef
+  localStorage.setItem("mobil_kontrol_design_v1", args.design);
 }
 
 /* Seed function: a single Demo project plus consistent language / style /
    theme preferences, so the welcome modal does NOT trigger and the list
    renders deterministically for shots 02 / 03 / 04. */
 function seedActiveProject(args) {
+  /* Shape must match js/04-projects.js: { version, activeId, projects: [] }.
+     An earlier version of this seed used `active` / `list`, which the store
+     rejected as unparseable, so every shot was taken with no active project
+     and the hero pill read as empty. */
   const projectsStore = {
-    active: "proj_demo",
-    list: [
+    version: 1,
+    activeId: "proj_demo",
+    projects: [
       {
         id: "proj_demo",
         name: "Demo",
@@ -110,6 +134,10 @@ function seedActiveProject(args) {
   localStorage.setItem("mobil_kontrol_mode_v1", "build");
   // eslint-disable-next-line no-undef
   localStorage.setItem("mobil_kontrol_theme_v1", "dark");
+  /* Pinned explicitly: a shot must not silently change the day the
+     default design changes. */
+  // eslint-disable-next-line no-undef
+  localStorage.setItem("mobil_kontrol_design_v1", args.design);
 }
 
 /* SHOTS factory: closes over `lang` only to populate seedArgs; the seed
@@ -121,7 +149,7 @@ const makeShots = (lang) => [
     viewport: "mobile",
     fullPage: false,
     seedStorage: seedLangOnly,
-    seedArgs: { lang },
+    seedArgs: { lang, design: MAIN_DESIGN },
     prepare: async (page) => {
       await page.waitForSelector("#welcomeModal", { timeout: 5000 }).catch(() => {});
       await page.waitForTimeout(300);
@@ -132,7 +160,7 @@ const makeShots = (lang) => [
     viewport: "desktop",
     fullPage: false,
     seedStorage: seedActiveProject,
-    seedArgs: { lang },
+    seedArgs: { lang, design: MAIN_DESIGN },
     prepare: async (page) => {
       await page.waitForTimeout(500);
       await dismissWelcomeModal(page);
@@ -146,19 +174,28 @@ const makeShots = (lang) => [
     viewport: "desktop",
     fullPage: false,
     seedStorage: seedActiveProject,
-    seedArgs: { lang },
+    seedArgs: { lang, design: MAIN_DESIGN },
     prepare: async (page) => {
       await page.waitForTimeout(500);
       await dismissWelcomeModal(page);
       await page.waitForSelector("[data-flip-toggle]", { timeout: 5000 }).catch(() => {});
+      /* Categories start collapsed, so the flip button exists in the DOM
+         but is inside a zero-height container: clicking it produced a shot
+         identical to 02-checklist. Expand the first category first, then
+         flip its first card. */
       await page.evaluate(() => {
-        const btn = document.querySelector("[data-flip-toggle]");
+        const cat = document.querySelector("section.category");
+        if (cat) cat.classList.remove("collapsed");
+      });
+      await page.waitForTimeout(300);
+      await page.evaluate(() => {
+        const btn = document.querySelector("section.category [data-flip-toggle]");
         if (!btn) return;
         const card = btn.closest(".feature") || btn;
         card.scrollIntoView({ behavior: "instant", block: "center" });
         btn.click();
       });
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(900);
     },
   },
   {
@@ -166,7 +203,7 @@ const makeShots = (lang) => [
     viewport: "desktop",
     fullPage: false,
     seedStorage: seedActiveProject,
-    seedArgs: { lang },
+    seedArgs: { lang, design: MAIN_DESIGN },
     prepare: async (page) => {
       await page.waitForTimeout(500);
       await dismissWelcomeModal(page);
@@ -186,6 +223,56 @@ const makeShots = (lang) => [
         )
         .catch(() => {});
       await page.waitForTimeout(400);
+    },
+  },
+  {
+    /* The picker itself: the one screen that explains the axis. */
+    name: "05-theme-picker",
+    viewport: "desktop",
+    fullPage: false,
+    seedStorage: seedActiveProject,
+    seedArgs: { lang, design: MAIN_DESIGN },
+    prepare: async (page) => {
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      /* The toolbar collapses behind a menu button on narrow viewports;
+         click it first if it is visible, then open the picker. */
+      await page.evaluate(() => {
+        const toggle = document.getElementById("actionsToggle");
+        if (toggle && toggle.offsetParent !== null) toggle.click();
+        const btn = document.getElementById("designToggle");
+        if (btn) btn.click();
+      });
+      await page.waitForTimeout(500);
+    },
+  },
+  {
+    name: "06-theme-classic",
+    viewport: "desktop",
+    fullPage: false,
+    seedStorage: seedActiveProject,
+    seedArgs: { lang, design: "classic" },
+    prepare: async (page) => {
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
+    },
+  },
+  {
+    name: "07-theme-showcase",
+    viewport: "desktop",
+    fullPage: false,
+    seedStorage: seedActiveProject,
+    seedArgs: { lang, design: "showcase" },
+    prepare: async (page) => {
+      await page.waitForTimeout(500);
+      await dismissWelcomeModal(page);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      /* Showcase reveals sections on scroll and draws its gauges over
+         about a second; wait for both to settle before shooting. */
+      await page.waitForTimeout(1400);
     },
   },
 ];
@@ -214,7 +301,10 @@ async function captureLanguage(browser, lang) {
     });
     const page = await context.newPage();
 
-    console.log(`[capture:${lang}] ${shot.name} (${shot.viewport}) ${vp.width}x${vp.height}`);
+    const shotDesign = (shot.seedArgs && shot.seedArgs.design) || MAIN_DESIGN;
+    console.log(
+      `[capture:${lang}] ${shot.name} (${shot.viewport}) ${vp.width}x${vp.height} design=${shotDesign}`
+    );
     /* Visit once to establish the origin, then seed (or clear)
        localStorage, then reload so the app picks up the seeded state on
        its own startup. */

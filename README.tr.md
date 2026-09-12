@@ -8,12 +8,14 @@
 14 kategori ve 55 maddelik etkileşimli kalite kontrol listesi.**
 _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-backend guidance · installable PWA._
 
+[![Son sürüm](https://img.shields.io/github/v/release/OzcanOrhanDemirci/Mobil_App_Check_List?label=s%C3%BCr%C3%BCm&color=success)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/latest)
 [![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml/badge.svg)](https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/actions/workflows/ci.yml)
 [![Canlı demo](https://img.shields.io/badge/demo-canl%C4%B1-success)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![PWA](https://img.shields.io/badge/PWA-kurulabilir-orange)](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 [![Build](https://img.shields.io/badge/build-zero%20config-blueviolet)](#mimari-kararlar)
 [![Diller](https://img.shields.io/badge/i18n-TR%20%C2%B7%20EN-lightgrey)](#özellikler)
+[![Themes](https://img.shields.io/badge/tema-3-blue)](#tasarım-temaları)
 [![Frameworkler](https://img.shields.io/badge/framework-6-9cf)](#desteklenen-frameworkler-ve-backendler)
 [![Backend](https://img.shields.io/badge/backend-9-9cf)](#desteklenen-frameworkler-ve-backendler)
 
@@ -42,6 +44,7 @@ _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-ba
 - [Özellikler](#özellikler)
 - [Ekran görüntüleri](#ekran-görüntüleri)
 - [Hızlı başlangıç](#hızlı-başlangıç)
+- [Tasarım temaları](#tasarım-temaları)
 - [Tarayıcı desteği](#tarayıcı-desteği)
 - [Mimari](#mimari)
   - [Teknoloji yığını](#teknoloji-yığını)
@@ -123,7 +126,8 @@ Bu uygulama o boşluğu doldurur:
 
 ### Görünüm ve etkileşim
 
-- **Açık / koyu tema** (sistem tercihine uyarlanır)
+- **3 tasarım teması** (`T` tuşu): Klasik, Sade, Vitrin. Üçünde de aynı içerik ve aynı özellikler; yalnızca yerleşim, tipografi ve hareket değişir
+- **Açık / koyu mod**, ayrı bir eksen: her tema iki modda da çalışır
 - **Arama**: 55 madde içinde anında metin araması (`/` tuşu ile odaklanır)
 - **Filtre**: Yapılacak / Yapılan / Tümü × MVP / Release / İkisi
 - **Sunum modu** (`P` tuşu): tek tıkla projeksiyon için tam ekran
@@ -148,7 +152,7 @@ Bu uygulama o boşluğu doldurur:
   <em>Sosyal önizleme görseli (Open Graph, 1200x630).</em>
 </p>
 
-> Görseller `scripts/capture-screenshots.mjs` script'i ile Playwright üzerinden üretilir. Mevcut PNG'ler `assets/screenshots/` altında commit'lenmiştir; arayüz değişince script'i yeniden çalıştırarak güncelleyebilirsiniz (kullanım aşağıda).
+> Görseller `scripts/capture-screenshots.mjs` script'i ile Playwright üzerinden üretilir. Mevcut PNG'ler `assets/screenshots/` altında commit'lenmiştir; arayüz değişince script'i yeniden çalıştırarak güncelleyebilirsiniz (kullanım aşağıda). 1-5 arası görüntüler varsayılan temayı kullanır; 6 ve 7 kendi temasını sabitler, böylece galeri her zaman üçünü de gösterir.
 
 <table>
   <tr>
@@ -185,6 +189,44 @@ Bu uygulama o boşluğu doldurur:
   </tr>
 </table>
 
+### Üç tema
+
+Tek DOM, tek veri kümesi, tek özellik kümesi. Tema yerleşimi, tipografiyi ve hareketi değiştirir; içerik ve onunla yapabildiklerin aynı kalır. Ayrıntı: [Tasarım temaları](#tasarım-temaları).
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/02-checklist.png">
+        <img src="assets/screenshots/tr/02-checklist.png" alt="Sade tema: nötr palet, ince çizgiler, kategori kenar çubuğu" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Sade (varsayılan)</strong>: nötr palet, ince ayırıcı çizgiler, geniş ekranda kategori kenar çubuğu.</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/06-theme-classic.png">
+        <img src="assets/screenshots/tr/06-theme-classic.png" alt="Klasik tema: renkli başlık, yuvarlak hatlar, kart yüzeyleri" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Klasik</strong>: projenin ilk sürümünden beri gelen görünüm, süreklilik için korundu.</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="assets/screenshots/tr/07-theme-showcase.png">
+        <img src="assets/screenshots/tr/07-theme-showcase.png" alt="Vitrin teması: büyük tipografi ve üç ilerleme halkası" width="100%" />
+      </a>
+      <br />
+      <sub><strong>Vitrin</strong>: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="3">
+      <a href="assets/screenshots/tr/05-theme-picker.png">
+        <img src="assets/screenshots/tr/05-theme-picker.png" alt="Üç CSS önizlemesiyle tema seçici penceresi" width="70%" />
+      </a>
+      <br />
+      <sub><strong>Seçici</strong> (toolbar butonu ya da <kbd>T</kbd> tuşu): seçim anında uygulanır, üçü arkadaki gerçek sayfa üzerinde karşılaştırılabilir.</sub>
+    </td>
+  </tr>
+
 ### Ekran görüntülerini yeniden üretmek (opsiyonel)
 
 Görselleri kendiniz oluşturmak isterseniz `scripts/capture-screenshots.mjs` script'i Playwright'la çalışan yerel sunucudan otomatik yakalama yapar.
@@ -217,7 +259,7 @@ En kolay yol: canlı demo'yu aç.
 
 > [https://ozcanorhandemirci.github.io/Mobil_App_Check_List/](https://ozcanorhandemirci.github.io/Mobil_App_Check_List/)
 
-İlk açılışta seni karşılayan **7 adımlık karşılama akışı** dil, kullanım biçimi, anlatım stili, proje adı, framework ve backend tercihini sorar. Birkaç tıkla başlarsın.
+İlk açılışta seni karşılayan **8 adımlık karşılama akışı** dil, tema, kullanım biçimi, anlatım stili, proje adı, framework ve backend tercihini sorar. Tema adımında seçtiğin arkadaki sayfaya anında uygulanır, yani okuyarak değil görerek seçersin. Birkaç tıkla başlarsın.
 
 ### 2. Cihaza kurmak (PWA)
 
@@ -240,8 +282,8 @@ git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
 # Yerel sunucu başlat (Service Worker file:// üzerinde çalışmaz)
-python -m http.server 8080
-# veya
+python scripts/serve-local.py 8080   # veya: npm run serve
+# ya da
 npx serve .
 
 # Sonra tarayıcıda:
@@ -255,6 +297,39 @@ npx serve .
 3. 1-2 dakikada `https://<kullanıcı-adın>.github.io/Mobil_App_Check_List/` üzerinden yayında olur.
 
 Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
+
+---
+
+## Tasarım temaları
+
+Yayındaki demo için gelen geri bildirim, görünümün yapay zekâ üretimi gibi durduğuydu: degradeli başlık, turuncu parıltı, her şey hap biçiminde, her kontrolde bir emoji. Bir görüşü başka bir görüşle değiştirmek yerine görsel sistem, mevcut açık / koyu renk modunun yanına kendi ekseni olarak kondu:
+
+```
+data-design   classic | minimal | showcase     yerleşim, biçim, tipografi, hareket
+data-theme    dark | light                     renk modu
+```
+
+Altı kombinasyon; tek DOM, tek veri kümesi, tek özellik kümesi. **Her tema uygulamanın tamamını taşır**: 14 kategori, 55 madde, notlar, AI prompt üreteci, çoklu proje, sunum modu, filtreler, arama, dışa / içe aktarma, PWA kurulumu. Tema sayfanın nasıl göründüğünü değiştirir, ne yapabildiğini değil.
+
+| Tema                    | Kimin için       | Ne yapar                                                                                                                                                                                                                                                          |
+| ----------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Klasik**              | Süreklilik       | Projenin ilk sürümünden beri gelen görünüm: renkli başlık, yuvarlak hatlar, kart yüzeyleri.                                                                                                                                                                       |
+| **Sade** _(varsayılan)_ | İşi bitirmek     | Süsü kaldırır, içeriği bırakır. Nötr palet, kart yerine ince ayırıcı çizgiler, tek ve renksiz bir vurgu, dekoratif emoji yok, daha yoğun bir liste. 1140 pikselden itibaren kategori listesi sabit bir kenar çubuğuna dönüşür ve sayfa dokümantasyon gibi okunur. |
+| **Vitrin**              | Birine göstermek | Büyük tipografi, katmanlı yüzeyler, üç animasyonlu ilerleme halkasıyla bir üst panel, kaydırdıkça beliren bölümler ve kartlar, okuma konumunu gösteren ince çizgi ve bölüm noktalarıyla bir kenar rayı.                                                           |
+
+Geçiş için toolbar'daki **Tema** butonu ya da <kbd>T</kbd> tuşu. Pencere açıkken seçim anında uygulanır, böylece üçü arkadaki gerçek sayfa üzerinde karşılaştırılabilir; tercih `localStorage`'da tarayıcı başına hatırlanır.
+
+Üç şey bilinçli:
+
+- **Yazdırma çıktısı üç temada da aynıdır.** Her tasarım kuralı `@media screen` içinde durur; müşteriye verdiğin PDF hangi temada çalıştığına bağlı değildir. Bir kural bu bloğun dışına çıkarsa `tests/design.test.js` hata verir.
+- **Vitrin, `prefers-reduced-motion` ayarına uyar.** Hareketi azalt açıkken beliriş ve kaydırma çizgisi hiç kurulmaz, halkalar geçişsiz yazılır. Yerleşim, derinlik ve tipografi aynı kalır: hareketi kapatan kişi yine seçtiği temayı alır, yalnızca hareket olmadan.
+- **İlk ziyarette varsayılan Sade'dir.** Kaydedilmiş bir seçim her zaman kazanır; varsayılan yalnızca seçiciyi hiç açmamış kişi için geçerlidir. Değiştirmek için `js/19-design.js` içindeki `DEFAULT_DESIGN` **ve** ilk boyamadan önce çalışmak zorunda olduğu için `js/00-bootstrap.js` içine kopyalanan değer birlikte güncellenir; bir test ikisinin aynı olduğunu doğrular.
+
+### Nasıl kurulu
+
+`css/07-design-minimal.css` ve `css/08-design-showcase.css` dosyaları, temel stil dosyalarının zaten okuduğu custom property'leri (`--surface`, `--border`, `--radius`, `--accent`, ...) yeniden ayarlayan bir token bloğuyla açılır; ardından yerleşimi taşıyan yirmi küçük yapısal seçiciyi ezer. Klasik'in kendi dosyası yoktur, çünkü Klasik zaten temel dosyaların ürettiği görünümün ta kendisidir. Dördüncü bir tema eklemek, bir CSS dosyası ve `VALID_DESIGNS` içine bir satır demektir.
+
+Vitrin'in hareketi `js/20-showcase-motion.js` içindedir: yalnızca o tema etkinken bağlanan, render yolunu yamamak yerine `checklist:rendered`, `checklist:progress` ve `design:changed` olaylarına abone olan bir IIFE. Bağlantı koparken enjekte ettiği her şeyi geri alır, böylece tema değiştirmek hiçbir kartı görünmez bırakmaz.
 
 ---
 
@@ -276,14 +351,14 @@ Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
 
 ### Teknoloji yığını
 
-| Katman         | Seçim                                             | Neden                                                                                                                                                                                 |
-| -------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | Tek `index.html` (~1170 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                     |
-| CSS            | 11 dosya, vanilla CSS                             | Build tool yok. CSS custom properties ile tema değişimi. Modal yüzeyleri kendi dosyalarına bölük (`css/05-modals-*.css`). Print stilleri ayrı dosya.                                  |
-| JS             | 35 dosya, vanilla ES2020+                         | 20 mantıksal modül + 14 kategori veri parçası + 1 senkron bootstrap. Build/transpile/bundling yok; `<script defer>` etiketleri sıralı yüklenir (numaralı dosyalar sırayı belirler).   |
-| Veri           | `window.DATA` dizisi, 14 kategori dosyasına bölük | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` her biri kendi kategorisini `push` eder. Build yok. |
-| Service Worker | Network-first + cache fallback                    | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. Cache anahtarı `package.json` ile bağlı. |
-| Depolama       | `localStorage`                                    | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                                                                      |
+| Katman         | Seçim                                             | Neden                                                                                                                                                                                                                                                                                                    |
+| -------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTML           | Tek `index.html` (~1170 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                                                                                                                                        |
+| CSS            | 14 dosya, vanilla CSS                             | Build tool yok. İki eksen de (3 tasarım x 2 renk modu) CSS custom properties üzerinde çalışır. Modal yüzeyleri kendi dosyalarına bölük (`css/05-modals-*.css`); varsayılan dışı iki tasarım da kendi dosyalarına (`css/07-design-minimal.css`, `css/08-design-showcase.css`). Print stilleri ayrı dosya. |
+| JS             | 37 dosya, vanilla ES2020+                         | 22 mantıksal modül + 14 kategori veri parçası + 1 senkron bootstrap. Build/transpile/bundling yok; `<script defer>` etiketleri sıralı yüklenir (numaralı dosyalar sırayı belirler).                                                                                                                      |
+| Veri           | `window.DATA` dizisi, 14 kategori dosyasına bölük | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` her biri kendi kategorisini `push` eder. Build yok.                                                                                                                    |
+| Service Worker | Network-first + cache fallback                    | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. Cache anahtarı `package.json` ile bağlı.                                                                                                                    |
+| Depolama       | `localStorage`                                    | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                                                                                                                                                                                         |
 
 ### Dört eksenli içerik çözücü
 
@@ -330,7 +405,7 @@ Bu sayede bir madde sadece **bir kez** yazılır ve **gerektiği yerde** özelle
 JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Numaralı önek (`00`, `01`, ..., `18`) hem `<script defer>` etiketlerinin sırasını hem de bağımlılık ilişkilerini görsel olarak verir:
 
 ```
-00-bootstrap.js                Senkron IIFE: tema + dil ilk paint'ten önce ayarlanır
+00-bootstrap.js                Senkron IIFE: tasarım + renk modu + dil, ilk paint'ten önce
 01-i18n-strings.js             UI dize sözlüğü (TR/EN), t() ve tx() çözücüler
 02-help-content.js             Yardım modalının HTML içeriği
 03a-data-01-idea-planning.js   Kategori 01 verisi (Proje Fikri ve Planlama)
@@ -360,13 +435,15 @@ JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Nu
 11-render.js                   Ana render döngüsü, kart şablonu
 12-progress.js                 Yüzde hesabı, kutlamalar
 13-filters.js                  Arama + 3×3 görünüm filtresi
-14-welcome.js                  7 adımlı karşılama akışı + welcome yardım
+14-welcome.js                  8 adımlı karşılama akışı + welcome yardım
 15-projects.js                 Proje / framework / backend modal'ı + CRUD
 16-presentation.js             Sunum modu (P tuşu, ESC, ok tuşları)
 17-install.js                  PWA install banner + platforma özel manuel
 18-app.js                      Orkestrasyon: toolbar, sıfırlama, kilit, yardım
                                accordion, yazdırma, dışa/içe aktarma, klavye
                                kısayolları, PWA manifest/SW kurulumu, init
+19-design.js                   Tasarım ekseni: uygula, sakla, seçici, T kısayolu
+20-showcase-motion.js          Yalnız Vitrin'de çalışan hareket katmanı (IIFE)
 ```
 
 İçerik 14 dosyaya bölünmüş (`03a..03n`) ama runtime'da hâlâ tek bir `window.DATA` dizisi: her dosya kendi kategorisini `push` eder, `js/03-data.js` (15 satırlık stub) onu const olarak dışa verir. Bu bölmenin amacı içerik katkıcılarının merge çatışma yüzeyini düşürmek; resolver, ESLint globalleri, testler ve em-dash kontrolü bu çoklu dosya yapısını biliyor.
@@ -407,14 +484,18 @@ Mobil_App_Check_List/
 │   ├── 04-presentation.css       Sunum modu (tam ekran odak)
 │   ├── 05-hero-pills.css         Hero pili (dikey kart) + dil/stil pilleri
 │   ├── 05-modals-core.css        Modal iskeleti + ortak stiller
-│   ├── 05-modals-welcome.css     7 adımlı karşılama akışı
+│   ├── 05-modals-welcome.css     8 adımlı karşılama akışı
 │   ├── 05-modals-projects.css    Proje, framework, backend tab'ları
 │   ├── 05-modals-install.css     PWA install rehberi
 │   ├── 05-modals-feedback.css    Toast bildirimleri + kutlama modali
-│   └── 06-responsive-print.css   Mobil + tablet + masaüstü + yazdırma
-├── js/                           35 dosya (yukarıdaki "Modüler dosya yapısı"na bak)
+│   ├── 06-responsive-print.css   Mobil + tablet + masaüstü + yazdırma
+│   ├── 07-design-minimal.css     Tasarım: Sade (nötr, ince çizgili)
+│   ├── 08-design-showcase.css    Tasarım: Vitrin (büyük tipografi, hareket)
+│   └── 09-design-picker.css      Tema seçici penceresi + CSS önizlemeleri
+├── js/                           37 dosya (yukarıdaki "Modüler dosya yapısı"na bak)
 ├── scripts/
 │   ├── run-tests.mjs             node --test wrapper
+│   ├── serve-local.py            Önbelleksiz yerel sunucu (npm run serve)
 │   ├── check-em-dash.mjs         CI em-dash kuralı
 │   ├── check-sw-cache-version.mjs  sw.js cache anahtarı paket sürümüyle eşleşmeli
 │   ├── install-githooks.mjs      `prepare` script ile pre-commit hook kurar
@@ -426,7 +507,10 @@ Mobil_App_Check_List/
     ├── data.test.js              DATA şema bütünlüğü, em-dash kuralı
     ├── projects.test.js          Çoklu proje store: CRUD, limit, migration
     ├── ui-helpers.test.js        escapeHtml + stripHtml (XSS savunması)
-    └── progress.test.js          countLevels (ilerleme sayma)
+    ├── progress.test.js          countLevels (ilerleme sayma)
+    ├── filters.test.js           shouldShowFeature (arama + görünüm filtreleri)
+    ├── ai-prompt.test.js         Markdown + JSON prompt üreteçleri
+    └── design.test.js            Tasarım ekseni + yazdırma eşitliği güvencesi
 ```
 
 ---
@@ -732,6 +816,9 @@ Seçili framework, backend, dil, stil ve işaretsiz maddelere göre tek bir prom
 **Listede kullandığım framework veya backend yok.**
 `CONTRIBUTING.md` yeni framework veya backend eklemenin adımlarını tarif eder; pull request açabilirsin. Hızlı çözüm olarak en yakın benzerini seçebilirsin: çoğu madde framework-agnostic kaleme alınmıştır ve `_default` davranışına düşer.
 
+**Uygulamanın görünümünü değiştirebilir miyim?**
+Evet: toolbar'daki **Tema** butonu (veya <kbd>T</kbd>) Klasik, Sade ve Vitrin arasında geçiş yapar; açık / koyu butonu bunun üstünde ayrı bir eksendir. Üç tema da aynı 55 maddeyi ve aynı özellikleri taşır, yazdırma çıktısı üçünde de aynıdır.
+
 **Bir hata buldum veya öneri var.**
 GitHub Issues üzerinden bildirin: bug için "🐞 Bug report", öneri için "💡 Feature request" şablonu otomatik açılır. Güvenlik açığı için `SECURITY.md` adresindeki özel kanalı kullan.
 
@@ -741,15 +828,15 @@ GitHub Issues üzerinden bildirin: bug için "🐞 Bug report", öneri için "�
 
 İleride değerlendirilebilecek geliştirmeler (_katkıya açık, hepsi pull request olarak gelebilir_). Çeyrek etiketleri yaklaşık hedeftir ve katkı temposuna göre öne / geriye kayabilir.
 
-**Q3 2026**
+**Q4 2026**
 
 - [ ] **Markdown dışa aktarma**: rapor olarak teslim edilebilir
 - [ ] **Daha fazla framework**: Ionic, NativeScript, .NET MAUI, Tauri
+- [ ] **Daha fazla backend**: Hasura, Strapi, Directus, Nhost
 
-**Q4 2026**
+**2027**
 
 - [ ] **Daha fazla dil**: Almanca, İspanyolca, Fransızca, Arapça (RTL ile)
-- [ ] **Daha fazla backend**: Hasura, Strapi, Directus, Nhost
 - [ ] **Sektör paketleri**: e-ticaret, sağlık, oyun, fintech için bölgesel uyum maddeleri (KVKK / GDPR / HIPAA / PCI DSS)
 
 **2027 ve sonrası**

@@ -82,6 +82,7 @@ function tx(obj) {
 const UI_STRINGS = {
   // common
   "common.close": { tr: "Kapat", en: "Close" },
+  "common.done": { tr: "Tamam", en: "Done" },
   "common.cancel": { tr: "İptal", en: "Cancel" },
 
   // accessibility (a11y) primitives
@@ -111,7 +112,7 @@ const UI_STRINGS = {
   // install banner
   "install.bannerTitle": { tr: "Bu uygulamayı tek tıkla cihazına yükle", en: "Install this app to your device with one click" },
   "install.bannerDesc": { tr: "Mobilde ana ekrana, masaüstünde başlat menüsüne kısayol olarak eklenir. İnternet olmadan da kullanabilirsin.", en: "Adds a shortcut to your home screen on mobile or start menu on desktop. Works offline." },
-  "install.bannerBtn": { tr: "📲 Yükle", en: "📲 Install" },
+  "install.bannerBtn": { tr: "Yükle", en: "Install" },
   "install.bannerClose": { tr: "Bu bildirimi kapat", en: "Dismiss this notification" },
   /* Small install-icon button anchored at the footer; appears only when the
      orange install banner at the top is dismissed (aria + title labels). */
@@ -144,15 +145,20 @@ const UI_STRINGS = {
   "btn.expandAll.title": { tr: "Tüm kategorileri aç", en: "Expand all categories" },
   "btn.collapseAll": { tr: "Tümünü Kapat", en: "Collapse All" },
   "btn.collapseAll.title": { tr: "Tüm kategorileri kapat", en: "Collapse all categories" },
-  "btn.flipAll":      { tr: "❔ Tümü Nasıl?",  en: "❔ Show All How-To" },
+  /* Toolbar labels carry no emoji: the glyph lives in its own
+     aria-hidden <span class="btn-emoji"> in index.html. A pictograph baked
+     into a translated string cannot be restyled per design (Minimal drops
+     decorative emoji), cannot be swapped per locale, and is read out by
+     screen readers as part of the label. */
+  "btn.flipAll":      { tr: "Tümü Nasıl?",  en: "Show All How-To" },
   "btn.flipAll.title": { tr: "Tüm madde kartlarını arka yüze (Nasıl Yapılır?) çevir", en: "Flip every item card to the back face (How-To)" },
-  "btn.unflipAll":    { tr: "📋 Tümü Liste",  en: "📋 Show All Checklist" },
+  "btn.unflipAll":    { tr: "Tümü Liste",  en: "Show All Checklist" },
   "btn.unflipAll.title": { tr: "Tüm madde kartlarını ön yüze (kontrol listesi) döndür", en: "Flip every item card back to the front face (checklist)" },
   "flipAll.toastHow":      { tr: "Tüm kartlar Nasıl Yapılır? rehberine çevrildi", en: "All cards flipped to How-To guide" },
   "flipAll.toastChecklist":{ tr: "Tüm kartlar kontrol listesine döndü",       en: "All cards back to the checklist" },
   "btn.present": { tr: "Sunum", en: "Present" },
   "btn.present.title": { tr: "Sunum modu (P / Esc)", en: "Presentation mode (P / Esc)" },
-  "btn.theme.title": { tr: "Açık / Koyu tema", en: "Light / Dark theme" },
+  "btn.theme.title": { tr: "Açık / Koyu mod (tema ayrı bir seçenektir)", en: "Light / Dark mode (theme is a separate setting)" },
   "btn.lang.title": { tr: "Dili değiştir / Switch language", en: "Switch language / Dili değiştir" },
   "btn.lang.aria": { tr: "Dil değiştir", en: "Switch language" },
   "btn.style.title": { tr: "Anlatım dili: Basit / Teknik. Yazılım dünyasına uzaksan Basit'i dene.", en: "Explanation style: Simple / Technical. If software jargon isn't your world, try Simple." },
@@ -165,7 +171,7 @@ const UI_STRINGS = {
   "btn.import.title": { tr: "Daha önce kaydettiğin JSON dosyasını yükle", en: "Load a previously saved JSON file" },
   "btn.reset": { tr: "Sıfırla", en: "Reset" },
   "btn.reset.title": { tr: "Tüm işaretleri temizle (notlar korunur)", en: "Clear all marks (notes are preserved)" },
-  "btn.help": { tr: "? Yardım", en: "? Help" },
+  "btn.help": { tr: "Yardım", en: "Help" },
   "btn.help.title": { tr: "Nasıl kullanılır? (?)", en: "How to use? (?)" },
   "btn.print": { tr: "Yazdır", en: "Print" },
   "btn.print.title": { tr: "Yazdır / PDF", en: "Print / PDF" },
@@ -173,8 +179,25 @@ const UI_STRINGS = {
   // theme labels
   "theme.dark": { tr: "Koyu", en: "Dark" },
   "theme.light": { tr: "Açık", en: "Light" },
-  "theme.darkOpened": { tr: "Koyu tema açıldı", en: "Dark theme on" },
-  "theme.lightOpened": { tr: "Açık tema açıldı", en: "Light theme on" },
+  "theme.darkOpened": { tr: "Koyu mod açıldı", en: "Dark mode on" },
+  "theme.lightOpened": { tr: "Açık mod açıldı", en: "Light mode on" },
+
+  /* ---------- Design axis (data-design): classic / minimal / showcase ----------
+     "Theme" in the UI means the design. The light / dark switch next to it is
+     the "mode". Keeping the two words apart matters: they are independent
+     axes and every design works in both modes. */
+  "btn.design.title": { tr: "Tema seç: Klasik, Sade veya Vitrin (T)", en: "Pick a theme: Classic, Minimal or Showcase (T)" },
+  "design.modal.title": { tr: "Tema", en: "Theme" },
+  "design.modal.lead": { tr: "Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin tema bu tarayıcıda hatırlanır. Yazdırma çıktısı her temada aynıdır.", en: "All three themes carry the same content and the same features; only layout, typography and motion change. Your choice is remembered in this browser. The printed output is identical in all three." },
+  "design.modal.aria": { tr: "Tema seçenekleri", en: "Theme options" },
+  "design.modal.note": { tr: "İpucu: bu pencere açıkken seçim anında uygulanır, arkadaki sayfada karşılaştırabilirsin. Açık / koyu mod ayrı bir ayardır ve her temada çalışır.", en: "Tip: while this dialog is open a pick applies instantly, so you can compare against the page behind it. Light / dark is a separate setting and works in every theme." },
+  "design.classic": { tr: "Klasik", en: "Classic" },
+  "design.classic.desc": { tr: "İlk sürümden beri gelen görünüm: renkli başlık, yuvarlak hatlar, kart yapısı.", en: "The look the project shipped with: colored headline, rounded chrome, card surfaces." },
+  "design.minimal": { tr: "Sade", en: "Minimal" },
+  "design.minimal.desc": { tr: "Süsü kaldırır, içeriği bırakır: nötr renkler, ince çizgiler, yoğun liste. Geniş ekranda kategori kenar çubuğu.", en: "Strips the decoration and leaves the content: neutral palette, hairline rules, a denser list. A category sidebar on wide screens." },
+  "design.showcase": { tr: "Vitrin", en: "Showcase" },
+  "design.showcase.desc": { tr: "Sunum için: büyük tipografi, ilerleme halkaları, kaydırdıkça beliren bölümler. Hareketi azalt ayarına uyar.", en: "Built to be presented: display typography, progress rings, sections that arrive as you scroll. Honors reduce-motion." },
+  "design.toast": { tr: "{name} teması açıldı", en: "{name} theme on" },
 
   // lock labels
   "lock.label": { tr: "Kilit", en: "Lock" },
@@ -204,7 +227,7 @@ const UI_STRINGS = {
   // footer
   "footer.title": { tr: "Mobil Uygulama Kalite Kontrol Listesi", en: "Mobile App Quality Checklist" },
   "footer.preparedBy": { tr: "Hazırlayan", en: "Prepared by" },
-  "footer.date": { tr: "Mayıs 2026", en: "May 2026" },
+  "footer.date": { tr: "Eylül 2026", en: "September 2026" },
   "footer.printFooter": { tr: "Hazırlayan: Özcan Orhan Demirci", en: "Prepared by: Özcan Orhan Demirci" },
 
   // presentation
@@ -235,6 +258,9 @@ const UI_STRINGS = {
   "help.accordion.collapseAll": { tr: "▸ Tümünü Kapat", en: "▸ Collapse All" },
   "help.accordion.expandAllTitle": { tr: "Tüm bölümleri aç", en: "Expand all sections" },
   "help.accordion.collapseAllTitle": { tr: "Tüm bölümleri kapat", en: "Collapse all sections" },
+  /* Only ever visible if js/02-help-content.js failed to load; applyI18nToDom
+     overwrites the whole #helpModalBody with HELP_HTML on every init. */
+  "help.fallback": { tr: "Yardım metni yükleniyor. Bu yazı kalırsa sayfayı yenile.", en: "Loading the help text. If this line stays, reload the page." },
 
   // welcome
   "welcome.helpBtnTitle": { tr: "Nasıl kullanılır? (Yardım)", en: "How to use? (Help)" },
@@ -245,6 +271,17 @@ const UI_STRINGS = {
   "welcome.langQuestion": { tr: "Hangi dilde devam etmek istersin? · Which language would you like to continue in?", en: "Which language would you like to continue in? · Hangi dilde devam etmek istersin?" },
   "welcome.langSub": { tr: "Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin. · All texts will appear in your chosen language. You can change it any time from the 🌐 button on top.", en: "All texts will appear in your chosen language. You can change it any time from the 🌐 button on top. · Tüm metinler seçtiğin dilde gösterilir. Sonradan üstteki 🌐 butonu ile her zaman değiştirebilirsin." },
   "welcome.langAria": { tr: "Dil seçimi", en: "Language selection" },
+
+  /* welcome step 2: theme. The descriptions are shorter than the picker's
+     because the reader is choosing by looking at the live page behind the
+     dialog, not by reading. */
+  "welcome.themeQuestion": { tr: "Uygulama sana nasıl görünsün?", en: "How should the app look?" },
+  "welcome.themeSub": { tr: "Üç tema da aynı içeriği ve aynı özellikleri taşır; yalnızca yerleşim, tipografi ve hareket değişir. Seçtiğin an arkadaki sayfaya uygulanır, hemen görürsün. Sonradan üstteki <strong>Tema</strong> butonundan ya da <kbd>T</kbd> tuşundan değiştirebilirsin.", en: "All three themes carry the same content and the same features; only layout, typography and motion change. Your pick applies to the page behind this dialog straight away, so you can see it. You can change it later from the <strong>Theme</strong> button on top or the <kbd>T</kbd> key." },
+  "welcome.themeAria": { tr: "Tema seçimi", en: "Theme selection" },
+  "welcome.themeHint": { tr: "Açık / koyu mod ayrı bir ayardır ve her temada çalışır.", en: "Light / dark is a separate setting and works in every theme." },
+  "welcome.theme.minimal.desc": { tr: "Sakin ve yoğun. İşini görüp çıkmak istiyorsan bu.", en: "Quiet and dense. Pick this to get in, get it done and get out." },
+  "welcome.theme.classic.desc": { tr: "Renkli ve kart yapılı. Uygulamanın ilk günden beri gelen hâli.", en: "Colorful, card-based. The look the app has had since day one." },
+  "welcome.theme.showcase.desc": { tr: "Büyük ve hareketli. Birine gösterecek ya da sunacaksan bu.", en: "Large and animated. Pick this if you are showing or presenting it." },
   "welcome.cta.pickLang": { tr: "Devam etmek için dil seç · Pick a language to continue", en: "Pick a language to continue · Devam etmek için dil seç" },
 
   // welcome: usage mode (step 2: Build vs Review)
@@ -267,7 +304,7 @@ const UI_STRINGS = {
   "welcome.mode.review.desc": { tr: "Mevcut uygulamamı kontrol ediyorum; sade kontrol listesiyle adım adım işaretlemek istiyorum.", en: "I am auditing my existing app; I want a clean checklist to tick off step by step." },
   "welcome.cta.pickMode": { tr: "Devam etmek için bir kullanım biçimi seç", en: "Pick a usage mode to continue" },
   "welcome.fwQuestion": { tr: "Hangi framework / dil ile çalışıyorsun?", en: "Which framework / language are you using?" },
-  "welcome.fwSub": { tr: "Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.", en: "28 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 25 are universal. You can change it later from the top button." },
+  "welcome.fwSub": { tr: "Listede 24 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 31 madde her framework'te aynıdır. Sonradan üstteki butondan değiştirebilirsin.", en: "24 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 31 read the same whichever framework you pick. You can change it later from the top button." },
   "welcome.fwAria": { tr: "Framework seçimi", en: "Framework selection" },
   "welcome.cta.pickFw": { tr: "Devam etmek için framework seç", en: "Pick a framework to continue" },
   "welcome.cta.next": { tr: "İleri ›", en: "Next ›" },
@@ -284,14 +321,14 @@ const UI_STRINGS = {
        6) Data management:            Multi-project + Backup
        7) Visual mode:                Theme + Presentation
        8) Output and portability:     Print + PWA install */
-    tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>koyu ve açık mod</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
-    en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>28 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>dark and light mode</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
+    tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>30 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>üç görünüm: Klasik, Sade, Vitrin (artı koyu / açık mod)</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
+    en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>30 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>three looks: Classic, Minimal, Showcase (plus dark / light mode)</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
   },
   "welcome.tip": { tr: "İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.", en: "Whenever you need it, open the detailed guide via the <strong>? Help</strong> button on top. Press <kbd>?</kbd> for keyboard shortcuts." },
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
   "welcome.start": { tr: "Tamam, Başlayalım", en: "OK, Let's Start" },
 
-  // welcome: project name (step in the 7-step flow: language -> project name -> framework -> welcome)
+  // welcome: project name (step 5 of the 8-step flow: language -> theme -> usage mode -> style -> project name -> framework -> backend -> welcome)
   "welcome.projNameQuestion": { tr: "Bu listeyle hangi projenin kontrolünü yapacaksın?", en: "Which project will you check with this list?" },
   "welcome.projNameSub": { tr: "Projene bir isim ver. Sonradan istediğin zaman değiştirebilir veya yeni projeler ekleyebilirsin.", en: "Give your project a name. You can rename it later or add new projects any time." },
   "welcome.projNameAria": { tr: "Proje adı", en: "Project name" },
@@ -351,7 +388,7 @@ const UI_STRINGS = {
 
   // framework modal
   "fwModal.title": { tr: "Framework Seç", en: "Pick Framework" },
-  "fwModal.sub": { tr: "28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.", en: "28 items vary by the chosen framework, the remaining 25 are universal. Your marks and notes are kept." },
+  "fwModal.sub": { tr: "24 madde seçtiğin framework'e göre değişir, geri kalan 31 madde her framework'te aynıdır. İşaretlemelerin ve notların korunur.", en: "24 items vary by the chosen framework, the remaining 31 read the same in all of them. Your marks and notes are kept." },
   "fwModal.confirmTitle": { tr: "Framework değiştirilsin mi?", en: "Switch framework?" },
   "fwModal.confirmYes": { tr: "Geçiş yap", en: "Switch" },
   "fwModal.confirmCancel": { tr: "Vazgeç", en: "Cancel" },

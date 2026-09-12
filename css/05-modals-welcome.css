@@ -175,6 +175,7 @@
     margin: 4px 0 18px;
   }
   .welcome-step-dot {
+    flex: 0 0 auto;
     width: 26px;
     height: 26px;
     border-radius: 50%;
@@ -194,13 +195,35 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18);
   }
+
+  /* The dark label above assumes a light accent, which is what Classic has
+     in both modes and what Minimal and Showcase have in dark mode. In LIGHT
+     mode those two accent with a dark blue, where a dark label measured
+     2.8:1, so the label flips. Keying this on the color mode rather than the
+     design is the point: an accent's lightness is a property of the mode. */
+  [data-design="minimal"][data-theme="light"] .welcome-step-dot.active,
+  [data-design="showcase"][data-theme="light"] .welcome-step-dot.active {
+    color: #ffffff;
+  }
+
+  /* The glow is hardcoded orange in the rule above, which reads as a mistake
+     around a blue dot. */
+  [data-design="minimal"] .welcome-step-dot.active,
+  [data-design="showcase"] .welcome-step-dot.active {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
   .welcome-step-dot.done {
     background: var(--mvp);
     color: #0b0f17;
     border-color: var(--mvp);
   }
+  /* The connectors flex so the indicator fits whatever number of steps the
+     flow has. At a fixed 36px the eighth step (theme, added in 1.3) pushed
+     the row to 544px inside a 480px column and it overflowed. */
   .welcome-step-line {
-    width: 36px;
+    flex: 1 1 0;
+    min-width: 6px;
+    max-width: 36px;
     height: 2px;
     background: var(--border);
     border-radius: 1px;
@@ -408,3 +431,50 @@
     padding: 0 4px;
   }
 
+
+  /* ---------------------------------------------------- welcome: theme step
+
+     Step 2 shows the three designs as cards, reusing the picker's CSS-drawn
+     previews (css/09-design-picker.css). The dialog widens for this step
+     only: three previews side by side need more room than a question with
+     two answers, and every other step would look empty at this width. */
+
+  #welcomeModal[data-step="2"] .modal-content.modal-welcome {
+    max-width: 720px;
+  }
+
+  .welcome-design-options {
+    margin-bottom: 14px;
+    text-align: left;
+  }
+
+  .welcome-design-options .design-preview {
+    height: 92px;
+  }
+
+  .welcome-design-options .design-option.selected,
+  .welcome-design-options .design-option.active {
+    border-color: var(--accent);
+    background: var(--surface-3);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .welcome-theme-hint {
+    margin: 0 0 18px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+
+  @media (max-width: 720px) {
+    #welcomeModal[data-step="2"] .modal-content.modal-welcome {
+      max-width: 540px;
+    }
+
+    .welcome-design-options {
+      grid-template-columns: 1fr;
+    }
+
+    .welcome-design-options .design-preview {
+      height: 74px;
+    }
+  }

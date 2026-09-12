@@ -433,6 +433,22 @@
     pointer-events: none;
     filter: grayscale(0.6);
   }
+  /* Emoji that used to sit inside translated button labels. Kept in their
+     own aria-hidden span so a design can restyle or drop them (Minimal
+     does) without touching the label text. */
+  .btn-emoji {
+    margin-right: 5px;
+  }
+
+  /* Buttons whose label is preceded by an icon (theme, lock, design).
+     Previously a bare marker class: the spacing came from the emoji glyph's
+     own side bearing, so a drawn SVG icon sat flush against its label. */
+  .btn-icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   .btn.primary {
     background: linear-gradient(180deg, var(--accent-2), var(--accent));
     color: #0b0f17;
@@ -455,8 +471,14 @@
     background: rgba(249, 115, 22, 0.22);
     border-color: var(--accent);
   }
+  /* Destructive actions are red text on the button's own surface, so the
+     red has to change with the surface: #fca5a5 is legible on a dark one and
+     measures 1.7:1 on a light one. Both modes are stated rather than one
+     value being asked to work everywhere. */
   .btn.danger { color: #fca5a5; }
   .btn.danger:hover { color: #fff; background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.35); }
+  [data-theme="light"] .btn.danger { color: #b91c1c; }
+  [data-theme="light"] .btn.danger:hover { color: #991b1b; background: rgba(239, 68, 68, 0.10); border-color: rgba(185, 28, 28, 0.40); }
 
   /* Pinned top area: toolbar + progress card stick together at the top */
   .sticky-bar {

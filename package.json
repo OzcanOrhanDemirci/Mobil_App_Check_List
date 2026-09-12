@@ -1,6 +1,6 @@
 {
   "name": "mobil-app-check-list",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Mobile app quality checklist PWA (Turkish/English) with 4-axis content resolution",
   "main": "index.html",
   "private": true,
@@ -13,7 +13,7 @@
     "test": "node scripts/run-tests.mjs",
     "sw:check": "node scripts/check-sw-cache-version.mjs",
     "sw:sync": "node scripts/check-sw-cache-version.mjs --fix",
-    "serve": "python -m http.server 8000",
+    "serve": "python scripts/serve-local.py 8000",
     "prepare": "node scripts/install-githooks.mjs"
   },
   "keywords": [
@@ -37,11 +37,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.3.0",
-    "globals": "^17.6.0",
-    "prettier": "^3.4.0"
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.6"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.13.0"
   }
 }

@@ -57,7 +57,7 @@ body:
     attributes:
       label: App version
       description: The latest version in [CHANGELOG.md](../../CHANGELOG.md), or the commit SHA if you built from main.
-      placeholder: 1.2.1
+      placeholder: 1.3.0
     validations:
       required: true
 
@@ -84,7 +84,30 @@ body:
     attributes:
       label: Browser version
       description: Optional, but very helpful if the bug looks engine-specific.
-      placeholder: e.g. 131.0.6778
+      placeholder: e.g. 153.0.8010
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      description: Shown on the toolbar button; press T to check. Visual bugs are usually theme-specific.
+      options:
+        - Minimal (default)
+        - Classic
+        - Showcase
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: color-mode
+    attributes:
+      label: Color mode
+      options:
+        - Dark (default)
+        - Light
+    validations:
+      required: true
 
   - type: dropdown
     id: os
@@ -93,15 +116,15 @@ body:
       options:
         - Windows 11
         - Windows 10
-        - macOS 14 (Sonoma) or later
-        - macOS 13 (Ventura)
-        - macOS 12 (Monterey) or older
-        - iOS 17 or later
-        - iOS 16
-        - iOS 15 or older
-        - Android 14 or later
-        - Android 13
-        - Android 12 or older
+        - macOS 26 (Tahoe) or later
+        - macOS 15 (Sequoia)
+        - macOS 14 (Sonoma) or older
+        - iOS 26 or later
+        - iOS 18
+        - iOS 17 or older
+        - Android 16 or later
+        - Android 15
+        - Android 14 or older
         - Linux
         - Other
     validations:

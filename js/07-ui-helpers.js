@@ -23,6 +23,25 @@ function stripHtml(str) {
     .trim();
 }
 
+/* ==================== APP EVENTS ====================
+   A tiny publish hook so optional enhancement layers can react to the
+   application's lifecycle without patching the render path. Only the
+   Showcase design's motion layer (js/20-showcase-motion.js) listens
+   today; nothing breaks when nobody does.
+
+   Events currently emitted:
+     checklist:rendered   after renderContent() rebuilds #content
+     checklist:progress   after updateProgress() recomputes the counters
+     design:changed       after the data-design attribute changes */
+function emitAppEvent(name, detail) {
+  try {
+    document.dispatchEvent(new CustomEvent(name, { detail }));
+  } catch {
+    /* CustomEvent is unavailable only in environments that cannot run
+       the app at all; never let a listener break the caller. */
+  }
+}
+
 /* ==================== TOAST ==================== */
 function showToast(message, type = "success", duration = 1600) {
   const container = document.getElementById("toastContainer");
