@@ -29,6 +29,14 @@ const { loadAppContext, DATA_FILES } = require("./_setup.js");
 const EXPECTED_CATEGORY_COUNT = 14;
 const EXPECTED_FEATURE_COUNT = 55;
 
+/* The UI quotes these splits back to the user ("24 items vary by framework",
+   "30 items adapt to your stack"). Before 1.2.5 they were free-text numbers in
+   js/01-i18n-strings.js and js/02-help-content.js that nobody recomputed when a
+   variant was added, so they had drifted away from the data. They are asserted
+   here so the next drift fails CI instead of shipping. */
+const EXPECTED_FRAMEWORK_VARIANT_COUNT = 24;
+const EXPECTED_STACK_VARIANT_COUNT = 30;
+
 const PLACEHOLDER = "—";
 const EM_DASH = "—";
 
@@ -80,6 +88,27 @@ describe("DATA top-level shape", () => {
   it(`has exactly ${EXPECTED_FEATURE_COUNT} features across all categories (matches README and CHANGELOG)`, () => {
     const total = DATA.reduce((acc, cat) => acc + (cat.features ? cat.features.length : 0), 0);
     assert.equal(total, EXPECTED_FEATURE_COUNT);
+  });
+
+  it(`has exactly ${EXPECTED_FRAMEWORK_VARIANT_COUNT} features with framework variants (quoted in the framework picker)`, () => {
+    const withVariants = DATA.reduce((acc, cat) => acc + cat.features.filter(f => f.variants).length, 0);
+    assert.equal(
+      withVariants,
+      EXPECTED_FRAMEWORK_VARIANT_COUNT,
+      "welcome.fwSub and fwModal.sub quote this number in both languages; update them together"
+    );
+  });
+
+  it(`has exactly ${EXPECTED_STACK_VARIANT_COUNT} features that adapt to the stack (quoted in the welcome flow)`, () => {
+    const stackAware = DATA.reduce(
+      (acc, cat) => acc + cat.features.filter(f => f.variants || f.backendVariants).length,
+      0
+    );
+    assert.equal(
+      stackAware,
+      EXPECTED_STACK_VARIANT_COUNT,
+      "welcome.features quotes this number in both languages; update it together with the data"
+    );
   });
 });
 

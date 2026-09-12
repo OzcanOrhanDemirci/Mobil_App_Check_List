@@ -257,7 +257,7 @@
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
     </button>
-    <p class="foot-version" id="footVersion"><span>v1.2.1</span><span class="version-dot">·</span><span data-i18n="footer.date">Mayıs 2026</span></p>
+    <p class="foot-version" id="footVersion"><span>v1.2.2</span><span class="version-dot">·</span><span data-i18n="footer.date">Eylül 2026</span></p>
   </footer>
 </div>
 
@@ -302,245 +302,13 @@
       <button type="button" class="btn ghost help-accordion-btn" id="helpExpandAll" data-i18n="help.accordion.expandAll" data-i18n-title="help.accordion.expandAllTitle" title="Tüm bölümleri aç">▾ Tümünü Aç</button>
       <button type="button" class="btn ghost help-accordion-btn" id="helpCollapseAll" data-i18n="help.accordion.collapseAll" data-i18n-title="help.accordion.collapseAllTitle" title="Tüm bölümleri kapat">▸ Tümünü Kapat</button>
     </div>
+    <!-- Help text is owned by js/02-help-content.js (HELP_HTML.tr / HELP_HTML.en) and
+         written into this container by applyI18nToDom() on every language switch. Do not
+         paste a static copy here: a duplicate cannot be kept in sync and silently drifts
+         out of date. The paragraph below is only what a reader sees if the script that
+         owns the text failed to load. -->
     <div class="modal-body" id="helpModalBody">
-
-      <section>
-        <h3>📋 Genel Bakış</h3>
-        <p>Bu uygulama, kendi geliştirdiğin <strong>mobil uygulamanın</strong> hangi seviyede olduğunu görmen ve eksiklerini fark etmen için hazırlanmış pratik bir <strong>kontrol listesidir</strong>.</p>
-        <p>Liste <strong>14 kategoride toplam 53 özellikten</strong> oluşur (proje planlama, tasarım, kod düzeni, API, güvenlik, yayın hazırlığı vb.).</p>
-        <p>Her özelliğin altında <strong>iki seviye</strong> vardır:</p>
-        <ul>
-          <li><strong style="color: var(--mvp);">🟢 MVP (yeşil)</strong>: Olmazsa olmaz, temel: uygulamanın <em>en azından çalışmasını</em> sağlayan minimum gereksinimler. Bu seviye tamamlanmadan uygulama yarım kalır.</li>
-          <li><strong style="color: var(--release);">🔵 Release (mavi)</strong>: Profesyonel kalite: uygulamanın <em>App Store / Play Store gibi mağazalara yüklenmeye hazır</em> hale gelmesi için olması gerekenler.</li>
-        </ul>
-        <p>Yapacağın iş: her maddeyi okuyup, kendi uygulamanda yapıp yapmadığını işaretlemek. İlerledikçe yüzdelerin yükseldiğini göreceksin.</p>
-      </section>
-
-      <section>
-        <h3>🚀 İlk Açılış: Karşılama Akışı</h3>
-        <p>Uygulamayı ilk kez açtığında karşılama penceresi gelir ve sana <strong>üç adımda</strong> yardım eder:</p>
-        <ul>
-          <li><strong>1. Adım: Dil Seçimi.</strong> Türkçe mi, İngilizce mi tercih edersin? Bu ekran iki dilli gösterilir; seçimini yaparsın. Seçtiğin an arka plandaki tüm metinler ve sonraki adımlar bu dile geçer. Sonradan üstteki <strong>🌐 TR / EN</strong> butonu ile her zaman değiştirebilirsin. <em>Bu adımda sağ üstteki "?" yardım butonuna basarsan, açılan yardım modalında özel bir <strong>TR / EN switcher</strong> belirir; yardım metnini istediğin dilde okuyabilirsin (anlık değiştirme, kalıcı değil).</em></li>
-          <li><strong>2. Adım: Framework Seçimi.</strong> Uygulamanı hangi yazılım dili / çerçevesi ile geliştiriyorsun? 6 seçenek arasından birini seç:
-            <ul>
-              <li><strong>🐦 Flutter</strong>: Google'ın geliştirdiği, tek kodla hem Android hem iOS uygulaması yapabilen sistem (<em>Dart dili</em>).</li>
-              <li><strong>⚛ React Native</strong>: Meta'nın geliştirdiği, JavaScript / TypeScript ile yazılan cross-platform sistem (saf / bare CLI).</li>
-              <li><strong>🍎 Swift</strong>: Apple'ın resmi yolu; sadece iPhone / iPad için yerel uygulamalar (<em>SwiftUI</em>).</li>
-              <li><strong>🤖 Kotlin</strong>: Google'ın resmi yolu; sadece Android için yerel uygulamalar (<em>Jetpack Compose</em>).</li>
-              <li><strong>🚀 Expo</strong>: React Native'in daha kolay hali; build / yayın işlerini bulutta yapar (<em>EAS Build</em>).</li>
-              <li><strong>🌐 PWA</strong>: Web teknolojileriyle (HTML/CSS/JS) yazılan ve telefona "Ana ekrana ekle" ile yüklenebilen uygulamalar.</li>
-            </ul>
-          </li>
-          <li><strong>3. Adım: Hoş Geldin.</strong> Framework'ü seçtikten sonra <strong>"İleri ›"</strong> butonuna basarsın. Bu ekranda uygulamanın özelliklerini kısaca tanırsın (Notlar, AI'a sor, Tema vb.). <strong>"Tamam, Başlayalım"</strong> diyerek listeyi açarsın. Yanlış seçim yaptıysan her adımdan <strong>"‹ Geri"</strong> ile bir önceki adıma dönebilirsin.</li>
-        </ul>
-        <p>Seçtiğin framework, listedeki <strong>28 maddenin nasıl gözükeceğini</strong> belirler (paket adları, build komutları, kod örnekleri farklılaşır). 25 madde ise her framework için ortaktır.</p>
-      </section>
-
-      <section>
-        <h3>✅ İşaretleme ve İlerleme Takibi</h3>
-        <p>Her maddenin altında MVP ve Release seviyeleri için <strong>tıklanabilir kutular</strong> vardır:</p>
-        <ul>
-          <li>Bir maddeyi tamamladığında ilgili <strong>kutuya tıkla</strong>: kutu işaretlenir ve renkli arka plan alır.</li>
-          <li>Yanlışlıkla işaretlersen <strong>tekrar tıklayarak</strong> işareti kaldırabilirsin.</li>
-          <li>Aynı madde hem MVP hem Release seviyelerini ayrı ayrı işaretleyebilirsin.</li>
-        </ul>
-        <p>Üstte sabit duran <strong>3 ilerleme barı</strong> hangisinin ne kadar tamamlandığını gösterir:</p>
-        <ul>
-          <li><strong>Toplam İlerleme</strong>: bütün listenin yüzdesi (MVP + Release birlikte).</li>
-          <li><strong style="color: var(--mvp);">MVP</strong>: sadece yeşil seviyenin yüzdesi.</li>
-          <li><strong style="color: var(--release);">Release</strong>: sadece mavi seviyenin yüzdesi.</li>
-        </ul>
-        <p>Her kategori başlığında da <strong>o kategoriye ait kendi yüzdesi</strong> gözükür (örn. "60%, 6 / 10").</p>
-        <p><strong>📦 Otomatik Kayıt:</strong> İşaretlemen <strong>tarayıcına anında kaydedilir</strong>. Uygulamayı kapatıp tekrar açtığında kaldığın yerden devam edersin. Tarayıcı verisini temizlemediğin (veya gizli sekme kullanmadığın) sürece kaybolmaz.</p>
-        <p><strong>🎉 Kutlama:</strong> MVP'yi, Release'i veya tüm listeyi tamamladığında küçük bir kutlama ekranı gelir.</p>
-      </section>
-
-      <section>
-        <h3>🎯 Akıllı Filtreleme (3×3 = 9 Kombinasyon)</h3>
-        <p>Sayfanın üst başlık alanında <strong>3 ana pill</strong> vardır: <strong style="color: var(--mvp);">MVP ▾</strong>, <strong style="color: var(--release);">Release ▾</strong>, <strong style="color: #ef4444;">MVP + Release ▾</strong>. Her birine tıkladığında alt menüsü açılır ve <strong>3 alt seçenek</strong> sunar: <strong>Tümü</strong>, <strong>Yapılacak</strong>, <strong>Yapılan</strong>.</p>
-        <p>Bu sayede 3 seviye × 3 durum = <strong>9 farklı filtreleme kombinasyonu</strong> elde edersin:</p>
-        <ul>
-          <li><strong style="color: var(--mvp);">MVP · Tümü</strong>: Sadece MVP satırları görünür (işaretli + işaretsiz hepsi). Release tamamen gizli.</li>
-          <li><strong style="color: var(--mvp);">MVP · Yapılacak</strong>: Sadece <em>işaretsiz</em> MVP satırları. "Hangi MVP'ler kaldı?"</li>
-          <li><strong style="color: var(--mvp);">MVP · Yapılan</strong>: Sadece <em>işaretli</em> MVP satırları. "Neleri tamamladım?"</li>
-          <li><strong style="color: var(--release);">Release · Tümü / Yapılacak / Yapılan</strong>: Aynı mantık Release seviyesi için.</li>
-          <li><strong style="color: #ef4444;">MVP + Release · Tümü</strong> (varsayılan): Her şey görünür, hiçbir filtre yok.</li>
-          <li><strong style="color: #ef4444;">MVP + Release · Yapılacak</strong>: Hangi seviyeden olursa olsun tüm <em>işaretsiz</em> satırlar (ToDo listesi gibi).</li>
-          <li><strong style="color: #ef4444;">MVP + Release · Yapılan</strong>: Tüm <em>işaretli</em> satırlar (başarı listesi gibi).</li>
-        </ul>
-        <p><strong>Aktif pill</strong> renkli vurgulanır ve seçili alt-filtre etiketi pill'in içinde görünür (örn. "MVP · Yapılan ▾"). Diğer pill'ler nötr durur.</p>
-        <p><strong>Disabled mantığı:</strong> İlgili seviyede hiç işaret yoksa, "Yapılacak" ve "Yapılan" alt-seçenekleri <em>gri</em> ve tıklanamaz olur (gösterecek bir şey yok). "Tümü" her zaman aktiftir.</p>
-        <p>Hem level group hem alt-filtre ayrı ayrı <strong>tarayıcına kaydedilir</strong>; bir sonraki açılışta tam olarak kaldığın yerden devam edersin.</p>
-      </section>
-
-      <section>
-        <h3>🔄 Framework Değiştirme</h3>
-        <p>Üstteki başlık alanında <strong>framework butonu</strong> (örn. "🐦 Flutter ▾") vardır. Tıkladığında küçük bir pencere açılır ve <strong>farklı bir frameworke</strong> geçebilirsin.</p>
-        <p>Geçiş yaptığında:</p>
-        <ul>
-          <li>İlgili 28 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
-          <li><strong>İşaretlemelerin ve notların kaybolmaz</strong>: aynı kalır. Sadece anlatım dili / paket adları değişir.</li>
-          <li>İstediğin zaman tekrar değiştirebilirsin.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>🔍 Arama Kutusu</h3>
-        <p>Üst toolbar'daki <strong>arama kutusu</strong>, madde başlığı, açıklaması veya içeriği içinde <strong>anahtar kelime</strong> arar. Örnekler: "API", "dark mode", "Firebase", "Apple Sign-In", "Crashlytics".</p>
-        <ul>
-          <li>Yazdıkça filtreleme <strong>anlık</strong> uygulanır; eşleşmeyen maddeler ve eşleşmesi olmayan kategoriler gizlenir.</li>
-          <li>Arama aktifken <strong>kapalı kategoriler otomatik açılır</strong>; eşleşen sonuçları görmen kolaylaşır. Aramayı temizleyince kategoriler eski açık/kapalı durumlarına döner.</li>
-          <li>Arama aktifken <strong>"Tümünü Aç" / "Tümünü Kapat"</strong> butonları geçici olarak devre dışı kalır (auto-expand zaten gösteriyor, manuel toggle çelişki yaratırdı).</li>
-          <li><kbd>/</kbd> tuşu arama kutusuna anında odaklanır.</li>
-        </ul>
-        <p><strong>💡 İpucu:</strong> Arama ile <strong>3×3 filtreleme</strong> sistemi birlikte çalışır. Örn: "MVP · Yapılacak" filtresinde "Firebase" arayarak yapılması gereken Firebase maddelerine odaklanabilirsin.</p>
-      </section>
-
-      <section>
-        <h3>📂 Kategorileri Açma / Kapatma</h3>
-        <ul>
-          <li><strong>Kategori başlığına tıkla</strong>: sadece o kategori açılıp kapanır. Sağdaki ▾ ok yön gösterir.</li>
-          <li><strong>Tümünü Aç</strong> butonu, bütün kategorileri tek seferde açar.</li>
-          <li><strong>Tümünü Kapat</strong> butonu, bütün kategorileri tek seferde kapatır.</li>
-        </ul>
-        <p>Sayfa ilk açıldığında <strong>tüm kategoriler kapalıdır</strong> (sayfayı kalabalık göstermemek için). İhtiyacın olana tıklayarak açarsın. Açtığın / kapattığın durum tarayıcına kaydedilir; sonraki açılışta hatırlanır.</p>
-      </section>
-
-      <section>
-        <h3>🧭 Akıllı Kategori Navigasyonu</h3>
-        <p>Sayfanın üstündeki <strong>14 kategori chip'i</strong> (örn. "01. Proje Fikri ve Planlama") basit bir scroll-to-anchor değil; <strong>akıllı navigasyon</strong> yapar:</p>
-        <ul>
-          <li>Bir chip'e tıklayınca kategori başlığına değil, <strong>"kullanıcının kaldığı" maddeye</strong> kaydırır.</li>
-          <li>Hedef madde aktif filtreye göre değişir:
-            <ul>
-              <li><strong>MVP filtresi aktifse</strong> → MVP'si işaretsiz ilk maddeye gider.</li>
-              <li><strong>Release filtresi aktifse</strong> → Release'i işaretsiz ilk maddeye gider.</li>
-              <li><strong>MVP+Release filtresi aktifse</strong> → MVP veya Release'inden en az biri işaretsiz olan ilk maddeye gider.</li>
-            </ul>
-          </li>
-          <li><strong>Hiç işaret yoksa</strong> ilk maddeye gider (zaten ilki yapılacak).</li>
-          <li><strong>Tüm maddeler tamamlandıysa</strong> kategorinin son maddesine gider (referans için).</li>
-          <li><strong>Kategori kapalıysa otomatik açılır</strong>, sonra hedef maddeye yumuşak bir kaydırma yapar.</li>
-          <li>Sticky toolbar'ın yüksekliği hesaba katılır; hedef madde tam toolbar'ın altına yerleşir, üzerine binmez.</li>
-        </ul>
-        <p>Bu sayede 30+ saatlik bir projede arama yapmadan, kapalı kategorileri açmadan, sadece chip'e tıklayarak <strong>yapacağın bir sonraki maddeye anında ulaşırsın</strong>.</p>
-      </section>
-
-      <section>
-        <h3>📝 Madde Notları</h3>
-        <p>Her maddenin altında <strong>"+ Not ekle"</strong> butonu vardır. Tıklayınca bir yazı alanı açılır.</p>
-        <ul>
-          <li>Buraya <strong>kendi açıklamanı, hatırlatmanı, problemini, kaynağını</strong> yazabilirsin. Örnekler:
-            <ul>
-              <li>"Bu maddeyi 12 Mayıs'ta hocaya soracağım"</li>
-              <li>"Şu pakete bak: <code>shared_preferences</code>"</li>
-              <li>"Tasarımı Figma'da yaptık, link: ..."</li>
-            </ul>
-          </li>
-          <li>Yazdığın <strong>her karakter anında otomatik kaydedilir</strong>: kaydet düğmesine basmana gerek yok.</li>
-          <li>Notu olan maddeler turuncu bir <strong>📝 işaretiyle</strong> vurgulanır; bulması kolaylaşır.</li>
-          <li><strong>"Notu temizle"</strong> butonu ile notu silebilirsin.</li>
-          <li><strong>Sunum modunda</strong> not yazılı maddelerin altında <em>📝 ikonlu, italic, turuncu kenarlıklı</em> bir kart olarak <strong>otomatik görünür</strong>. Notu olmayan maddelerin altında bu kart hiç çıkmaz. Multi-line (çok satırlı) notlar düzgün biçimde gösterilir.</li>
-        </ul>
-        <p>Notlar <strong>yazdırma çıktısında gözükmez</strong>: sadece sana özeldir. Sunum modunda görünür çünkü orada bilinçli olarak ekibe gösteriyorsundur.</p>
-      </section>
-
-      <section>
-        <h3>🤖 AI'a Sor (Yapay Zekâ Yardımı)</h3>
-        <p>Her maddenin altında <strong>"🤖 AI'a sor"</strong> butonu vardır. Tıklayınca yanında <strong>2 seçenek</strong> açılır:</p>
-        <ul>
-          <li><strong>📝 Türkçe</strong>: Markdown formatında, yeni başlayanlar için detaylı bir Türkçe prompt panoya kopyalanır. Bu prompt:
-            <ul>
-              <li>Kavramı ve önemini açıklamasını ister</li>
-              <li>Adım adım uygulama yolunu ister</li>
-              <li>Çalışan bir kod örneği ister (Türkçe yorumlu)</li>
-              <li>Sık yapılan 2-3 hatayı sorar</li>
-              <li>Doğrulama testlerini ister</li>
-            </ul>
-          </li>
-          <li><strong>{ } EN JSON</strong>: Yapılandırılmış İngilizce JSON formatında prompt kopyalar. <em>Daha gelişmiş kullanıcılar için</em>; AI'nın daha tutarlı çıktı vermesini sağlar. Cevap yine Türkçe gelir.</li>
-        </ul>
-        <p>Kopyaladığın prompt'u <strong>ChatGPT, Claude, Gemini</strong> gibi sohbet botlarına yapıştırırsın; kapsamlı bir rehber alırsın.</p>
-        <p><strong>💡 Önemli:</strong> Prompt seçtiğin frameworke göre <strong>otomatik özelleşir</strong>: örneğin Flutter seçiliyken "<code>flutter pub add</code>" örnekleri verir, Kotlin seçiliyken Gradle dependency satırı.</p>
-      </section>
-
-      <section>
-        <h3>📺 Sunum Modu</h3>
-        <p><strong>"Sunum"</strong> butonuna basınca <em>tek bir kategori</em> tam ekranda gösterilir. Sınıfta <strong>projeksiyona vurmak</strong>, ekibe <strong>ilerleme raporu vermek</strong> veya tek bir konuya <strong>odaklanmak</strong> için idealdir.</p>
-        <ul>
-          <li><kbd>←</kbd> / <kbd>→</kbd>: önceki / sonraki kategori</li>
-          <li><kbd>Boşluk</kbd>: sonraki kategori (← / → alternatifi)</li>
-          <li><kbd>Esc</kbd>: sunum modundan çık</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>💾 Veri Yönetimi (Yedek Al / Geri Yükle / Sıfırla)</h3>
-        <ul>
-          <li><strong>Dışa Aktar</strong>: bütün işaretlemeleri ve notları tek bir <strong>JSON dosyası</strong> olarak bilgisayarına indirir. Bilgisayarın sıfırlanırsa veya tarayıcı verisi silinirse bu dosya yedek olur.</li>
-          <li><strong>İçe Aktar</strong>: daha önce indirdiğin JSON dosyayı seçerek <strong>tüm işaretler ve notlar geri yüklenir</strong>. Yeni cihazda devam etmek için kullanılır.</li>
-          <li><strong>Sıfırla</strong>: 2 aşamalı bir modal açar. İlk aşamada <strong>neyi sıfırlamak istediğini</strong> seçersin (4 seçenek): <em>📋 Seçimler</em> (MVP / Release işaretleri), <em>📝 Notlar</em> (her madde için yazdıkların), <em>⚙️ Ayarlar</em> (kategori, tema, filtreler, kilit) veya <em>⚠️ Tüm Sistem</em> (her şey, ilk açılışa döner). İlk üçünü serbestçe kombinleyebilirsin; "Tüm Sistem" seçilirse diğerleri otomatik kapanır. İkinci aşamada onay alınır, sonra silme uygulanır.</li>
-        </ul>
-        <p><strong>💡 İpucu:</strong> Önemli aşamalarda <strong>yedek almak</strong> iyi alışkanlıktır, çünkü tarayıcı verisi tarayıcı temizliğinde silinebilir.</p>
-      </section>
-
-      <section>
-        <h3>🖨 Yazdırma ve PDF</h3>
-        <p><strong>"Yazdır"</strong> butonu veya <kbd>Ctrl</kbd>+<kbd>P</kbd> (Mac'te <kbd>⌘</kbd>+<kbd>P</kbd>) ile listeyi yazıcıya gönderebilir veya <strong>PDF olarak kaydedebilirsin</strong>.</p>
-        <ul>
-          <li>Yazdırma sırasında <strong>üstte liste başlığı, altta hazırlayan bilgisi</strong> her sayfada otomatik tekrar eder.</li>
-          <li>Renkler (yeşil MVP, mavi Release) yazdırmada da korunur.</li>
-          <li>İçerik mantıklı yerden bölünür (madde ortadan kesilmez).</li>
-          <li>Sayfa kenarlıkları ve dolgular yazdırmaya uygun ayarlanmıştır.</li>
-          <li><strong>Notların ve filtre butonların</strong> yazdırma çıktısında <em>gözükmez</em> (sadece liste içeriği basılır).</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>🌙 Tema (Koyu / Açık)</h3>
-        <p>Sağ üstteki <strong>🌙 Koyu / ☀ Açık</strong> butonu ile tema değiştirebilirsin.</p>
-        <ul>
-          <li><strong>Koyu tema</strong>: gece veya az ışıklı ortamda gözü daha az yorar (<em>varsayılan</em>).</li>
-          <li><strong>Açık tema</strong>: gündüz ve aydınlık ortamlarda klasik beyaz görünüm.</li>
-        </ul>
-        <p>Tercihin kaydedilir; uygulamayı bir sonraki açılışında aynı tema gelir.</p>
-      </section>
-
-      <section>
-        <h3>📲 Uygulama Olarak Yükle (PWA)</h3>
-        <p>Bu kontrol listesini bilgisayarına veya telefonuna <strong>uygulama gibi yükleyebilirsin</strong>:</p>
-        <ul>
-          <li><strong>Mobilde:</strong> ana ekrana eklenir, ayrı bir ikon olarak açılır.</li>
-          <li><strong>Masaüstünde:</strong> başlat menüsüne / dock'a kısayol gelir.</li>
-          <li>Tek tıkla açılır, <strong>internet olmadan da çalışır</strong>.</li>
-        </ul>
-        <p>Sayfa açıldığında üstte beliren <strong>"📲 Yükle"</strong> banner'ı veya tarayıcının adres çubuğundaki "yükle" simgesi ile kurulum yapılır. Detaylı talimat için banner'a bas, cihazına göre adım adım gösterir.</p>
-      </section>
-
-      <section>
-        <h3>⌨️ Klavye Kısayolları</h3>
-        <ul class="kbd-list">
-          <li><kbd>?</kbd><span>Bu yardım penceresini aç</span></li>
-          <li><kbd>/</kbd><span>Arama kutusuna odaklan (anında yazmaya başla)</span></li>
-          <li><kbd>P</kbd><span>Sunum modunu aç</span></li>
-          <li><span><kbd>←</kbd> <kbd>→</kbd></span><span>Sunumda önceki / sonraki kategori</span></li>
-          <li><kbd>Esc</kbd><span>Açık modal veya sunum modundan çık</span></li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>💡 Pratik İpuçları</h3>
-        <ul>
-          <li><strong>Sırayla ilerle:</strong> Önce kategori 01'den başla; her kategori bir öncekine mantıklı bir devam gibi tasarlanmıştır (<em>planlama → tasarım → geliştirme → yayın</em>).</li>
-          <li><strong>İlk hedef MVP:</strong> Başlangıçta sadece "MVP" filtresine bas, sırf yeşil maddelere odaklan. Hepsini bitirince Release'e geç.</li>
-          <li><strong>AI'dan yararlan:</strong> Anlamadığın her madde için "🤖 AI'a sor" butonunu kullan. Saatlerce takılı kalmana gerek yok.</li>
-          <li><strong>Notlara yaz:</strong> Çözdüğünde <em>nasıl çözdüğünü</em>, <em>hangi paketi kullandığını</em> maddenin notuna yaz. İleride hatırlamak veya başkasına anlatmak için altın değerinde olur.</li>
-          <li><strong>Yedek al:</strong> Önemli aşamalarda "Dışa Aktar" ile JSON dosya indir.</li>
-          <li><strong>Sunumda göster:</strong> Hocaya / ekibe ilerleme raporu vereceksen "Sunum" modunda kategori kategori gez.</li>
-          <li><strong>Framework değiştirebilirsin:</strong> Aynı uygulamayı farklı bir frameworkle yeniden yapsan da işaretlerin korunur, yeni dilde nasıl yapıldığını öğrenirken kullanışlıdır.</li>
-        </ul>
-      </section>
-
+      <p class="help-fallback" data-i18n="help.fallback">Yardım metni yükleniyor. Bu yazı kalırsa sayfayı yenile.</p>
     </div>
   </div>
 </div>
@@ -660,7 +428,7 @@
     <!-- Step 5: Framework selection -->
     <div class="welcome-pane" data-pane="5" hidden>
       <p class="framework-pick-q" data-i18n="welcome.fwQuestion">Hangi framework / dil ile çalışıyorsun?</p>
-      <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.</p>
+      <p class="framework-pick-sub" data-i18n="welcome.fwSub">Listede 24 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 31 madde her framework'te aynıdır. Sonradan üstteki butondan değiştirebilirsin.</p>
       <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
         <button type="button" class="framework-option" data-welcome-fw="flutter">
           <span class="fw-emoji">🐦</span>
@@ -763,7 +531,7 @@
       <ul class="welcome-features" data-i18n-html="welcome.featuresList">
         <li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li>
         <li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li>
-        <li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li>
+        <li><strong>🔄 Framework</strong>30 madde stack'ine göre özelleşir</li>
         <li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li>
         <li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li>
         <li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li>
@@ -869,7 +637,7 @@
 
       <!-- Tab 2: Framework picker (equivalent to the previous standalone behavior) -->
       <div class="projfw-pane projfw-pane-framework" data-projfw-pane="framework" hidden>
-        <p class="framework-modal-sub" data-i18n="fwModal.sub">28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.</p>
+        <p class="framework-modal-sub" data-i18n="fwModal.sub">24 madde seçtiğin framework'e göre değişir, geri kalan 31 madde her framework'te aynıdır. İşaretlemelerin ve notların korunur.</p>
         <div class="framework-options" role="group" aria-label="Framework seçimi" data-i18n-aria-label="welcome.fwAria">
           <button type="button" class="framework-option" data-switch-fw="flutter">
             <span class="fw-emoji">🐦</span>

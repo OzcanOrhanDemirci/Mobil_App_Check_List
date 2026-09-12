@@ -7,6 +7,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-09-12
+
+Content refresh. The 1.2.0 freeze was in May 2026; four months of
+platform churn later a number of item texts pointed at superseded
+version floors, retired console paths and store requirements that had
+since moved. This pass re-verified the factual claims in the 14
+category data files against primary sources (platform documentation,
+store policy pages, vendor release notes) and corrected what had gone
+stale. Item ids, the 55-item count and the four-axis structure are
+unchanged.
+
+### Changed
+
+- **Apple submission floor**: the App Store SDK requirement moved from
+  "Xcode 16 + iOS 18 SDK since 24 April 2025" to "Xcode 26 + iOS 26 SDK
+  since 28 April 2026" in `js/03k-data-11-release.js` and
+  `js/03c-data-03-code-layout.js`.
+- **Play Store target API floor**: `targetSdk 35` (Android 15) became
+  `targetSdk 36` (Android 16), required for new apps and updates since
+  31 August 2026, with the extension window to 1 November 2026 and the
+  separate Wear OS / Automotive (35) and TV / XR (34) floors spelled
+  out. The `windowOptOutEdgeToEdgeEnforcement` note now says the flag
+  is honored only at `targetSdk 35`.
+- **App Store screenshots**: the requirement is a 6.9" set, or a 6.5"
+  set when 6.9" is not uploaded; the retired 6.7" slot was removed, the
+  other dimensions accepted into the 6.9" slot (1290x2796, 1260x2736)
+  were added, and the 13" iPad set is now correctly described as
+  required when the app runs on iPad rather than optional. Simulator
+  examples no longer name a single 2024 device.
+- **React Native**: the New Architecture note moved from "RN 0.76+" to
+  "RN 0.82+", which removed the legacy architecture outright.
+- **Flutter rendering**: Impeller is now described as the only renderer
+  on iOS (no Skia opt-out) and the default on desktop since Flutter
+  3.47, alongside the existing Android API 29+ note.
+- **Lighthouse**: the PWA category was removed in Lighthouse 12 (April
+  2024, shipped in Chrome 126 DevTools). The previous text credited the
+  removal to Chrome 117, which only deprecated it.
+- **GitHub**: branch protection steps now point at repository rulesets
+  (Settings > Rules > Rulesets), which is where GitHub steers new
+  repositories, with a note that an existing classic rule can be
+  converted. Secret scanning moved to Settings > Advanced Security >
+  Secret Protection, and the text records that it is free on public
+  repositories. History rewriting recommends `git filter-repo` instead
+  of the discouraged `git filter-branch`.
+- **Accessibility**: the contrast item now cites WCAG 2.2 AA, adds the
+  2.2 Target Size (Minimum) criterion with the Apple and Android
+  equivalents, and notes that the European Accessibility Act has been
+  enforceable since 28 June 2025 with EN 301 549 v4.1.1 (published 2
+  September 2026) as the technical yardstick.
+- **Node floor**: React Native's own setup guide asks for Node 22.11+;
+  Node 20 reached end-of-life on 30 April 2026. The tooling followed:
+  `package.json` `engines` is now `>=22.13.0`, the CI lint and test
+  matrix runs Node 22 and 24 instead of 20 and 22, the single-version
+  jobs run Node 24, and `.github/CONTRIBUTING.md` matches.
+- **AI model examples** in the fallback-ladder item refreshed to
+  current model identifiers.
+- Footer content date moved from May 2026 to September 2026.
+
+### Fixed
+
+- The counts the UI quotes back to the user were wrong. The framework
+  picker claimed "28 items vary by framework, the remaining 25 are
+  universal" (which also does not sum to 55); the data says 24 vary by
+  framework and 30 adapt to the stack once backend variants count. All
+  five places that quoted a number, in both languages, now match the
+  data, and `tests/data.test.js` asserts both splits so the next drift
+  fails CI instead of shipping.
+- The help modal said the list has "53 features" in the overview and
+  "53 items" in the language section. It has 55.
+
+### Removed
+
+- The 239-line static copy of the Turkish help text inside
+  `index.html`. `applyI18nToDom()` overwrites `#helpModalBody` with
+  `HELP_HTML` from `js/02-help-content.js` on every init, so the inline
+  copy was never rendered; it had silently drifted (53 features, a
+  three-step welcome flow) and its sections lacked the `.help-section`
+  class the accordion needs. A short fallback paragraph plus a comment
+  explaining the ownership rule replaces it, and `index.html` drops
+  from 1170 to 938 lines.
+
 ## [1.2.1] - 2026-05-15
 
 Maintenance release: dependency bumps, ESLint 10 migration, branch
@@ -500,7 +581,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0

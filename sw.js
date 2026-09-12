@@ -4,7 +4,7 @@
    refetch the new assets on next visit. Manual edits to this line are
    overwritten by `npm run sw:sync` and rejected by CI / pre-commit if
    they go out of sync with package.json. */
-const CACHE_NAME = 'mobil-kontrol-v1.2.1';
+const CACHE_NAME = 'mobil-kontrol-v1.2.2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

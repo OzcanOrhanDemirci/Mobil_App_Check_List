@@ -204,7 +204,7 @@ const UI_STRINGS = {
   // footer
   "footer.title": { tr: "Mobil Uygulama Kalite Kontrol Listesi", en: "Mobile App Quality Checklist" },
   "footer.preparedBy": { tr: "Hazırlayan", en: "Prepared by" },
-  "footer.date": { tr: "Mayıs 2026", en: "May 2026" },
+  "footer.date": { tr: "Eylül 2026", en: "September 2026" },
   "footer.printFooter": { tr: "Hazırlayan: Özcan Orhan Demirci", en: "Prepared by: Özcan Orhan Demirci" },
 
   // presentation
@@ -235,6 +235,9 @@ const UI_STRINGS = {
   "help.accordion.collapseAll": { tr: "▸ Tümünü Kapat", en: "▸ Collapse All" },
   "help.accordion.expandAllTitle": { tr: "Tüm bölümleri aç", en: "Expand all sections" },
   "help.accordion.collapseAllTitle": { tr: "Tüm bölümleri kapat", en: "Collapse all sections" },
+  /* Only ever visible if js/02-help-content.js failed to load; applyI18nToDom
+     overwrites the whole #helpModalBody with HELP_HTML on every init. */
+  "help.fallback": { tr: "Yardım metni yükleniyor. Bu yazı kalırsa sayfayı yenile.", en: "Loading the help text. If this line stays, reload the page." },
 
   // welcome
   "welcome.helpBtnTitle": { tr: "Nasıl kullanılır? (Yardım)", en: "How to use? (Help)" },
@@ -267,7 +270,7 @@ const UI_STRINGS = {
   "welcome.mode.review.desc": { tr: "Mevcut uygulamamı kontrol ediyorum; sade kontrol listesiyle adım adım işaretlemek istiyorum.", en: "I am auditing my existing app; I want a clean checklist to tick off step by step." },
   "welcome.cta.pickMode": { tr: "Devam etmek için bir kullanım biçimi seç", en: "Pick a usage mode to continue" },
   "welcome.fwQuestion": { tr: "Hangi framework / dil ile çalışıyorsun?", en: "Which framework / language are you using?" },
-  "welcome.fwSub": { tr: "Listede 28 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 25 madde evrenseldir. Sonradan üstteki butondan değiştirebilirsin.", en: "28 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 25 are universal. You can change it later from the top button." },
+  "welcome.fwSub": { tr: "Listede 24 madde framework'e göre değişir (paket adları, build/yayın akışı, platform farkları, ödeme/reklam yöntemi); geri kalan 31 madde her framework'te aynıdır. Sonradan üstteki butondan değiştirebilirsin.", en: "24 items vary by framework (package names, build/release flow, platform differences, payments/ads); the remaining 31 read the same whichever framework you pick. You can change it later from the top button." },
   "welcome.fwAria": { tr: "Framework seçimi", en: "Framework selection" },
   "welcome.cta.pickFw": { tr: "Devam etmek için framework seç", en: "Pick a framework to continue" },
   "welcome.cta.next": { tr: "İleri ›", en: "Next ›" },
@@ -284,8 +287,8 @@ const UI_STRINGS = {
        6) Data management:            Multi-project + Backup
        7) Visual mode:                Theme + Presentation
        8) Output and portability:     Print + PWA install */
-    tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>28 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>koyu ve açık mod</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
-    en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>28 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>dark and light mode</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
+    tr: "<li><strong>🌐 TR / EN</strong>uygulamayı anında Türkçe ile İngilizce arasında çevir</li><li><strong>📖 Basit / Teknik</strong>anlatım dilini ihtiyacına göre değiştir</li><li><strong>🔄 Framework</strong>30 madde stack'ine göre özelleşir</li><li><strong>🚫 Backend seçimi</strong>Firebase, Supabase, kendi sunucun ve diğerleri için maddeler özelleşir</li><li><strong>❔ Nasıl Yapılır?</strong>kart arka yüzünde adım adım rehber, adımları tikleyebilirsin</li><li><strong>🤖 AI'a sor</strong>maddeyi AI ile çözmen için hazır prompt</li><li><strong>📝 Notlar</strong>her madde için kişisel notunu yaz</li><li><strong>🔒 Kilit</strong>listeyi salt-okunur yap, yanlışlıkla bozulmasın</li><li><strong>🎯 Filtre</strong>sadece MVP, sadece Release, yapılan veya yapılacak</li><li><strong>🔍 Arama</strong>başlık ve içerikte anahtar kelime</li><li><strong>📁 Çoklu proje</strong>20 ayrı projeyi tek uygulamada yönet</li><li><strong>💾 Yedek</strong>JSON dışa ve içe aktarma</li><li><strong>🎨 Tema</strong>koyu ve açık mod</li><li><strong>📺 Sunum</strong>tek kategori tam ekran sunum</li><li><strong>🖨 Yazdır</strong>kontrol listesi veya Nasıl Yapılır? PDF'i</li><li><strong>📲 PWA yükle</strong>uygulama gibi cihaza ekle, çevrimdışı çalışsın</li>",
+    en: "<li><strong>🌐 TR / EN</strong>instantly switch between Turkish and English</li><li><strong>📖 Simple / Technical</strong>switch the explanation style to fit your level</li><li><strong>🔄 Framework</strong>30 items adapt to your stack</li><li><strong>🚫 Backend choice</strong>items adapt to Firebase, Supabase, your own server and more</li><li><strong>❔ How-To</strong>step-by-step guide on the card back face; tick steps one by one</li><li><strong>🤖 Ask AI</strong>ready-made prompt to solve an item with AI</li><li><strong>📝 Notes</strong>add a personal note to each item</li><li><strong>🔒 Lock</strong>list becomes read-only, no accidental edits</li><li><strong>🎯 Filter</strong>MVP only, Release only, done or pending</li><li><strong>🔍 Search</strong>keyword in title and content</li><li><strong>📁 Multi-project</strong>manage up to 20 projects in one app</li><li><strong>💾 Backup</strong>JSON export and import</li><li><strong>🎨 Theme</strong>dark and light mode</li><li><strong>📺 Presentation</strong>single-category fullscreen mode</li><li><strong>🖨 Print</strong>checklist or How-To PDF</li><li><strong>📲 Install PWA</strong>add to your device, works offline</li>"
   },
   "welcome.tip": { tr: "İhtiyacın olduğu her an üstteki <strong>? Yardım</strong> butonu ile detaylı rehbere ulaşabilirsin. Klavye kısayolları için <kbd>?</kbd> tuşuna bas.", en: "Whenever you need it, open the detailed guide via the <strong>? Help</strong> button on top. Press <kbd>?</kbd> for keyboard shortcuts." },
   "welcome.back": { tr: "‹ Geri", en: "‹ Back" },
@@ -351,7 +354,7 @@ const UI_STRINGS = {
 
   // framework modal
   "fwModal.title": { tr: "Framework Seç", en: "Pick Framework" },
-  "fwModal.sub": { tr: "28 madde seçtiğin framework'e göre değişir, geri kalan 25 madde evrenseldir. İşaretlemelerin ve notların korunur.", en: "28 items vary by the chosen framework, the remaining 25 are universal. Your marks and notes are kept." },
+  "fwModal.sub": { tr: "24 madde seçtiğin framework'e göre değişir, geri kalan 31 madde her framework'te aynıdır. İşaretlemelerin ve notların korunur.", en: "24 items vary by the chosen framework, the remaining 31 read the same in all of them. Your marks and notes are kept." },
   "fwModal.confirmTitle": { tr: "Framework değiştirilsin mi?", en: "Switch framework?" },
   "fwModal.confirmYes": { tr: "Geçiş yap", en: "Switch" },
   "fwModal.confirmCancel": { tr: "Vazgeç", en: "Cancel" },

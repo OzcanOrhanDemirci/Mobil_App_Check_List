@@ -21,7 +21,7 @@ The app is a static PWA with **zero runtime dependencies**. There is no build st
    # Option A: Python (preinstalled on most systems)
    python -m http.server 8000
 
-   # Option B: Node (requires Node 20+)
+   # Option B: Node (requires Node 22.13+)
    npx serve .
    ```
 
@@ -216,7 +216,7 @@ If your diff also touched the orchestration layer that was split out of `js/14-a
 
 ## Tests and linting
 
-The project uses ESLint (flat config), Prettier, and the Node built-in test runner. ESLint 10 requires **Node 20.19+ or 22.13+** (the same versions CI runs against); a 20.0-20.18 install will warn and may fail to install. Install dev tooling once:
+The project uses ESLint (flat config), Prettier, and the Node built-in test runner. ESLint 10 requires **Node 22.13+ or 24+**, which is what CI runs; Node 20 reached end-of-life on 30 April 2026 and is no longer tested. `package.json` `engines` records the same floor. Install dev tooling once:
 
 ```bash
 npm install
@@ -264,7 +264,7 @@ Conventional commit prefixes (`feat:`, `fix:`, `docs:`, `refactor:`) are welcome
 
 ## Pull request process
 
-The `main` branch is protected: direct pushes are blocked and every change must arrive through a pull request whose CI status checks pass. The required checks are the eight jobs in `.github/workflows/ci.yml` (lint and unit tests on Node 20 and 22, HTML validation, PWA sanity, em-dash rule, Service Worker cache version).
+The `main` branch is protected: direct pushes are blocked and every change must arrive through a pull request whose CI status checks pass. The required checks are the eight jobs in `.github/workflows/ci.yml` (lint and unit tests on Node 22 and 24, HTML validation, PWA sanity, em-dash rule, Service Worker cache version).
 
 1. Fork the repository.
 2. Cut a feature branch off `main`: `git checkout -b feat/short-description`.

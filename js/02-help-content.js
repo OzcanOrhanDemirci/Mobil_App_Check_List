@@ -119,7 +119,7 @@ const HELP_HTML = {
         <h3>🌐 Dil Değiştirme (TR / EN)</h3>
         <p>Sayfanın üst başlık alanında, proje pill'inin solunda <strong>🌐 TR / EN</strong> butonu vardır. Tıkladığında uygulama anında <strong>Türkçe</strong> ve <strong>İngilizce</strong> arasında geçiş yapar.</p>
         <ul>
-          <li>Tüm metinler tercüme edilir: kategoriler, 53 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
+          <li>Tüm metinler tercüme edilir: kategoriler, 55 madde, MVP/Release açıklamaları, modaller, toast'lar, butonlar, AI prompt'ları.</li>
           <li>Hangi framework'ü seçtiysen, onun varyant metinleri de seçilen dilde gösterilir.</li>
           <li><strong>Dil tüm projelerde ortaktır</strong> (tema gibi global ayar). Bir projede dili değiştirirsen tüm projelerde aynı dil olur.</li>
           <li>Tercihin <strong>tarayıcına kaydedilir</strong>; sonraki açılışta seçtiğin dil aktif gelir.</li>
@@ -150,7 +150,7 @@ const HELP_HTML = {
         <p>Aktif projenin framework'ünü dilediğin zaman değiştirebilirsin. Üst başlıktaki <strong>📁 proje pill</strong>'ine tıkla → açılan modalın <strong>"Framework" sekmesine</strong> geç → 6 seçenekten birine tıkla → onay penceresi gelir, "Geçiş yap" de.</p>
         <p>Geçiş yaptığında:</p>
         <ul>
-          <li>İlgili 28 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
+          <li>Framework'e bağlı 24 maddenin metni <strong>anında değişir</strong> (örn. "<code>flutter build apk</code>" yerine "<code>eas build --platform android</code>" gibi).</li>
           <li><strong>İşaretlemelerin ve notların kaybolmaz</strong>: aynı kalır. Sadece anlatım dili / paket adları değişir.</li>
           <li>Değişiklik sadece <strong>aktif projeye</strong> etki eder; diğer projelerin framework'ü değişmez.</li>
           <li>İstediğin zaman tekrar değiştirebilirsin.</li>
@@ -530,7 +530,7 @@ const HELP_HTML = {
         <h3>🌐 Switch Language (TR / EN)</h3>
         <p>In the page header, just left of the project pill, there is a <strong>🌐 TR / EN</strong> button. Click it to switch instantly between <strong>Turkish</strong> and <strong>English</strong>.</p>
         <ul>
-          <li>Every text is translated: categories, the 53 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
+          <li>Every text is translated: categories, the 55 items, MVP/Release descriptions, modals, toasts, buttons, AI prompts.</li>
           <li>Whichever framework you picked, its variant texts also appear in the chosen language.</li>
           <li><strong>Language is global across all projects</strong> (like theme). Switching it in one project switches it everywhere.</li>
           <li>Your preference is <strong>saved in the browser</strong>; the chosen language is active on next open.</li>
@@ -561,7 +561,7 @@ const HELP_HTML = {
         <p>You can change the active project's framework any time. Click the <strong>📁 project pill</strong> in the header → switch to the <strong>"Framework" tab</strong> in the modal → click one of the 6 options → a confirmation appears, click "Switch".</p>
         <p>When you switch:</p>
         <ul>
-          <li>The 28 framework-specific items <strong>change instantly</strong> (e.g. "<code>flutter build apk</code>" becomes "<code>eas build --platform android</code>").</li>
+          <li>The 24 framework-specific items <strong>change instantly</strong> (e.g. "<code>flutter build apk</code>" becomes "<code>eas build --platform android</code>").</li>
           <li><strong>Your marks and notes are NOT lost</strong>: they stay. Only wording / package names change.</li>
           <li>The change affects only the <strong>active project</strong>; other projects' frameworks stay the same.</li>
           <li>You can switch back any time.</li>
