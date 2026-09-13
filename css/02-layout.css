@@ -274,7 +274,7 @@
     .hero-project-pill { min-width: 120px; padding: 6px 10px; }
     .hero-project-pill .proj-pill-name { max-width: 130px; }
   }
-  @media (max-width: 380px) {
+  @media (max-width: 360px) {
     .hero-project-pill { min-width: 110px; }
     .hero-project-pill .proj-pill-project { font-size: 12px; }
     .hero-project-pill .proj-pill-framework,
@@ -351,6 +351,29 @@
      with these rules, e.g. view-mvp-only + filter-pending shows only unchecked MVP rows. */
   body.filter-pending .level.checked { display: none !important; }
   body.filter-done .level:not(.checked) { display: none !important; }
+
+  /* The checklist is written into #content by js/11-render.js, which cannot
+     run until 37 script files have arrived. Until then the element has no
+     height, the footer sits in the first screen, and when the checklist
+     lands the footer is thrown thousands of pixels down the page. Measured
+     on an emulated mid-range phone over a slow connection that was the
+     whole of this page's layout shift: 0.11 in Minimal, 0.14 in Classic,
+     against the 0.1 that counts as good.
+
+     Holding a screen's worth of height open while the element is empty puts
+     the footer below the fold, so its arrival at its real position shifts
+     nothing the reader can see. :empty stops applying the moment the first
+     category is written, and the rendered checklist is far taller than this
+     anyway, so the reservation never constrains anything.
+
+     A skeleton would be the richer answer to the same problem. It would
+     also mean a second rendering of the checklist's shape to keep in step
+     with the real one, and after the first visit the Service Worker serves
+     this page in under 200ms, where a skeleton would be a flash. */
+  #content:empty {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 
   /* Toolbar */
   .toolbar {

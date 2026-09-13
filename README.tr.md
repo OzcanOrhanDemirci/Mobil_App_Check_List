@@ -50,6 +50,7 @@ _Mobile App Quality Checklist · MVP and Release tiers · per-framework + per-ba
   - [Teknoloji yığını](#teknoloji-yığını)
   - [Dört eksenli içerik çözücü](#dört-eksenli-içerik-çözücü)
   - [Modüler dosya yapısı](#modüler-dosya-yapısı)
+  - [Responsive ölçek ve dokunma hedefleri](#responsive-ölçek-ve-dokunma-hedefleri)
   - [PWA stratejisi](#pwa-stratejisi)
 - [Proje yapısı](#proje-yapısı)
 - [Veri modeli](#veri-modeli)
@@ -133,7 +134,8 @@ Bu uygulama o boşluğu doldurur:
 - **Sunum modu** (`P` tuşu): tek tıkla projeksiyon için tam ekran
 - **Yazdır / PDF**: hem kontrol listesi hem Nasıl Yapılır? rehberi formatları
 - **Tek tıkla yükle**: ana ekrana / başlat menüsüne kurulabilir
-- **Offline çalışır**: Service Worker önbelleği ile internet kopsa da açılır
+- **Offline çalışır**: Service Worker önbelleği ile internet kopsa da açılır; ikinci açılış bu önbellekten saniyenin çok altında gelir
+- **Telefon için kurgulanmış**: 320px'e inen beş kademeli responsive ölçek, 44x44 dokunma hedefleri, safe-area boşlukları, hiçbir genişlikte yatay kaydırma yok
 - **A11y**: yüksek kontrast paleti, klavye navigasyonu, focus-visible outline'ları, semantik ARIA rolleri
 
 </td>
@@ -450,10 +452,52 @@ JS dosyaları sırayla yüklenir; her dosyanın **tek sorumluluğu** vardır. Nu
 
 Build aracı, transpile veya dependency yok. Yeni bir geliştirici (veya yapay zekâ asistanı) projeyi **dakikalar içinde** anlayabilir.
 
+### Responsive ölçek ve dokunma hedefleri
+
+Beş kırılma noktası; `css/06-responsive-print.css` dosyasının başında
+belgelenir ve projedeki her stil dosyası bu beş sayıyı kullanır. Bunlar bir
+framework'ten alınmış değil, bu yerleşimin gerçekten bozulduğu, gerçek cihaz
+görünümlerinde ölçülmüş genişlikler:
+
+| Kademe | Neye karşılık geliyor                                |
+| ------ | ---------------------------------------------------- |
+| 900px  | tablet dikey, küçük dizüstü                          |
+| 700px  | büyük telefon yatay, küçük tablet dikey              |
+| 560px  | telefon dikey; okuyucuların çoğunun bulunduğu kademe |
+| 430px  | küçük telefon (iPhone SE 375, eski Android 360)      |
+| 360px  | satılan en dar uçlar (320px iPhone SE 1)             |
+
+Kurallar ait oldukları bileşenin yanında durur;
+`css/06-responsive-print.css` bileşenleri kesen ortak kuralları taşır. Her
+tasarım dosyası kendi kurallarını da taşır, çünkü kendi tipografi ölçeğini
+kuran bir tasarım telefon tabanını kendi içinde yeniden söylemek zorundadır:
+sonradan yüklenen bir dosyadaki `[data-design]` seçicisi, ortak dosyanın
+söyleyebileceği her şeyi geçer.
+
+Dokunma hedefleri tek bir `@media screen and (pointer: coarse)` bloğunda
+toplanır. Okuyucunun uygulamayı kullanmak için dokunduğu her şey en az 44x44
+CSS px; bu, hem Apple Human Interface Guidelines'ın hem de Material'ın
+kullandığı rakam ve WCAG 2.2'nin 2.5.8 ölçütündeki 24x24'ün rahatça
+üzerinde. Kutuyu büyütmek yerleşimi bozacaksa hedef padding ile büyür ve
+negatif margin ile geri çekilir: parmağa göre büyük, göze göre aynı. Blok
+`screen` ile sınırlandırılmıştır, çünkü bir telefon yazdırırken `pointer`
+eşleşmeyi bırakmaz.
+
+Gözden kaçması kolay, sahada pahalıya patlayan iki platform ayrıntısı:
+
+- **Metin alanları coarse pointer'da 16px.** iOS Safari, yazı boyutu bundan
+  küçük bir alana odaklanıldığında sayfayı yakınlaştırır ve geri
+  uzaklaştırmaz. Kural genişliğe değil giriş yöntemine bağlıdır: yatay
+  duran bir iPad 1024px genişliğindedir ve aynısını yapar.
+- **Yükseklikler `dvh`, `vh` yedeğiyle.** `100vh`, mobil tarayıcının adres
+  çubuğu gizliyken bildirdiği görünüm alanıdır; okuyucunun adres çubuğu
+  açıkken sahip olduğu alan o değildir.
+
 ### PWA stratejisi
 
 - `manifest.webmanifest` standalone modu açar; ikonlar `assets/icons/` altında dört PNG dosyası olarak (`icon-192.png`, `icon-512.png` ve aynı boyutların `*-maskable.png` versiyonları). Bu dosyalar `og-image.png` ile aynı turuncu-tik-koyu-zemin görselinden üretilir.
-- `sw.js` **network-first + cache fallback** stratejisi: her aynı-origin GET isteği önce ağdan denenir, başarılı yanıtlar `mobil-kontrol-v{paket-sürümü}` cache'ine yazılır; ağ erişimi koptuğunda son cache'lenmiş sürüm anlık servis edilir. Eski cache anahtarları `activate`'te otomatik temizlenir. Cache anahtarı `package.json` `version` alanından otomatik üretilir (`scripts/check-sw-cache-version.mjs`); sürüm bump ettiğinde tüm istemcilerin cache'i otomatik geçersizleşir.
+- `sw.js` **iki ayrı strateji** kullanır, çünkü iki istek türü birbirinin tersini ister. **Navigasyonlar network-first, 3 saniyelik zaman aşımıyla**: yeni sürümü taşıyan şey belgedir ve tek, küçük bir istektir; böylece çevrimiçi bir okuyucu güncel sürümü görür, zayıf bir sinyal ise sayfanın tamamına değil yalnızca bir ana mal olur. **Geri kalan her şey stale-while-revalidate**: stiller, scriptler, ikonlar ve manifest doğrudan `mobil-kontrol-v{paket-sürümü}` cache'inden gelir, böylece ikinci açılış anında boyanır ve hiç bağlantı olmadan da çalışır; taze kopya bir sonraki açılış için arka planda çekilir. Eski cache anahtarları `activate`'te temizlenir; anahtar `package.json` `version` alanından `scripts/check-sw-cache-version.mjs` ile üretilir, yani sürüm bump'ı tüm istemcilerin cache'ini geçersizleştirir.
+- Bir sürüm hem belgeyi hem de belgenin referans verdiği dosyaları değiştirdiği için, network-first navigasyon tam olarak bir açılış boyunca yeni belgeyi eski sürümden kalan alt kaynaklarla eşleştirebilir. Bunu iki şey sınırlar: cache sürüme özeldir ve yeni worker etkinleşirken bütünüyle silinir; ayrıca **yeni bir worker kontrolü devraldığında sayfa kendini bir kez yeniler** (`js/18-app.js`). Yenileme korumalıdır: ilk ziyarette, sayfayı ilk kez sahiplenen worker yüzünden her yeni okuyucuya fazladan bir yükleme çıkarmaz.
 - `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; aynı blob'a inline SVG ikon içeren küçük bir manifest'i de yazar. Chromium blob URL'li SW'yi reddederse sessizce geçer.
 - HTTPS üzerinden servis edilince Chrome / Edge / Safari "Yükle" önerisini otomatik olarak gösterir.
 
@@ -785,17 +829,49 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 
 ## Performans
 
-| Metrik                          | Hedef    | Mevcut                   |
-| ------------------------------- | -------- | ------------------------ |
-| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, soğuk cache) |
-| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                    |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                   |
-| Toplam asset (ham)              | -        | ~1.45 MB                 |
-| Toplam asset (gzipped)          | -        | ~380 KB                  |
-| Çevrimdışı açılış (SW cache)    | -        | Çalışır                  |
-| Çalışma zamanı bağımlılığı      | -        | Sıfır                    |
+Orta seviye bir telefon benzetiminde ölçüldü: Fast 3G (1.6 Mbps, 150ms gidiş
+dönüş) ve 4x CPU yavaşlatma, 390x844 görünüm.
 
-> Asset yükünün büyük çoğunluğu, dört eksende çoklu varyant taşıyan 14 kategori veri dosyasından (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) gelir; uygulama mantığı (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi birlikte gzip sonrası 30 KB altındadır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+| Metrik                           | Hedef    | Mevcut                            |
+| -------------------------------- | -------- | --------------------------------- |
+| İlk ziyaret, etkileşime hazır    | -        | ~8 sn (soğuk cache, Fast 3G)      |
+| İkinci ziyaret, etkileşime hazır | -        | **~0,2 sn** (SW cache'inden)      |
+| İkinci ziyaret, ağ trafiği       | -        | **0 bayt**                        |
+| İlk içerikli boyama              | -        | soğukta ~2,1 sn, sıcakta ~0,07 sn |
+| CLS (Cumulative Layout Shift)    | < 0.1    | **0.001** (üç temada da)          |
+| INP (Interaction to Next Paint)  | < 200 ms | ~80 ms                            |
+| Tam yeniden render (55 kart)     | -        | 4x CPU yavaşlatmada ~30 ms        |
+| Toplam asset (ham)               | -        | ~1,5 MB                           |
+| Toplam asset (gzipped)           | -        | 51 istekte ~430 KB                |
+| Çevrimdışı açılış (SW cache)     | -        | Çalışır                           |
+| Çalışma zamanı bağımlılığı       | -        | Sıfır                             |
+
+> Yükün neredeyse tamamı içerik: dört eksenli varyant kütüphanesini taşıyan 14
+> kategori veri dosyası (`js/03a-data-01-idea-planning.js` ...
+> `js/03n-data-14-cicd.js`). Uygulama mantığı (`14-welcome.js`,
+> `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi
+> birlikte gzip sonrası 30 KB altında kalır. Dolayısıyla ilk ziyarete ağ hakim
+> olur; Service Worker'ın işi de o ziyaretten yalnızca bir tane olmasını
+> sağlamaktır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+,
+> Accessibility 95+, Best Practices 100, SEO 100.
+
+Telefonda göründüğünden pahalıya patlayan üç şey ve bunlara ne yapıldığı:
+
+- **Backdrop blur.** Her biri, elemanın arkasındaki her şeyi yeniden
+  örnekleyen ayrı bir kompozisyon geçişidir ve eleman ya da altındaki sayfa
+  her kıpırdadığında tekrarlanır. Showcase teması bunu hero'da, sabit
+  çubukta, her çipte, her diyalogda ve 55 kartın hepsinde istiyordu. 700px
+  altında beş adlandırılmış token tek bir yerde sıfırlanarak kapatılır; bu
+  yüzeylerin arkasında sayfanın kendi gradyanı vardır, yani okuyucunun
+  görebileceği bir kayıp yoktur.
+- **`will-change`.** Tek seferde tek bir kartta çalışan çevirme animasyonunu
+  yumuşatmak için oturum boyunca 55 kartın hepsinde açıktı. Artık yalnızca
+  animasyonun sürdüğü yarım saniye boyunca ekleniyor ve sonra kaldırılıyor.
+- **Ayrılmış yükseklik.** Kontrol listesi, 37 script dosyası gelmeden
+  render edilemez. O ana kadar `#content` yüksekliksizdi, footer ilk ekranda
+  duruyordu ve listenin gelişi footer'ı sayfanın binlerce piksel aşağısına
+  fırlatıyordu: yavaş bağlantıda 0,109 ile 0,138 arası yerleşim kayması.
+  Eleman boşken bir ekran boyu yüksekliği açık tutuyor.
 
 ---
 

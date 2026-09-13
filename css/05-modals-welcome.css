@@ -12,6 +12,14 @@
     text-align: center;
     position: relative;
   }
+  /* 30px of padding a side is a fifth of a 320px screen once the dialog's
+     own 12px margin is counted. */
+  @media (max-width: 560px) {
+    .modal-content.modal-welcome { padding: 26px 18px 22px; }
+  }
+  @media (max-width: 430px) {
+    .modal-content.modal-welcome { padding: 22px 14px 18px; }
+  }
   /* Help button: fixed in the top-right corner, visible on every step.
      Opens the bilingual help/usage modal. */
   .welcome-help-btn {
@@ -51,7 +59,7 @@
     font-weight: 700;
     line-height: 1;
   }
-  @media (max-width: 420px) {
+  @media (max-width: 430px) {
     .welcome-help-btn .welcome-help-label { display: none; }
     .welcome-help-btn { padding: 6px; }
   }
@@ -164,6 +172,17 @@
   .welcome-pane > .welcome-cta { margin-top: 22px; }
   .welcome-actions { margin-top: 22px; }
 
+  /* These buttons carry a sentence ("Pick a language to continue"), and the
+     shared .btn rule sets white-space: nowrap for the toolbar's one-word
+     labels. On a 320px screen the language step's button ran 108px past the
+     edge of the screen and took the document with it. */
+  .welcome-cta,
+  .welcome-actions > .btn {
+    white-space: normal;
+    text-wrap: balance;
+    line-height: 1.35;
+  }
+
   /* Multi-step welcome: step indicator (numbered dots + connecting lines)
      and pane transitions. Each dot toggles between idle, .active (current
      step), and .done (completed); connector lines turn green once passed. */
@@ -233,6 +252,40 @@
     background: var(--mvp);
   }
 
+  /* Eight dots at 26px with seven connectors and fifteen gaps ask for about
+     340px. Inside a 320px phone the dialog offers 220px, so the row ran off
+     both edges and the first and last steps were cut in half.
+
+     Two steps down. Below 560px the dots and the spacing shrink; below
+     430px the connectors go entirely and the dots close up into a row of
+     numbers, which still reads as "step 3 of 8" and always fits. */
+  @media (max-width: 560px) {
+    .welcome-steps { gap: 4px; margin-bottom: 16px; }
+    .welcome-step-dot {
+      width: 23px;
+      height: 23px;
+      font-size: 11px;
+    }
+    .welcome-step-dot.active {
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+    }
+    [data-design="minimal"] .welcome-step-dot.active,
+    [data-design="showcase"] .welcome-step-dot.active {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+    .welcome-step-line { min-width: 3px; max-width: 14px; }
+  }
+
+  @media (max-width: 430px) {
+    .welcome-steps { gap: 5px; }
+    .welcome-step-line { display: none; }
+    .welcome-step-dot {
+      width: 21px;
+      height: 21px;
+      font-size: 10.5px;
+    }
+  }
+
   .welcome-pane[hidden] { display: none; }
 
   .welcome-actions {
@@ -248,7 +301,7 @@
     font-size: 14px;
   }
 
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .welcome-features {
       grid-template-columns: 1fr;
     }
@@ -257,6 +310,9 @@
     }
     .welcome-actions > .btn {
       width: 100%;
+      /* Full-width buttons in a stacked column are the primary way through
+         the flow on a phone; give them a comfortable target. */
+      min-height: 46px;
     }
   }
 
@@ -351,7 +407,7 @@
     color: var(--text-mute);
     letter-spacing: 0.02em;
   }
-  @media (max-width: 420px) {
+  @media (max-width: 430px) {
     .framework-options { grid-template-columns: 1fr; }
   }
 
@@ -371,15 +427,45 @@
     font-weight: 700;
     letter-spacing: -0.005em;
   }
-  .framework-options--lang .framework-option .fw-desc {
+  /* The uppercase, wide-tracked tagline is a treatment for the language
+     step, where the description is a single word ("Turkish"). The mode and
+     style steps reuse this same class pair for their cards, and there the
+     description is a full sentence: set in uppercase with 0.12em of
+     tracking it wrapped to three words a line and left the cards several
+     times taller than they needed to be. Keying the treatment on the
+     language buttons keeps it where it was designed to work. */
+  .framework-options--lang .framework-option[data-welcome-lang] .fw-desc {
     font-size: 12px;
     color: var(--text-mute);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-weight: 600;
   }
-  @media (max-width: 420px) {
-    .framework-options--lang { grid-template-columns: 1fr 1fr; }
+  .framework-options--lang .framework-option:not([data-welcome-lang]) .fw-desc {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-dim);
+    letter-spacing: normal;
+  }
+
+  /* Two one-word cards stay side by side at any width. */
+  @media (max-width: 430px) {
+    .framework-options--lang:has([data-welcome-lang]) { grid-template-columns: 1fr 1fr; }
+    .framework-options--lang .framework-option { padding: 18px 12px 15px; }
+  }
+
+  /* Sentence-length cards do not. Below 560px they stack, which also gives
+     the text a readable measure instead of a 130px column. */
+  @media (max-width: 560px) {
+    .framework-options--lang:not(:has([data-welcome-lang])) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .framework-options--lang .framework-option:not([data-welcome-lang]) {
+      align-items: flex-start;
+      text-align: left;
+      padding: 14px 16px;
+    }
   }
 
   .modal-content.modal-framework {

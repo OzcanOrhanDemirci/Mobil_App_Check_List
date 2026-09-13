@@ -50,6 +50,7 @@ _Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework
   - [Tech stack](#tech-stack)
   - [Four-axis content resolver](#four-axis-content-resolver)
   - [Modular file layout](#modular-file-layout)
+  - [Responsive scale and touch targets](#responsive-scale-and-touch-targets)
   - [PWA strategy](#pwa-strategy)
 - [Project layout](#project-layout)
 - [Data model](#data-model)
@@ -133,7 +134,8 @@ This app fills that gap:
 - **Presentation mode** (`P` key): one click into a full-screen, projector-friendly view
 - **Print / PDF**: both checklist and How-To guide formats
 - **One-click install**: pin to the home screen / start menu
-- **Works offline**: Service Worker cache, opens even when the internet drops
+- **Works offline**: Service Worker cache, opens even when the internet drops, and a repeat visit opens from that cache in well under a second
+- **Built for a phone**: a five-tier responsive scale down to 320px, 44x44 touch targets, safe-area insets, no horizontal scrolling at any width
 - **A11y**: high-contrast palette, keyboard navigation, focus-visible outlines, semantic ARIA roles
 
 </td>
@@ -450,10 +452,51 @@ The content is split across 14 files (`03a..03n`), but at runtime it is still a 
 
 No build tool, no transpilation, no runtime dependency. A new developer (or AI assistant) can grasp the project **in minutes**.
 
+### Responsive scale and touch targets
+
+Five breakpoints, documented at the head of `css/06-responsive-print.css` and
+used by every sheet in the project. They are the widths at which this layout
+actually breaks, checked against real device viewports rather than picked from
+a framework:
+
+| Tier  | What it is                                           |
+| ----- | ---------------------------------------------------- |
+| 900px | tablet portrait, small laptop                        |
+| 700px | large phone landscape, small tablet portrait         |
+| 560px | phone portrait, the tier most readers are in         |
+| 430px | small phone (iPhone SE at 375, older Android at 360) |
+| 360px | the narrow end of what ships (320px iPhone SE 1)     |
+
+Rules live with the component they belong to; `css/06-responsive-print.css`
+carries the ones that cut across components, and each design sheet carries its
+own, because a design that sets its own type scale has to restate the phone
+floor for it (a `[data-design]` selector from a later sheet outranks anything
+the shared file can say).
+
+Touch targets are handled in one `@media screen and (pointer: coarse)` block.
+Everything a reader taps to get through the application is at least 44x44 CSS
+px, the figure both Apple's Human Interface Guidelines and Material use, and
+comfortably above the 24x24 that WCAG 2.2 asks for in 2.5.8. Where growing a
+box would disturb the layout, the target grows with padding and is pulled back
+with a negative margin: bigger to a finger, the same size to the eye. The block
+is scoped to `screen` because `pointer` does not stop matching when a phone
+prints.
+
+Two platform details that are easy to miss and expensive to ship:
+
+- **Text fields are 16px on a coarse pointer.** Safari on iOS zooms the page in
+  when a field with a smaller font takes focus, and does not zoom back out.
+  Keyed on the input method rather than on width: an iPad in landscape is
+  1024px wide and does it too.
+- **Heights use `dvh` with a `vh` fallback.** `100vh` is the viewport a mobile
+  browser reports with its address bar hidden, which is not the viewport the
+  reader has while the bar is showing.
+
 ### PWA strategy
 
 - `manifest.webmanifest` enables standalone mode; icons live under `assets/icons/` as four PNG files (`icon-192.png`, `icon-512.png`, and `*-maskable.png` variants of each). They are generated from the same orange-check-on-dark visual as `og-image.png`.
-- `sw.js` uses a **network-first + cache fallback** strategy: every same-origin GET first goes to the network, successful responses are written to the `mobil-kontrol-v{package-version}` cache; when the network is unreachable, the last cached version is served instantly. Stale cache keys are cleaned up automatically on `activate`. The cache key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump automatically invalidates every client's cache.
+- `sw.js` uses **two strategies**, because the two kinds of request want opposite things. **Navigations are network-first with a 3 second timeout**: the document is what carries a new release and it is one small request, so a reader who is online sees the current version, and a weak signal costs a moment rather than the whole page. **Everything else is stale-while-revalidate**: styles, scripts, icons and the manifest come straight from the `mobil-kontrol-v{package-version}` cache, so a repeat visit paints immediately and works with no connection at all, while a fresh copy is fetched in the background for next time. Stale cache keys are cleaned up on `activate`, and the key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump invalidates every client's cache.
+- Because a release changes both the document and the files it references, network-first navigation could pair a new document with subresources still cached from the old one, for exactly one load. Two things bound that: the cache is per version and is deleted wholesale when the new worker activates, and **the page reloads itself once when a new worker takes control** (`js/18-app.js`). The reload is guarded so it never fires on a first visit, where the very first worker claiming the page would otherwise cost every new reader a second load.
 - If `./sw.js` cannot be loaded (e.g. single-file scenarios opened over `file://`), JS attempts to register a **fallback Service Worker via a blob URL** and writes a small blob-manifest with an inline SVG icon for that path; if Chromium rejects blob-URL SWs it fails silently.
 - When served over HTTPS, Chrome / Edge / Safari automatically surface the "Install" prompt.
 
@@ -785,17 +828,49 @@ The same content is shown with **different wording** depending on the user's cho
 
 ## Performance
 
-| Metric                          | Target   | Current                 |
-| ------------------------------- | -------- | ----------------------- |
-| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, cold cache) |
-| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                   |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                  |
-| Total assets (raw)              | -        | ~1.45 MB                |
-| Total assets (gzipped)          | -        | ~380 KB                 |
-| Offline launch (SW cache)       | -        | Works                   |
-| Runtime dependency              | -        | Zero                    |
+Measured on an emulated mid-range handset: Fast 3G (1.6 Mbps, 150ms round
+trip) with a 4x CPU slowdown, 390x844 viewport.
 
-> Most of the asset payload comes from the 14 per-category data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+| Metric                          | Target   | Current                        |
+| ------------------------------- | -------- | ------------------------------ |
+| First visit, interactive        | -        | ~8 s (cold cache, Fast 3G)     |
+| Repeat visit, interactive       | -        | **~0.2 s** (from the SW cache) |
+| Repeat visit, network           | -        | **0 bytes**                    |
+| First contentful paint          | -        | ~2.1 s cold, ~0.07 s warm      |
+| CLS (Cumulative Layout Shift)   | < 0.1    | **0.001** in all three themes  |
+| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                         |
+| Full re-render (55 cards)       | -        | ~30 ms at a 4x CPU slowdown    |
+| Total assets (raw)              | -        | ~1.5 MB                        |
+| Total assets (gzipped)          | -        | ~430 KB over 51 requests       |
+| Offline launch (SW cache)       | -        | Works                          |
+| Runtime dependency              | -        | Zero                           |
+
+> Almost all of the payload is content: the 14 per-category data files
+> (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) are the
+> four-axis variant library, and the application logic (`14-welcome.js`,
+> `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) stays
+> under 30 KB gzipped between them. The first visit is therefore dominated by
+> the network, which is why the Service Worker's job is to make sure there is
+> only ever one of those. Target Lighthouse ranges on the mobile profile:
+> Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+
+Three things that cost more on a handset than they look like they should, and
+what was done about them:
+
+- **Backdrop blur.** Each one is a compositing pass that re-samples whatever is
+  behind the element, repeated on every frame that element or the page under it
+  moves. The Showcase theme asked for one on the hero, the sticky bar, every
+  chip, every dialog and all 55 cards. Below 700px they are switched off by
+  resetting five named tokens in one place; what sits behind those surfaces is
+  the page's own gradient, so there is nothing a reader can see to lose.
+- **`will-change`.** It was set on all 55 cards for the whole session to smooth
+  a card flip that runs on one card at a time. It is now added for the half
+  second the animation lasts and taken off again.
+- **Reserved height.** The checklist cannot render until 37 script files have
+  arrived. Until then `#content` had no height, the footer sat in the first
+  screen, and the checklist's arrival threw it thousands of pixels down the
+  page: 0.109 to 0.138 of layout shift on a slow connection. The element holds
+  a screen's worth of height open while it is empty.
 
 ---
 

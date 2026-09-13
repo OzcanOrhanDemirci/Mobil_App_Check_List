@@ -69,6 +69,10 @@
     --m-rule: 1px solid var(--border);
     --m-hover: rgba(255, 255, 255, 0.035);
     --m-selected: rgba(124, 156, 255, 0.1);
+
+    /* One step above --surface so a menu reads as floating above the panel
+       it opened from, rather than merging with it. */
+    --popover: #1a1a1e;
   }
 
   [data-design="minimal"][data-theme="light"] {
@@ -80,6 +84,7 @@
     --text: #18181b;
     --text-dim: #52525b;
     --text-mute: #6b6b73;
+    --popover: #ffffff;
     --accent: #2c5ce0;
     --accent-2: #1e40af;
 
@@ -736,6 +741,60 @@
 
   [data-design="minimal"] footer .foot-title::after {
     display: none;
+  }
+
+  /* --------------------------------------------------------------- on a phone
+
+     This design puts the whole sticky area on one surface and leaves the
+     toolbar and the progress card transparent inside it, so the surface has
+     to be the opaque one: with a translucent fill and the blur gone, the
+     checklist scrolled through the toolbar in a legible strip.
+
+     The blur goes for the reason set out in css/08-design-showcase.css: it
+     is a per-frame compositing pass over a background that is a smooth
+     gradient, so it costs a great deal and shows almost nothing. */
+  @media (max-width: 700px) {
+    [data-design="minimal"] .sticky-bar {
+      background: var(--popover);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      /* The toolbar and the progress card are transparent in this design,
+         so this surface is the only one, and its edge fell exactly where
+         the progress labels begin: "TOPLAM" sat against the boundary as if
+         it had been clipped. Widening the surface by 10px a side and taking
+         the same 10px back as padding moves the edge away from the text and
+         leaves the content aligned with the cards below. .wrap keeps at
+         least 12px of gutter at every tier, so the bar never reaches the
+         edge of the screen. */
+      margin-left: -10px;
+      margin-right: -10px;
+      padding: 0 10px 8px;
+    }
+  }
+
+  /* This design sets a tighter type scale than the base sheet, which is
+     most of what makes it feel like a document rather than an app. Four of
+     those sizes land below what is comfortable on a handset, and they are
+     restated here rather than in css/06-responsive-print.css because a
+     [data-design] selector in a sheet that loads later outranks anything
+     that file can say. The reasoning for each number is documented there,
+     under TYPE ON A PHONE. */
+  @media (pointer: coarse) {
+    [data-design="minimal"] .search input {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    [data-design="minimal"] .cat-progress {
+      font-size: 12.5px;
+    }
+    [data-design="minimal"] .feature-head .id {
+      font-size: 12px;
+    }
+    [data-design="minimal"] .level-tag {
+      font-size: 11px;
+    }
   }
 
   /* ------------------------------------------------- documentation layout

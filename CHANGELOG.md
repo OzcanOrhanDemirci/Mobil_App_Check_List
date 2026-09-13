@@ -7,6 +7,186 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-13
+
+A mobile pass. The application was responsive in the sense that it did not
+break, and unusable in the sense that mattered: on a 320px screen the welcome
+flow's step indicator ran off both edges of the dialog, a card's How-To button
+sat on top of the card's own title, the "Reset" tab of the project dialog was
+not on screen at all, and the How-To guides wrapped to two or three words a
+line. This release is that list, measured rather than eyeballed, plus the
+performance work the same measurements turned up.
+
+The project is a checklist for shipping mobile applications. Its own mobile
+side is the part a reader is most entitled to judge it by.
+
+### How it was measured
+
+A harness drives seven real device viewports (320, 360, 375, 390, 412, 430 and
+768 CSS px) against all three designs and eight application states, and reports
+horizontal overflow, elements outside the viewport, touch targets under 44px,
+text under 12px, dialogs that do not fit, and fixed chrome that takes more than
+a third of the screen. Baseline: **359 distinct problems**. Now: 35, every one
+of them a deliberate typographic decision documented under TYPE ON A PHONE in
+`css/06-responsive-print.css`.
+
+Performance figures come from an emulated mid-range handset: Fast 3G (1.6 Mbps,
+150ms RTT) with a 4x CPU slowdown.
+
+### Added
+
+- **A breakpoint scale**, documented at the head of
+  `css/06-responsive-print.css` and used by every sheet in the project: 900,
+  700, 560, 430 and 360px. Before this there was one screen breakpoint in that
+  file (`max-width: 700px`) and nine ad-hoc widths scattered through the other
+  sheets (760, 720, 600, 540, 480, 460, 420, 380), which is how a 320px screen
+  ended up with a layout designed for a 700px one. Nothing below 380px was
+  handled at all.
+- **A touch-target pass** (`@media screen and (pointer: coarse)`). Every
+  control a reader taps to get through the application is at least 44x44 CSS
+  px, the figure Apple's Human Interface Guidelines and Material both use, and
+  well above the 24x24 that WCAG 2.2 asks for in success criterion 2.5.8. The
+  harness counted **233 distinct controls under that size**; it now counts
+  none. Where growing a box would disturb the layout, the target grows with
+  padding and is pulled back with a negative margin, so it is bigger to a
+  finger and the same size to the eye.
+- **An opaque `--popover` token**, defined by each design. Floating surfaces
+  (the level filter's dropdown) cannot use `--surface`: two of the three
+  designs define it as a translucent wash, which is right for a panel sitting
+  in the page and wrong for a menu floating over other text.
+- **Named backdrop-blur tokens in the Showcase design**
+  (`--s-blur-pill`, `-card`, `-bar`, `-hero`, `-dialog`), so the phone tier at
+  the foot of that file has one place to switch them all off and a reader has
+  one place to see how much blur the design is asking for.
+- **Dismiss on scroll** for the mobile actions menu, alongside the existing
+  dismiss on an action, on a tap outside and on Escape. The panel lives inside
+  the sticky bar, so an open panel travels down the page with it; on a 320px
+  screen the bar plus the panel is about two thirds of the viewport.
+
+### Changed
+
+- **Service Worker: two strategies instead of one.** Navigations stay
+  network-first, now with a 3 second timeout so a weak signal costs a moment
+  rather than the page. Everything else (37 scripts, 14 stylesheets, the icons,
+  the manifest) is served from the cache and revalidated in the background.
+  A repeat visit went from **8119ms to 243ms**, and then to 178ms once the
+  cache was warm, with no network at all. The application already worked
+  offline after a first visit; it now also opens instantly.
+  - The page reloads itself once when a new worker takes control, which is
+    what keeps that safe: for one load after a release, network-first
+    navigation could otherwise pair a new document with subresources still
+    cached from the old one. Verified end to end, including that it happens
+    exactly once and does not loop.
+- **The category index is one scrolling row on a phone.** Fourteen chips
+  wrapping down the page came to **638px on a 320px screen**, a full screen of
+  navigation between the toolbar and the first checklist item. It is 46px now,
+  with scroll-snap, and every chip is still reachable.
+- **The How-To guide is one column below 560px.** The MVP / Release chip took
+  a third of the text column, and the numbered steps inside it took another
+  36px, leaving about 138px for the text: two or three words a line. The chip
+  takes a row of its own now and the guide gets the full width.
+- **Level rows stack their tag above their text below 560px**, for the same
+  reason: a 72px tag column out of a 230px row is not affordable.
+- **The sticky area is one surface on a phone.** The toolbar card and the
+  progress card had a 12px gap between them, and the checklist scrolled through
+  it in a legible strip, so headings appeared to run through the middle of the
+  toolbar. The two cards close up into one block with a single hairline seam,
+  and all three designs give that block an opaque fill.
+- **Backdrop blur is off below 700px.** Each one is a compositing pass that
+  re-samples whatever is behind the element, repeated on every frame that
+  element or the page under it moves. The Showcase design asked for one on the
+  hero, the sticky bar, every chip, every dialog and **all 55 cards**. What sits
+  behind them is the page's own gradient, smooth enough that blurring it
+  changes nothing a reader can see. `background-attachment: fixed` goes with
+  it: it repaints the viewport on every scrolled frame and Safari on iOS has
+  never implemented it faithfully anyway.
+- **`will-change` is scoped to the animation that needs it.** It was set on all
+  55 cards for the whole session, on a device that may have no memory to spare,
+  to smooth a flip that runs on one card at a time. `js/11-render.js` adds
+  `.flipping` for the half-second the animation lasts.
+- **Dialogs use `dvh`, not `vh`.** `85vh` is 85% of the viewport a mobile
+  browser reports with its address bar hidden, which is not the viewport the
+  reader has while the bar is showing: a dialog's footer buttons ended up below
+  the bottom of the screen. Dialogs also take 92% of the height and a 12px
+  margin below 560px, where 20px a side was 40px of a 320px screen. The same
+  change applies to `body` and to presentation mode's slides.
+- **Safe-area insets** on `.wrap`, on dialogs, on presentation mode's bars.
+  `viewport-fit=cover` was already set, which means the notch and the home
+  indicator can sit over the content.
+- Text fields are 16px on a coarse pointer. Safari on iOS zooms the page in
+  when a field with a smaller font takes focus and does not zoom back out.
+  This is keyed on the input method rather than on width: an iPad in landscape
+  is 1024px wide and does it too.
+- Type below 12px was raised where a reader has to read it (framework and
+  backend names, the progress counters, control labels, the item number) and
+  left alone where it captions a larger value beside it, or is a decorative
+  glyph, or is `aria-hidden` because it restates something the page already
+  says in words. The reasoning is written out in the sheet.
+- `touch-action: manipulation` and a tinted tap highlight on every control. The
+  first removes the double-tap-to-zoom wait, which on a checklist tapped in
+  quick succession turns two taps on neighbouring rows into a zoom. The second
+  keeps the feedback Android gives for free rather than zeroing it out, as is
+  the reflex.
+- Scrolling is contained: a dialog no longer hands the rest of a gesture to the
+  page behind it, and the page behind a dialog does not move at all.
+
+### Fixed
+
+- **The How-To button sat on top of the card title.** It is positioned in the
+  card's corner and took no space in the flow, so on a narrow card the title
+  ran underneath it. Measured across the three designs at phone widths, that
+  was **up to 31 of the 55 cards** at a time. The heading takes a row of its
+  own now, the item number and the button read as the card's header row, and a
+  short float holds the corner open for the heading's first line.
+- **The welcome flow's step indicator ran off both edges.** Eight dots at 26px
+  with seven connectors and fifteen gaps ask for about 340px; a 320px screen
+  offers the dialog 220px, so the first and last steps were cut in half. The
+  dots and spacing step down below 560px and the connectors go entirely below
+  430px.
+- **The project dialog's fourth tab was off screen.** Four tabs at 14px with
+  18px of padding a side ask for about 420px against the 280px a phone gives
+  the dialog, so "Backend" was cut off and "Reset" was not visible at all. A
+  tab a reader cannot see is a tab that does not exist. They are equal columns
+  below 560px, which fits all four down to 320px.
+- **The mode and style steps of the welcome flow rendered their descriptions
+  in uppercase with wide letter-spacing.** That treatment belongs to the
+  language step, where the description is a single word ("Turkish"); the two
+  steps that reuse the same classes have a full sentence there, which came out
+  three words a line in cards several times taller than they needed to be. It
+  is keyed on the language buttons now, and sentence-length cards stack below
+  560px.
+- **The level filter's dropdown was see-through in the Showcase design.** It
+  drew itself on `--surface`, which that design defines as a 3.8% white wash,
+  so the project pill's labels read straight through the menu's own.
+- **Long identifiers pushed the page sideways.** `UITraitCollection.userInterfaceStyle`
+  and its kind have no space to break at, and inline code in the How-To steps
+  ran up to **125px past the viewport**; in the Showcase design the document
+  itself scrolled 34px.
+- **Presentation mode's controls covered the end of every slide.** The bar
+  floats over the foot of the slide, which a wide screen rarely reaches and a
+  phone always does.
+- **Cumulative Layout Shift on the first load: 0.109, 0.138 and 0.041, now
+  0.001** in Minimal, Classic and Showcase, against the 0.1 that counts as
+  good. What is left comes from the category index filling in, which is one
+  46px row on a phone; it is deliberately not reserved, because the row's
+  height depends on how the chips wrap and a wrong reservation would shift
+  more than it saves. The checklist is written into
+  `#content` by a script that cannot run until 37 files have arrived; until
+  then the element had no height, the footer sat in the first screen, and the
+  arrival of the checklist threw it thousands of pixels down the page. The
+  element holds a screen's worth of height open while it is empty.
+- **The hero's language and style pills were laid out by a rule that matched
+  nothing.** It selected them as direct children of `.hero-controls-right`,
+  where they are grandchildren, so the two blocks wrapped onto separate rows at
+  inconsistent widths.
+- The search field's minimum content width kept the toolbar from being narrower
+  than it wanted to be, and pushed the document 3px sideways at 320px.
+- The bullet the help dialog draws in front of prose list items appeared in
+  front of the project list's rows, which are controls rather than paragraphs.
+- The welcome flow's call to action inherited `white-space: nowrap` from the
+  shared button rule, and it carries a sentence: on a 320px screen the language
+  step's button ran 108px past the edge of the screen.
+
 ## [1.3.0] - 2026-09-12
 
 Three design themes, a content refresh against current platform sources,
@@ -767,7 +947,8 @@ and per-item how-to guidance.
 - Service Worker scope limited to same-origin GET requests; non-GET and
   cross-origin requests bypass the cache entirely.
 
-[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0

@@ -116,6 +116,7 @@ function flipFeatureCard(feature, willFlip, opts = {}) {
   if (feature._flipTransitionEnd) {
     inner.removeEventListener("transitionend", feature._flipTransitionEnd);
     feature._flipTransitionEnd = null;
+    feature.classList.remove("flipping");
   }
 
   /* INSTANT mode: used to silently apply the "review" preference right after
@@ -154,6 +155,11 @@ function flipFeatureCard(feature, willFlip, opts = {}) {
   const target  = willFlip ? back : front;
   const targetH = target.offsetHeight;
 
+  /* Give the compositor its hint for the duration of the animation; see
+     the .feature.flipping rule in css/03-categories.css. It comes off
+     again in onEnd below. */
+  feature.classList.add("flipping");
+
   /* Pin the current height as an explicit pixel value (auto becomes px). */
   inner.style.height = startH + "px";
   /* Force a reflow so the next style change triggers the transition. */
@@ -177,6 +183,7 @@ function flipFeatureCard(feature, willFlip, opts = {}) {
     if (e.propertyName !== "height") return;
     inner.removeEventListener("transitionend", onEnd);
     feature._flipTransitionEnd = null;
+    feature.classList.remove("flipping");
     inner.style.height = "";
   };
   feature._flipTransitionEnd = onEnd;

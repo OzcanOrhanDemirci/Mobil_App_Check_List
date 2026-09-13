@@ -17,6 +17,32 @@
   }
   .cat-nav a:hover { color: var(--text); background: var(--surface-3); }
 
+  /* Fourteen chips wrapping down the page came to 638px on a 320px screen:
+     a full screen of navigation between the toolbar and the first checklist
+     item, which is a strange thing to make someone scroll past to reach the
+     thing they opened the app for.
+
+     One scrolling row instead, 48px tall. Everything stays reachable, the
+     chip cut off at the right edge is the affordance that says so, and
+     scroll-snap makes a flick land on a chip rather than between two. */
+  @media (max-width: 700px) {
+    .cat-nav {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-nav a {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      white-space: nowrap;
+    }
+  }
+
   section.category {
     margin-bottom: 32px;
     border: 1px solid var(--border);
@@ -282,6 +308,17 @@
     transition:
       transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
       height    0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* will-change asks the compositor to prepare for a change, and holding
+     that promise costs memory for as long as it is set. On this page it was
+     set on all 55 cards for the whole session, on a device that may have
+     none to spare, to smooth an animation that runs on one card at a time
+     and only when a reader presses the button.
+
+     js/11-render.js#flipFeatureCard adds .flipping for the duration of the
+     animation and removes it on transitionend, so the hint now exists for
+     the half-second it is worth something. */
+  .feature.flipping .feature-inner {
     will-change: transform, height;
   }
   .feature-inner > .feature-front,
@@ -399,6 +436,34 @@
   .howto-grid > .howto-tag:nth-child(n+3) {
     margin-top: 15px;
   }
+  /* On a phone the label column is unaffordable. A 64px chip plus its gap
+     takes a third of the text column on a 320px screen, and what is left
+     wraps the steps to two or three words a line. Below 560px the chip
+     moves onto its own row and the guide gets the full width. */
+  @media (max-width: 560px) {
+    .howto-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    /* The dashed rule between the MVP and Release guides is dropped rather
+       than moved. In one column it would have to sit above the chip, and a
+       chip is a pill: a straight rule across a rounded capsule reads as a
+       rendering fault. The chips are strong enough separators on their own,
+       given a larger gap. */
+    .howto-grid > .howto-tag:nth-child(n+3) {
+      margin-top: 18px;
+    }
+    .howto-grid > .howto-text:nth-child(n+3) {
+      padding-top: 0;
+      border-top: 0;
+    }
+    /* The chip has its own row now and no longer has to line up with a
+       neighbouring column, so it shrinks to its label. */
+    .howto-tag {
+      min-width: 0;
+      justify-self: start;
+    }
+  }
   .howto-tag {
     /* Chip height is fixed at 24px (border included). Line-height matches the
        content area (22px = 24 - 2*1px border), so the text's line box stays
@@ -452,6 +517,11 @@
     background: var(--surface-2);
     border-radius: 4px;
     color: var(--accent-2);
+    /* API names carry no spaces, so a phone has nowhere to break
+       `UITraitCollection.userInterfaceStyle` and the whole document ends up
+       scrolling sideways. `anywhere` lets the break happen mid-token when
+       there is no other option, and changes nothing when the line fits. */
+    overflow-wrap: anywhere;
   }
   /* Numbered step list: the 1, 2, 3 markers are re-drawn via CSS counter inside
      a colored circle; inline markers from the author (e.g. "1) ") are parsed
@@ -475,6 +545,12 @@
     line-height: 1.6;
     border-radius: 6px;
     transition: background 0.12s, color 0.12s;
+  }
+  /* The numbered marker keeps its size (it is a tap target for the step
+     checkbox) but the text starts closer to it. */
+  @media (max-width: 430px) {
+    .howto-steps > li { padding-left: 32px; }
+    .howto-steps > li::before { width: 24px; height: 24px; line-height: 22px; }
   }
   .howto-steps > li:last-child { margin-bottom: 0; }
   .howto-steps > li::before {
@@ -581,7 +657,7 @@
     margin-top: 0;
   }
   /* On narrow screens, let buttons grow but still fit on one row */
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .feature-actions { gap: 6px 8px; }
   }
 
@@ -633,6 +709,39 @@
     min-width: 0;
     word-wrap: break-word;
     overflow-wrap: break-word;
+  }
+  /* The How-To button is absolutely positioned in the card's top-right
+     corner, so it takes no space in the flow and, on a narrow card, the
+     title ran straight underneath it. Measured across the three designs,
+     that was up to 31 of the 55 cards at a phone width.
+
+     The heading takes a row of its own instead of sharing one with the
+     item number. The number is short, so it and the button read as the
+     card's header row, and the title starts on the line below with the
+     card's full width: no reserved gutter down the side, and no line of
+     the title ever runs under the button.
+
+     The float is the remainder. The heading's first line still begins a
+     few pixels above where the button ends, and an empty box the width of
+     the button holds those pixels open. It is short enough to affect only
+     that first line. */
+  @media (max-width: 700px) {
+    .feature-head {
+      align-items: center;
+      row-gap: 2px;
+    }
+    .feature-head h3 {
+      flex: 1 0 100%;
+    }
+    .feature-head h3::before {
+      content: "";
+      float: right;
+      width: 98px;
+      /* In em, so it tracks the heading's type size: a shade over one line
+         in every design, which is what clears the pill above without
+         reaching into the line below. */
+      height: 1.25em;
+    }
   }
   .feature-desc {
     margin: 0 0 14px;
@@ -884,7 +993,10 @@
     top: calc(100% + 8px);
     left: 0;
     min-width: 100%;
-    background: var(--surface);
+    /* Not --surface: see the token's definition in css/01-base.css. Two of
+       the three designs make --surface translucent, and this menu opens
+       directly over the project pill, whose labels showed through it. */
+    background: var(--popover);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 6px;
