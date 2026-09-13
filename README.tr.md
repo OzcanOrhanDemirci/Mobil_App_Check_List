@@ -134,7 +134,7 @@ Bu uygulama o boşluğu doldurur:
 - **Sunum modu** (`P` tuşu): tek tıkla projeksiyon için tam ekran
 - **Yazdır / PDF**: hem kontrol listesi hem Nasıl Yapılır? rehberi formatları
 - **Tek tıkla yükle**: ana ekrana / başlat menüsüne kurulabilir
-- **Offline çalışır**: Service Worker önbelleği ile internet kopsa da açılır; ikinci açılış bu önbellekten saniyenin çok altında gelir
+- **İlk ziyaretten itibaren offline çalışır**: Service Worker kurulurken uygulamanın tamamını saklar; internet olmadan da açılır, sonraki açılışlar bu kopyadan saniyenin çok altında gelir
 - **Telefon için kurgulanmış**: 320px'e inen beş kademeli responsive ölçek, 44x44 dokunma hedefleri, safe-area boşlukları, hiçbir genişlikte yatay kaydırma yok
 - **A11y**: yüksek kontrast paleti, klavye navigasyonu, focus-visible outline'ları, semantik ARIA rolleri
 
@@ -241,7 +241,7 @@ npx playwright install chromium
 # 2) Repo kökünde basit bir statik sunucu başlatın:
 npx serve .                       # http://localhost:3000
 # veya
-python -m http.server 5500        # http://localhost:5500
+python scripts/serve-local.py 5500  # http://localhost:5500, önbelleksiz
 
 # 3) Yakalama script'ini çalıştırın (varsayılan URL http://localhost:3000):
 node scripts/capture-screenshots.mjs
@@ -284,12 +284,9 @@ git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
 # Yerel sunucu başlat (Service Worker file:// üzerinde çalışmaz)
-python scripts/serve-local.py 8080   # veya: npm run serve
+npm run serve        # http://localhost:8000 (scripts/serve-local.py, önbelleksiz)
 # ya da
-npx serve .
-
-# Sonra tarayıcıda:
-# http://localhost:8080
+npx serve .          # http://localhost:3000
 ```
 
 ### 4. Kendi GitHub Pages'inde yayınlamak
@@ -355,11 +352,11 @@ Vitrin'in hareketi `js/20-showcase-motion.js` içindedir: yalnızca o tema etkin
 
 | Katman         | Seçim                                             | Neden                                                                                                                                                                                                                                                                                                    |
 | -------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | Tek `index.html` (~1170 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                                                                                                                                        |
+| HTML           | Tek `index.html` (~1070 satır)                    | PWA olarak servis edilen tek bir entry point; tüm modaller statik HTML olarak gömülü, JS bunları gösterir/gizler.                                                                                                                                                                                        |
 | CSS            | 14 dosya, vanilla CSS                             | Build tool yok. İki eksen de (3 tasarım x 2 renk modu) CSS custom properties üzerinde çalışır. Modal yüzeyleri kendi dosyalarına bölük (`css/05-modals-*.css`); varsayılan dışı iki tasarım da kendi dosyalarına (`css/07-design-minimal.css`, `css/08-design-showcase.css`). Print stilleri ayrı dosya. |
 | JS             | 37 dosya, vanilla ES2020+                         | 22 mantıksal modül + 14 kategori veri parçası + 1 senkron bootstrap. Build/transpile/bundling yok; `<script defer>` etiketleri sıralı yüklenir (numaralı dosyalar sırayı belirler).                                                                                                                      |
 | Veri           | `window.DATA` dizisi, 14 kategori dosyasına bölük | 14 kategori × 55 madde, dil/stil/framework/backend varyantlarıyla. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` her biri kendi kategorisini `push` eder. Build yok.                                                                                                                    |
-| Service Worker | Network-first + cache fallback                    | `sw.js` ~30 satır; her aynı-origin GET önce ağa gider, başarılı yanıtlar cache'e yazılır, ağ kopuşunda son cache'lenmiş sürüm servis edilir. Cache anahtarı `package.json` ile bağlı.                                                                                                                    |
+| Service Worker | Kurulumda app shell, iki strateji                 | `sw.js` kurulurken sayfanın ihtiyaç duyduğu dosyaları saklar, böylece ilk ziyaret de offline çalışır. Sayfanın kendisi 3 sn zaman aşımlı network-first; geri kalan her şey cache'ten gelir ve arka planda tazelenir. Cache anahtarı `package.json` ile bağlı.                                            |
 | Depolama       | `localStorage`                                    | Tüm kullanıcı verisi (işaretler, notlar, projeler) tarayıcıda kalır; sunucuya hiçbir şey gitmez.                                                                                                                                                                                                         |
 
 ### Dört eksenli içerik çözücü
@@ -495,9 +492,10 @@ Gözden kaçması kolay, sahada pahalıya patlayan iki platform ayrıntısı:
 
 ### PWA stratejisi
 
-- `manifest.webmanifest` standalone modu açar; ikonlar `assets/icons/` altında dört PNG dosyası olarak (`icon-192.png`, `icon-512.png` ve aynı boyutların `*-maskable.png` versiyonları). Bu dosyalar `og-image.png` ile aynı turuncu-tik-koyu-zemin görselinden üretilir.
-- `sw.js` **iki ayrı strateji** kullanır, çünkü iki istek türü birbirinin tersini ister. **Navigasyonlar network-first, 3 saniyelik zaman aşımıyla**: yeni sürümü taşıyan şey belgedir ve tek, küçük bir istektir; böylece çevrimiçi bir okuyucu güncel sürümü görür, zayıf bir sinyal ise sayfanın tamamına değil yalnızca bir ana mal olur. **Geri kalan her şey stale-while-revalidate**: stiller, scriptler, ikonlar ve manifest doğrudan `mobil-kontrol-v{paket-sürümü}` cache'inden gelir, böylece ikinci açılış anında boyanır ve hiç bağlantı olmadan da çalışır; taze kopya bir sonraki açılış için arka planda çekilir. Eski cache anahtarları `activate`'te temizlenir; anahtar `package.json` `version` alanından `scripts/check-sw-cache-version.mjs` ile üretilir, yani sürüm bump'ı tüm istemcilerin cache'ini geçersizleştirir.
-- Bir sürüm hem belgeyi hem de belgenin referans verdiği dosyaları değiştirdiği için, network-first navigasyon tam olarak bir açılış boyunca yeni belgeyi eski sürümden kalan alt kaynaklarla eşleştirebilir. Bunu iki şey sınırlar: cache sürüme özeldir ve yeni worker etkinleşirken bütünüyle silinir; ayrıca **yeni bir worker kontrolü devraldığında sayfa kendini bir kez yeniler** (`js/18-app.js`). Yenileme korumalıdır: ilk ziyarette, sayfayı ilk kez sahiplenen worker yüzünden her yeni okuyucuya fazladan bir yükleme çıkarmaz.
+- `manifest.webmanifest` standalone modu açar; ikonlar `assets/icons/` altında altı PNG dosyası olarak durur: `icon-192.png`, `icon-512.png` ve her birinin `*-maskable.png` versiyonu, ayrıca `apple-touch-icon.png` ve `favicon-48.png`. Bu dosyalar `og-image.png` ile aynı turuncu-tik-koyu-zemin görselinden üretilir.
+- **`sw.js` kurulurken uygulama kabuğunu (app shell) saklar.** Bir worker yalnızca kontrolü devraldıktan sonra yapılan istekleri görür; ilk ziyarette bu, sayfa yüklendikten sonra olur. Bu yüzden yalnızca fetch handler'ın doldurduğu bir cache, ilk ziyaret bittiğinde hâlâ boştur. `install` bu nedenle worker etkinleşmeden önce `APP_SHELL` listesini, yani sayfanın açılmak için ihtiyaç duyduğu 59 dosyayı saklar. Her dosya `cache: 'no-cache'` ile istenir: tarayıcı az önce indirdiği kopyayı yeniden doğrular (ikinci bir indirme değil, 304) ve bir sürüm yayınlandığında HTTP cache'in hâlâ taze saydığı eski bir kopyayı saklayamaz. Liste `index.html` ve `manifest.webmanifest` dosyalarından `scripts/check-sw-app-shell.mjs` ile üretilir (`npm run sw:sync`); liste bu dosyalardan saparsa CI kırılır.
+- `sw.js` ardından **iki ayrı strateji** kullanır, çünkü iki istek türü birbirinin tersini ister. **Navigasyonlar network-first, 3 saniyelik zaman aşımıyla**: yeni sürümü taşıyan şey belgedir ve tek, küçük bir istektir; böylece çevrimiçi bir okuyucu güncel sürümü görür, zayıf bir sinyal ise sayfanın tamamına değil yalnızca bir ana mal olur. Ağ düşerse ya da zaman aşımı dolarsa cache'teki sayfa, sorgu dizesi yok sayılarak eşleştirilip servis edilir. **Geri kalan her şey stale-while-revalidate**: stiller, scriptler, ikonlar ve manifest doğrudan `mobil-kontrol-v{paket-sürümü}` cache'inden gelir, böylece ikinci açılış anında boyanır ve hiç bağlantı olmadan da çalışır; taze kopya bir sonraki açılış için arka planda çekilir. Eski cache anahtarları `activate`'te temizlenir; anahtar `package.json` `version` alanından `scripts/check-sw-cache-version.mjs` ile üretilir, yani sürüm bump'ı tüm istemcilerin cache'ini geçersizleştirir.
+- Bir sürüm hem belgeyi hem de belgenin referans verdiği dosyaları değiştirdiği için, network-first navigasyon tam olarak bir açılış boyunca yeni belgeyi eski sürümden kalan alt kaynaklarla eşleştirebilir. Bunu iki şey sınırlar: cache sürüme özeldir ve yeni worker, eskisini silip etkinleşmeden önce kendi kabuğunu eksiksiz saklamış olur; ayrıca **yeni bir worker kontrolü devraldığında sayfa kendini bir kez yeniler** (`js/18-app.js`). Yenileme korumalıdır: ilk ziyarette, sayfayı ilk kez sahiplenen worker yüzünden her yeni okuyucuya fazladan bir yükleme çıkarmaz.
 - `./sw.js` yüklenemezse (ör. `file://` üzerinden açılan tek-dosya senaryoları) JS bir **blob URL üzerinden fallback Service Worker** kaydetmeye çalışır; aynı blob'a inline SVG ikon içeren küçük bir manifest'i de yazar. Chromium blob URL'li SW'yi reddederse sessizce geçer.
 - HTTPS üzerinden servis edilince Chrome / Edge / Safari "Yükle" önerisini otomatik olarak gösterir.
 
@@ -509,7 +507,7 @@ Gözden kaçması kolay, sahada pahalıya patlayan iki platform ayrıntısı:
 Mobil_App_Check_List/
 ├── index.html                    Tek sayfa: modaller + script yükleme sırası
 ├── manifest.webmanifest          PWA manifesti (ad, ikon, tema rengi, scope)
-├── sw.js                         Service Worker (network-first + offline fallback)
+├── sw.js                         Service Worker (kurulumda app shell, ilk ziyaretten itibaren offline)
 ├── og-image.png                  1200×630 sosyal medya önizleme görseli (TR)
 ├── og-image-en.png               1200×630 sosyal medya önizleme görseli (EN)
 ├── .nojekyll                     GitHub Pages Jekyll davranışını kapatır
@@ -542,6 +540,7 @@ Mobil_App_Check_List/
 │   ├── serve-local.py            Önbelleksiz yerel sunucu (npm run serve)
 │   ├── check-em-dash.mjs         CI em-dash kuralı
 │   ├── check-sw-cache-version.mjs  sw.js cache anahtarı paket sürümüyle eşleşmeli
+│   ├── check-sw-app-shell.mjs    sw.js app shell listesi index.html + manifest ile eşleşmeli
 │   ├── install-githooks.mjs      `prepare` script ile pre-commit hook kurar
 │   ├── generate-pwa-assets.py    İkon ve OG görsellerini üretir (opsiyonel)
 │   └── capture-screenshots.mjs   Playwright ile README ekran görüntüleri
@@ -554,6 +553,8 @@ Mobil_App_Check_List/
     ├── progress.test.js          countLevels (ilerleme sayma)
     ├── filters.test.js           shouldShowFeature (arama + görünüm filtreleri)
     ├── ai-prompt.test.js         Markdown + JSON prompt üreteçleri
+    ├── responsive.test.js        Kırılma ölçeği, dokunma hedefi bloğu, dvh eşleri
+    ├── service-worker.test.js    Kurulumda app shell, offline yedek, cache tazeleme
     └── design.test.js            Tasarım ekseni + yazdırma eşitliği güvencesi
 ```
 
@@ -744,7 +745,7 @@ Bu, sürdürülebilirliği ve katkıyı kolaylaştıran kasıtlı bir karardır:
 - Dosyaları doğrudan düzenle, sayfayı yenile, sonucu gör.
 - 5 yıl sonra bile aynı şekilde çalışacak; ekosistemde build aracı bağımlılıkları kırılsa bile.
 
-Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS + JS) gzip sonrası **~380 KB**; büyük kısmı 55 madde × dört eksende çoklu varyant taşıyan içerik veri dosyasından gelir. İlk ziyaretten sonra Service Worker önbelleği ağ trafiğini neredeyse sıfırlar.
+Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS + JS) gzip sonrası **~445 KB**; yarısından fazlası 55 madde × dört eksende çoklu varyant taşıyan 14 içerik veri dosyası. Service Worker bunu ilk ziyarette saklar; sonraki ziyaretler yalnızca yeniden doğrular ve hiçbir şey değişmediyse bu yaklaşık 8 KB tutar.
 
 </details>
 
@@ -758,7 +759,7 @@ Karşı argüman: bundle boyutu ve performans. Tüm statik dosyalar (HTML + CSS 
 - **Yük süresi**: framework yükü yok; ilk render anlık.
 - **Eksiklik yok**: state yönetimi, render, event delegation, history hepsi vanilla ile rahatlıkla yapılır.
 
-Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` ~1170 satır. Bunun karşılığında işin tamamı görünür ve okunabilir. 1.0'da tek bir 3079 satırlık `js/03-data.js` ve 2392 satırlık `js/14-app.js` vardı; 1.1.0'da bunlar 14 kategori dosyasına ve 5 yönlendirme modülüne bölündü, böylece bir contributor tek bir özelliğe odaklanırken yalnızca o dosyayı açar.
+Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` ~1070 satır. Bunun karşılığında işin tamamı görünür ve okunabilir. 1.0'da tek bir 3079 satırlık `js/03-data.js` ve 2392 satırlık `js/14-app.js` vardı; 1.1.0'da bunlar 14 kategori dosyasına ve 5 yönlendirme modülüne bölündü, böylece bir contributor tek bir özelliğe odaklanırken yalnızca o dosyayı açar.
 
 </details>
 
@@ -767,14 +768,14 @@ Bu basit kararın bedeli: kod tabanı **çok az soyutlanmış**; `index.html` ~1
 
 <br />
 
-55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan içerik ham hâliyle ~835 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
+55 madde × dört eksende (dil × stil × framework × backend) varyantları taşıyan içerik ham hâliyle ~840 KB. İlk bakışta "bunu lazily yüklemek lazım" demek isteyebilirsin. Yapmadık çünkü:
 
 - Kullanıcı **birkaç madde** değil, **tüm listeyi** görmek için geliyor: arama, filtre ve sunum modu listenin tamamı belleğe yüklenmişken anlamlı.
-- Tüm asset'ler gzip sonrası ~380 KB; çoğu bağlantıda saniyenin altında iniyor.
-- Service Worker ilk başarılı ziyaretten sonra cache'i dolduruyor; internet kopsa da uygulama açılıyor.
+- Tüm asset'ler gzip sonrası ~445 KB: genişbant veya 4G'de saniyenin çok altında, yavaş bir 3G bağlantıda birkaç saniyede iner.
+- Service Worker kurulurken, yani ilk ziyarette, uygulamanın tamamını saklıyor; ondan sonra internet kopsa da uygulama açılıyor.
 - Lazy loading mimarisi (dinamik import) build adımı gerektirirdi → "vanilla JS" kararını kırardı.
 
-  1.1.0'da içerik **14 kategori dosyasına** bölündü (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). Build adımı eklenmedi: her dosya kendi kategorisini `window.DATA` dizisine `push` eder, `js/03-data.js` (15 satırlık stub) onu `const DATA` olarak dışa verir. Tarayıcının runtime'ında hâlâ tek bir bellek-içi `DATA` dizisi var; sadece yazma tarafı 14 parçaya bölünmüş durumda. Bu hem merge çatışmalarını azaltır hem de bir contributor "ben sadece güvenlik maddelerine bakacağım" derken yalnızca `03i-data-09-security.js` dosyasını okumasına izin verir. Veri ~200 maddeye büyürse gerçek lazy loading'i (kategori başına async fetch) yeniden değerlendirmek gerekir.
+1.1.0'da içerik **14 kategori dosyasına** bölündü (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). Build adımı eklenmedi: her dosya kendi kategorisini `window.DATA` dizisine `push` eder, `js/03-data.js` (15 satırlık stub) onu `const DATA` olarak dışa verir. Tarayıcının runtime'ında hâlâ tek bir bellek-içi `DATA` dizisi var; sadece yazma tarafı 14 parçaya bölünmüş durumda. Bu hem merge çatışmalarını azaltır hem de bir contributor "ben sadece güvenlik maddelerine bakacağım" derken yalnızca `03i-data-09-security.js` dosyasını okumasına izin verir. Veri ~200 maddeye büyürse gerçek lazy loading'i (kategori başına async fetch) yeniden değerlendirmek gerekir.
 
 </details>
 
@@ -829,28 +830,34 @@ Aynı içerik, kullanıcının seçimine göre **farklı kelimelerle** gösteril
 
 ## Performans
 
-Orta seviye bir telefon benzetiminde ölçüldü: Fast 3G (1.6 Mbps, 150ms gidiş
-dönüş) ve 4x CPU yavaşlatma, 390x844 görünüm.
+Chromium'da, orta seviye bir telefon benzetiminde ölçüldü: 390x844 görünüm, 4x
+CPU yavaşlatma ve yavaş bir mobil ağ. Ağ sayfada değil sunucuda benzetildi,
+çünkü sayfaya uygulanan kısıtlama Service Worker'ın kendi yaptığı istekleri
+yavaşlatmaz: her yanıttan önce 150 ms, 1,6 Mbps paylaşılan indirme bant
+genişliği, gzip ve HTTP cache'in süresi dolmuşken ETag ile yeniden doğrulama
+(GitHub Pages `max-age=600` gönderir). Ziyaret ve ağ değerleri üç ölçümün
+ortancasıdır.
 
-| Metrik                           | Hedef    | Mevcut                            |
-| -------------------------------- | -------- | --------------------------------- |
-| İlk ziyaret, etkileşime hazır    | -        | ~8 sn (soğuk cache, Fast 3G)      |
-| İkinci ziyaret, etkileşime hazır | -        | **~0,2 sn** (SW cache'inden)      |
-| İkinci ziyaret, ağ trafiği       | -        | **0 bayt**                        |
-| İlk içerikli boyama              | -        | soğukta ~2,1 sn, sıcakta ~0,07 sn |
-| CLS (Cumulative Layout Shift)    | < 0.1    | **0.001** (üç temada da)          |
-| INP (Interaction to Next Paint)  | < 200 ms | ~80 ms                            |
-| Tam yeniden render (55 kart)     | -        | 4x CPU yavaşlatmada ~30 ms        |
-| Toplam asset (ham)               | -        | ~1,5 MB                           |
-| Toplam asset (gzipped)           | -        | 51 istekte ~430 KB                |
-| Çevrimdışı açılış (SW cache)     | -        | Çalışır                           |
-| Çalışma zamanı bağımlılığı       | -        | Sıfır                             |
+| Metrik                           | Hedef    | Mevcut                                                                         |
+| -------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| İlk ziyaret, etkileşime hazır    | -        | ~4,6 sn (henüz hiçbir şey cache'te değil)                                      |
+| Tekrar ziyaret, etkileşime hazır | -        | **~0,5 sn** (SW cache'inden, ikinci ziyaretten itibaren)                       |
+| Tekrar ziyaret, ağ trafiği       | -        | **~8 KB**: 53 yeniden doğrulama, değişiklik yoksa 304                          |
+| İlk ziyarette saklanan app shell | -        | 59 dosya: 52'si yeniden doğrulandı (304), manifest + 6 ikon indirildi (~12 KB) |
+| İlk içerikli boyama              | -        | soğukta ~1,4 sn, sıcakta ~0,3 sn                                               |
+| CLS (Cumulative Layout Shift)    | < 0.1    | **0.001** (üç temada da)                                                       |
+| INP (Interaction to Next Paint)  | < 200 ms | ~80 ms                                                                         |
+| Tam yeniden render (55 kart)     | -        | 4x CPU yavaşlatmada ~30 ms                                                     |
+| Toplam asset (ham)               | -        | ~1,5 MB                                                                        |
+| Toplam asset (gzipped)           | -        | 52 istekte ~445 KB                                                             |
+| Çevrimdışı açılış (SW cache)     | -        | İlk ziyaretten itibaren çalışır                                                |
+| Çalışma zamanı bağımlılığı       | -        | Sıfır                                                                          |
 
 > Yükün neredeyse tamamı içerik: dört eksenli varyant kütüphanesini taşıyan 14
 > kategori veri dosyası (`js/03a-data-01-idea-planning.js` ...
 > `js/03n-data-14-cicd.js`). Uygulama mantığı (`14-welcome.js`,
 > `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) hepsi
-> birlikte gzip sonrası 30 KB altında kalır. Dolayısıyla ilk ziyarete ağ hakim
+> birlikte gzip sonrası yaklaşık 32 KB tutar. Dolayısıyla ilk ziyarete ağ hakim
 > olur; Service Worker'ın işi de o ziyaretten yalnızca bir tane olmasını
 > sağlamaktır. Lighthouse mobil profilinde hedeflenen aralık: Performance 95+,
 > Accessibility 95+, Best Practices 100, SEO 100.

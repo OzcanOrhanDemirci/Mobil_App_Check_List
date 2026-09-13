@@ -10,7 +10,9 @@
 #                     user-facing files (i18n strings, help text, data, HTML).
 #   - sw-cache-check: Service Worker cache key in sw.js must match the
 #                     version in package.json. Ties PWA cache invalidation
-#                     to release bumps automatically.
+#                     to release bumps automatically. The APP_SHELL list the
+#                     worker stores on install must match the files
+#                     index.html and manifest.webmanifest reference.
 #
 # Triggers:
 #   - push to main
@@ -184,3 +186,10 @@ jobs:
       # `npm run sw:sync` (or `node scripts/check-sw-cache-version.mjs --fix`).
       - name: Enforce sw.js cache version matches package.json
         run: node scripts/check-sw-cache-version.mjs
+
+      # The worker stores APP_SHELL while it installs, which is what makes a
+      # first visit work offline. A file index.html loads but the list omits
+      # is missing offline; a listed file that no longer exists stops the
+      # worker installing at all. `npm run sw:sync` regenerates the list.
+      - name: Enforce sw.js app shell matches index.html and the manifest
+        run: node scripts/check-sw-app-shell.mjs

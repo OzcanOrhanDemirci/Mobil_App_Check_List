@@ -36,7 +36,8 @@ Files are organized to be browsable in load order. Numbered prefixes drive the `
 ```text
 index.html                       Single page, all modals inline
 manifest.webmanifest             PWA manifest
-sw.js                            Service Worker (network-first + cache fallback)
+sw.js                            Service Worker (app shell stored on install,
+                                 network-first page, cached files)
 css/
   01-base.css                    Reset, CSS custom properties, typography
   02-layout.css                  Hero, page layout, project pill
@@ -94,11 +95,13 @@ js/
   19-design.js                   Design axis: apply, persist, picker, T key
   20-showcase-motion.js          Showcase-only motion layer (IIFE, detachable)
 scripts/                         Build-less utility scripts (em-dash check,
-                                 sw cache version check, githooks installer)
+                                 sw cache version and app shell checks,
+                                 dev server, githooks installer)
 tests/                           Unit tests for resolver, data schema, the
                                  multi-project store, the XSS-defense
                                  helpers, the progress counter, filters,
-                                 the AI prompt builder, and the design axis
+                                 the AI prompt builder, the design axis,
+                                 the responsive layer and the Service Worker
 ```
 
 **Content lives in the 14 per-category data files** (`js/03a-data-01-idea-planning.js` through `js/03n-data-14-cicd.js`). At runtime each file appends its category onto `window.DATA`, and the 15-line stub `js/03-data.js` re-exports the populated array as `const DATA`. Do not put new items in the stub; pick the file that matches your category. UI strings live in `js/01-i18n-strings.js`. Everything else is logic and presentation.
@@ -246,13 +249,14 @@ npm run format:check                      # Prettier check; run `npm run format`
 npm test                                  # node --test against tests/*.test.js
 node scripts/check-em-dash.mjs            # content rule: no em-dash in user-facing files
 node scripts/check-sw-cache-version.mjs   # sw.js CACHE_NAME must match package.json
+node scripts/check-sw-app-shell.mjs       # sw.js APP_SHELL must match index.html and the manifest
 ```
 
-Each must exit cleanly (no warnings, no failures). CI runs the same commands plus an HTML validator (`npx html-validate index.html`) and a JS syntax check on every `js/*.js` file. Lint rules live in `eslint.config.js`. After bumping the version in `package.json`, run `npm run sw:sync` to regenerate the Service Worker cache key (or pass `--fix` to the check script directly).
+Each must exit cleanly (no warnings, no failures). CI runs the same commands plus an HTML validator (`npx html-validate index.html`) and a JS syntax check on every `js/*.js` file. Lint rules live in `eslint.config.js`. Run `npm run sw:sync` after bumping the version in `package.json`, and after adding, renaming or removing a stylesheet, script or icon that `index.html` or `manifest.webmanifest` references: it regenerates both the Service Worker cache key and the `APP_SHELL` list the worker stores on install (each check script also accepts `--fix`). A file missing from that list works online and is simply absent offline; a listed file that no longer exists stops the worker installing at all, so CI rejects either.
 
 ### Test suites
 
-Seven suites live under `tests/`. All of them load the real `js/*.js` files into a fresh `node:vm` sandbox via `tests/_setup.js`, so the tests exercise production code paths without any fixture duplication.
+Ten suites live under `tests/`. Most of them load the real `js/*.js` files into a fresh `node:vm` sandbox via `tests/_setup.js`, so the tests exercise production code paths without any fixture duplication; `responsive.test.js` and `service-worker.test.js` work differently and say how below.
 
 - `tests/resolver.test.js` covers the four-axis resolver (`resolveLevel`) and the i18n picker (`tx`).
 - `tests/data.test.js` covers the DATA schema integrity: category and feature counts (locked to the figures in README and CHANGELOG), id uniqueness, axis variant key validity, non-empty TR / EN translations on every required field, and the em-dash content rule (with the placeholder exemption). The DATA array is loaded by passing the `DATA_FILES` list from `_setup.js` as `extraFiles`; tests do not need to re-list the per-category files.
@@ -260,8 +264,12 @@ Seven suites live under `tests/`. All of them load the real `js/*.js` files into
 - `tests/ui-helpers.test.js` covers the HTML escape / strip pair in `js/07-ui-helpers.js`: the five XSS-relevant character escapes, idempotency of double-escaping, type coercion of null / undefined / number / object inputs, common XSS attack-vector strings, and the stripper's entity decoding plus whitespace collapse.
 - `tests/progress.test.js` covers `countLevels` in `js/12-progress.js`: empty state, partial state, all-done state, MVP-only completion, Release-only completion, backend-gated feature exclusion when `currentBackend === "noBackend"`, and the per-category breakdown counts.
 - `tests/design.test.js` covers the design axis in `js/19-design.js`: `normalizeDesign` including the near misses, the full `resolveInitialDesign` decision table (a valid saved value, an invalid one, none at all, and storage that throws), and `applyDesign` persistence including the `persist: false` path used for live preview and relabeling. It also asserts three cross-file invariants that no unit test would otherwise catch: that `DEFAULT_DESIGN` and the design list agree with the copies inlined in `js/00-bootstrap.js`, that every design rule sits inside `@media screen`, and that the Showcase motion layer's `detach()` clears each class and node its `attach()` adds.
+- `tests/filters.test.js` covers `shouldShowFeature` in `js/13-filters.js`, the predicate that decides whether a card stays visible: the 3 x 3 matrix of view mode and view filter, and how search text combines with it.
+- `tests/ai-prompt.test.js` covers the prompt builders in `js/09-ai-prompt.js`: the TR / EN switch, the MVP and Release sections appearing only when the item has them, the framework-aware target platform line, which install command a backend step gets, HTML stripped before it reaches the markdown, and JSON output that parses. It uses synthetic items, so content edits do not move its assertions.
+- `tests/responsive.test.js` reads the stylesheets as text instead of loading scripts. It enforces the breakpoint scale (900, 700, 560, 430 and 360px, with three exceptions that each carry their reason), that the `pointer: coarse` touch-target block is scoped to `screen` so a printed page never gets 44px rows, 16px text fields on a coarse pointer, and a `dvh` companion for every `vh` height. It also pins the shape of `sw.js`: network-first navigations, stale-while-revalidate for the rest, range requests passed through, and the page's one-time reload.
+- `tests/service-worker.test.js` runs `sw.js` in its own `node:vm` context with in-memory stand-ins for `caches`, `fetch`, `Request` and `setTimeout`, and dispatches the events a browser would: `install` stores every `APP_SHELL` file, each with `cache: 'no-cache'`, and fails as a whole when one file fails; `activate` deletes the other caches; a navigation falls back to the cached page on a network error or after the timeout, ignoring the query string; other files are served from the cache and refreshed behind it. It reads `index.html` independently of `scripts/check-sw-app-shell.mjs` to check that `APP_SHELL` covers every stylesheet and script the page loads.
 
-The behavioral half of the design axis (live switching, detach hygiene in a real DOM, reduced motion, the hero gauges agreeing with the progress card) needs a browser. It is not part of `npm test`; run it with Playwright against a local server when you touch the axis, the same way the screenshot script does.
+The behavioral half of the design axis (live switching, detach hygiene in a real DOM, reduced motion, the hero gauges agreeing with the progress card) needs a browser. It is not part of `npm test`; run it with Playwright against a local server when you touch the axis, the same way the screenshot script does. The same goes for the Service Worker's lifecycle (install, update, the one-time reload, opening offline). When you measure it, emulate the slow network in the server rather than on the page: throttling set on the page does not slow down requests the worker makes itself, and the page reports a response the worker served as a few bytes whether it came from the cache or from the network.
 
 When adding a new test file, follow the existing patterns:
 

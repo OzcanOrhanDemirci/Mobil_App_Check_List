@@ -11,8 +11,8 @@
     "format": "prettier --write \"**/*.{js,css,html,md,json,yml}\"",
     "format:check": "prettier --check \"**/*.{js,css,html,md,json,yml}\"",
     "test": "node scripts/run-tests.mjs",
-    "sw:check": "node scripts/check-sw-cache-version.mjs",
-    "sw:sync": "node scripts/check-sw-cache-version.mjs --fix",
+    "sw:check": "node scripts/check-sw-cache-version.mjs && node scripts/check-sw-app-shell.mjs",
+    "sw:sync": "node scripts/check-sw-cache-version.mjs --fix && node scripts/check-sw-app-shell.mjs --fix",
     "serve": "python scripts/serve-local.py 8000",
     "prepare": "node scripts/install-githooks.mjs"
   },

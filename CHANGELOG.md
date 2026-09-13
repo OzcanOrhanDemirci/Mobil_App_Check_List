@@ -30,8 +30,15 @@ a third of the screen. Baseline: **359 distinct problems**. Now: 35, every one
 of them a deliberate typographic decision documented under TYPE ON A PHONE in
 `css/06-responsive-print.css`.
 
-Performance figures come from an emulated mid-range handset: Fast 3G (1.6 Mbps,
-150ms RTT) with a 4x CPU slowdown.
+Performance figures come from an emulated mid-range handset (390x844, 4x CPU
+slowdown) on a slow network emulated in the server: 150ms before each response,
+1.6 Mbps of shared download bandwidth, gzip, and ETag revalidation. The network
+lives in the server rather than on the page because throttling set on the page
+does not slow down the requests a Service Worker makes itself, and the page
+reports a response the worker served as a few bytes wherever it came from.
+Figures are the median of three runs. The Service Worker was also checked on a
+real phone, Chrome on Android 16: a first visit that then opens offline, and
+the update from 1.3.0 to this release.
 
 ### Added
 
@@ -62,21 +69,47 @@ Performance figures come from an emulated mid-range handset: Fast 3G (1.6 Mbps,
   dismiss on an action, on a tap outside and on Escape. The panel lives inside
   the sticky bar, so an open panel travels down the page with it; on a 320px
   screen the bar plus the panel is about two thirds of the viewport.
+- **`APP_SHELL` in `sw.js`, and `scripts/check-sw-app-shell.mjs` to keep it
+  true.** The 59 files the page needs in order to open are listed once,
+  generated from `index.html` and `manifest.webmanifest` by `npm run sw:sync`,
+  and the CI job that already checks the cache key now also fails when the
+  list has drifted. Both ways of drifting are silent in a browser: a file the
+  page loads but the list omits is simply missing offline, and a listed file
+  that no longer exists stops the worker installing at all.
+- `tests/responsive.test.js` (suite 281 to 292) holds the breakpoint scale,
+  the `screen` guard on the touch-target block, 16px text fields on a coarse
+  pointer and a `dvh` companion for every `vh` height.
+- `tests/service-worker.test.js` (suite 292 to 313), the first unit tests for
+  the worker. `sw.js` runs in a `node:vm` context with in-memory stand-ins for
+  `caches`, `fetch`, `Request` and `setTimeout`, and the tests dispatch the
+  events a browser would: install, activate, a navigation online, offline and
+  on a slow network, and a cached file served and refreshed. Removing the
+  install step turns five of them red.
 
 ### Changed
 
-- **Service Worker: two strategies instead of one.** Navigations stay
-  network-first, now with a 3 second timeout so a weak signal costs a moment
-  rather than the page. Everything else (37 scripts, 14 stylesheets, the icons,
-  the manifest) is served from the cache and revalidated in the background.
-  A repeat visit went from **8119ms to 243ms**, and then to 178ms once the
-  cache was warm, with no network at all. The application already worked
-  offline after a first visit; it now also opens instantly.
+- **Service Worker: the app shell on install, then two strategies instead of
+  one.** Navigations stay network-first, now with a 3 second timeout so a weak
+  signal costs a moment rather than the page, and fall back to the cached page
+  matched without its query string. Everything else (37 scripts, 14
+  stylesheets, the icons, the manifest) is served from the cache and
+  revalidated in the background. A repeat visit went from **1951ms to 522ms**
+  before the checklist is usable, and its network cost is 53 revalidations
+  that answer 304, about 8 KB, when nothing has changed. Through 1.3.0 every
+  one of those requests was waited on before the page could render.
+  - Installing the worker now stores every file of the shell, requested with
+    `cache: 'no-cache'`: from a server that sends validators, as GitHub Pages
+    does, the files the first visit has just loaded come back as 304s, so a
+    first visit costs 59 extra requests and
+    about 12 KB (the manifest and six icons the page does not load itself),
+    not a second download.
   - The page reloads itself once when a new worker takes control, which is
     what keeps that safe: for one load after a release, network-first
     navigation could otherwise pair a new document with subresources still
-    cached from the old one. Verified end to end, including that it happens
-    exactly once and does not loop.
+    cached from the old one. On the phone, the update from 1.3.0 opened the
+    new document, found the new worker two seconds later, reloaded once at
+    3.6 seconds, and made no further request: the old cache was gone and the
+    new one held all 59 files.
 - **The category index is one scrolling row on a phone.** Fourteen chips
   wrapping down the page came to **638px on a 320px screen**, a full screen of
   navigation between the toolbar and the first checklist item. It is 46px now,
@@ -132,6 +165,17 @@ Performance figures come from an emulated mid-range handset: Fast 3G (1.6 Mbps,
 
 ### Fixed
 
+- **A first visit did not make the application available offline.** A Service
+  Worker only sees the requests a page makes after it has taken control, and
+  the page registers it once its stylesheets and scripts have already arrived.
+  The worker cached only what passed through it, so when a first visit ended
+  its cache was empty: opening the application offline after one visit failed,
+  it took a second visit to fill the cache, and a link carrying a query string
+  failed offline even then. The same was true of 1.3.0 and of every earlier
+  tagged release. The worker now stores the whole shell while it installs (see
+  Changed). In the harness, opening offline after one visit went from 0 of 3
+  runs to 3 of 3; on a real phone the new worker opened offline after a single
+  visit, through a link with a query string as well.
 - **The How-To button sat on top of the card title.** It is positioned in the
   card's corner and took no space in the flow, so on a narrow card the title
   ran underneath it. Measured across the three designs at phone widths, that
