@@ -20,7 +20,10 @@
   body.presentation-mode section.category {
     display: none;
     padding: 60px clamp(20px, 5vw, 80px);
+    /* dvh, so a slide is the height of the screen the reader can see rather
+       than the height the browser reports with its address bar hidden. */
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     border-radius: 0;
     border: none;
@@ -290,6 +293,7 @@
     }
     body.presentation-mode .pres-context-bar {
       padding: 10px 16px;
+      padding-top: max(10px, env(safe-area-inset-top));
       gap: 10px;
     }
     .pres-context-app { font-size: 12.5px; }
@@ -297,7 +301,37 @@
     .pres-context-chip-count { font-size: 10.5px; padding: 1px 6px; }
     body.presentation-mode section.category {
       padding-top: 70px;
+      /* The controls float over the foot of the slide. On a wide screen a
+         slide rarely reaches them; on a phone every slide does, and the
+         last checklist row of each one was underneath the bar. This is the
+         bar's height plus its offset plus air. */
+      padding-bottom: 96px;
     }
+    .presentation-controls button { padding: 10px 12px; }
+    .presentation-controls .pres-index { padding: 0 8px; min-width: 48px; }
+  }
+
+  /* The bar is the app name on the left and the filter chip on the right.
+     Below this width neither fits at full length, so both are allowed to
+     shrink and truncate rather than wrap: the bar is pinned over the
+     content and a second line doubles what it covers. The chip's count
+     never truncates, because it is the number the reader is watching. */
+  @media (max-width: 430px) {
+    body.presentation-mode .pres-context-bar { padding: 8px 12px; gap: 8px; }
+    .pres-context-app {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pres-context-right { min-width: 0; }
+    .pres-context-chip { padding: 5px 8px; gap: 6px; min-width: 0; }
+    .pres-context-chip-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pres-context-chip-count { flex: none; white-space: nowrap; }
+    body.presentation-mode section.category { padding: 62px 16px 92px; }
   }
 
   .presentation-controls {
@@ -307,9 +341,11 @@
     display: flex;
     align-items: center;
     position: fixed;
-    bottom: 24px;
+    /* Clear of the home indicator on a gesture-navigation phone. */
+    bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
     left: 50%;
     transform: translateX(-50%);
+    max-width: calc(100% - 24px);
     gap: 4px;
     background: var(--surface-2);
     border: 1px solid var(--border);

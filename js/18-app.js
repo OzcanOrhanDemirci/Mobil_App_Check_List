@@ -353,12 +353,16 @@ document.getElementById("lockBtn").addEventListener("click", () => {
 /* Mobile actions menu (open/close).
    On mobile the sticky toolbar is compact: search + 3 mini progress bars are
    visible while the rest of the buttons hide behind the hamburger (≡). This
-   block handles open/close, click-outside dismiss, and auto-close after an
-   action runs. */
+   block handles open/close, click-outside dismiss, dismiss on scroll, and
+   auto-close after an action runs. */
 (function setupMobileActionsToggle() {
   const toggleBtn = document.getElementById("actionsToggle");
   const toolbarEl = toggleBtn ? toggleBtn.closest(".toolbar") : null;
   if (!toggleBtn || !toolbarEl) return;
+
+  /* Scroll position when the panel was opened; see the scroll handler. */
+  const SCROLL_DISMISS_PX = 24;
+  let openedAtY = 0;
 
   const close = () => {
     toolbarEl.classList.remove("actions-open");
@@ -367,6 +371,7 @@ document.getElementById("lockBtn").addEventListener("click", () => {
   const open = () => {
     toolbarEl.classList.add("actions-open");
     toggleBtn.setAttribute("aria-expanded", "true");
+    openedAtY = window.scrollY;
   };
 
   toggleBtn.addEventListener("click", e => {
@@ -393,6 +398,23 @@ document.getElementById("lockBtn").addEventListener("click", () => {
       close();
     });
   });
+
+  /* Close on scroll.
+
+     The panel lives inside the sticky bar, so an open panel travels down the
+     page with it. On a 320px screen the bar plus the open panel is about
+     two thirds of the viewport, and someone who opened the menu, changed
+     their mind and scrolled on would have been reading the checklist through
+     a slot. Every other way out of the panel was already handled (an action,
+     a tap outside, Esc); scrolling is the one a thumb reaches for.
+
+     The threshold keeps a stray pixel of momentum or a soft-keyboard resize
+     from dismissing a panel the reader is still choosing from. */
+  window.addEventListener("scroll", () => {
+    if (!toolbarEl.classList.contains("actions-open")) return;
+    if (Math.abs(window.scrollY - openedAtY) < SCROLL_DISMISS_PX) return;
+    close();
+  }, { passive: true });
 
   /* Also close on Esc (separate listener so the existing keydown handler is
      left untouched). */
@@ -805,14 +827,43 @@ document.addEventListener("keydown", e => {
    REQUIRE a same-origin script for the PWA install prompt; SW registrations
    from a blob: URL do not satisfy the install criteria.
    If ./sw.js cannot be loaded (file:// or 404) a blob-URL fallback SW is
-   registered instead. If Chromium still rejects it, we fail silently. */
+   registered instead. If Chromium still rejects it, we fail silently.
+
+   The caching policy itself lives in sw.js and is documented there. */
 (function setupServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   if (!window.isSecureContext) return;
   if (location.protocol !== "https:" && location.protocol !== "http:") return;
 
+  /* Reload once when a NEW worker takes over a page an OLD one was already
+     controlling.
+
+     sw.js serves navigations network-first and everything else from its
+     cache, so for one load after a release the fresh document can be paired
+     with stylesheets and scripts still held from the previous version. That
+     is the one way this app can render a page built from two releases at
+     once, and a mixed page is worse than a slow one: it renders, so it looks
+     fine, and then some part of it does not respond.
+
+     The reload closes that window. It runs only when `controller` was
+     already set: on a first visit `controllerchange` also fires, when the
+     very first worker claims the page, and reloading there would be a
+     pointless second load for every new reader. The guard flag covers the
+     case where the event fires more than once. */
+  let reloading = false;
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadController || reloading) return;
+    reloading = true;
+    location.reload();
+  });
+
   navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {
-    /* sw.js is missing (e.g. single-file offline use): fall back to a blob SW. */
+    /* sw.js is missing (e.g. single-file offline use): fall back to a blob
+       SW. This one stays network-first for everything. It exists so the app
+       is installable when the file is served from an unusual place, not to
+       be fast, and keeping it small keeps it readable inside a template
+       literal. */
     try {
       const swCode = `
           const CACHE_NAME = 'mobil-kontrol-v1';
@@ -829,6 +880,7 @@ document.addEventListener("keydown", e => {
             if (e.request.method !== 'GET') return;
             const url = new URL(e.request.url);
             if (url.origin !== self.location.origin) return;
+            if (e.request.headers.has('range')) return;
             e.respondWith(
               fetch(e.request).then((response) => {
                 if (response && response.ok && response.type === 'basic') {

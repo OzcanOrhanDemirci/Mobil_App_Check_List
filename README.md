@@ -50,6 +50,7 @@ _Mobil Uygulama Kalite Kontrol Listesi · MVP and Release tiers · per-framework
   - [Tech stack](#tech-stack)
   - [Four-axis content resolver](#four-axis-content-resolver)
   - [Modular file layout](#modular-file-layout)
+  - [Responsive scale and touch targets](#responsive-scale-and-touch-targets)
   - [PWA strategy](#pwa-strategy)
 - [Project layout](#project-layout)
 - [Data model](#data-model)
@@ -133,7 +134,8 @@ This app fills that gap:
 - **Presentation mode** (`P` key): one click into a full-screen, projector-friendly view
 - **Print / PDF**: both checklist and How-To guide formats
 - **One-click install**: pin to the home screen / start menu
-- **Works offline**: Service Worker cache, opens even when the internet drops
+- **Works offline from the first visit**: the Service Worker stores the whole app while it installs, so it opens with no connection, and later visits open from that copy in well under a second
+- **Built for a phone**: a five-tier responsive scale down to 320px, 44x44 touch targets, safe-area insets, no horizontal scrolling at any width
 - **A11y**: high-contrast palette, keyboard navigation, focus-visible outlines, semantic ARIA roles
 
 </td>
@@ -239,7 +241,7 @@ npx playwright install chromium
 # 2) Start a simple static server from the repo root:
 npx serve .                       # http://localhost:3000
 # or
-python -m http.server 5500        # http://localhost:5500
+python scripts/serve-local.py 5500  # http://localhost:5500, caching off
 
 # 3) Run the capture script (default URL is http://localhost:3000):
 node scripts/capture-screenshots.mjs
@@ -282,12 +284,9 @@ git clone https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List.git
 cd Mobil_App_Check_List
 
 # Start a local server (Service Worker won't run over file://)
-python scripts/serve-local.py 8080   # or: npm run serve
+npm run serve        # http://localhost:8000 (scripts/serve-local.py, caching off)
 # or
-npx serve .
-
-# Then in your browser:
-# http://localhost:8080
+npx serve .          # http://localhost:3000
 ```
 
 ### 4. Publish to your own GitHub Pages
@@ -353,11 +352,11 @@ Showcase's motion lives in `js/20-showcase-motion.js`, an IIFE that attaches onl
 
 | Layer          | Choice                                              | Why                                                                                                                                                                                                                                                                                          |
 | -------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTML           | A single `index.html` (~1170 lines)                 | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                                                                                                                                                                |
+| HTML           | A single `index.html` (~1070 lines)                 | One PWA entry point; all modals are inline static HTML that JS shows / hides.                                                                                                                                                                                                                |
 | CSS            | 14 files, vanilla CSS                               | No build tool. Both axes (3 designs x 2 color modes) run on CSS custom properties. Modal surfaces split into their own files (`css/05-modals-*.css`); the two non-default designs into theirs (`css/07-design-minimal.css`, `css/08-design-showcase.css`). Print styles in a dedicated file. |
 | JS             | 37 files, vanilla ES2020+                           | 22 logical modules + 14 per-category data shards + 1 sync bootstrap. No build / transpile / bundling. Loaded sequentially via `<script defer>` tags (numbered filenames define the order).                                                                                                   |
 | Data           | `window.DATA` array, split across 14 category files | 14 categories × 55 items with language / style / framework / backend variants. `js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js` each `push` their category. A pure static JS array.                                                                                            |
-| Service Worker | Network-first + cache fallback                      | `sw.js` ~30 lines; every same-origin GET tries the network first, successful responses are cached, on network failure the last cached version is served. Cache key tracks `package.json`.                                                                                                    |
+| Service Worker | App shell stored on install, two strategies         | `sw.js` stores the files the page needs while it installs, so a first visit works offline. The page itself is network-first with a 3 s timeout; everything else comes from the cache and is refreshed in the background. Cache key tracks `package.json`.                                    |
 | Storage        | `localStorage`                                      | All user data (marks, notes, projects) stays in the browser; nothing is sent to a server.                                                                                                                                                                                                    |
 
 ### Four-axis content resolver
@@ -450,10 +449,52 @@ The content is split across 14 files (`03a..03n`), but at runtime it is still a 
 
 No build tool, no transpilation, no runtime dependency. A new developer (or AI assistant) can grasp the project **in minutes**.
 
+### Responsive scale and touch targets
+
+Five breakpoints, documented at the head of `css/06-responsive-print.css` and
+used by every sheet in the project. They are the widths at which this layout
+actually breaks, checked against real device viewports rather than picked from
+a framework:
+
+| Tier  | What it is                                           |
+| ----- | ---------------------------------------------------- |
+| 900px | tablet portrait, small laptop                        |
+| 700px | large phone landscape, small tablet portrait         |
+| 560px | phone portrait, the tier most readers are in         |
+| 430px | small phone (iPhone SE at 375, older Android at 360) |
+| 360px | the narrow end of what ships (320px iPhone SE 1)     |
+
+Rules live with the component they belong to; `css/06-responsive-print.css`
+carries the ones that cut across components, and each design sheet carries its
+own, because a design that sets its own type scale has to restate the phone
+floor for it (a `[data-design]` selector from a later sheet outranks anything
+the shared file can say).
+
+Touch targets are handled in one `@media screen and (pointer: coarse)` block.
+Everything a reader taps to get through the application is at least 44x44 CSS
+px, the figure both Apple's Human Interface Guidelines and Material use, and
+comfortably above the 24x24 that WCAG 2.2 asks for in 2.5.8. Where growing a
+box would disturb the layout, the target grows with padding and is pulled back
+with a negative margin: bigger to a finger, the same size to the eye. The block
+is scoped to `screen` because `pointer` does not stop matching when a phone
+prints.
+
+Two platform details that are easy to miss and expensive to ship:
+
+- **Text fields are 16px on a coarse pointer.** Safari on iOS zooms the page in
+  when a field with a smaller font takes focus, and does not zoom back out.
+  Keyed on the input method rather than on width: an iPad in landscape is
+  1024px wide and does it too.
+- **Heights use `dvh` with a `vh` fallback.** `100vh` is the viewport a mobile
+  browser reports with its address bar hidden, which is not the viewport the
+  reader has while the bar is showing.
+
 ### PWA strategy
 
-- `manifest.webmanifest` enables standalone mode; icons live under `assets/icons/` as four PNG files (`icon-192.png`, `icon-512.png`, and `*-maskable.png` variants of each). They are generated from the same orange-check-on-dark visual as `og-image.png`.
-- `sw.js` uses a **network-first + cache fallback** strategy: every same-origin GET first goes to the network, successful responses are written to the `mobil-kontrol-v{package-version}` cache; when the network is unreachable, the last cached version is served instantly. Stale cache keys are cleaned up automatically on `activate`. The cache key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump automatically invalidates every client's cache.
+- `manifest.webmanifest` enables standalone mode; icons live under `assets/icons/` as six PNG files: `icon-192.png`, `icon-512.png` and a `*-maskable.png` variant of each, plus `apple-touch-icon.png` and `favicon-48.png`. They are generated from the same orange-check-on-dark visual as `og-image.png`.
+- **`sw.js` stores the app shell while it installs.** A worker only sees the requests a page makes after it has taken control, and on a first visit that is after the page has loaded, so a cache filled by the fetch handler alone is still empty when the first visit ends. `install` therefore stores `APP_SHELL`, the 59 files the page needs in order to open, before the worker may activate. Each is requested with `cache: 'no-cache'`: the browser revalidates the copy it has just downloaded (a 304 rather than a second download) and a release can never store a stale copy the HTTP cache still considers fresh. The list is generated from `index.html` and `manifest.webmanifest` by `scripts/check-sw-app-shell.mjs` (`npm run sw:sync`), and CI fails when it drifts.
+- `sw.js` then uses **two strategies**, because the two kinds of request want opposite things. **Navigations are network-first with a 3 second timeout**: the document is what carries a new release and it is one small request, so a reader who is online sees the current version, and a weak signal costs a moment rather than the whole page. When the network fails or times out, the cached page is served, matched without its query string. **Everything else is stale-while-revalidate**: styles, scripts, icons and the manifest come straight from the `mobil-kontrol-v{package-version}` cache, so a repeat visit paints immediately and works with no connection at all, while a fresh copy is fetched in the background for next time. Stale cache keys are cleaned up on `activate`, and the key is derived from `package.json` `version` via `scripts/check-sw-cache-version.mjs`, so a release bump invalidates every client's cache.
+- Because a release changes both the document and the files it references, network-first navigation could pair a new document with subresources still cached from the old one, for exactly one load. Two things bound that: the cache is per version, the new worker has stored its complete shell before it activates and deletes the old one, and **the page reloads itself once when a new worker takes control** (`js/18-app.js`). The reload is guarded so it never fires on a first visit, where the very first worker claiming the page would otherwise cost every new reader a second load.
 - If `./sw.js` cannot be loaded (e.g. single-file scenarios opened over `file://`), JS attempts to register a **fallback Service Worker via a blob URL** and writes a small blob-manifest with an inline SVG icon for that path; if Chromium rejects blob-URL SWs it fails silently.
 - When served over HTTPS, Chrome / Edge / Safari automatically surface the "Install" prompt.
 
@@ -465,7 +506,7 @@ No build tool, no transpilation, no runtime dependency. A new developer (or AI a
 Mobil_App_Check_List/
 ├── index.html                    Single page: modals + script loading order
 ├── manifest.webmanifest          PWA manifest (name, icons, theme color, scope)
-├── sw.js                         Service Worker (network-first + offline fallback)
+├── sw.js                         Service Worker (app shell stored on install, offline from the first visit)
 ├── og-image.png                  1200×630 social media preview image (TR)
 ├── og-image-en.png               1200×630 social media preview image (EN)
 ├── .nojekyll                     Disables GitHub Pages Jekyll processing
@@ -498,6 +539,7 @@ Mobil_App_Check_List/
 │   ├── serve-local.py            Dev server with caching disabled (npm run serve)
 │   ├── check-em-dash.mjs         CI em-dash rule
 │   ├── check-sw-cache-version.mjs  sw.js cache key must match package.json
+│   ├── check-sw-app-shell.mjs    sw.js app shell must match index.html + manifest
 │   ├── install-githooks.mjs      `prepare` script installs the pre-commit hook
 │   ├── generate-pwa-assets.py    Generates icons and OG image (optional)
 │   └── capture-screenshots.mjs   Playwright-driven README screenshots
@@ -510,6 +552,8 @@ Mobil_App_Check_List/
     ├── progress.test.js          countLevels (progress counting)
     ├── filters.test.js           shouldShowFeature (search + view filters)
     ├── ai-prompt.test.js         Markdown + JSON prompt builders
+    ├── responsive.test.js        Breakpoint scale, touch-target block, dvh companions
+    ├── service-worker.test.js    App shell on install, offline fallback, cache refresh
     └── design.test.js            Design axis + the print-parity invariant
 ```
 
@@ -700,7 +744,7 @@ This is a deliberate decision that makes the project easy to maintain and easy t
 - Edit a file, refresh the page, see the result.
 - It will still work the same way 5 years from now, even if build-tool dependencies break across the ecosystem.
 
-The counter-argument: bundle size and performance. The entire static payload (HTML + CSS + JS) is **~380 KB** gzipped, most of it coming from the content data file that carries 55 items × four-axis variants. After the first visit, the Service Worker cache nearly eliminates network traffic.
+The counter-argument: bundle size and performance. The entire static payload (HTML + CSS + JS) is **~445 KB** gzipped, more than half of it the 14 content data files that carry 55 items × four-axis variants. The Service Worker stores it during the first visit; after that a visit only revalidates it, which costs about 8 KB when nothing has changed.
 
 </details>
 
@@ -714,7 +758,7 @@ The counter-argument: bundle size and performance. The entire static payload (HT
 - **Load time**: no framework overhead; the first render is instant.
 - **Nothing missing**: state management, rendering, event delegation, and history are all comfortably handled with vanilla code.
 
-The cost of this simple decision: the codebase is **lightly abstracted**; `index.html` is ~1170 lines. In return, all the work is visible and readable. 1.0 carried a single 3079-line `js/03-data.js` and a 2392-line `js/14-app.js`; in 1.1.0 those were split into 14 per-category data files and 5 orchestration modules, so a contributor focusing on a single feature opens only the file that owns it.
+The cost of this simple decision: the codebase is **lightly abstracted**; `index.html` is ~1070 lines. In return, all the work is visible and readable. 1.0 carried a single 3079-line `js/03-data.js` and a 2392-line `js/14-app.js`; in 1.1.0 those were split into 14 per-category data files and 5 orchestration modules, so a contributor focusing on a single feature opens only the file that owns it.
 
 </details>
 
@@ -723,11 +767,11 @@ The cost of this simple decision: the codebase is **lightly abstracted**; `index
 
 <br />
 
-The content carries 55 items × four-axis (language × style × framework × backend) variants, which is ~835 KB raw. At first glance you might say "this should be lazy-loaded." We didn't, because:
+The content carries 55 items × four-axis (language × style × framework × backend) variants, which is ~840 KB raw. At first glance you might say "this should be lazy-loaded." We didn't, because:
 
 - Users come to see **the whole list**, not just **a few items**: search, filtering, and presentation mode only make sense with the full list in memory.
-- All assets are ~380 KB gzipped; most connections download it in sub-second time.
-- The Service Worker fills its cache after a single successful visit; the app opens even when the internet is gone.
+- All assets are ~445 KB gzipped: well under a second on broadband or 4G, a few seconds on a slow 3G link.
+- The Service Worker stores the whole app while it installs, during the first visit; from then on the app opens even when the internet is gone.
 - A lazy-loading architecture (dynamic imports) would require a build step, breaking the "vanilla JS" decision.
 
 In 1.1.0 the content was split across **14 per-category files** (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`). No build step was added: each file appends its own category to a `window.DATA` array, and `js/03-data.js` (a 15-line stub) exposes it as `const DATA`. At runtime the browser still sees one in-memory `DATA` array; only the writing side is split into 14 shards. The benefit is fewer merge conflicts plus a contributor saying "I only want to touch security items" can open just `03i-data-09-security.js`. If the data grows considerably (e.g. 200 items), revisiting real lazy loading (per-category async fetch) becomes worth the build-step trade-off.
@@ -785,17 +829,55 @@ The same content is shown with **different wording** depending on the user's cho
 
 ## Performance
 
-| Metric                          | Target   | Current                 |
-| ------------------------------- | -------- | ----------------------- |
-| LCP (Largest Contentful Paint)  | < 2.5 s  | ~1.2 s (4G, cold cache) |
-| CLS (Cumulative Layout Shift)   | < 0.1    | ~0.02                   |
-| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                  |
-| Total assets (raw)              | -        | ~1.45 MB                |
-| Total assets (gzipped)          | -        | ~380 KB                 |
-| Offline launch (SW cache)       | -        | Works                   |
-| Runtime dependency              | -        | Zero                    |
+Measured in Chromium on an emulated mid-range handset: 390x844 viewport, 4x CPU
+slowdown, and a slow mobile network. The network is emulated in the server
+rather than on the page, because throttling set on the page does not slow down
+requests the Service Worker makes itself: 150 ms before each response, 1.6 Mbps of shared
+download bandwidth, gzip, and ETag revalidation with the HTTP cache already
+expired (GitHub Pages sets `max-age=600`). Visit and network figures are the
+median of three runs.
 
-> Most of the asset payload comes from the 14 per-category data files (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`), the four-axis multi-variant content library; the application logic (`14-welcome.js`, `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) together stays under 30 KB gzipped. Target Lighthouse ranges on the mobile profile: Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+| Metric                          | Target   | Current                                                                |
+| ------------------------------- | -------- | ---------------------------------------------------------------------- |
+| First visit, interactive        | -        | ~4.6 s (nothing cached yet)                                            |
+| Repeat visit, interactive       | -        | **~0.5 s** (from the SW cache, from the second visit)                  |
+| Repeat visit, network           | -        | **~8 KB**: 53 revalidations, 304 when nothing changed                  |
+| App shell stored on first visit | -        | 59 files: 52 revalidated (304), manifest + 6 icons downloaded (~12 KB) |
+| First contentful paint          | -        | ~1.4 s cold, ~0.3 s warm                                               |
+| CLS (Cumulative Layout Shift)   | < 0.1    | **0.001** in all three themes                                          |
+| INP (Interaction to Next Paint) | < 200 ms | ~80 ms                                                                 |
+| Full re-render (55 cards)       | -        | ~30 ms at a 4x CPU slowdown                                            |
+| Total assets (raw)              | -        | ~1.5 MB                                                                |
+| Total assets (gzipped)          | -        | ~445 KB over 52 requests                                               |
+| Offline launch (SW cache)       | -        | Works from the first visit                                             |
+| Runtime dependency              | -        | Zero                                                                   |
+
+> Almost all of the payload is content: the 14 per-category data files
+> (`js/03a-data-01-idea-planning.js` ... `js/03n-data-14-cicd.js`) are the
+> four-axis variant library, and the application logic (`14-welcome.js`,
+> `15-projects.js`, `16-presentation.js`, `17-install.js`, `18-app.js`) is
+> about 32 KB gzipped between them. The first visit is therefore dominated by
+> the network, which is why the Service Worker's job is to make sure there is
+> only ever one of those. Target Lighthouse ranges on the mobile profile:
+> Performance 95+, Accessibility 95+, Best Practices 100, SEO 100.
+
+Three things that cost more on a handset than they look like they should, and
+what was done about them:
+
+- **Backdrop blur.** Each one is a compositing pass that re-samples whatever is
+  behind the element, repeated on every frame that element or the page under it
+  moves. The Showcase theme asked for one on the hero, the sticky bar, every
+  chip, every dialog and all 55 cards. Below 700px they are switched off by
+  resetting five named tokens in one place; what sits behind those surfaces is
+  the page's own gradient, so there is nothing a reader can see to lose.
+- **`will-change`.** It was set on all 55 cards for the whole session to smooth
+  a card flip that runs on one card at a time. It is now added for the half
+  second the animation lasts and taken off again.
+- **Reserved height.** The checklist cannot render until 37 script files have
+  arrived. Until then `#content` had no height, the footer sat in the first
+  screen, and the checklist's arrival threw it thousands of pixels down the
+  page: 0.109 to 0.138 of layout shift on a slow connection. The element holds
+  a screen's worth of height open while it is empty.
 
 ---
 

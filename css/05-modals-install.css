@@ -115,7 +115,7 @@
     background: rgba(0, 0, 0, 0.06);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 560px) {
     .install-banner {
       flex-wrap: wrap;
       padding: 14px 44px 14px 16px;

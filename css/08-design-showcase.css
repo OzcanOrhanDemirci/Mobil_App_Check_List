@@ -44,6 +44,11 @@
     --text: #f4f4f8;
     --text-dim: #b4b4c6;
     --text-mute: #9c9cb4;
+    /* The surfaces above are translucent by design: they are washes laid
+       over the page's mesh gradient. A floating menu cannot use one, or the
+       content behind it reads straight through the menu's own labels. This
+       is the opaque equivalent of --surface-2 over this design's --bg. */
+    --popover: #16161f;
     --accent: #a5b4fc;
     --accent-2: #c7d2fe;
 
@@ -87,6 +92,7 @@
     --text: #14122b;
     --text-dim: #4b4767;
     --text-mute: #6e6a8a;
+    --popover: #ffffff;
     --accent: #4f46e5;
     --accent-2: #4338ca;
 
@@ -110,6 +116,31 @@
     --s-glass-strong: rgba(255, 255, 255, 0.92);
     --s-hairline: rgba(23, 20, 48, 0.09);
     --s-ring-track: rgba(23, 20, 48, 0.1);
+  }
+
+  /* ------------------------------------------------------------ blur budget
+
+     The glass in this design depends on a backdrop blur, and a backdrop
+     blur is a compositing pass that re-samples everything behind the
+     element, repeated on every frame that element or the page under it
+     moves. The design asks for one on the hero, on the sticky bar, on
+     every chip, on every dialog and on all 55 cards. A desktop GPU can
+     afford that; on a phone it is the most expensive thing on the page.
+
+     Naming them does two things: it gives the phone tier at the foot of
+     this file a single place to switch them all off, and it puts how much
+     blur this design is asking for in one readable list.
+
+     Declared in a rule of their own rather than in the token block above,
+     at the same specificity the phone tier uses to reset them. Inside that
+     block they would carry its [data-design][data-theme] specificity and
+     the reset would lose to it in dark mode. */
+  [data-design="showcase"] {
+    --s-blur-pill: blur(10px);
+    --s-blur-card: blur(16px) saturate(1.4);
+    --s-blur-bar: blur(20px) saturate(1.5);
+    --s-blur-hero: blur(22px) saturate(1.5);
+    --s-blur-dialog: blur(26px) saturate(1.5);
   }
 
   /* ------------------------------------------------------------ foundation */
@@ -165,8 +196,8 @@
     padding: 56px 44px 40px;
     margin-bottom: 34px;
     background: var(--s-glass);
-    backdrop-filter: blur(22px) saturate(1.5);
-    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    backdrop-filter: var(--s-blur-hero);
+    -webkit-backdrop-filter: var(--s-blur-hero);
     box-shadow: var(--shadow);
   }
 
@@ -326,21 +357,72 @@
     margin-top: 2px;
   }
 
-  @media (max-width: 760px) {
+  /* The three gauges keep their row on a phone rather than stacking. Each
+     one becomes a ring above its label instead of beside it, which fits
+     three across a 320px screen and keeps the hero to a height a reader
+     will scroll past rather than through. Stacked, they added about 220px
+     to a hero that already fills the first screen. */
+  @media (max-width: 700px) {
     .sc-stage {
-      grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+    }
+    .sc-gauge {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
+    .sc-ring {
+      width: 46px;
+      height: 46px;
+    }
+    .sc-gauge-value {
+      font-size: 18px;
+    }
+    .sc-gauge-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      margin-top: 1px;
+    }
+    .sc-gauge-sub {
+      font-size: 11px;
     }
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 700px) {
     [data-design="showcase"] header.hero {
-      padding: 34px 22px 26px;
+      padding: 30px 20px 24px;
       border-radius: 20px;
     }
 
     [data-design="showcase"] .wrap {
       padding: 16px 16px 90px;
+    }
+  }
+
+  @media (max-width: 430px) {
+    [data-design="showcase"] header.hero {
+      padding: 22px 16px 20px;
+      border-radius: 16px;
+    }
+    /* 5.6vw stops scaling below about 600px and leaves a 34px headline
+       taking four lines of a 320px screen. */
+    [data-design="showcase"] h1 {
+      font-size: 27px;
+      letter-spacing: -0.03em;
+    }
+    [data-design="showcase"] .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+    }
+    [data-design="showcase"] .eyebrow::before {
+      width: 16px;
+    }
+    [data-design="showcase"] .instructor {
+      margin-bottom: 20px;
     }
   }
 
@@ -357,8 +439,8 @@
   [data-design="showcase"] .btn:not(.primary):not(.danger-solid):not(.btn-install-cta) {
     background: var(--s-glass-strong);
     border-color: var(--s-hairline);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: var(--s-blur-pill);
+    -webkit-backdrop-filter: var(--s-blur-pill);
   }
 
   /* Shape applies to every button. */
@@ -390,8 +472,8 @@
 
   [data-design="showcase"] .sticky-bar {
     background: var(--toolbar-bg);
-    backdrop-filter: blur(20px) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    backdrop-filter: var(--s-blur-bar);
+    -webkit-backdrop-filter: var(--s-blur-bar);
   }
 
   [data-design="showcase"] .toolbar,
@@ -423,8 +505,8 @@
     border-radius: 999px;
     padding: 7px 14px;
     font-weight: 500;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: var(--s-blur-pill);
+    -webkit-backdrop-filter: var(--s-blur-pill);
     transition:
       transform 0.18s var(--s-ease),
       border-color 0.18s ease,
@@ -539,8 +621,8 @@
     border: 1px solid var(--s-hairline);
     border-radius: var(--radius);
     padding: 22px 24px;
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: var(--s-blur-card);
+    -webkit-backdrop-filter: var(--s-blur-card);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition:
       transform 0.22s var(--s-ease),
@@ -593,8 +675,8 @@
     border-radius: 22px;
     border: 1px solid var(--s-hairline);
     background: var(--s-glass-strong);
-    backdrop-filter: blur(26px) saturate(1.5);
-    -webkit-backdrop-filter: blur(26px) saturate(1.5);
+    backdrop-filter: var(--s-blur-dialog);
+    -webkit-backdrop-filter: var(--s-blur-dialog);
   }
 
   [data-design="showcase"] footer {
@@ -622,8 +704,8 @@
     border: 1px solid var(--s-hairline);
     border-radius: var(--radius);
     box-shadow: none;
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: var(--s-blur-card);
+    -webkit-backdrop-filter: var(--s-blur-card);
   }
 
   [data-design="showcase"] .install-banner::before {
@@ -736,6 +818,62 @@
     [data-design="showcase"] .cat-nav a.sc-active {
       background: var(--accent);
       transform: scale(1.5);
+    }
+  }
+
+  /* ------------------------------------------------------------- on a phone
+
+     Two costs this design can afford on a desktop and cannot on a handset,
+     both of them paid on every scrolled frame:
+
+       - background-attachment: fixed. The mesh gradient staying put while
+         the page moves means the browser repaints the whole viewport for
+         every frame of every scroll. Safari on iOS has never implemented it
+         faithfully either, so the effect is not reliably there to lose.
+       - The backdrop blurs. Switched off by resetting the five tokens
+         declared at the top of this file rather than by restating every
+         selector that uses one, so a surface added later is covered
+         automatically. What sits behind these surfaces is the page's own
+         gradient, smooth enough that blurring it changes nothing a reader
+         can see: the glass keeps its tint, its hairline and its shadow.
+
+     Dialogs are the exception, and they go opaque rather than unblurred.
+     A dialog covers content the reader was looking at a moment ago, and a
+     9%-white panel with nothing blurring what is under it shows that
+     content straight through the dialog's own text. */
+  @media (max-width: 700px) {
+    [data-design="showcase"] {
+      --s-blur-pill: none;
+      --s-blur-card: none;
+      --s-blur-bar: none;
+      --s-blur-hero: none;
+      --s-blur-dialog: none;
+    }
+
+    [data-design="showcase"] body {
+      background-attachment: scroll;
+    }
+
+    [data-design="showcase"] .modal-content {
+      background: var(--popover);
+    }
+
+    /* The bar carries the translucent toolbar fill and, with the blur gone,
+       the checklist scrolled through it in a legible strip. The two cards
+       on top of it keep their glass: the bar behind them is opaque now. */
+    [data-design="showcase"] .sticky-bar {
+      background: var(--popover);
+    }
+
+    /* This design gives both cards the full corner radius, which outranks
+       the shared rule that closes them into one block. Restated so the
+       sticky area reads as a single surface here too. */
+    [data-design="showcase"] .sticky-bar > .toolbar {
+      border-radius: var(--radius) var(--radius) 0 0;
+      border-bottom: 0;
+    }
+    [data-design="showcase"] .sticky-bar > .progress-card {
+      border-radius: 0 0 var(--radius) var(--radius);
     }
   }
 

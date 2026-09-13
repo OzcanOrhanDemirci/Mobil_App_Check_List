@@ -1,5 +1,34 @@
+  /* ==================== RESPONSIVE: THE BREAKPOINT SCALE ====================
+
+     Five tiers, and every sheet in the project uses these five numbers. The
+     values are the widths at which this layout actually breaks, checked
+     against real device viewports rather than picked from a framework:
+
+       900px   tablet portrait, small laptop
+       700px   large phone landscape, small tablet portrait
+       560px   phone portrait: the tier most readers are in
+       430px   small phone (iPhone SE at 375, older Androids at 360)
+       360px   the narrow end of what ships (320px iPhone SE 1, 360px Android)
+
+     Rules live with the component they belong to; this file carries the
+     ones that cut across components. Before 1.3.1 there was a single
+     700px block here and nine ad-hoc widths scattered through the other
+     sheets, which meant a 320px screen got a layout designed for a 700px
+     one.
+
+     Tiers are written largest-first so the cascade reads top to bottom: a
+     narrower tier refines the one above it rather than fighting it. */
+
+  /* ==================== TIER: 700px and below ====================
+     Phone landscape and large phones. The sticky area collapses behind a
+     hamburger, the hero controls stack, and the page loses its desktop
+     gutters. */
   @media (max-width: 700px) {
-    .wrap { padding: 16px; }
+    .wrap {
+      padding: 16px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
     header.hero { padding: 24px 18px; }
 
     /* === Compact mobile layout for the sticky top area ===
@@ -8,18 +37,38 @@
        stay visible. Pressing the toggle reveals all actions inline within the
        sticky area (no overlay or dropdown). */
 
+    /* The sticky area is a toolbar card and a progress card with a gap
+       between them. On a desktop that gap sits over a page the reader is
+       not looking at; on a phone the sticky area is a third of the screen
+       and the checklist scrolled through the gap in a legible strip, so
+       headings appeared to run through the middle of the toolbar.
+
+       The two cards close up into one block: the toolbar loses its bottom
+       corners and border, the progress card loses its top ones, and the
+       seam between them is a single hairline. */
     .sticky-bar {
       margin: 12px 0 14px;
-      gap: 8px;
+      gap: 0;
+    }
+    .sticky-bar > .toolbar {
+      border-bottom: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .sticky-bar > .progress-card {
+      border-radius: 0 0 var(--radius) var(--radius);
     }
 
-    /* Force fully opaque sticky surfaces on mobile. The backdrop-filter blur
-       was letting page content bleed through and made the underlying titles
-       and labels unreadable. A solid surface-2 fill preserves visual
-       separation and is cheaper to paint on low-end devices. */
+    /* Force fully opaque sticky surfaces on mobile. The backdrop blur was
+       letting page content bleed through and made the titles and labels on
+       the bar unreadable, and it is expensive to paint on a low-end device.
+
+       --popover rather than --surface-2: the Showcase design defines its
+       surfaces as translucent washes, so filling with --surface-2 there
+       left the bar as see-through as the blur had. --popover is the token
+       every design guarantees to be opaque. */
     .sticky-bar > .toolbar,
     .sticky-bar > .progress-card {
-      background: var(--surface-2);
+      background: var(--popover);
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
@@ -31,16 +80,23 @@
       gap: 8px;
       padding: 8px;
     }
-    .search { padding: 7px 12px; }
-    .search input { font-size: 14px; }
+    /* A grid item's automatic minimum size comes from its content, and a
+       text input's min-content width is wide. In this tier the toolbar is
+       the search field and a 44px hamburger, so that minimum is the only
+       thing standing between the field and the width of the screen: it
+       pushed the document 3px sideways at 320px. Deliberately not set at
+       desktop widths, where the same minimum is what stops the action row
+       claiming the whole grid and collapsing the field to nothing. */
+    .search { padding: 7px 12px; min-width: 0; }
+    .search input { min-width: 0; }
 
     /* Hamburger actions toggle */
     .actions-toggle {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       padding: 0;
       flex-shrink: 0;
       background: var(--surface-2);
@@ -119,16 +175,18 @@
       margin-bottom: 5px;
       line-height: 1.15;
     }
+    /* 9.5px was below what is comfortable on a handset even for an
+       uppercase micro-label, and this one names the number beside it. */
     .progress-label > span:first-child {
-      font-size: 9.5px;
-      letter-spacing: 0.06em;
+      font-size: 10.5px;
+      letter-spacing: 0.05em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
     }
     .progress-label .num {
-      font-size: 11px;
+      font-size: 12.5px;
       white-space: nowrap;
     }
     .progress-label .lbl-extra { display: none; }
@@ -155,13 +213,21 @@
     .hero-project-pill .proj-pill-name {
       max-width: 120px;
     }
+    /* The language and style pills sit inside .hero-pill-stack, so the
+       project pill is the only other child: give the stack its content
+       width and let the project pill take the rest. Until 1.3.1 the rule
+       here selected a direct-child .hero-lang-pill, which is a grandchild
+       and matched nothing, so the two blocks wrapped onto separate rows at
+       inconsistent widths. */
     .hero-controls-right {
       display: flex;
       gap: 8px;
+      align-items: stretch;
+      flex-wrap: nowrap;
     }
-    .hero-controls-right > .hero-lang-pill {
+    .hero-controls-right > .hero-pill-stack {
       flex: 0 0 auto;
-      padding: 10px 12px;
+      justify-content: center;
     }
     .hero-controls-right > .hero-project-pill {
       flex: 1 1 auto;
@@ -181,12 +247,284 @@
     }
 
     /* === Remaining mobile tweaks (unchanged from prior behaviour) === */
-    .cat-header { padding: 18px; flex-wrap: wrap; }
+    .cat-header { padding: 18px; flex-wrap: wrap; gap: 10px 14px; }
+    /* The number moves to a line of its own above the title, and the
+       percentage and the collapse chevron share the row below it, which is
+       where a reader's thumb already is. */
     .cat-header .num { width: 100%; }
-    .cat-progress { margin-left: 0; text-align: left; }
+    .cat-header .title { flex: 1 1 100%; }
+    .cat-progress {
+      margin-left: 0;
+      text-align: left;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .cat-progress .pct { display: inline; }
+    .cat-header .chevron { margin-left: auto; }
     .feature { padding: 16px 18px; }
     .level { grid-template-columns: 24px auto 1fr; padding: 12px; gap: 8px; }
-    .level-tag { min-width: 72px; font-size: 9.5px; padding: 2px 7px; }
+    .level-tag { min-width: 72px; font-size: 11px; padding: 2px 7px; }
+
+    /* === Backdrop blur: the wrong cost on a phone ===
+       Every backdrop-filter is a compositing pass that re-samples whatever
+       sits behind the element, repeated on every frame while that element
+       moves or the page under it scrolls. The sticky toolbar and the
+       progress card do both. What is behind them here is the page's own
+       background gradient, smooth enough that blurring it changes nothing
+       a reader can see, so the surfaces take an opaque fill instead, which
+       is also what makes their labels legible. The rule further up already
+       does this for the sticky pair; these are the rest. */
+    header.hero,
+    .pres-context-bar,
+    .presentation-controls {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
+
+  /* ==================== TYPE ON A PHONE ====================
+
+     A handset held at arm's length is not a monitor at 60cm, and this page
+     carries a number of labels drawn at 10 and 11px. They are raised here
+     to a floor of about 12px, but not all of them:
+
+       - Anything a reader has to read gets the floor. Framework and backend
+         names, the counters in the progress card, control labels.
+       - Uppercase micro-labels that caption a larger value beside them keep
+         their size. They are read as a heading for the number under them,
+         and growing them flattens the difference that makes them legible as
+         captions in the first place.
+       - Decorative glyphs (the dot between the version and the date, the
+         dropdown chevrons) are not text and are left alone, and neither is
+         anything marked aria-hidden because it restates in a picture what
+         the page already says in words: the Showcase gauges are a second
+         rendering of the three numbers in the progress card.
+
+     The hero's eyebrow goes the other way below 560px: at 11px with wide
+     tracking it wrapped to two lines on a 320px screen, and one line of
+     10.5px reads better than two lines of 11px. */
+  @media (max-width: 700px) {
+    .hero-style-pill,
+    .hero-style-pill .style-current { font-size: 12.5px; }
+    .hero-project-pill .proj-pill-framework,
+    .hero-project-pill .proj-pill-backend { font-size: 12px; }
+    footer .foot-label { font-size: 11px; }
+    .instructor-label { font-size: 11px; }
+
+    /* A control's own label. */
+    .feature-flip-btn { font-size: 12.5px; }
+    /* "10 / 51": a figure the reader is tracking, not a caption. */
+    .cat-progress { font-size: 12.5px; }
+    /* The item number, which is how a reader refers to an item out loud. */
+    .feature-head .id { font-size: 12px; }
+    /* The toolbar's own labels: Expand All, Print, Reset. They shrank to
+       11.5px to fit two rows behind the hamburger; now that every one of
+       them is a 44px target, the row count is set by the targets and the
+       type may as well be readable. */
+    .actions > .action-group > .btn { font-size: 12.5px; }
+    .proj-count { font-size: 12px; }
+  }
+
+  /* ==================== TIER: 560px and below ====================
+     Phone portrait: the tier most readers are actually in. Two-column
+     arrangements that still worked at 700px stop working here, and the
+     controls need to be finger-sized rather than cursor-sized. */
+  @media (max-width: 560px) {
+    .wrap { padding-top: 12px; }
+    header.hero { padding: 20px 16px; }
+
+    /* The headline's clamp bottoms out at 28px, which is four lines of a
+       320px screen before the reader has seen a single checklist item. */
+    h1 { font-size: 25px; line-height: 1.18; }
+    .eyebrow { font-size: 10.5px; letter-spacing: 0.14em; margin-bottom: 8px; }
+    .instructor { margin-bottom: 16px; padding: 5px 10px 5px 5px; }
+    .instructor-name { font-size: 12.5px; }
+    .hero-controls { margin-top: 16px; gap: 8px; }
+
+    .cat-nav { gap: 6px; margin-bottom: 18px; }
+    .cat-header { padding: 14px 16px; gap: 10px; }
+    .feature { padding: 14px 16px; }
+    .feature-actions { margin-top: 12px; padding-top: 12px; }
+
+    /* Level rows are the app's primary control. The MVP / Release tag takes
+       a line of its own above the text rather than squeezing the text into
+       a 110px column: at 320px the three-column arrangement left the row
+       text wrapping every two or three words. */
+    .level { grid-template-columns: 24px 1fr; gap: 6px 8px; padding: 11px 12px; }
+    .level .check { grid-column: 1; grid-row: 1 / span 2; }
+    .level-tag {
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 0;
+      justify-self: start;
+    }
+    .level-text { grid-column: 2; grid-row: 2; }
+    .level:has(.level-progress-badge) { grid-template-columns: 24px 1fr auto; }
+    .level-progress-badge { grid-column: 3; grid-row: 1; align-self: center; }
+
+    footer .foot-title { font-size: 14.5px; }
+  }
+
+  /* ==================== TIER: 430px and below ====================
+     Small phones. Everything that can still give back a few pixels does. */
+  @media (max-width: 430px) {
+    .wrap {
+      padding: 12px;
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+      padding-bottom: 72px;
+    }
+    header.hero { padding: 18px 14px; border-radius: 12px; }
+    h1 { font-size: 23px; }
+
+    .sticky-bar { margin: 10px 0 12px; }
+    .toolbar { padding: 7px; gap: 6px; }
+    .progress-card { padding: 8px 10px; }
+    .progress-row { gap: 4px 8px; }
+
+    .cat-header { padding: 12px 14px; }
+    .feature { padding: 13px 14px; }
+    .feature-head h3 { font-size: 15px; }
+    .feature-desc { font-size: 13.5px; }
+
+    section.category { border-radius: 12px; margin-bottom: 20px; }
+  }
+
+  /* ==================== TIER: 360px and below ====================
+     The narrow end of what ships: a 320px iPhone SE 1, a 360px Android, or
+     any phone whose owner has turned the system font up. Nothing new
+     happens here; the type and the chrome take their last step down so the
+     content keeps a readable measure. */
+  @media (max-width: 360px) {
+    h1 { font-size: 21px; }
+    .eyebrow { font-size: 10px; letter-spacing: 0.1em; }
+    .cat-header .title h2 { font-size: 16px; }
+    .cat-header .title p { font-size: 12.5px; }
+    .feature-head h3 { font-size: 14.5px; }
+
+    .actions > .action-group > .btn { font-size: 12px; padding: 6px 8px; }
+  }
+
+  /* ==================== TOUCH TARGETS ====================
+
+     WCAG 2.2 asks for 24x24 CSS px (2.5.8, AA); Apple's Human Interface
+     Guidelines and Material Design both ask for about 44x44. This project
+     follows the larger figure for anything a reader taps to get through the
+     app, because the failure mode on a checklist is a mis-tap on the
+     neighbouring row, and an accidental tick is worse than a wasted one.
+
+     Scoped to a coarse pointer, so a mouse still gets the compact chrome
+     the desktop layout was drawn for. Where growing the box would disturb
+     the layout, the target grows by padding and is pulled back with a
+     negative margin: bigger to a finger, the same size to the eye.
+
+     Scoped to `screen` as well. A target is a screen idea, and `pointer`
+     does not stop matching when a phone prints: without this, the How-To
+     steps would carry their 44px rows onto paper, where nothing is tapped
+     and the height is only wasted. The width tiers above need no such
+     guard, because a printed page is laid out at the paper's width and
+     none of them match it. */
+  @media screen and (pointer: coarse) {
+    /* Every button in the app. The toolbar's own buttons shrink to 11.5px
+       type and 6px of padding on a phone, which put them at 28px tall, and
+       they are the app's whole action set: expand, collapse, flip, lock,
+       print, export, theme. A menu three rows tall instead of two is a
+       better trade than thirteen controls a thumb keeps missing. */
+    .btn { min-height: 44px; min-width: 44px; }
+    /* The rule that lets the toolbar's buttons wrap sets min-width: 0 on
+       them, and it outranks the line above. Every label there is wider than
+       44px except the lock button's. */
+    .actions > .action-group > .btn { min-width: 44px; }
+
+    /* The search field is a 26px input inside a 44px pill, and the pill's
+       padding is not a target: tapping it does nothing. Stretching the
+       input over the pill's height makes the whole pill tappable, which is
+       what it already looks like. */
+    .search { padding-top: 0; padding-bottom: 0; min-height: 46px; }
+    /* 46 and not 44: the pill's border is part of the pill, not of the
+       input, so the input's own box is the pill's height less 2px. */
+    .search input { align-self: stretch; padding: 0; }
+
+    /* 16px exactly, on every text field. Safari on iOS zooms the page in
+       when a field with a smaller font takes focus and does not zoom back
+       out, leaving the reader on a page wider than the screen. It is a
+       property of the input method, not of the window: an iPad in landscape
+       is 1024px wide and does it too, which is why this sits here rather
+       than in a width tier. 16px is the threshold, not a preference. */
+    input[type="text"],
+    input[type="search"],
+    input:not([type]),
+    textarea,
+    select {
+      font-size: 16px;
+    }
+
+    /* The category index is the fastest way down a long document and its
+       chips were 30px tall. */
+    .cat-nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+    }
+
+    .hero-lang-pill,
+    .hero-style-pill { min-height: 44px; }
+    .level-filter-pill { min-height: 44px; }
+    .hero-project-pill { min-height: 48px; }
+
+    .lv-menu button { min-height: 44px; }
+
+    .install-banner-close {
+      width: 44px;
+      height: 44px;
+      top: 4px;
+      right: 4px;
+    }
+
+    /* The pill stays the size it is drawn and the target grows past it.
+       The button sits in the card's corner directly above the title, so a
+       44px pill would reach down into the title's second line and cost a
+       line on every card; an empty ::after box extends the region that
+       answers a tap without changing anything that is painted.
+
+       The insets are measured from the padding box, which is the border box
+       less the 1px border, so -5px and -4px give a 46 x 94px target around
+       a 38px pill. */
+    .feature-flip-btn { min-height: 38px; padding: 8px 12px; }
+    .feature-flip-btn::after {
+      content: "";
+      position: absolute;
+      inset: -5px -4px;
+    }
+    .feature-note-toggle,
+    .feature-ai-copy { min-height: 40px; }
+
+    /* A step row in the How-To guide is a checkbox, and the reader aims at
+       the text rather than at the numbered marker, so the row takes the
+       height. */
+    .howto-steps > li[data-step-key] {
+      min-height: 44px;
+      padding-top: 9px;
+      padding-bottom: 9px;
+    }
+
+    .help-lang-opt { min-height: 40px; padding: 8px 13px; }
+    .projfw-tab { min-height: 46px; }
+    .proj-action { min-height: 44px; min-width: 44px; }
+    .proj-row { min-height: 44px; }
+
+    /* The dialog's help button sits in its corner and is the smallest
+       control in the welcome flow. It takes the target and gives the pixels
+       back with a negative margin, so the header's proportions do not
+       change. */
+    .welcome-help-btn {
+      min-height: 44px;
+      min-width: 44px;
+      justify-content: center;
+      margin: -8px -6px 0 0;
+    }
   }
 
   /* ==================== PRINT: PAGE BOX ====================

@@ -212,6 +212,7 @@ const HELP_HTML = {
           <li><strong>Tüm maddeler tamamlandıysa</strong> kategorinin son maddesine gider (referans için).</li>
           <li><strong>Kategori kapalıysa otomatik açılır</strong>, sonra hedef maddeye yumuşak bir kaydırma yapar.</li>
           <li>Sticky toolbar'ın yüksekliği hesaba katılır; hedef madde tam toolbar'ın altına yerleşir, üzerine binmez.</li>
+          <li><strong>Telefonda</strong> chip'ler alt alta dizilmek yerine <strong>tek satırda yan yana</strong> durur; satırı parmağınla kaydırırsın. Davranış aynıdır, sadece 14 chip ekranın tamamını kaplamaz.</li>
         </ul>
         <p>Bu sayede 30+ saatlik bir projede arama yapmadan, kapalı kategorileri açmadan, sadece chip'e tıklayarak <strong>yapacağın bir sonraki maddeye anında ulaşırsın</strong>.</p>
       </section>
@@ -391,6 +392,20 @@ const HELP_HTML = {
           <li><strong>Açık mod</strong>: gündüz / aydınlık ortamlarda klasik beyaz görünüm. MVP yeşili ve Release mavisi her iki modda da okunaklı kalacak şekilde ayarlandı.</li>
         </ul>
         <p>Tercih kalıcı olarak <strong>tarayıcına kaydedilir</strong>. Mod değişikliği toast bildirimiyle onaylanır.</p>
+      </section>
+
+      <section>
+        <h3>📱 Telefonda Kullanım</h3>
+        <p>Uygulama telefonda da masaüstündekiyle <strong>aynı özelliklerin tamamını</strong> taşır; sadece yerleşim küçük ekrana göre yeniden kurulur:</p>
+        <ul>
+          <li><strong>Araç çubuğu ≡ düğmesinin arkasına toplanır.</strong> Arama kutusu ve üç ilerleme çubuğu her zaman görünür kalır; Tümünü Aç, Yazdır, Sıfırla gibi butonlar ≡ ile açılır. Bir butona bastığında, dışarı dokunduğunda, Esc'e bastığında <strong>veya sayfayı kaydırdığında</strong> panel kendiliğinden kapanır.</li>
+          <li><strong>Kategori chip'leri tek satırda</strong> yan yana durur ve parmakla kaydırılır.</li>
+          <li><strong>Kartlarda</strong> "❔ Nasıl?" düğmesi sağ üst köşededir, başlık her zaman altında tam genişlikte açılır. Nasıl-Yapılır rehberi tek sütuna geçer; MVP / Release etiketi metnin üstünde kendi satırına alınır.</li>
+          <li><strong>Dokunma hedefleri en az 44x44 piksel.</strong> Bu, Apple ve Google'ın kendi arayüz kılavuzlarındaki alt sınırdır; yan yana duran satırlarda yanlış maddeyi işaretleme riskini düşürür.</li>
+          <li><strong>Çentikli ekranlar</strong> (notch, kavisli köşe, alt çubuk) hesaba katılır; içerik sistem alanlarının altında kalmaz.</li>
+          <li><strong>İkinci açılıştan itibaren uygulama kendi önbelleğinden gelir</strong>: saniyenin çok altında açılır ve internet olmasa da çalışır. Yeni bir sürüm yayınlandığında sayfa kendini bir kez yenileyip güncele geçer.</li>
+        </ul>
+        <p><strong>💡 İpucu:</strong> Telefonda en rahat okunan tema genelde <strong>Sade</strong>'dir; <strong>Vitrin</strong> teması daha gösterişli olduğu için hero alanı biraz daha uzundur. Tema düğmesinden istediğin an değiştirebilirsin.</p>
       </section>
 
       <section>
@@ -638,6 +653,7 @@ const HELP_HTML = {
           <li><strong>All items complete</strong> → goes to the last item in that category (for reference).</li>
           <li><strong>Category collapsed?</strong> → it auto-expands, then smooth-scrolls to the target.</li>
           <li>The sticky toolbar height is accounted for; the target item lands just below the toolbar, not behind it.</li>
+          <li><strong>On a phone</strong> the chips sit in <strong>a single row</strong> rather than wrapping down the page; you swipe the row sideways. The behaviour is the same, the 14 chips just no longer fill the whole screen.</li>
         </ul>
         <p>So in a 30+ hour project, without searching and without opening collapsed categories, one chip click takes you to the <strong>next item to do</strong>.</p>
       </section>
@@ -817,6 +833,20 @@ const HELP_HTML = {
           <li><strong>Light</strong>: classic white look for daytime / well-lit environments. MVP green and Release blue are tuned to stay readable in both modes.</li>
         </ul>
         <p>Your preference is <strong>saved in the browser</strong>. A toast confirms each change.</p>
+      </section>
+
+      <section>
+        <h3>📱 On a Phone</h3>
+        <p>The application carries <strong>every one of its features</strong> on a phone; only the layout is rebuilt for a small screen:</p>
+        <ul>
+          <li><strong>The toolbar collapses behind the ≡ button.</strong> The search box and the three progress bars stay visible; Expand All, Print, Reset and the rest open with ≡. The panel closes by itself when you press a button, tap outside it, press Esc, <strong>or scroll the page</strong>.</li>
+          <li><strong>The category chips sit in a single row</strong> that you swipe sideways.</li>
+          <li><strong>On a card</strong>, the "❔ How?" button is in the top-right corner and the title always starts below it, at full width. The How-To guide becomes one column, with the MVP / Release tag on its own line above the text.</li>
+          <li><strong>Touch targets are at least 44x44 px.</strong> That is the floor in both Apple's and Google's own interface guidelines, and on a list of adjacent rows it is what keeps a tap from landing on the wrong item.</li>
+          <li><strong>Notched screens</strong> (a camera cutout, a rounded corner, a home indicator) are accounted for; nothing sits underneath the system's own areas.</li>
+          <li><strong>From the second visit on, the application comes from its own cache</strong>: it opens in well under a second and works with no connection at all. When a new version is published the page reloads itself once and moves to it.</li>
+        </ul>
+        <p><strong>💡 Tip:</strong> <strong>Minimal</strong> is usually the easiest theme to read on a phone; <strong>Showcase</strong> is the more expressive one, so its hero takes a little more of the first screen. You can switch at any time from the theme button.</p>
       </section>
 
       <section>

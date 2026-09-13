@@ -75,9 +75,13 @@ const ALL_DESIGNS = ["classic", "minimal", "showcase"];
 const REQUESTED_DESIGN = (process.env.SHOT_DESIGN || "").toLowerCase();
 const MAIN_DESIGN = ALL_DESIGNS.includes(REQUESTED_DESIGN) ? REQUESTED_DESIGN : "minimal";
 
+/* `touch` turns on Chromium's mobile emulation, which is what makes
+   `(pointer: coarse)` match. Without it a 375px-wide context still reports a
+   fine pointer, and the mobile shot would show the desktop control sizes at
+   a phone's width: the one thing that shot exists to show. */
 const VIEWPORTS = {
-  mobile: { width: 375, height: 812, deviceScaleFactor: 2 },
-  desktop: { width: 1280, height: 800, deviceScaleFactor: 1 },
+  mobile: { width: 375, height: 812, deviceScaleFactor: 2, touch: true },
+  desktop: { width: 1280, height: 800, deviceScaleFactor: 1, touch: false },
 };
 
 /* Seed function: language preference only. Used by the welcome shot, where
@@ -298,6 +302,8 @@ async function captureLanguage(browser, lang) {
     const context = await browser.newContext({
       viewport: { width: vp.width, height: vp.height },
       deviceScaleFactor: vp.deviceScaleFactor,
+      isMobile: vp.touch,
+      hasTouch: vp.touch,
     });
     const page = await context.newPage();
 

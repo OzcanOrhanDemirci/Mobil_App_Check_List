@@ -20,6 +20,10 @@
     padding: 18px 24px 24px;
     overflow-y: auto;
   }
+  @media (max-width: 560px) {
+    .modal-content.modal-projfw .modal-head { padding: 14px 16px 10px; }
+    .modal-content.modal-projfw .modal-body { padding: 14px 14px 20px; }
+  }
 
   /* Tab strip: horizontal switcher that swaps the modal body between
      Projects, Framework, and Backend panes. Active tab carries the accent
@@ -48,6 +52,36 @@
   .projfw-tab.active {
     color: var(--accent);
     border-bottom-color: var(--accent);
+  }
+
+  /* Four tabs at 14px with 18px of padding a side ask for about 420px. A
+     phone gives the dialog 280px, so "Backend" was cut off and "Sıfırla"
+     was not on screen at all: a tab the reader cannot see is a tab that
+     does not exist.
+
+     Equal columns rather than a horizontal scroller. Scrolling tabs are a
+     legitimate pattern, but with four short labels the whole strip fits
+     once the padding stops being desktop padding, and everything visible
+     beats everything reachable. */
+  @media (max-width: 560px) {
+    .projfw-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      padding: 0 10px;
+    }
+    .projfw-tab {
+      padding: 13px 2px;
+      font-size: 12.5px;
+      text-align: center;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  @media (max-width: 360px) {
+    .projfw-tabs { padding: 0 6px; }
+    .projfw-tab { font-size: 12px; }
   }
 
   /* ==================== PROJECT LIST + ADD FORM ==================== */
@@ -81,6 +115,16 @@
     background: var(--surface-2);
     border: 1px solid var(--border);
     white-space: nowrap;
+  }
+  /* Side by side, the count badge leaves the explanation a 150px column and
+     the sentence comes out one word a line. Stacking gives the text the
+     full width and costs one short row. */
+  @media (max-width: 560px) {
+    .proj-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
   }
 
   .proj-add-row {
@@ -126,6 +170,7 @@
     flex-direction: column;
     gap: 8px;
     max-height: 50vh;
+    max-height: 50dvh;
     overflow-y: auto;
   }
   .proj-pick-item { margin: 0; }
@@ -186,7 +231,7 @@
     gap: 8px;
     justify-content: end;
   }
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .proj-add-form-row {
       grid-template-columns: 1fr 1fr;
     }
@@ -233,7 +278,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 6px;
   }
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .proj-add-fw-grid { grid-template-columns: repeat(2, 1fr); }
   }
   .proj-add-fw {
@@ -333,7 +378,7 @@
     white-space: nowrap;
     margin-left: 2px;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 430px) {
     .proj-row-fw { display: none; }
   }
   .proj-row-active-badge {
@@ -380,6 +425,18 @@
     cursor: not-allowed;
     pointer-events: none;
   }
+  /* Name, "active" badge and two icon buttons on one 230px row leave the
+     name about 80 characters' worth of nothing. Below 430px the buttons
+     move to a row of their own, where they also become real targets. */
+  @media (max-width: 430px) {
+    .proj-item {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      align-items: stretch;
+    }
+    .proj-row-actions { justify-content: flex-end; }
+    .proj-action { padding: 8px 14px; }
+  }
 
   .proj-row-rename {
     grid-column: 1 / -1;
@@ -411,7 +468,7 @@
     font-size: 12.5px;
     font-weight: 500;
   }
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .proj-row-rename {
       grid-template-columns: 1fr;
     }
@@ -512,7 +569,7 @@
 
   /* Mobile: single-column layout. Since "No backend" is already
      full-width, it visually stays at the top and prominent. */
-  @media (max-width: 480px) {
+  @media (max-width: 430px) {
     .backend-options { grid-template-columns: 1fr; }
     .backend-options > .backend-option--none {
       padding: 16px 14px;
@@ -550,7 +607,7 @@
     color: var(--mvp);
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.20);
   }
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .proj-add-be-grid { grid-template-columns: repeat(2, 1fr); }
     .proj-add-be-grid > .proj-add-be--none { grid-column: 1 / -1; }
   }
@@ -659,7 +716,7 @@
     padding-top: 16px;
     border-top: 1px dashed var(--border);
   }
-  @media (max-width: 540px) {
+  @media (max-width: 560px) {
     .print-options { grid-template-columns: 1fr; }
   }
 
