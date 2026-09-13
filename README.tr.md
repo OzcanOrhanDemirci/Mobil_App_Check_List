@@ -292,10 +292,13 @@ npx serve .          # http://localhost:3000
 ### 4. Kendi GitHub Pages'inde yayınlamak
 
 1. Repoyu **fork** et.
-2. _Settings → Pages → Source: `main` / `(root)`_.
-3. 1-2 dakikada `https://<kullanıcı-adın>.github.io/Mobil_App_Check_List/` üzerinden yayında olur.
+2. Fork'unun **Actions** sekmesinden workflow'ları etkinleştir; GitHub yeni bir fork'ta bunları sen açana kadar kapalı tutar.
+3. _Settings → Pages → Build and deployment → Source: **GitHub Actions**_.
+4. `main`'e push et ya da Actions sekmesinden **Deploy to GitHub Pages** workflow'unu elle çalıştır. 1-2 dakikada `https://<kullanıcı-adın>.github.io/Mobil_App_Check_List/` üzerinden yayında olur.
 
-Custom domain istersen `CNAME` dosyası ekle; ek yapılandırma gerekmez.
+Workflow (`.github/workflows/deploy-pages.yml`) siteyi geliştirme dosyaları (`tests/`, `scripts/`, `package.json` vb.) olmadan yayımlar. Kaynağı dal yerine **GitHub Actions**'ta bırak: dal seçiliyse GitHub her push'ta o dalı da derler, iki dağıtım yarışır ve hangisi son biterse yayında o kalır.
+
+Custom domain için _Settings → Pages → Custom domain_ alanını doldur. Workflow ile yapılan yayında repodaki `CNAME` dosyası yok sayılır, bu yüzden gerekmez.
 
 ---
 

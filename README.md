@@ -292,10 +292,13 @@ npx serve .          # http://localhost:3000
 ### 4. Publish to your own GitHub Pages
 
 1. **Fork** the repo.
-2. _Settings → Pages → Source: `main` / `(root)`_.
-3. Within 1-2 minutes it goes live at `https://<your-username>.github.io/Mobil_App_Check_List/`.
+2. In the fork's **Actions** tab, enable workflows. GitHub keeps them off on a new fork until you do.
+3. _Settings → Pages → Build and deployment → Source: **GitHub Actions**_.
+4. Push to `main`, or run **Deploy to GitHub Pages** from the Actions tab. Within 1-2 minutes it goes live at `https://<your-username>.github.io/Mobil_App_Check_List/`.
 
-If you want a custom domain, add a `CNAME` file; no extra configuration needed.
+The workflow (`.github/workflows/deploy-pages.yml`) publishes the site without the development files (`tests/`, `scripts/`, `package.json` and the like). Keep the source on **GitHub Actions** rather than a branch: with a branch selected, GitHub also builds that branch on every push, the two deployments race, and whichever finishes last is what gets served.
+
+For a custom domain, enter it under _Settings → Pages → Custom domain_. A workflow deployment ignores a `CNAME` file in the repository, so none is needed.
 
 ---
 
