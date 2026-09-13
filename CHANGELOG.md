@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.1] - 2026-09-13
+## [1.3.1] - 2026-09-14
 
 A mobile pass. The application was responsive in the sense that it did not
 break, and unusable in the sense that mattered: on a 320px screen the welcome
@@ -995,6 +995,6 @@ and per-item how-to guidance.
 [1.3.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...v1.1.0
+[1.2.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/2d92f1e...v1.2.0
+[1.1.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/compare/v1.0.0...2d92f1e
 [1.0.0]: https://github.com/OzcanOrhanDemirci/Mobil_App_Check_List/releases/tag/v1.0.0
