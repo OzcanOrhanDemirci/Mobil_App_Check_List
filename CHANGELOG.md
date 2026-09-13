@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **GitHub Pages deploys only through the workflow.** The repository's Pages
+  source was still set to a branch, so on every push GitHub built `main` as
+  well as running `.github/workflows/deploy-pages.yml`, and the two
+  deployments raced: whichever finished last was served. The 1.3.1 push was
+  won by the branch build, which published `package.json`, `tests/` and
+  `scripts/` next to the site. The source is now GitHub Actions and the
+  workflow's artifact is the only deployment; those files return 404 again.
+- The README's steps for publishing a fork (both languages) now enable the
+  fork's workflows and select GitHub Actions as the Pages source, instead of
+  `main` / `(root)`, and say that a custom domain is set in Settings: a
+  workflow deployment ignores a `CNAME` file. The workflow's own comment no
+  longer claims that a branch source makes the deploy fail; nothing fails,
+  the deployments race.
+
 ## [1.3.1] - 2026-09-14
 
 A mobile pass. The application was responsive in the sense that it did not
