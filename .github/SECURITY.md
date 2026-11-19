@@ -25,7 +25,7 @@ is tracked in
 
 Email the maintainer privately:
 
-- ozcanorhandem@gmail.com
+- mail@ozcanorhandemirci.com
 
 Please include:
 

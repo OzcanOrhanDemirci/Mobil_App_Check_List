@@ -8,7 +8,7 @@ By participating in this project (as a contributor, maintainer, issue reporter, 
 
 Report concerns privately to the project maintainer:
 
-- Email: ozcanorhandem@gmail.com
+- Email: mail@ozcanorhandemirci.com
 
 All reports are handled confidentially. You can expect an initial response within 7 days. Where the report concerns the maintainer directly, please indicate that in the subject line so the report can be routed to a neutral reviewer.
 
